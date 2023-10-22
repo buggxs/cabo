@@ -25,15 +25,15 @@ class MainMenuScreenContent extends StatelessWidget {
   Widget build(BuildContext context) {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
 
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/cabo_bg_upscaled.png'),
-            fit: BoxFit.cover,
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/cabo_bg_upscaled.png'),
+          fit: BoxFit.cover,
         ),
-        constraints: const BoxConstraints.expand(),
+      ),
+      constraints: const BoxConstraints.expand(),
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

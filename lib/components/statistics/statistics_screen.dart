@@ -1,5 +1,4 @@
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
-import 'package:cabo/components/statistics/widgets/input_column.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,105 +55,112 @@ class StatisticsScreenContent extends StatelessWidget {
             elevation: 5.0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: DataTable(
-                columns: [
-                  DataColumn(
-                    label: Flexible(
-                      child: TextFormField(
-                        style: title,
-                        focusNode: name1,
-                        decoration: inputDecoration,
-                        initialValue: 'Andre',
-                        keyboardType: TextInputType.name,
-                        onFieldSubmitted: (String val) {
-                          if (val.isNotEmpty) {
-                            name1.unfocus();
-                            FocusScope.of(context).requestFocus(name2);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Flexible(
-                      child: TextFormField(
-                        style: title,
-                        focusNode: name2,
-                        decoration: inputDecoration,
-                        initialValue: 'Michi',
-                        keyboardType: TextInputType.name,
-                        onFieldSubmitted: (String val) {
-                          if (val.isNotEmpty) {
-                            name2.unfocus();
-                            FocusScope.of(context).requestFocus(name3);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Flexible(
-                      child: TextFormField(
-                        style: title,
-                        focusNode: name3,
-                        decoration: inputDecoration,
-                        initialValue: 'Pascal',
-                        keyboardType: TextInputType.name,
-                        onFieldSubmitted: (String val) {
-                          if (val.isNotEmpty) {
-                            name3.unfocus();
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-                rows: [
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(
-                        InputCell(
-                          textStyle: title,
-                          inputDecoration: inputDecoration,
-                          increaseFunction: cubit.increaseSum,
-                          playerType: PlayerType.playerOne,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              right: BorderSide(),
+                            ),
+                          ),
+                          width: 115,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Player 1',
+                                    style: title,
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('2'),
+                                      Text('23'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      DataCell(
-                        InputCell(
-                          textStyle: title,
-                          inputDecoration: inputDecoration,
-                          increaseFunction: cubit.increaseSum,
-                          playerType: PlayerType.playerTwo,
+                        Container(
+                          width: 115,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              right: BorderSide(),
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Player 1',
+                                    style: title,
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('2'),
+                                        Text('23'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      DataCell(
-                        InputCell(
-                          textStyle: title,
-                          inputDecoration: inputDecoration,
-                          increaseFunction: cubit.increaseSum,
-                          playerType: PlayerType.playerThree,
+                        Container(
+                          width: 115,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Player 1',
+                                    style: title,
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('2'),
+                                        Text('23'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(
-                        '${state.sumPlayerOne}',
-                        style: title,
-                      )),
-                      DataCell(Text(
-                        '${state.sumPlayerTwo}',
-                        style: title,
-                      )),
-                      DataCell(Text(
-                        '${state.sumPlayerThree}',
-                        style: title,
-                      )),
-                    ],
-                  ),
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
