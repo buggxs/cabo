@@ -1,8 +1,11 @@
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/core/app_navigator/app_navigator.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  setup();
+
   runApp(MyApp());
 }
 
