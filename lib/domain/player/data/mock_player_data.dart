@@ -1,7 +1,7 @@
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 
-const List<Player> MOCK_PLAYER_LIST = <Player>[
+List<Player> MOCK_PLAYER_LIST = <Player>[
   Player(name: 'Andre', rounds: MOCK_ROUND_LIST),
   Player(name: 'Michi', rounds: MOCK_ROUND_LIST),
   Player(name: 'Pascal', rounds: MOCK_ROUND_LIST_PENALTY),

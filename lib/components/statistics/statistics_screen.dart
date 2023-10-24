@@ -45,10 +45,6 @@ class StatisticsScreenContent extends StatelessWidget {
     contentPadding: EdgeInsets.all(8.0),
   );
 
-  final FocusNode name1 = FocusNode();
-  final FocusNode name2 = FocusNode();
-  final FocusNode name3 = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     StatisticsCubit cubit = context.watch<StatisticsCubit>();
@@ -66,10 +62,7 @@ class StatisticsScreenContent extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showRoundCloserDialog(
-          context,
-          state.players,
-        ),
+        onPressed: () => cubit.closeRound(context),
         elevation: 4.0,
         child: const Icon(
           Icons.add,
@@ -149,141 +142,6 @@ class StatisticsScreenContent extends StatelessWidget {
         ),
       );
     }
-
     return rounds;
-  }
-
-  Future<void> showRoundCloserDialog(
-    BuildContext context,
-    List<Player>? players,
-  ) {
-    List<OutlinedButton> buttons = players
-            ?.map(
-              (Player player) => OutlinedButton(
-                style: dialogButtonStyle,
-                onPressed: () {
-                  showPointDialog(context);
-                },
-                child: Text(player.name),
-              ),
-            )
-            .toList() ??
-        <OutlinedButton>[];
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'Wer hat die Runde beendet?',
-                style: title,
-              ),
-              if (buttons.isNotEmpty) ...buttons
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<String?> showPointDialog(BuildContext context) {
-    Navigator.of(context).pop();
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'Punkte eintragen',
-                style: title,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Player 1',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 50,
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        minLines: 1,
-                        style: TextStyle(fontSize: 18),
-                        decoration: dialogPointInputStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Player 1',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 50,
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        minLines: 1,
-                        style: TextStyle(fontSize: 18),
-                        decoration: dialogPointInputStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Player 1',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 50,
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        minLines: 1,
-                        style: TextStyle(fontSize: 18),
-                        decoration: dialogPointInputStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              OutlinedButton(
-                onPressed: () {},
-                child: Text('Eintragen'),
-                style: dialogButtonStyle,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
