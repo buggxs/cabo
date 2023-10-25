@@ -36,7 +36,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         await showPointDialog(context, state.players);
 
     if (playerPointsmap != null) {
-      for (Player player in players) {
+      for (int i = 0; i < players.length; i++) {
+        Player player = players[i];
         int points = playerPointsmap[player.name] ?? 0;
 
         int pointsOfClosingPlayer = playerPointsmap.entries
@@ -56,11 +57,11 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           points = points + 5;
         }
 
-        player.copyWith(
+        players[i] = player.copyWith(
           rounds: [
             ...player.rounds,
             Round(
-                round: player.rounds.length,
+                round: player.rounds.length + 1,
                 points: points,
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
@@ -68,6 +69,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           ],
         );
       }
+    }
+
+    players
+        .sort((Player a, Player b) => a.totalPoints.compareTo(b.totalPoints));
+
+    for (int i = 0; i < players.length; i++) {
+      players[i] = players[i].copyWith(place: i + 1);
     }
 
     emit(
