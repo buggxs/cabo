@@ -6,14 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({Key? key}) : super(key: key);
+  const StatisticsScreen({
+    Key? key,
+    required this.players,
+  }) : super(key: key);
 
   static const String route = 'statistics_screen';
+  final List<Player> players;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<StatisticsCubit>(
-      create: (_) => StatisticsCubit()..getPlayers(),
+      create: (_) => StatisticsCubit(players: players),
       child: StatisticsScreenContent(),
     );
   }
@@ -21,6 +25,9 @@ class StatisticsScreen extends StatelessWidget {
 
 class StatisticsScreenContent extends StatelessWidget {
   StatisticsScreenContent({Key? key}) : super(key: key);
+
+  final ScrollController _horizontal = ScrollController(),
+      _vertical = ScrollController();
 
   final TextStyle title = const TextStyle(
     fontStyle: FontStyle.italic,
@@ -61,6 +68,7 @@ class StatisticsScreenContent extends StatelessWidget {
         <TitleCell>[];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         onPressed: () => cubit.closeRound(context),
         elevation: 4.0,
@@ -77,22 +85,24 @@ class StatisticsScreenContent extends StatelessWidget {
           ),
         ),
         constraints: const BoxConstraints.expand(),
-        child: SafeArea(
-          child: Center(
-            child: Card(
-              margin: const EdgeInsets.all(12.0),
-              color: const Color.fromRGBO(202, 255, 202, 0.5647058823529412),
-              shadowColor: Colors.black,
-              elevation: 5.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
-                  horizontal: 8.0,
-                ),
-                child: (state.players?.isEmpty ?? true)
-                    ? const Text('No Players found!')
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+        child: Center(
+          child: Card(
+            margin: const EdgeInsets.all(12.0),
+            color: const Color.fromRGBO(202, 255, 202, 0.5647058823529412),
+            shadowColor: Colors.black,
+            elevation: 5.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 16.0,
+                horizontal: 8.0,
+              ),
+              child: (state.players?.isEmpty ?? true)
+                  ? const Text('No Players found!')
+                  : SingleChildScrollView(
+                      controller: _horizontal,
+                      scrollDirection: Axis.horizontal,
+                      child: SingleChildScrollView(
+                        controller: _vertical,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -109,7 +119,7 @@ class StatisticsScreenContent extends StatelessWidget {
                           ],
                         ),
                       ),
-              ),
+                    ),
             ),
           ),
         ),

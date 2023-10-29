@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/domain/player/player_service.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +7,10 @@ import 'package:flutter/material.dart';
 part 'statistics_state.dart';
 
 class StatisticsCubit extends Cubit<StatisticsState> {
-  StatisticsCubit() : super(StatisticsState());
-
-  void getPlayers() async {
-    List<Player> players = await app<PlayerService>().getPlayers();
-    emit(
-      state.copyWith(players: players),
-    );
-  }
+  StatisticsCubit({required List<Player> players})
+      : super(StatisticsState(
+          players: players,
+        ));
 
   Future<void> closeRound(BuildContext context) async {
     if (state.players == null) {

@@ -1,5 +1,6 @@
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
 class AppNavigator {
@@ -12,9 +13,16 @@ class AppNavigator {
           builder: (_) => const MainMenuScreen(),
         );
       case StatisticsScreen.route:
+        List<Player> players = [];
+        if (args is Map && args.containsKey('players')) {
+          players = args['players'] ?? <Player>[];
+        }
         return MaterialPageRoute(
-          builder: (_) => const StatisticsScreen(),
+          builder: (_) => StatisticsScreen(
+            players: players,
+          ),
         );
+
       default:
         return _errorRoute();
     }
