@@ -65,18 +65,31 @@ class ChoosePlayerNameScreen extends StatelessWidget {
     List<Widget> childList = <Widget>[];
 
     for (int i = 0; i < playerAmount; i++) {
+      final String playerDefaultName = 'Player $i';
+      final TextEditingController controller =
+          TextEditingController(text: playerDefaultName);
       Widget child = Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
           width: 200,
-          child: TextFormField(
-            decoration: dialogPointInputStyle,
-            onSaved: (String? name) {
-              String? submittedName = name;
-              if (submittedName?.isEmpty ?? true) {
-                submittedName = 'Player $i';
+          child: Focus(
+            child: TextFormField(
+              controller: controller,
+              autocorrect: false,
+              enableSuggestions: false,
+              decoration: dialogPointInputStyle,
+              onSaved: (String? name) {
+                String? submittedName = name;
+                if (submittedName?.isEmpty ?? true) {
+                  submittedName = playerDefaultName;
+                }
+                cubit.submitPlayerName(submittedName!);
+              },
+            ),
+            onFocusChange: (bool hasFocus) {
+              if (hasFocus) {
+                controller.text = '';
               }
-              cubit.submitPlayerName(submittedName!);
             },
           ),
         ),

@@ -1,0 +1,8 @@
+{
+  "helloWorld": "Hallo Welt!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "menuEntryTrackStats": "Statistik Tracken",
+  "menuEntryGameHistory": "Spielhistorie"
+}
