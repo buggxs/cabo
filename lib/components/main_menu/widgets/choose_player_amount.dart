@@ -1,10 +1,15 @@
+import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChoosePlayerAmount extends StatelessWidget {
-  const ChoosePlayerAmount({Key? key}) : super(key: key);
+class ChoosePlayerAmountScreen extends StatelessWidget {
+  const ChoosePlayerAmountScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    MainMenuCubit cubit = context.watch<MainMenuCubit>();
+    ChoosePlayerAmount state = cubit.state as ChoosePlayerAmount;
+
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
@@ -36,12 +41,18 @@ class ChoosePlayerAmount extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                        IconButton(
+                          onPressed: cubit.increasePlayerAmount,
+                          icon: const Icon(Icons.add),
+                        ),
                         Text(
-                          '3',
+                          '${state.playerAmount}',
                           style: TextStyle(color: Colors.white, fontSize: 24),
                         ),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.remove)),
+                        IconButton(
+                          onPressed: cubit.decreasePlayerAmount,
+                          icon: const Icon(Icons.remove),
+                        ),
                       ],
                     ),
                   ),
@@ -49,7 +60,7 @@ class ChoosePlayerAmount extends StatelessWidget {
                     height: 20,
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: cubit.continueToPlayerNameScreen,
                     child: Text(
                       'Weiter',
                       style: TextStyle(color: Colors.white, fontSize: 18),
