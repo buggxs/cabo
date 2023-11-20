@@ -9,23 +9,22 @@ part 'main_menu_state.dart';
 class MainMenuCubit extends Cubit<MainMenuState> {
   MainMenuCubit() : super(MainMenu());
 
-  void pushToStatsScreen(BuildContext context, List<Player> players) {
+  void pushToStatsScreen(
+    BuildContext context,
+    List<Player> players, {
+    bool? useOwnRuleSet,
+  }) {
     Navigator.of(context).pushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,
+        'useOwnRuleSet': useOwnRuleSet,
       },
     );
   }
 
-  void showChoosePlayerAmountScreen() {
-    emit(const ChoosePlayerAmount());
-  }
-
-  void showChoosePlayerNameScreen({
-    required int playerAmount,
-  }) {
-    emit(ChoosePlayerNames(playerAmount: playerAmount));
+  void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
+    emit(ChoosePlayerAmount(useOwnRuleSet: useOwnRuleSet));
   }
 
   void increasePlayerAmount() {
@@ -48,8 +47,8 @@ class MainMenuCubit extends Cubit<MainMenuState> {
     if (state is ChoosePlayerAmount) {
       emit(
         ChoosePlayerNames(
-          playerAmount: (state as ChoosePlayerAmount).playerAmount,
-        ),
+            playerAmount: (state as ChoosePlayerAmount).playerAmount,
+            useOwnRuleSet: (state as ChoosePlayerAmount).useOwnRuleSet),
       );
     }
   }
@@ -80,6 +79,23 @@ class MainMenuCubit extends Cubit<MainMenuState> {
             .toList();
       }
     }
-    pushToStatsScreen(context, players);
+    pushToStatsScreen(
+      context,
+      players,
+      useOwnRuleSet: (state as ChoosePlayerNames).useOwnRuleSet,
+    );
+  }
+
+  Future<bool> onWillPop() async {
+    if (state is ChoosePlayerAmount) {
+      emit(MainMenu());
+      return false;
+    } else if (state is ChoosePlayerNames) {
+      emit(const ChoosePlayerAmount());
+      return false;
+    } else if (state is MainMenu) {
+      return false;
+    }
+    return false;
   }
 }

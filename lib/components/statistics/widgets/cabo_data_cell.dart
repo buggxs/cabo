@@ -25,7 +25,10 @@ class CaboDataCell extends StatelessWidget {
         children: [
           Text(
             '${round.points}',
-            style: const TextStyle(fontSize: 18),
+            style: const TextStyle(
+              fontSize: 18,
+              fontFamily: 'Aclonica',
+            ),
           ),
           if (round.hasPenaltyPoints)
             const Text(
@@ -33,6 +36,7 @@ class CaboDataCell extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.redAccent,
+                fontFamily: 'Aclonica',
               ),
             ),
         ],

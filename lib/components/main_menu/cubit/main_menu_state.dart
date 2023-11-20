@@ -10,9 +10,10 @@ class MainMenu extends MainMenuState {
 }
 
 class ChoosePlayerAmount extends MainMenuState {
-  const ChoosePlayerAmount({this.playerAmount = 3});
+  const ChoosePlayerAmount({this.playerAmount = 3, this.useOwnRuleSet});
 
   final int playerAmount;
+  final bool? useOwnRuleSet;
 
   ChoosePlayerAmount copyWith({
     int? playerAmount,
@@ -30,18 +31,22 @@ class ChoosePlayerNames extends MainMenuState {
   const ChoosePlayerNames({
     required this.playerAmount,
     this.playerNames = const <String>[],
+    this.useOwnRuleSet,
   });
 
   final int playerAmount;
   final List<String> playerNames;
+  final bool? useOwnRuleSet;
 
   ChoosePlayerNames copyWith({
     int? playerAmount,
     List<String>? playerNames,
+    bool? useOwnRuleSet,
   }) {
     return ChoosePlayerNames(
       playerAmount: playerAmount ?? this.playerAmount,
       playerNames: playerNames ?? this.playerNames,
+      useOwnRuleSet: useOwnRuleSet ?? this.useOwnRuleSet,
     );
   }
 

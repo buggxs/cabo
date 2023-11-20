@@ -1,18 +1,34 @@
 import 'package:bloc/bloc.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
+import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 
 part 'statistics_state.dart';
 
 class StatisticsCubit extends Cubit<StatisticsState> {
-  StatisticsCubit({required List<Player> players})
-      : super(StatisticsState(
+  StatisticsCubit({
+    required List<Player> players,
+    this.useOwnRuleSet = false,
+  }) : super(StatisticsState(
           players: players,
         ));
 
+  final bool useOwnRuleSet;
+
+  Future<void> loadRuleSet() async {
+    RuleSet ruleSet = app<RuleService>().loadRuleSet(
+      useOwnRules: useOwnRuleSet,
+    );
+    emit(state.copyWith(ruleSet: ruleSet));
+  }
+
   Future<void> closeRound(BuildContext context) async {
+    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+
     if (state.players == null) {
       return;
     }
@@ -34,21 +50,32 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         Player player = players[i];
         int points = playerPointsmap[player.name] ?? 0;
 
-        int pointsOfClosingPlayer = playerPointsmap.entries
-                .firstWhere(
-                  (MapEntry<String, int?> entry) =>
-                      entry.key == closingPlayer.name,
-                )
-                .value ??
-            0;
+        int pointsOfClosingPlayer =
+            getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
 
-        final bool closingPlayerIsWinner = playerPointsmap.entries.any(
-            (MapEntry<String, int?> element) =>
-                element.key != closingPlayer.name &&
-                (element.value ?? 0) < pointsOfClosingPlayer);
+        final bool closingPlayerHasLost = isClosingPlayerLooser(
+          playerPointsmap,
+          closingPlayer,
+          pointsOfClosingPlayer,
+        );
 
-        if (player == closingPlayer && closingPlayerIsWinner) {
+        if (player == closingPlayer && closingPlayerHasLost) {
           points = points + 5;
+        }
+
+        if (player == closingPlayer &&
+            !closingPlayerHasLost &&
+            ruleSet.roundWinnerGetsZeroPoints) {
+          points = 0;
+        }
+
+        if (ruleSet.useKamikazeRule &&
+            checkIfPlayerHitsKamikaze(playerPointsmap)) {
+          if (points == 50) {
+            points = 0;
+          } else {
+            points = 50;
+          }
         }
 
         players[i] = player.copyWith(
@@ -59,7 +86,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
                 points: points,
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
-                    closingPlayer == player && closingPlayerIsWinner),
+                    closingPlayer == player && closingPlayerHasLost),
           ],
         );
       }
@@ -77,5 +104,31 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         players: players,
       ),
     );
+  }
+
+  bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
+    return playerPointsmap.entries.any((element) => element.value == 50);
+  }
+
+  int getPointsOfClosingPlayer(
+    Map<String, int?> playerPointsmap,
+    Player closingPlayer,
+  ) {
+    return playerPointsmap.entries
+            .firstWhere(
+              (MapEntry<String, int?> entry) => entry.key == closingPlayer.name,
+            )
+            .value ??
+        0;
+  }
+
+  bool isClosingPlayerLooser(
+    Map<String, int?> playerPointsmap,
+    Player closingPlayer,
+    int pointsOfClosingPlayer,
+  ) {
+    return playerPointsmap.entries.any((MapEntry<String, int?> element) =>
+        element.key != closingPlayer.name &&
+        (element.value ?? 0) < pointsOfClosingPlayer);
   }
 }

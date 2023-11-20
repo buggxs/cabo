@@ -1,7 +1,9 @@
+import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,15 +11,20 @@ class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
     Key? key,
     required this.players,
+    this.useOwnRuleSet = false,
   }) : super(key: key);
 
   static const String route = 'statistics_screen';
   final List<Player> players;
+  final bool useOwnRuleSet;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<StatisticsCubit>(
-      create: (_) => StatisticsCubit(players: players),
+      create: (_) => StatisticsCubit(
+        players: players,
+        useOwnRuleSet: useOwnRuleSet,
+      )..loadRuleSet(),
       child: StatisticsScreenContent(),
     );
   }
@@ -32,7 +39,8 @@ class StatisticsScreenContent extends StatelessWidget {
   final TextStyle title = const TextStyle(
     fontStyle: FontStyle.italic,
     fontWeight: FontWeight.bold,
-    fontSize: 24,
+    fontFamily: 'Aclonica',
+    fontSize: 20,
   );
 
   final InputDecoration inputDecoration = const InputDecoration(
@@ -77,49 +85,58 @@ class StatisticsScreenContent extends StatelessWidget {
           size: 28,
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/cabo_bg_upscaled.png'),
-            fit: BoxFit.cover,
+      body: WillPopScope(
+        onWillPop: () async {
+          final bool shouldPop = await showEndGame(context) ?? false;
+          if (shouldPop) {
+            Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+          }
+          return false;
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/cabo-main-menu-background.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        constraints: const BoxConstraints.expand(),
-        child: Center(
-          child: Card(
-            margin: const EdgeInsets.all(12.0),
-            color: const Color.fromRGBO(202, 255, 202, 0.5647058823529412),
-            shadowColor: Colors.black,
-            elevation: 5.0,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16.0,
-                horizontal: 8.0,
-              ),
-              child: (state.players?.isEmpty ?? true)
-                  ? const Text('No Players found!')
-                  : SingleChildScrollView(
-                      controller: _horizontal,
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        controller: _vertical,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                ...titleCells,
-                              ],
-                            ),
-                            ...buildRounds(state.players!),
-                          ],
+          constraints: const BoxConstraints.expand(),
+          child: Center(
+            child: Card(
+              margin: const EdgeInsets.all(12.0),
+              color: const Color.fromRGBO(202, 255, 202, 0.5647058823529412),
+              shadowColor: Colors.black,
+              elevation: 5.0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 8.0,
+                ),
+                child: (state.players?.isEmpty ?? true)
+                    ? const Text('No Players found!')
+                    : SingleChildScrollView(
+                        controller: _horizontal,
+                        scrollDirection: Axis.horizontal,
+                        child: SingleChildScrollView(
+                          controller: _vertical,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  ...titleCells,
+                                ],
+                              ),
+                              ...buildRounds(state.players!),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+              ),
             ),
           ),
         ),
@@ -138,7 +155,10 @@ class StatisticsScreenContent extends StatelessWidget {
               width: 15,
               child: Text(
                 '${players.first.rounds[i].round}.)',
-                style: const TextStyle(fontSize: 10),
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontFamily: 'Aclonica',
+                ),
               ),
             ),
             ...players
