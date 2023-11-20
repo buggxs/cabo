@@ -42,12 +42,16 @@ class TitleCell extends StatelessWidget {
                     '#${player.place ?? '-'}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Aclonica',
                     ),
                   ),
                   Text(
                     '${player.totalPoints}',
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontFamily: 'Aclonica',
+                    ),
                   ),
                 ],
               ),

@@ -2,9 +2,8 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
 const TextStyle title = TextStyle(
-  fontStyle: FontStyle.italic,
-  fontWeight: FontWeight.bold,
-  fontSize: 24,
+  fontFamily: 'Aclonica',
+  fontSize: 20,
 );
 
 const InputDecoration inputDecoration = InputDecoration(
@@ -40,7 +39,12 @@ Future<Player?> showRoundCloserDialog({
               onPressed: () {
                 Navigator.of(context).pop(player);
               },
-              child: Text(player.name),
+              child: Text(
+                player.name,
+                style: const TextStyle(
+                  fontFamily: 'Aclonica',
+                ),
+              ),
             ),
           )
           .toList() ??
@@ -58,9 +62,8 @@ Future<Player?> showRoundCloserDialog({
             const Text(
               'Wer hat die Runde beendet?',
               style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontFamily: 'Aclonica',
+                fontSize: 18,
               ),
             ),
             if (buttons.isNotEmpty) ...buttons
@@ -98,6 +101,7 @@ Future<Map<String, int?>?> showPointDialog(
                           player.name,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'Aclonica',
                           ),
                         ),
                         SizedBox(
@@ -109,7 +113,10 @@ Future<Map<String, int?>?> showPointDialog(
                                   int.tryParse(points);
                             },
                             minLines: 1,
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Aclonica',
+                            ),
                             decoration: dialogPointInputStyle,
                           ),
                         ),
@@ -123,7 +130,69 @@ Future<Map<String, int?>?> showPointDialog(
                 Navigator.of(context).pop(playerPointsMap);
               },
               style: dialogButtonStyle,
-              child: const Text('Eintragen'),
+              child: const Text(
+                'Eintragen',
+                style: TextStyle(
+                  fontFamily: 'Aclonica',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Future<bool?> showEndGame(
+  BuildContext context,
+) {
+  return showDialog<bool?>(
+    context: context,
+    builder: (BuildContext context) => Dialog(
+      backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text(
+              'Möchtest du das Spiel wirklich beenden?',
+              style: title,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Nein, weiter spielen.',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Ja, beenden!',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

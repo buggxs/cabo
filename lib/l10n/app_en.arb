@@ -1,8 +1,9 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  },
-  "menuEntryTrackStats": "Track stats",
-  "menuEntryGameHistory": "Game history"
+  "menuEntryTrackStats": "Start Game",
+  "menuEntryGameHistory": "Game history",
+  "playerAmountDialogTitle": "How many players are you?",
+  "continueText": "Continue",
+  "loadedOwnRules": "Own rules loaded.",
+  "playerNames": "What are the names of the players?",
+  "start": "Start"
 }
