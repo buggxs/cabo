@@ -25,6 +25,32 @@ class MainMenuScreen extends StatelessWidget {
 class MainMenuScreenContent extends StatelessWidget {
   const MainMenuScreenContent({Key? key}) : super(key: key);
 
+  static const TextStyle style = TextStyle(
+    color: Color.fromRGBO(81, 120, 30, 1.0),
+    fontFamily: 'Aclonica',
+    fontSize: 74,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 10.0,
+    shadows: [
+      Shadow(
+        color: Color.fromRGBO(32, 45, 18, 1.0),
+        blurRadius: 2.0,
+        offset: Offset(
+          2.0,
+          2.0,
+        ),
+      ),
+      Shadow(
+        color: Color.fromRGBO(32, 45, 18, 1.0),
+        blurRadius: 2.0,
+        offset: Offset(
+          2.0,
+          -2.0,
+        ),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
@@ -38,17 +64,20 @@ class MainMenuScreenContent extends StatelessWidget {
       child = const ChoosePlayerNameScreen();
     }
 
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/cabo-main-menu-background.png'),
-          fit: BoxFit.cover,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/cabo-main-menu-background.png'),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      constraints: const BoxConstraints.expand(),
-      child: WillPopScope(
-        onWillPop: cubit.onWillPop,
-        child: child,
+        constraints: const BoxConstraints.expand(),
+        child: WillPopScope(
+          onWillPop: cubit.onWillPop,
+          child: child,
+        ),
       ),
     );
   }
@@ -62,10 +91,9 @@ class MainMenuScreenContent extends StatelessWidget {
             const SizedBox(
               height: 100,
             ),
-            const Image(
-              image: AssetImage('assets/images/cabo_title.png'),
-              height: 90,
-              fit: BoxFit.fill,
+            const Text(
+              'CABO',
+              style: style,
             ),
             const Spacer(),
             Column(

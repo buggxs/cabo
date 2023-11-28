@@ -19,8 +19,18 @@ final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
 
 const InputDecoration dialogPointInputStyle = InputDecoration(
   isDense: true,
-  border: OutlineInputBorder(),
+  border: OutlineInputBorder(
+    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+  ),
   contentPadding: EdgeInsets.all(8.0),
+  filled: true,
+  fillColor: Color.fromRGBO(32, 45, 18, 0.75),
 );
 
 Future<Player?> showRoundCloserDialog({

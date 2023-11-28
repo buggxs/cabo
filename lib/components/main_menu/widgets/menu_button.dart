@@ -13,7 +13,7 @@ class MenuButton extends StatelessWidget {
   final void Function()? onDoubleTap;
 
   final TextStyle style = const TextStyle(
-    color: Colors.yellow,
+    color: Color.fromRGBO(81, 120, 30, 1.0),
     fontFamily: 'Aclonica',
     fontSize: 24,
   );
@@ -32,14 +32,9 @@ class MenuButton extends StatelessWidget {
               10.0,
             ),
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(
-                238,
-                32,
-                32,
-                0.8,
-              ),
+              color: const Color.fromRGBO(32, 45, 18, 0.9),
               border: Border.all(
-                color: const Color.fromRGBO(217, 206, 0, 1.0),
+                color: const Color.fromRGBO(81, 120, 30, 1.0),
                 width: 2.0,
               ),
               borderRadius: BorderRadius.all(Radius.circular(8.0)),

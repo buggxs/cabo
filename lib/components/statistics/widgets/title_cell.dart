@@ -6,18 +6,20 @@ class TitleCell extends StatelessWidget {
     Key? key,
     this.titleStyle,
     required this.player,
+    this.isLastColumn = false,
   }) : super(key: key);
 
   final TextStyle? titleStyle;
   final Player player;
+  final bool isLastColumn;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          right: BorderSide(),
-          bottom: BorderSide(),
+          right: isLastColumn ? BorderSide.none : const BorderSide(),
+          bottom: const BorderSide(),
         ),
       ),
       width: 115,

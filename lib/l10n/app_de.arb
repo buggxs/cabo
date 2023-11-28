@@ -1,9 +1,9 @@
 {
   "menuEntryTrackStats": "Spiel starten",
   "menuEntryGameHistory": "Spielhistorie",
-  "playerAmountDialogTitle": "Wie viele Spieler seit ihr?",
+  "playerAmountDialogTitle": "Spieler Anzahl",
   "continueText": "Weiter",
   "loadedOwnRules": "Eigene Regeln geladen.",
-  "playerNames": "Wie heißen die Spieler?",
+  "playerNames": "Spieler Namen",
   "start": "Starten"
 }

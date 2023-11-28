@@ -5,30 +5,35 @@ class CaboDataCell extends StatelessWidget {
   const CaboDataCell({
     Key? key,
     required this.round,
+    this.isLastColumn = false,
   }) : super(key: key);
 
   final Round round;
+  final bool isLastColumn;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          right: BorderSide(),
+          right: isLastColumn ? BorderSide.none : const BorderSide(),
         ),
       ),
       width: 115,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Just for display purposes calculated with -5
           Text(
-            '${round.points}',
+            '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
             style: const TextStyle(
               fontSize: 18,
               fontFamily: 'Aclonica',
             ),
+          ),
+          const SizedBox(
+            width: 20,
           ),
           if (round.hasPenaltyPoints)
             const Text(

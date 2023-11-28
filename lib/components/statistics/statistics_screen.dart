@@ -1,4 +1,5 @@
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
+import 'package:cabo/components/main_menu/widgets/round_indicator.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
@@ -70,6 +71,7 @@ class StatisticsScreenContent extends StatelessWidget {
               (Player player) => TitleCell(
                 titleStyle: title,
                 player: player,
+                isLastColumn: player == state.players?.last,
               ),
             )
             .toList() ??
@@ -78,11 +80,19 @@ class StatisticsScreenContent extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(32, 45, 18, 0.9),
         onPressed: () => cubit.closeRound(context),
         elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+          side: const BorderSide(
+            color: Color.fromRGBO(81, 120, 30, 1.0),
+          ),
+        ),
         child: const Icon(
           Icons.add,
           size: 28,
+          color: Color.fromRGBO(81, 120, 30, 1.0),
         ),
       ),
       body: WillPopScope(
@@ -103,8 +113,14 @@ class StatisticsScreenContent extends StatelessWidget {
           constraints: const BoxConstraints.expand(),
           child: Center(
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(
+                  color: Color.fromRGBO(81, 120, 30, 1.0),
+                ),
+              ),
               margin: const EdgeInsets.all(12.0),
-              color: const Color.fromRGBO(202, 255, 202, 0.5647058823529412),
+              color: const Color.fromRGBO(81, 120, 30, 0.6),
               shadowColor: Colors.black,
               elevation: 5.0,
               child: Padding(
@@ -126,7 +142,7 @@ class StatisticsScreenContent extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   const SizedBox(
-                                    width: 15,
+                                    width: 20,
                                   ),
                                   ...titleCells,
                                 ],
@@ -151,20 +167,14 @@ class StatisticsScreenContent extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(
-              width: 15,
-              child: Text(
-                '${players.first.rounds[i].round}.)',
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontFamily: 'Aclonica',
-                ),
-              ),
+            RoundIndicator(
+              round: players.first.rounds[i].round,
             ),
             ...players
                 .map(
                   (Player player) => CaboDataCell(
                     round: player.rounds[i],
+                    isLastColumn: player == players.last,
                   ),
                 )
                 .toList(),

@@ -1,6 +1,7 @@
 import 'package:cabo/domain/round/round.dart';
+import 'package:equatable/equatable.dart';
 
-class Player {
+class Player extends Equatable {
   Player({
     required this.name,
     this.place,
@@ -36,4 +37,7 @@ class Player {
       rounds: rounds ?? this.rounds,
     );
   }
+
+  @override
+  List<Object?> get props => [name, place, rounds];
 }

@@ -1,9 +1,9 @@
 {
   "menuEntryTrackStats": "Start Game",
   "menuEntryGameHistory": "Game history",
-  "playerAmountDialogTitle": "How many players are you?",
+  "playerAmountDialogTitle": "Player amount",
   "continueText": "Continue",
   "loadedOwnRules": "Own rules loaded.",
-  "playerNames": "What are the names of the players?",
+  "playerNames": "Player names",
   "start": "Start"
 }
