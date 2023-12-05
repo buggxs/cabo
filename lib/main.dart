@@ -1,5 +1,6 @@
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/core/app_navigator/app_navigator.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
+      navigatorKey: app<NavigationService>().navigatorKey,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

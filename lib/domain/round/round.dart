@@ -1,4 +1,6 @@
-class Round {
+import 'package:equatable/equatable.dart';
+
+class Round extends Equatable {
   const Round({
     required this.round,
     this.points = 0,
@@ -24,4 +26,12 @@ class Round {
       hasClosedRound: hasClosedRound ?? this.hasClosedRound,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        round,
+        points,
+        hasPenaltyPoints,
+        hasClosedRound,
+      ];
 }

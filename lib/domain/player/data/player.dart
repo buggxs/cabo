@@ -2,7 +2,7 @@ import 'package:cabo/domain/round/round.dart';
 import 'package:equatable/equatable.dart';
 
 class Player extends Equatable {
-  Player({
+  const Player({
     required this.name,
     this.place,
     this.rounds = const <Round>[],
@@ -10,7 +10,7 @@ class Player extends Equatable {
 
   final String name;
   final int? place;
-  List<Round> rounds;
+  final List<Round> rounds;
 
   int get totalPoints {
     if (rounds.isEmpty) {
@@ -39,5 +39,10 @@ class Player extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, place, rounds];
+  List<Object?> get props => [
+        name,
+        place,
+        rounds,
+        totalPoints,
+      ];
 }

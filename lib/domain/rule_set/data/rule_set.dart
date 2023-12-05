@@ -1,4 +1,6 @@
-class RuleSet {
+import 'package:equatable/equatable.dart';
+
+class RuleSet extends Equatable {
   const RuleSet({
     this.totalGamePoints = 100,
     this.kamikazePoints = 50,
@@ -28,6 +30,14 @@ class RuleSet {
       precisionLanding: precisionLanding ?? this.precisionLanding,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        totalGamePoints,
+        kamikazePoints,
+        roundWinnerGetsZeroPoints,
+        precisionLanding,
+      ];
 }
 
 const RuleSet kOwnRuleSet = RuleSet(

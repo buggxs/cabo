@@ -1,7 +1,7 @@
 part of 'statistics_cubit.dart';
 
-class StatisticsState {
-  StatisticsState({
+class StatisticsState extends Equatable {
+  const StatisticsState({
     this.ruleSet,
     this.players,
   });
@@ -18,4 +18,7 @@ class StatisticsState {
       ruleSet: ruleSet ?? this.ruleSet,
     );
   }
+
+  @override
+  List<Object?> get props => [ruleSet, players];
 }

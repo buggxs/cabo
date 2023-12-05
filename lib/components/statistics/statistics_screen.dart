@@ -3,6 +3,7 @@ import 'package:cabo/components/main_menu/widgets/round_indicator.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class StatisticsScreenContent extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(32, 45, 18, 0.9),
-        onPressed: () => cubit.closeRound(context),
+        onPressed: () => cubit.closeRound(),
         elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100),
@@ -97,7 +98,9 @@ class StatisticsScreenContent extends StatelessWidget {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          final bool shouldPop = await showEndGame(context) ?? false;
+          final bool shouldPop =
+              await app<StatisticsDialogService>().showEndGame(context) ??
+                  false;
           if (shouldPop) {
             Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
           }

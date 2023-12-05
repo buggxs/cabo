@@ -5,7 +5,7 @@ import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
-import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 
 part 'statistics_state.dart';
 
@@ -19,31 +19,31 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   final bool useOwnRuleSet;
 
-  Future<void> loadRuleSet() async {
+  void loadRuleSet() {
     RuleSet ruleSet = app<RuleService>().loadRuleSet(
       useOwnRules: useOwnRuleSet,
     );
     emit(state.copyWith(ruleSet: ruleSet));
   }
 
-  Future<void> closeRound(BuildContext context) async {
+  Future<void> closeRound() async {
     RuleSet ruleSet = state.ruleSet ?? const RuleSet();
 
-    if (state.players == null) {
+    if (state.players?.isEmpty ?? true) {
       return;
     }
 
-    List<Player> players = state.players!;
+    List<Player> players = List.from(state.players!);
 
-    final Player? closingPlayer =
-        await showRoundCloserDialog(context: context, players: state.players);
+    final Player? closingPlayer = await app<StatisticsDialogService>()
+        .showRoundCloserDialog(players: state.players);
 
     if (closingPlayer == null) {
       return;
     }
 
     final Map<String, int?>? playerPointsmap =
-        await showPointDialog(context, state.players);
+        await app<StatisticsDialogService>().showPointDialog(state.players);
 
     if (playerPointsmap != null) {
       for (int i = 0; i < players.length; i++) {
