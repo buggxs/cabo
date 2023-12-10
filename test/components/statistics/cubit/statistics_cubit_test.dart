@@ -26,7 +26,7 @@ void main() {
     const Player(name: 'Mia'),
   ];
 
-  List<Player> expectedPlayerListWithDefaultRulesAndNoPenalty = [
+  List<Player> expectedPlayerListWithDefaultRulesAndPenalty = [
     const Player(
       name: 'Maike',
       place: 1,
@@ -65,9 +65,144 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMap = {
+  List<Player> expectedPlayerListWithDefaultRules = [
+    const Player(
+      name: 'Kevin',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Maike',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 4,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Mia',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 6,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+  ];
+
+  List<Player> expectedPlayerListWithOwnRules = [
+    const Player(
+      name: 'Kevin',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 3,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Maike',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 4,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Mia',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 6,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+  ];
+
+  List<Player> expectedPlayerListWithOwnRulesAndPenalty = [
+    const Player(
+      name: 'Maike',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 1,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Mia',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 6,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Kevin',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 8,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+        ),
+      ],
+    ),
+  ];
+
+  Map<String, int> pointsMapOwnRulesPenalty = {
     playerList[0].name: 3,
     playerList[1].name: 1,
+    playerList[2].name: 6,
+  };
+
+  Map<String, int> pointsMapOwnRules = {
+    playerList[0].name: 3,
+    playerList[1].name: 4,
+    playerList[2].name: 6,
+  };
+
+  Map<String, int> pointsMapDefaultRulesPenalty = {
+    playerList[0].name: 3,
+    playerList[1].name: 1,
+    playerList[2].name: 6,
+  };
+
+  Map<String, int> pointsMapDefaultRules = {
+    playerList[0].name: 3,
+    playerList[1].name: 4,
     playerList[2].name: 6,
   };
 
@@ -156,14 +291,14 @@ void main() {
     );
 
     blocTest<StatisticsCubit, StatisticsState>(
-      'should close round with default rule set',
+      'should close round with DEFAULT rule set and penalty',
       setUp: () {
         when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(dialogService.showPointDialog(playerList))
-            .thenAnswer((_) => Future.value(pointsMap));
+            .thenAnswer((_) => Future.value(pointsMapDefaultRulesPenalty));
       },
       build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit
@@ -173,7 +308,76 @@ void main() {
         StatisticsState(ruleSet: const RuleSet(), players: playerList),
         StatisticsState(
           ruleSet: const RuleSet(),
-          players: expectedPlayerListWithDefaultRulesAndNoPenalty,
+          players: expectedPlayerListWithDefaultRulesAndPenalty,
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should close round with DEFAULT rule set',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(
+          dialogService.showRoundCloserDialog(players: playerList),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(dialogService.showPointDialog(playerList))
+            .thenAnswer((_) => Future.value(pointsMapDefaultRules));
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) => cubit
+        ..loadRuleSet()
+        ..closeRound(),
+      expect: () => [
+        StatisticsState(ruleSet: const RuleSet(), players: playerList),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: expectedPlayerListWithDefaultRules,
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should close round with OWN rule set and penalty',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenReturn(kOwnRuleSet);
+        when(
+          dialogService.showRoundCloserDialog(players: playerList),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(dialogService.showPointDialog(playerList))
+            .thenAnswer((_) => Future.value(pointsMapOwnRulesPenalty));
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) => cubit
+        ..loadRuleSet()
+        ..closeRound(),
+      expect: () => [
+        StatisticsState(ruleSet: kOwnRuleSet, players: playerList),
+        StatisticsState(
+          ruleSet: kOwnRuleSet,
+          players: expectedPlayerListWithOwnRulesAndPenalty,
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should close round with OWN rule set',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenReturn(kOwnRuleSet);
+        when(
+          dialogService.showRoundCloserDialog(players: playerList),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(dialogService.showPointDialog(playerList))
+            .thenAnswer((_) => Future.value(pointsMapOwnRules));
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) => cubit
+        ..loadRuleSet()
+        ..closeRound(),
+      expect: () => [
+        StatisticsState(ruleSet: kOwnRuleSet, players: playerList),
+        StatisticsState(
+          ruleSet: kOwnRuleSet,
+          players: expectedPlayerListWithOwnRules,
         ),
       ],
     );
