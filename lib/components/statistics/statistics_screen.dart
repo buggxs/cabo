@@ -50,7 +50,7 @@ class StatisticsScreenContent extends StatelessWidget {
   );
 
   final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
-    primary: Colors.black,
+    foregroundColor: Colors.black,
     side: const BorderSide(
       color: Colors.black,
     ),
@@ -102,11 +102,12 @@ class StatisticsScreenContent extends StatelessWidget {
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
 
-          if (!context.mounted) return false;
-
-          if (shouldPop) {
-            Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+          if (context.mounted) {
+            if (shouldPop) {
+              Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+            }
           }
+
           return false;
         },
         child: Container(

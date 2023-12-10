@@ -13,7 +13,7 @@ const InputDecoration inputDecoration = InputDecoration(
 );
 
 final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
-  primary: Colors.black,
+  foregroundColor: Colors.black,
   side: const BorderSide(
     color: Colors.black,
   ),
@@ -174,7 +174,7 @@ class StatisticsDialogService {
               ?.map(
                 (Player player) => OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    primary: Colors.black,
+                    foregroundColor: Colors.black,
                     side: const BorderSide(
                       color: Colors.black,
                     ),
