@@ -37,7 +37,7 @@ class MenuButton extends StatelessWidget {
                 color: const Color.fromRGBO(81, 120, 30, 1.0),
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             ),
             child: Center(
               child: Text(

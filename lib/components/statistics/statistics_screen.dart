@@ -101,6 +101,9 @@ class StatisticsScreenContent extends StatelessWidget {
           final bool shouldPop =
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
+
+          if (!context.mounted) return false;
+
           if (shouldPop) {
             Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
           }
