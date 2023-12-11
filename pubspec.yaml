@@ -44,6 +44,8 @@ dependencies:
     sdk: flutter
   intl: any
   shared_preferences: ^2.1.1
+  json_serializable: ^6.6.2
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
