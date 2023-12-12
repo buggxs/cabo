@@ -1,6 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -13,18 +18,37 @@ class MainMenuCubit extends Cubit<MainMenuState> {
     BuildContext context,
     List<Player> players, {
     bool? useOwnRuleSet,
+    Game? game,
   }) {
     Navigator.of(context).pushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,
         'useOwnRuleSet': useOwnRuleSet,
+        'game': game,
       },
     );
   }
 
-  void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
+  Future<void> checkForPossibleGame({bool? useOwnRuleSet}) async {
+    Game? game = await app<GameService>().getCurrentGame();
+    BuildContext currentContext =
+        app<NavigationService>().navigatorKey.currentContext!;
+    if (!(game?.isGameFinished ?? false)) {
+      bool shouldLoadGame =
+          await app<StatisticsDialogService>().loadNotFinishedGame() ?? false;
+      if (shouldLoadGame) {
+        if (currentContext.mounted) {
+          pushToStatsScreen(currentContext, game!.players, game: game);
+          return;
+        }
+      }
+    }
     emit(ChoosePlayerAmount(useOwnRuleSet: useOwnRuleSet));
+  }
+
+  void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
+    checkForPossibleGame(useOwnRuleSet: useOwnRuleSet);
   }
 
   void increasePlayerAmount() {

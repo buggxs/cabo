@@ -10,6 +10,8 @@ abstract class GameService {
   Future<void> saveToGameHistory(Game game);
 
   Future<Game?> saveGame(Game game);
+
+  Future<Game?> getCurrentGame();
 }
 
 class LocalGameService implements GameService {
@@ -27,7 +29,7 @@ class LocalGameService implements GameService {
 
   @override
   Future<Game?> saveGame(Game game) async {
-    return localGameRepository.saveGame(game);
+    return localGameRepository.save(game);
   }
 
   @override
@@ -35,5 +37,10 @@ class LocalGameService implements GameService {
     List<Game> games = await getGames() ?? <Game>[];
     games.add(game);
     saveGames(games);
+  }
+
+  @override
+  Future<Game?> getCurrentGame() {
+    return localGameRepository.getCurrent();
   }
 }

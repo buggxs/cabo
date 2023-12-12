@@ -35,10 +35,17 @@ abstract class LocalStorageRepository<T> {
     prefs.setString('${storageKey}_list', encodedJsonString);
   }
 
-  Future<T?> saveGame(T object) async {
+  Future<T?> save(T object) async {
     final SharedPreferences prefs = await _prefs;
     bool success = await prefs.setString(storageKey, jsonEncode(object));
     return success ? object : null;
+  }
+
+  /// Retrieves the currently saved object under the [storageKey]
+  Future<T?> getCurrent() async {
+    final SharedPreferences prefs = await _prefs;
+    String? object = prefs.getString(storageKey);
+    return object != null ? castMapToObject(jsonDecode(object)) : null;
   }
 
   /// Cast generic to Object

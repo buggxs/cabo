@@ -21,11 +21,16 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   final bool useOwnRuleSet;
 
-  void loadRuleSet() {
+  void loadRuleSet() async {
     RuleSet ruleSet = app<RuleService>().loadRuleSet(
       useOwnRules: useOwnRuleSet,
     );
-    app<GameService>().saveGame(Game(players: state.players));
+
+    app<GameService>().saveGame(Game(
+      players: state.players,
+      ruleSet: ruleSet,
+    ));
+
     emit(state.copyWith(ruleSet: ruleSet));
   }
 
@@ -108,18 +113,21 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       ),
     );
 
-    Game? game =
-        await app<GameService>().saveGame(Game(players: state.players));
+    Game? game = await app<GameService>().saveGame(Game(
+      players: state.players,
+      ruleSet: state.ruleSet!,
+    ));
 
     if (game?.isGameFinished ?? false) {
-      finishGame();
+      finishGame(game!);
     }
   }
 
-  void finishGame() {
+  void finishGame(Game game) {
     // TODO: delete saved active game and add the finished
     // to the list of games
-    print('Finish game!');
+    app<GameService>().saveToGameHistory(game);
+    // Dialog to restart
   }
 
   bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {

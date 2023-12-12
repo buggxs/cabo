@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'rule_set.g.dart';
+
+@JsonSerializable()
 class RuleSet extends Equatable {
   const RuleSet({
     this.totalGamePoints = 100,
@@ -13,6 +17,11 @@ class RuleSet extends Equatable {
 
   final bool roundWinnerGetsZeroPoints;
   final bool precisionLanding;
+
+  factory RuleSet.fromJson(Map<String, dynamic> json) =>
+      _$RuleSetFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RuleSetToJson(this);
 
   bool get useKamikazeRule => kamikazePoints != null || kamikazePoints == -1;
 
