@@ -4,6 +4,8 @@ import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +106,9 @@ class StatisticsScreenContent extends StatelessWidget {
 
           if (context.mounted) {
             if (shouldPop) {
+              app<GameService>().saveToGameHistory(
+                Game(players: state.players, ruleSet: state.ruleSet!),
+              );
               Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
             }
           }
