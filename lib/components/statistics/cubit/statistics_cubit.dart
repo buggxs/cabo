@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
@@ -23,17 +25,18 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     RuleSet ruleSet = app<RuleService>().loadRuleSet(
       useOwnRules: useOwnRuleSet,
     );
+    app<GameService>().saveGame(Game(players: state.players));
     emit(state.copyWith(ruleSet: ruleSet));
   }
 
   Future<void> closeRound() async {
     RuleSet ruleSet = state.ruleSet ?? const RuleSet();
 
-    if (state.players?.isEmpty ?? true) {
+    if (state.players.isEmpty) {
       return;
     }
 
-    List<Player> players = List.from(state.players!);
+    List<Player> players = List.from(state.players);
 
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: state.players);
@@ -104,6 +107,19 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         players: players,
       ),
     );
+
+    Game? game =
+        await app<GameService>().saveGame(Game(players: state.players));
+
+    if (game?.isGameFinished ?? false) {
+      finishGame();
+    }
+  }
+
+  void finishGame() {
+    // TODO: delete saved active game and add the finished
+    // to the list of games
+    print('Finish game!');
   }
 
   bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {

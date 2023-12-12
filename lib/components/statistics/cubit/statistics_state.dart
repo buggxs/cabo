@@ -3,10 +3,10 @@ part of 'statistics_cubit.dart';
 class StatisticsState extends Equatable {
   const StatisticsState({
     this.ruleSet,
-    this.players,
+    required this.players,
   });
 
-  final List<Player>? players;
+  final List<Player> players;
   final RuleSet? ruleSet;
 
   StatisticsState copyWith({

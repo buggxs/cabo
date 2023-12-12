@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -17,12 +19,11 @@ class Round extends Equatable {
   final bool hasPenaltyPoints;
   final bool hasClosedRound;
 
-  /// Connect the generated [_$PersonFromJson] function to the `fromJson`
-  /// factory.
   factory Round.fromJson(Map<String, dynamic> json) => _$RoundFromJson(json);
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$RoundToJson(this);
+
+  String get stringifyJson => jsonEncode(toJson());
 
   Round copyWith({
     int? round,
