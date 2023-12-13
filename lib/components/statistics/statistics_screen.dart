@@ -70,15 +70,14 @@ class StatisticsScreenContent extends StatelessWidget {
     StatisticsState state = cubit.state;
 
     List<TitleCell> titleCells = state.players
-            ?.map(
-              (Player player) => TitleCell(
-                titleStyle: title,
-                player: player,
-                isLastColumn: player == state.players?.last,
-              ),
-            )
-            .toList() ??
-        <TitleCell>[];
+        .map(
+          (Player player) => TitleCell(
+            titleStyle: title,
+            player: player,
+            isLastColumn: player == state.players.last,
+          ),
+        )
+        .toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -98,8 +97,8 @@ class StatisticsScreenContent extends StatelessWidget {
           color: Color.fromRGBO(81, 120, 30, 1.0),
         ),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
+      body: PopScope(
+        onPopInvoked: (_) async {
           final bool shouldPop =
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
@@ -112,7 +111,7 @@ class StatisticsScreenContent extends StatelessWidget {
             }
           }
 
-          return false;
+          return;
         },
         child: Container(
           decoration: const BoxDecoration(
@@ -139,7 +138,7 @@ class StatisticsScreenContent extends StatelessWidget {
                   vertical: 16.0,
                   horizontal: 8.0,
                 ),
-                child: (state.players?.isEmpty ?? true)
+                child: (state.players.isEmpty)
                     ? const Text('No Players found!')
                     : SingleChildScrollView(
                         controller: _horizontal,
@@ -158,7 +157,7 @@ class StatisticsScreenContent extends StatelessWidget {
                                   ...titleCells,
                                 ],
                               ),
-                              ...buildRounds(state.players!),
+                              ...buildRounds(state.players),
                             ],
                           ),
                         ),
