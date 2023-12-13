@@ -97,8 +97,8 @@ class StatisticsScreenContent extends StatelessWidget {
           color: Color.fromRGBO(81, 120, 30, 1.0),
         ),
       ),
-      body: PopScope(
-        onPopInvoked: (_) async {
+      body: WillPopScope(
+        onWillPop: () async {
           final bool shouldPop =
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
@@ -111,7 +111,7 @@ class StatisticsScreenContent extends StatelessWidget {
             }
           }
 
-          return;
+          return false;
         },
         child: Container(
           decoration: const BoxDecoration(
