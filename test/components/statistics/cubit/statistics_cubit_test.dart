@@ -2,6 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
@@ -17,7 +19,9 @@ import 'statistics_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<LocalRuleService>(),
   MockSpec<StatisticsDialogService>(),
-  MockSpec<NavigationService>()
+  MockSpec<NavigationService>(),
+  MockSpec<LocalGameRepository>(),
+  MockSpec<LocalGameService>(),
 ])
 void main() {
   List<Player> playerList = [
@@ -209,6 +213,8 @@ void main() {
   late RuleService ruleService;
   late StatisticsDialogService dialogService;
   late NavigationService navigationService;
+  late LocalGameRepository localGameRepository;
+  late LocalGameService localGameService;
   late GetIt app = GetIt.instance;
 
   setUpAll(() {
@@ -217,10 +223,14 @@ void main() {
     ruleService = MockLocalRuleService();
     dialogService = MockStatisticsDialogService();
     navigationService = MockNavigationService();
+    localGameRepository = MockLocalGameRepository();
+    localGameService = MockLocalGameService();
 
     app.registerSingleton<RuleService>(ruleService);
     app.registerSingleton<StatisticsDialogService>(dialogService);
     app.registerSingleton<NavigationService>(navigationService);
+    app.registerSingleton<LocalGameRepository>(localGameRepository);
+    app.registerSingleton<GameService>(localGameService);
   });
 
   tearDownAll(() => app.reset());

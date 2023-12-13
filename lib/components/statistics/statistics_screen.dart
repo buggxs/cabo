@@ -103,7 +103,6 @@ class StatisticsScreenContent extends StatelessWidget {
           final bool shouldPop =
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
-
           if (context.mounted) {
             if (shouldPop) {
               app<GameService>().saveToGameHistory(

@@ -34,7 +34,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
     Game? game = await app<GameService>().getCurrentGame();
     BuildContext currentContext =
         app<NavigationService>().navigatorKey.currentContext!;
-    if (!(game?.isGameFinished ?? false)) {
+    if (!(game?.isGameFinished ?? true)) {
       bool shouldLoadGame =
           await app<StatisticsDialogService>().loadNotFinishedGame() ?? false;
       if (shouldLoadGame) {
