@@ -4,6 +4,8 @@ import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +52,7 @@ class StatisticsScreenContent extends StatelessWidget {
   );
 
   final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
-    primary: Colors.black,
+    foregroundColor: Colors.black,
     side: const BorderSide(
       color: Colors.black,
     ),
@@ -68,15 +70,14 @@ class StatisticsScreenContent extends StatelessWidget {
     StatisticsState state = cubit.state;
 
     List<TitleCell> titleCells = state.players
-            ?.map(
-              (Player player) => TitleCell(
-                titleStyle: title,
-                player: player,
-                isLastColumn: player == state.players?.last,
-              ),
-            )
-            .toList() ??
-        <TitleCell>[];
+        .map(
+          (Player player) => TitleCell(
+            titleStyle: title,
+            player: player,
+            isLastColumn: player == state.players.last,
+          ),
+        )
+        .toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -101,9 +102,15 @@ class StatisticsScreenContent extends StatelessWidget {
           final bool shouldPop =
               await app<StatisticsDialogService>().showEndGame(context) ??
                   false;
-          if (shouldPop) {
-            Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+          if (context.mounted) {
+            if (shouldPop) {
+              app<GameService>().saveToGameHistory(
+                Game(players: state.players, ruleSet: state.ruleSet!),
+              );
+              Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+            }
           }
+
           return false;
         },
         child: Container(
@@ -131,7 +138,7 @@ class StatisticsScreenContent extends StatelessWidget {
                   vertical: 16.0,
                   horizontal: 8.0,
                 ),
-                child: (state.players?.isEmpty ?? true)
+                child: (state.players.isEmpty)
                     ? const Text('No Players found!')
                     : SingleChildScrollView(
                         controller: _horizontal,
@@ -150,7 +157,7 @@ class StatisticsScreenContent extends StatelessWidget {
                                   ...titleCells,
                                 ],
                               ),
-                              ...buildRounds(state.players!),
+                              ...buildRounds(state.players),
                             ],
                           ),
                         ),

@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:cabo/domain/round/round.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'player.g.dart';
+
+@JsonSerializable()
 class Player extends Equatable {
   const Player({
     required this.name,
@@ -11,6 +17,12 @@ class Player extends Equatable {
   final String name;
   final int? place;
   final List<Round> rounds;
+
+  factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PlayerToJson(this);
+
+  String get stringifyJson => jsonEncode(toJson());
 
   int get totalPoints {
     if (rounds.isEmpty) {

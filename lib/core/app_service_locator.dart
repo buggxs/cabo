@@ -1,4 +1,7 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/domain/game/local_game_repository.dart';
+import 'package:cabo/domain/player/local_player_repository.dart';
 import 'package:cabo/domain/player/player_service.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
@@ -12,6 +15,9 @@ void setup() {
   app
     ..registerFactory<PlayerService>(() => LocalPlayerService())
     ..registerFactory<RuleService>(() => LocalRuleService())
+    ..registerFactory<GameService>(() => LocalGameService())
     ..registerFactory<StatisticsDialogService>(() => StatisticsDialogService())
-    ..registerSingleton<NavigationService>(NavigationService());
+    ..registerSingleton<NavigationService>(NavigationService())
+    ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())
+    ..registerSingleton<LocalGameRepository>(LocalGameRepository());
 }

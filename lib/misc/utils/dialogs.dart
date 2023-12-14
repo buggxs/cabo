@@ -13,7 +13,7 @@ const InputDecoration inputDecoration = InputDecoration(
 );
 
 final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
-  primary: Colors.black,
+  foregroundColor: Colors.black,
   side: const BorderSide(
     color: Colors.black,
   ),
@@ -169,30 +169,55 @@ class StatisticsDialogService {
     List<Player>? players,
   }) {
     return app<NavigationService>().showAppDialog(
-        dialog: (BuildContext context) {
-      List<OutlinedButton> buttons = players
-              ?.map(
-                (Player player) => OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    primary: Colors.black,
-                    side: const BorderSide(
-                      color: Colors.black,
+      dialog: (BuildContext context) {
+        List<OutlinedButton> buttons = players
+                ?.map(
+                  (Player player) => OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      side: const BorderSide(
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(player);
+                    },
+                    child: Text(
+                      player.name,
+                      style: const TextStyle(
+                        fontFamily: 'Aclonica',
+                      ),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop(player);
-                  },
-                  child: Text(
-                    player.name,
-                    style: const TextStyle(
-                      fontFamily: 'Aclonica',
-                    ),
+                )
+                .toList() ??
+            <OutlinedButton>[];
+        return Dialog(
+          backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Wer hat die Runde beendet?',
+                  style: TextStyle(
+                    fontFamily: 'Aclonica',
+                    fontSize: 18,
                   ),
                 ),
-              )
-              .toList() ??
-          <OutlinedButton>[];
-      return Dialog(
+                if (buttons.isNotEmpty) ...buttons
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool?> loadNotFinishedGame() async {
+    return app<NavigationService>().showAppDialog<bool?>(
+      dialog: (BuildContext context) => Dialog(
         backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -200,17 +225,49 @@ class StatisticsDialogService {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text(
-                'Wer hat die Runde beendet?',
-                style: TextStyle(
-                  fontFamily: 'Aclonica',
-                  fontSize: 18,
-                ),
+                'Du hast das letzt Spiel nicht beendet, soll es geladen werden?',
+                style: title,
               ),
-              if (buttons.isNotEmpty) ...buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        style: dialogButtonStyle,
+                        child: const Text(
+                          'Nein, nicht laden.',
+                          style:
+                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: dialogButtonStyle,
+                        child: const Text(
+                          'Ja, Spiel laden!',
+                          style:
+                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

@@ -1,5 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'round.g.dart';
+
+@JsonSerializable()
 class Round extends Equatable {
   const Round({
     required this.round,
@@ -12,6 +18,12 @@ class Round extends Equatable {
   final int points;
   final bool hasPenaltyPoints;
   final bool hasClosedRound;
+
+  factory Round.fromJson(Map<String, dynamic> json) => _$RoundFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RoundToJson(this);
+
+  String get stringifyJson => jsonEncode(toJson());
 
   Round copyWith({
     int? round,
