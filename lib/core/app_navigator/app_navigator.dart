@@ -1,3 +1,4 @@
+import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/statistics_screen.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -26,6 +27,11 @@ class AppNavigator {
             players: players,
             useOwnRuleSet: useOwnRuleSet ?? false,
           ),
+        );
+
+      case GameHistoryScreen.route:
+        return MaterialPageRoute(
+          builder: (_) => const GameHistoryScreen(),
         );
 
       default:
