@@ -1,23 +1,24 @@
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game.g.dart';
 
 @JsonSerializable()
-class Game {
-  Game({
+class Game extends Equatable {
+  const Game({
     this.finishedAt,
     this.startedAt,
     required this.players,
     required this.ruleSet,
   });
 
-  DateTime? startedAt;
-  DateTime? finishedAt;
-  List<Player> players;
-  RuleSet ruleSet;
+  final DateTime? startedAt;
+  final DateTime? finishedAt;
+  final List<Player> players;
+  final RuleSet ruleSet;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
@@ -52,4 +53,12 @@ class Game {
 
   bool get isGameFinished =>
       players.any((Player player) => player.totalPoints >= 100);
+
+  @override
+  List<Object?> get props => <Object?>[
+        startedAt,
+        finishedAt,
+        players,
+        ruleSet,
+      ];
 }

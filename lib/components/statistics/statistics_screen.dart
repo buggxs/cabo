@@ -104,8 +104,14 @@ class StatisticsScreenContent extends StatelessWidget {
                   false;
           if (context.mounted) {
             if (shouldPop) {
+              DateTime finishedAt = DateTime.now();
               app<GameService>().saveToGameHistory(
-                Game(players: state.players, ruleSet: state.ruleSet!),
+                Game(
+                  players: state.players,
+                  ruleSet: state.ruleSet!,
+                  startedAt: state.startedAt,
+                  finishedAt: finishedAt,
+                ),
               );
               Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
             }

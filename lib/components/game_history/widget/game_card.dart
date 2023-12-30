@@ -22,9 +22,11 @@ class GameCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
+        side:
+            const BorderSide(color: Color.fromRGBO(32, 45, 18, 0.9), width: 2),
       ),
       margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12.0),
-      color: const Color.fromRGBO(81, 120, 30, 0.6),
+      color: const Color.fromRGBO(81, 120, 30, 0.75),
       shadowColor: Colors.black,
       elevation: 5.0,
       child: Padding(
@@ -34,8 +36,36 @@ class GameCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(game.date(locale)),
-                Text(game.gameDuration),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.today,
+                      size: 12,
+                    ),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      game.date(locale),
+                      style: style.copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.timelapse,
+                      size: 12,
+                    ),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      game.gameDuration,
+                      style: style.copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
               ],
             ),
             Wrap(
