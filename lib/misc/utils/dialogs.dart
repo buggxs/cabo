@@ -32,7 +32,7 @@ const InputDecoration dialogPointInputStyle = InputDecoration(
   ),
   contentPadding: EdgeInsets.all(8.0),
   filled: true,
-  fillColor: Color.fromRGBO(32, 45, 18, 0.75),
+  fillColor: Color.fromRGBO(32, 45, 18, 0.85),
 );
 
 class StatisticsDialogService {
@@ -45,61 +45,63 @@ class StatisticsDialogService {
         backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
-                'Punkte eintragen',
-                style: title,
-              ),
-              ...?players
-                  ?.map(
-                    (Player player) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            player.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Aclonica',
-                            ),
-                          ),
-                          SizedBox(
-                            width: 50,
-                            child: TextField(
-                              keyboardType: TextInputType.number,
-                              onChanged: (String points) {
-                                playerPointsMap[player.name] =
-                                    int.tryParse(points);
-                              },
-                              minLines: 1,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Punkte eintragen',
+                  style: title,
+                ),
+                ...?players
+                    ?.map(
+                      (Player player) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              player.name,
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                 fontFamily: 'Aclonica',
                               ),
-                              decoration: dialogPointInputStyle,
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              width: 50,
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                onChanged: (String points) {
+                                  playerPointsMap[player.name] =
+                                      int.tryParse(points);
+                                },
+                                minLines: 1,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Aclonica',
+                                ),
+                                decoration: dialogPointInputStyle,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    )
+                    .toList(),
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(playerPointsMap);
+                  },
+                  style: dialogButtonStyle,
+                  child: const Text(
+                    'Eintragen',
+                    style: TextStyle(
+                      fontFamily: 'Aclonica',
                     ),
-                  )
-                  .toList(),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(playerPointsMap);
-                },
-                style: dialogButtonStyle,
-                child: const Text(
-                  'Eintragen',
-                  style: TextStyle(
-                    fontFamily: 'Aclonica',
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

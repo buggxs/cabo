@@ -115,6 +115,7 @@ class MainMenuScreenContent extends StatelessWidget {
                 ),
                 MenuButton(
                   text: AppLocalizations.of(context)!.menuEntryGameHistory,
+                  onTap: () => cubit.pushToGameHistoryScreen(context),
                 ),
               ],
             ),

@@ -26,12 +26,15 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       useOwnRules: useOwnRuleSet,
     );
 
+    DateTime startingDateTime = DateTime.now();
+
     app<GameService>().saveGame(Game(
+      startedAt: startingDateTime,
       players: state.players,
       ruleSet: ruleSet,
     ));
 
-    emit(state.copyWith(ruleSet: ruleSet));
+    emit(state.copyWith(ruleSet: ruleSet, startedAt: startingDateTime));
   }
 
   Future<void> closeRound() async {
@@ -116,16 +119,19 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     Game? game = await app<GameService>().saveGame(Game(
       players: state.players,
       ruleSet: state.ruleSet!,
+      startedAt: state.startedAt,
     ));
 
     if (game?.isGameFinished ?? false) {
-      finishGame(game!);
+      DateTime finishedGame = DateTime.now();
+
+      finishGame(game!.copyWith(
+        finishedAt: finishedGame,
+      ));
     }
   }
 
   void finishGame(Game game) {
-    // TODO: delete saved active game and add the finished
-    // to the list of games
     app<GameService>().saveToGameHistory(game);
     // Dialog to restart
   }

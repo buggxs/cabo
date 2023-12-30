@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/statistics/statistics_screen.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
@@ -27,6 +28,14 @@ class MainMenuCubit extends Cubit<MainMenuState> {
         'useOwnRuleSet': useOwnRuleSet,
         'game': game,
       },
+    );
+  }
+
+  void pushToGameHistoryScreen(
+    BuildContext context,
+  ) {
+    Navigator.of(context).pushNamed(
+      GameHistoryScreen.route,
     );
   }
 

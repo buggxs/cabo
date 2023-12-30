@@ -7,6 +7,12 @@ part of 'game.dart';
 // **************************************************************************
 
 Game _$GameFromJson(Map<String, dynamic> json) => Game(
+      finishedAt: json['finishedAt'] == null
+          ? null
+          : DateTime.parse(json['finishedAt'] as String),
+      startedAt: json['startedAt'] == null
+          ? null
+          : DateTime.parse(json['startedAt'] as String),
       players: (json['players'] as List<dynamic>)
           .map((e) => Player.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -14,6 +20,8 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
     );
 
 Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
+      'startedAt': instance.startedAt?.toIso8601String(),
+      'finishedAt': instance.finishedAt?.toIso8601String(),
       'players': instance.players,
       'ruleSet': instance.ruleSet,
     };
