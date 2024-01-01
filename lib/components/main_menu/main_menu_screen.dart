@@ -96,28 +96,30 @@ class MainMenuScreenContent extends StatelessWidget {
               style: style,
             ),
             const Spacer(),
-            Column(
-              children: [
-                MenuButton(
-                  text: AppLocalizations.of(context)!.menuEntryTrackStats,
-                  onTap: () => cubit.showChoosePlayerAmountScreen(),
-                  onDoubleTap: () {
-                    cubit.showChoosePlayerAmountScreen(
-                      useOwnRuleSet: true,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text(AppLocalizations.of(context)!.loadedOwnRules),
-                      ),
-                    );
-                  },
-                ),
-                MenuButton(
-                  text: AppLocalizations.of(context)!.menuEntryGameHistory,
-                  onTap: () => cubit.pushToGameHistoryScreen(context),
-                ),
-              ],
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  MenuButton(
+                    text: AppLocalizations.of(context)!.menuEntryTrackStats,
+                    onTap: () => cubit.showChoosePlayerAmountScreen(),
+                    onDoubleTap: () {
+                      cubit.showChoosePlayerAmountScreen(
+                        useOwnRuleSet: true,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)!.loadedOwnRules),
+                        ),
+                      );
+                    },
+                  ),
+                  MenuButton(
+                    text: AppLocalizations.of(context)!.menuEntryGameHistory,
+                    onTap: () => cubit.pushToGameHistoryScreen(context),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 150,

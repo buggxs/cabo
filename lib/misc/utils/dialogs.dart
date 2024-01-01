@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 const TextStyle title = TextStyle(
   fontFamily: 'Aclonica',
   fontSize: 20,
+  color: Colors.black,
 );
 
 const InputDecoration inputDecoration = InputDecoration(
@@ -32,7 +33,7 @@ const InputDecoration dialogPointInputStyle = InputDecoration(
   ),
   contentPadding: EdgeInsets.all(8.0),
   filled: true,
-  fillColor: Color.fromRGBO(32, 45, 18, 0.85),
+  fillColor: Color.fromRGBO(32, 45, 18, 1),
 );
 
 class StatisticsDialogService {
@@ -42,7 +43,7 @@ class StatisticsDialogService {
     Map<String, int?> playerPointsMap = {};
     return app<NavigationService>().showAppDialog<Map<String, int?>>(
       dialog: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
           child: SingleChildScrollView(
@@ -63,9 +64,9 @@ class StatisticsDialogService {
                             Text(
                               player.name,
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Aclonica',
-                              ),
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Aclonica',
+                                  color: Colors.black),
                             ),
                             SizedBox(
                               width: 50,
@@ -79,6 +80,7 @@ class StatisticsDialogService {
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontFamily: 'Aclonica',
+                                  color: Color.fromRGBO(81, 120, 30, 1.0),
                                 ),
                                 decoration: dialogPointInputStyle,
                               ),
@@ -88,17 +90,26 @@ class StatisticsDialogService {
                       ),
                     )
                     .toList(),
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(playerPointsMap);
-                  },
-                  style: dialogButtonStyle,
-                  child: const Text(
-                    'Eintragen',
-                    style: TextStyle(
-                      fontFamily: 'Aclonica',
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(playerPointsMap);
+                          },
+                          style: dialogButtonStyle,
+                          child: const Text(
+                            'Eintragen',
+                            style: TextStyle(
+                              fontFamily: 'Aclonica',
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -114,7 +125,7 @@ class StatisticsDialogService {
     return showDialog<bool?>(
       context: context,
       builder: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -172,30 +183,36 @@ class StatisticsDialogService {
   }) {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) {
-        List<OutlinedButton> buttons = players
+        List<Widget> buttons = players
                 ?.map(
-                  (Player player) => OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(
-                        color: Colors.black,
+                  (Player player) => Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            side: const BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(player);
+                          },
+                          child: Text(
+                            player.name,
+                            style: const TextStyle(
+                              fontFamily: 'Aclonica',
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(player);
-                    },
-                    child: Text(
-                      player.name,
-                      style: const TextStyle(
-                        fontFamily: 'Aclonica',
-                      ),
-                    ),
+                    ],
                   ),
                 )
                 .toList() ??
             <OutlinedButton>[];
         return Dialog(
-          backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+          backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -203,10 +220,8 @@ class StatisticsDialogService {
               children: <Widget>[
                 const Text(
                   'Wer hat die Runde beendet?',
-                  style: TextStyle(
-                    fontFamily: 'Aclonica',
-                    fontSize: 18,
-                  ),
+                  style: title,
+                  textAlign: TextAlign.center,
                 ),
                 if (buttons.isNotEmpty) ...buttons
               ],
@@ -220,7 +235,7 @@ class StatisticsDialogService {
   Future<bool?> loadNotFinishedGame() async {
     return app<NavigationService>().showAppDialog<bool?>(
       dialog: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(163, 255, 163, 1),
+        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -229,38 +244,35 @@ class StatisticsDialogService {
               const Text(
                 'Du hast das letzt Spiel nicht beendet, soll es geladen werden?',
                 style: title,
+                textAlign: TextAlign.center,
               ),
               Row(
                 children: [
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        style: dialogButtonStyle,
-                        child: const Text(
-                          'Nein, nicht laden.',
-                          style:
-                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
-                        ),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Ja, Spiel laden!',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
                       ),
                     ),
                   ),
+                ],
+              ),
+              Row(
+                children: [
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        style: dialogButtonStyle,
-                        child: const Text(
-                          'Ja, Spiel laden!',
-                          style:
-                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
-                        ),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Nein, nicht laden.',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
                       ),
                     ),
                   ),
