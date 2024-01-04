@@ -21,20 +21,26 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   final bool useOwnRuleSet;
 
-  void loadRuleSet() async {
+  void loadRuleSet({Game? game}) async {
     RuleSet ruleSet = app<RuleService>().loadRuleSet(
       useOwnRules: useOwnRuleSet,
     );
 
-    DateTime startingDateTime = DateTime.now();
+    // Todo: add duration of playtime if a game is loaded
+    DateTime startingDateTime = game?.startedAt ?? DateTime.now();
 
-    app<GameService>().saveGame(Game(
-      startedAt: startingDateTime,
-      players: state.players,
+    app<GameService>().saveGame(game ??
+        Game(
+          startedAt: startingDateTime,
+          players: state.players,
+          ruleSet: ruleSet,
+        ));
+
+    emit(state.copyWith(
+      gameId: game?.id,
       ruleSet: ruleSet,
+      startedAt: startingDateTime,
     ));
-
-    emit(state.copyWith(ruleSet: ruleSet, startedAt: startingDateTime));
   }
 
   Future<void> closeRound() async {
@@ -117,6 +123,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     );
 
     Game? game = await app<GameService>().saveGame(Game(
+      id: state.gameId,
       players: state.players,
       ruleSet: state.ruleSet!,
       startedAt: state.startedAt,
@@ -133,7 +140,6 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   void finishGame(Game game) {
     app<GameService>().saveToGameHistory(game);
-    // Dialog to restart
   }
 
   bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {

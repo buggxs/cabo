@@ -16,11 +16,13 @@ class StatisticsScreen extends StatelessWidget {
     Key? key,
     required this.players,
     this.useOwnRuleSet = false,
+    this.game,
   }) : super(key: key);
 
   static const String route = 'statistics_screen';
   final List<Player> players;
   final bool useOwnRuleSet;
+  final Game? game;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class StatisticsScreen extends StatelessWidget {
       create: (_) => StatisticsCubit(
         players: players,
         useOwnRuleSet: useOwnRuleSet,
-      )..loadRuleSet(),
+      )..loadRuleSet(game: game),
       child: StatisticsScreenContent(),
     );
   }
@@ -108,6 +110,7 @@ class StatisticsScreenContent extends StatelessWidget {
               DateTime finishedAt = DateTime.now();
               app<GameService>().saveToGameHistory(
                 Game(
+                  id: state.gameId,
                   players: state.players,
                   ruleSet: state.ruleSet!,
                   startedAt: state.startedAt,

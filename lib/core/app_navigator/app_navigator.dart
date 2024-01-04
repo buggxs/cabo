@@ -1,6 +1,7 @@
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
@@ -16,16 +17,21 @@ class AppNavigator {
       case StatisticsScreen.route:
         List<Player> players = [];
         bool? useOwnRuleSet;
+        Game? game;
         if (args is Map && args.containsKey('players')) {
           players = args['players'] ?? <Player>[];
         }
         if (args is Map && args.containsKey('useOwnRuleSet')) {
           useOwnRuleSet = args['useOwnRuleSet'];
         }
+        if (args is Map && args.containsKey('game')) {
+          game = args['game'];
+        }
         return MaterialPageRoute(
           builder: (_) => StatisticsScreen(
             players: players,
             useOwnRuleSet: useOwnRuleSet ?? false,
+            game: game,
           ),
         );
 

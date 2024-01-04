@@ -141,34 +141,33 @@ class StatisticsDialogService {
               Row(
                 children: [
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        style: dialogButtonStyle,
-                        child: const Text(
-                          'Nein, weiter spielen.',
-                          style:
-                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
-                        ),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Ja, beenden!',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
                       ),
                     ),
                   ),
+                ],
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              Row(
+                children: [
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        style: dialogButtonStyle,
-                        child: const Text(
-                          'Ja, beenden!',
-                          style:
-                              TextStyle(fontFamily: 'Aclonica', fontSize: 14),
-                        ),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: dialogButtonStyle,
+                      child: const Text(
+                        'Nein, weiter spielen.',
+                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
                       ),
                     ),
                   ),

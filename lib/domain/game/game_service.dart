@@ -35,7 +35,16 @@ class LocalGameService implements GameService {
   @override
   Future<void> saveToGameHistory(Game game) async {
     List<Game> games = await getGames() ?? <Game>[];
-    games.add(game);
+    int index = games.indexWhere((Game tmpGame) => tmpGame.id == game.id);
+    if (index == -1) {
+      Game updatedGame = game.copyWith(id: games.length + 1);
+      games.add(updatedGame);
+      if (!updatedGame.isGameFinished) {
+        saveGame(updatedGame);
+      }
+    } else {
+      games[index] = game;
+    }
     saveGames(games);
   }
 

@@ -9,12 +9,14 @@ part 'game.g.dart';
 @JsonSerializable()
 class Game extends Equatable {
   const Game({
+    this.id,
     this.finishedAt,
     this.startedAt,
     required this.players,
     required this.ruleSet,
   });
 
+  final int? id;
   final DateTime? startedAt;
   final DateTime? finishedAt;
   final List<Player> players;
@@ -25,12 +27,14 @@ class Game extends Equatable {
   Map<String, dynamic> toJson() => _$GameToJson(this);
 
   Game copyWith({
+    int? id,
     DateTime? startedAt,
     DateTime? finishedAt,
     List<Player>? players,
     RuleSet? ruleSet,
   }) {
     return Game(
+      id: id ?? this.id,
       finishedAt: finishedAt ?? this.finishedAt,
       startedAt: startedAt ?? this.startedAt,
       players: players ?? this.players,
@@ -56,6 +60,7 @@ class Game extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
+        id,
         startedAt,
         finishedAt,
         players,

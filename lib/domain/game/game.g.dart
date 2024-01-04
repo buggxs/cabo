@@ -7,6 +7,7 @@ part of 'game.dart';
 // **************************************************************************
 
 Game _$GameFromJson(Map<String, dynamic> json) => Game(
+      id: json['id'] as int?,
       finishedAt: json['finishedAt'] == null
           ? null
           : DateTime.parse(json['finishedAt'] as String),
@@ -20,6 +21,7 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
     );
 
 Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
+      'id': instance.id,
       'startedAt': instance.startedAt?.toIso8601String(),
       'finishedAt': instance.finishedAt?.toIso8601String(),
       'players': instance.players,
