@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +19,14 @@ class TitleCell extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          right: isLastColumn ? BorderSide.none : const BorderSide(),
-          bottom: const BorderSide(),
+          right: isLastColumn
+              ? BorderSide.none
+              : const BorderSide(
+                  color: Color.fromRGBO(81, 120, 30, 1.0),
+                ),
+          bottom: const BorderSide(
+            color: Color.fromRGBO(81, 120, 30, 1.0),
+          ),
         ),
       ),
       width: 115,
@@ -32,9 +39,14 @@ class TitleCell extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                player.name,
-                style: titleStyle,
+              SizedBox(
+                height: 30,
+                child: AutoSizeText(
+                  player.name,
+                  style: titleStyle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -45,6 +57,7 @@ class TitleCell extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Aclonica',
+                      color: Color.fromRGBO(81, 120, 30, 1),
                     ),
                   ),
                   Text(
@@ -53,6 +66,7 @@ class TitleCell extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                       fontFamily: 'Aclonica',
+                      color: Color.fromRGBO(130, 192, 54, 1),
                     ),
                   ),
                 ],

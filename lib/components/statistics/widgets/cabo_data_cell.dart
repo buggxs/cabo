@@ -16,7 +16,11 @@ class CaboDataCell extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          right: isLastColumn ? BorderSide.none : const BorderSide(),
+          right: isLastColumn
+              ? BorderSide.none
+              : const BorderSide(
+                  color: Color.fromRGBO(81, 120, 30, 1.0),
+                ),
         ),
       ),
       width: 115,
@@ -30,6 +34,7 @@ class CaboDataCell extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontFamily: 'Aclonica',
+              color: Color.fromRGBO(130, 192, 54, 1.0),
             ),
           ),
           const SizedBox(

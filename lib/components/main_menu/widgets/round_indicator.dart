@@ -17,6 +17,7 @@ class RoundIndicator extends StatelessWidget {
         style: const TextStyle(
           fontSize: 10,
           fontFamily: 'Aclonica',
+          color: Color.fromRGBO(81, 120, 30, 1),
         ),
       ),
     );

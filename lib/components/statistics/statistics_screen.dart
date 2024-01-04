@@ -45,6 +45,7 @@ class StatisticsScreenContent extends StatelessWidget {
     fontWeight: FontWeight.bold,
     fontFamily: 'Aclonica',
     fontSize: 20,
+    color: Color.fromRGBO(99, 142, 40, 1.0),
   );
 
   final InputDecoration inputDecoration = const InputDecoration(
@@ -136,7 +137,7 @@ class StatisticsScreenContent extends StatelessWidget {
                 ),
               ),
               margin: const EdgeInsets.all(12.0),
-              color: const Color.fromRGBO(81, 120, 30, 0.6),
+              color: const Color.fromRGBO(32, 45, 18, 0.8),
               shadowColor: Colors.black,
               elevation: 5.0,
               child: Padding(

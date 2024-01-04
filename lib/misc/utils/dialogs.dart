@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -59,14 +60,16 @@ class StatisticsDialogService {
                       (Player player) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            AutoSizeText(
                               player.name,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Aclonica',
-                                  color: Colors.black),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Aclonica',
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(
                               width: 50,
@@ -198,11 +201,12 @@ class StatisticsDialogService {
                           onPressed: () {
                             Navigator.of(context).pop(player);
                           },
-                          child: Text(
+                          child: AutoSizeText(
                             player.name,
                             style: const TextStyle(
                               fontFamily: 'Aclonica',
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
