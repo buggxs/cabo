@@ -1,9 +1,19 @@
 {
+  "gameName": "CABO",
   "menuEntryTrackStats": "Spiel starten",
   "menuEntryGameHistory": "Spielhistorie",
   "playerAmountDialogTitle": "Spieler Anzahl",
   "continueText": "Weiter",
   "loadedOwnRules": "Eigene Regeln geladen.",
   "playerNames": "Spieler Namen",
-  "start": "Starten"
+  "start": "Starten",
+  "finishCurrentGame": "Möchtest du das Spiel wirklich beenden?",
+  "finishGameDialogButton": "Ja, beenden!",
+  "continueGameDialogButton": "Nein, weiter spielen.",
+  "dialogTextRoundFinishedBy": "Wer hat die Runde beendet?",
+  "dialogTextLoadFinishedGame": "Du hast das letzt Spiel nicht beendet, soll es geladen werden?",
+  "loadGameDialogButton": "Ja Spiel laden!",
+  "notLoadGameDialogButton": "Nein, nicht laden.",
+  "enterDialogButton": "Eintragen",
+  "enterPointsDialogTitle": "Enter points"
 }

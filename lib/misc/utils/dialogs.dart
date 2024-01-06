@@ -3,6 +3,7 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const TextStyle title = TextStyle(
   fontFamily: 'Aclonica',
@@ -51,8 +52,8 @@ class StatisticsDialogService {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text(
-                  'Punkte eintragen',
+                Text(
+                  AppLocalizations.of(context)!.enterPointsDialogTitle,
                   style: title,
                 ),
                 ...?players
@@ -103,9 +104,9 @@ class StatisticsDialogService {
                             Navigator.of(context).pop(playerPointsMap);
                           },
                           style: dialogButtonStyle,
-                          child: const Text(
-                            'Eintragen',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.enterDialogButton,
+                            style: const TextStyle(
                               fontFamily: 'Aclonica',
                             ),
                           ),
@@ -134,8 +135,8 @@ class StatisticsDialogService {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text(
-                'Möchtest du das Spiel wirklich beenden?',
+              Text(
+                AppLocalizations.of(context)!.finishCurrentGame,
                 style: title,
               ),
               Row(
@@ -146,9 +147,12 @@ class StatisticsDialogService {
                         Navigator.of(context).pop(true);
                       },
                       style: dialogButtonStyle,
-                      child: const Text(
-                        'Ja, beenden!',
-                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      child: Text(
+                        AppLocalizations.of(context)!.finishGameDialogButton,
+                        style: const TextStyle(
+                          fontFamily: 'Aclonica',
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -165,9 +169,12 @@ class StatisticsDialogService {
                         Navigator.of(context).pop(false);
                       },
                       style: dialogButtonStyle,
-                      child: const Text(
-                        'Nein, weiter spielen.',
-                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      child: Text(
+                        AppLocalizations.of(context)!.continueGameDialogButton,
+                        style: const TextStyle(
+                          fontFamily: 'Aclonica',
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -221,8 +228,8 @@ class StatisticsDialogService {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text(
-                  'Wer hat die Runde beendet?',
+                Text(
+                  AppLocalizations.of(context)!.dialogTextRoundFinishedBy,
                   style: title,
                   textAlign: TextAlign.center,
                 ),
@@ -244,8 +251,8 @@ class StatisticsDialogService {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text(
-                'Du hast das letzt Spiel nicht beendet, soll es geladen werden?',
+              Text(
+                AppLocalizations.of(context)!.dialogTextLoadFinishedGame,
                 style: title,
                 textAlign: TextAlign.center,
               ),
@@ -257,9 +264,12 @@ class StatisticsDialogService {
                         Navigator.of(context).pop(true);
                       },
                       style: dialogButtonStyle,
-                      child: const Text(
-                        'Ja, Spiel laden!',
-                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      child: Text(
+                        AppLocalizations.of(context)!.loadGameDialogButton,
+                        style: const TextStyle(
+                          fontFamily: 'Aclonica',
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -273,9 +283,12 @@ class StatisticsDialogService {
                         Navigator.of(context).pop(false);
                       },
                       style: dialogButtonStyle,
-                      child: const Text(
-                        'Nein, nicht laden.',
-                        style: TextStyle(fontFamily: 'Aclonica', fontSize: 14),
+                      child: Text(
+                        AppLocalizations.of(context)!.notLoadGameDialogButton,
+                        style: const TextStyle(
+                          fontFamily: 'Aclonica',
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),

@@ -26,7 +26,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       useOwnRules: useOwnRuleSet,
     );
 
-    // Todo: add duration of playtime if a game is loaded
+    // Todo: add duration of playtime if a game is loaded.
+    // so an overall game time can be calculated also if a game is
+    // loaded on different days
     DateTime startingDateTime = game?.startedAt ?? DateTime.now();
 
     app<GameService>().saveGame(game ??
