@@ -91,8 +91,8 @@ class MainMenuScreenContent extends StatelessWidget {
             const SizedBox(
               height: 100,
             ),
-            const Text(
-              'CABO',
+            Text(
+              AppLocalizations.of(context)!.gameName,
               style: style,
             ),
             const Spacer(),
