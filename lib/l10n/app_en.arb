@@ -1,5 +1,6 @@
 {
   "gameName": "CABO",
+  "gameSubTitle": "Board",
   "menuEntryTrackStats": "Start Game",
   "menuEntryGameHistory": "Game history",
   "playerAmountDialogTitle": "Player amount",

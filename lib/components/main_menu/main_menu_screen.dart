@@ -91,9 +91,36 @@ class MainMenuScreenContent extends StatelessWidget {
             const SizedBox(
               height: 100,
             ),
-            Text(
-              AppLocalizations.of(context)!.gameName,
-              style: style,
+            Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: [
+                      SizedBox(
+                        height: 250,
+                        width: 300,
+                        child: Text(
+                          AppLocalizations.of(context)!.gameName,
+                          style: style,
+                        ),
+                      ),
+                      Positioned(
+                        top: 60,
+                        right: 60,
+                        child: Text(
+                          AppLocalizations.of(context)!.gameSubTitle,
+                          style: style.copyWith(
+                            fontSize: 48,
+                            letterSpacing: 1,
+                            color: const Color.fromRGBO(187, 208, 0, 1.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const Spacer(),
             SingleChildScrollView(
