@@ -72,7 +72,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         int pointsOfClosingPlayer =
             getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
 
-        final bool closingPlayerHasLost = isClosingPlayerLooser(
+        bool closingPlayerHasLost = isClosingPlayerLooser(
           playerPointsmap,
           closingPlayer,
           pointsOfClosingPlayer,
@@ -90,8 +90,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
         if (ruleSet.useKamikazeRule &&
             checkIfPlayerHitsKamikaze(playerPointsmap)) {
-          if (points == 50) {
+          if (points == 55) {
             points = 0;
+            closingPlayerHasLost = false;
           } else {
             points = 50;
           }
