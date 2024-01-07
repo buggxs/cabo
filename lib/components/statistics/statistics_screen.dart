@@ -146,7 +146,7 @@ class StatisticsScreenContent extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 16.0,
-                  horizontal: 8.0,
+                  horizontal: 4.0,
                 ),
                 child: (state.players.isEmpty)
                     ? const Text('No Players found!')
