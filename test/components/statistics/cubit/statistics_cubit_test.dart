@@ -108,6 +108,45 @@ void main() {
     ),
   ];
 
+  List<Player> expectedPlayerListWithDefaultRulesHittingKamikaze = [
+    const Player(
+      name: 'Kevin',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Maike',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Mia',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+        ),
+      ],
+    ),
+  ];
+
   List<Player> expectedPlayerListWithOwnRules = [
     const Player(
       name: 'Kevin',
@@ -206,6 +245,12 @@ void main() {
 
   Map<String, int> pointsMapDefaultRules = {
     playerList[0].name: 3,
+    playerList[1].name: 4,
+    playerList[2].name: 6,
+  };
+
+  Map<String, int> pointsMapDefaultRulesKamikaze = {
+    playerList[0].name: 50,
     playerList[1].name: 4,
     playerList[2].name: 6,
   };
@@ -342,6 +387,29 @@ void main() {
         StatisticsState(
           ruleSet: const RuleSet(),
           players: expectedPlayerListWithDefaultRules,
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should close round with player hitting kamikaze ',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(
+          dialogService.showRoundCloserDialog(players: playerList),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(dialogService.showPointDialog(playerList))
+            .thenAnswer((_) => Future.value(pointsMapDefaultRulesKamikaze));
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) => cubit
+        ..loadRuleSet()
+        ..closeRound(),
+      expect: () => [
+        StatisticsState(ruleSet: const RuleSet(), players: playerList),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: expectedPlayerListWithDefaultRulesHittingKamikaze,
         ),
       ],
     );
