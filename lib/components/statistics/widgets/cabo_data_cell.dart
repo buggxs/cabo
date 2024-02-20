@@ -49,6 +49,15 @@ class CaboDataCell extends StatelessWidget {
                 fontFamily: 'Aclonica',
               ),
             ),
+          if (round.hasPrecisionLanding)
+            const Text(
+              '-50',
+              style: TextStyle(
+                fontSize: 18,
+                color: Color.fromRGBO(130, 192, 54, 1.0),
+                fontFamily: 'Aclonica',
+              ),
+            ),
         ],
       ),
     );

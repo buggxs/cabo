@@ -55,8 +55,9 @@ class Game extends Equatable {
   String date(String locale) =>
       startedAt != null ? DateFormat.yMd(locale).format(startedAt!) : '';
 
-  bool get isGameFinished =>
-      players.any((Player player) => player.totalPoints >= 100);
+  bool get isGameFinished => players.any(
+        (Player player) => player.totalPoints > ruleSet.totalGamePoints,
+      );
 
   @override
   List<Object?> get props => <Object?>[
