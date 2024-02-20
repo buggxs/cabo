@@ -82,10 +82,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           points = points + 5;
         }
 
-        if (player == closingPlayer &&
-            !closingPlayerHasLost &&
-            ruleSet.roundWinnerGetsZeroPoints) {
-          points = 0;
+        if (ruleSet.roundWinnerGetsZeroPoints) {
+          if (player == closingPlayer && !closingPlayerHasLost) {
+            points = 0;
+          } else if (closingPlayerHasLost &&
+              player.name == getPlayerWithLowestPoints(playerPointsmap)) {
+            points = 0;
+          }
         }
 
         if (ruleSet.useKamikazeRule &&
