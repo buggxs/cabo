@@ -1,4 +1,4 @@
-package com.example.cabo
+package com.buggxs.cabo
 
 import io.flutter.embedding.android.FlutterActivity
 
