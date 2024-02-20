@@ -37,7 +37,7 @@ void main() {
       rounds: [
         Round(
           round: 1,
-          points: 1,
+          points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: false,
         ),

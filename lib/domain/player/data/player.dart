@@ -33,9 +33,16 @@ class Player extends Equatable {
       return rounds.first.points;
     }
 
+    int precisionLandingRounds = rounds
+            .where((Round round) => round.hasPrecisionLanding)
+            .toList()
+            .length *
+        -50;
+
     return rounds
-        .map((Round round) => round.points)
-        .reduce((pointsA, pointsB) => pointsA + pointsB);
+            .map((Round round) => round.points)
+            .reduce((pointsA, pointsB) => pointsA + pointsB) +
+        precisionLandingRounds;
   }
 
   Player copyWith({

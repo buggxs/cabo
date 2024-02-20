@@ -82,10 +82,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           points = points + 5;
         }
 
-        if (player == closingPlayer &&
-            !closingPlayerHasLost &&
-            ruleSet.roundWinnerGetsZeroPoints) {
-          points = 0;
+        if (ruleSet.roundWinnerGetsZeroPoints) {
+          if (player == closingPlayer && !closingPlayerHasLost) {
+            points = 0;
+          } else if (closingPlayerHasLost &&
+              player.name == getPlayerWithLowestPoints(playerPointsmap)) {
+            points = 0;
+          }
         }
 
         if (ruleSet.useKamikazeRule &&
@@ -102,11 +105,12 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           rounds: [
             ...player.rounds,
             Round(
-                round: player.rounds.length + 1,
-                points: points,
-                hasClosedRound: closingPlayer == player,
-                hasPenaltyPoints:
-                    closingPlayer == player && closingPlayerHasLost),
+              round: player.rounds.length + 1,
+              points: points,
+              hasClosedRound: closingPlayer == player,
+              hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
+              hasPrecisionLanding: hasDonePrecisionLanding(player, points),
+            ),
           ],
         );
       }
@@ -141,12 +145,33 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     }
   }
 
+  bool hasDonePrecisionLanding(Player player, int points) {
+    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+    if (ruleSet.precisionLanding) {
+      if ((player.totalPoints + points) == ruleSet.totalGamePoints) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void finishGame(Game game) {
     app<GameService>().saveToGameHistory(game);
   }
 
   bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
     return playerPointsmap.entries.any((element) => element.value == 50);
+  }
+
+  String getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
+    MapEntry<String, int?>? lowest;
+    for (var element in playerPointsmap.entries) {
+      lowest ??= element;
+      if ((lowest.value ?? 0) > (element.value ?? 0)) {
+        lowest = element;
+      }
+    }
+    return lowest!.key;
   }
 
   int getPointsOfClosingPlayer(
