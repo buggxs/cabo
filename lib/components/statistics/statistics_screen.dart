@@ -10,6 +10,7 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
@@ -107,14 +108,15 @@ class StatisticsScreenContent extends StatelessWidget {
                   false;
           if (context.mounted) {
             if (shouldPop) {
+              cubit.client?.deactivate();
               DateTime finishedAt = DateTime.now();
               app<GameService>().saveToGameHistory(
                 Game(
                   id: state.gameId,
                   players: state.players,
                   ruleSet: state.ruleSet!,
-                  startedAt: state.startedAt,
-                  finishedAt: finishedAt,
+                  startedAt: DateFormat.yMd().format(state.startedAt!),
+                  finishedAt: DateFormat.yMd().format(finishedAt),
                 ),
               );
               Navigator.of(context).popAndPushNamed(MainMenuScreen.route);

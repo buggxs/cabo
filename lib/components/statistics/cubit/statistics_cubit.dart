@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -8,6 +10,10 @@ import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 part 'statistics_state.dart';
 
@@ -20,6 +26,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         ));
 
   final bool useOwnRuleSet;
+  StompClient? client;
 
   void loadRuleSet({Game? game}) async {
     RuleSet ruleSet = app<RuleService>().loadRuleSet(
@@ -29,11 +36,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     // Todo: add duration of playtime if a game is loaded.
     // so an overall game time can be calculated also if a game is
     // loaded on different days
-    DateTime startingDateTime = game?.startedAt ?? DateTime.now();
+    DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
+        ? DateFormat.yMd().parse(game!.startedAt!)
+        : DateTime.now();
 
     app<GameService>().saveGame(game ??
         Game(
-          startedAt: startingDateTime,
+          startedAt: DateFormat.yMd().format(startingDateTime),
           players: state.players,
           ruleSet: ruleSet,
         ));
@@ -43,6 +52,33 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       ruleSet: ruleSet,
       startedAt: startingDateTime,
     ));
+  }
+
+  void publishGame() {
+    connectToWebSocket();
+  }
+
+  void connectToWebSocket() {
+    client = StompClient(
+        config: StompConfig.sockJS(
+      url: 'http://10.0.2.2:8080/cabo-board',
+      onConnect: onConnectCallback,
+      onWebSocketError: (dynamic error) => print(error.toString()),
+    ));
+    client?.activate();
+  }
+
+  void onConnectCallback(StompFrame connectFrame) {
+    // client is connected and ready
+    client?.subscribe(
+        destination: '/game/room/1',
+        headers: {},
+        callback: (frame) {
+          // Received a frame for this subscription
+          final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
+          final Game game = Game.fromJson(json);
+          emit(state.copyWith(players: game.players));
+        });
   }
 
   Future<void> closeRound() async {
@@ -133,11 +169,11 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       id: state.gameId,
       players: state.players,
       ruleSet: state.ruleSet!,
-      startedAt: state.startedAt,
+      startedAt: DateFormat.yMd().format(state.startedAt!),
     ));
 
     if (game?.isGameFinished ?? false) {
-      DateTime finishedGame = DateTime.now();
+      String finishedGame = DateFormat.yMd().format(DateTime.now());
 
       finishGame(game!.copyWith(
         finishedAt: finishedGame,
@@ -157,6 +193,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   void finishGame(Game game) {
     app<GameService>().saveToGameHistory(game);
+    client?.deactivate();
   }
 
   bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {

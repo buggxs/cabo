@@ -46,7 +46,7 @@ class GameCard extends StatelessWidget {
                       width: 2,
                     ),
                     Text(
-                      game.date(locale),
+                      game.dateToString(locale),
                       style: style.copyWith(fontSize: 12),
                     ),
                   ],
