@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/domain/open_game/open_game.dart';
+import 'package:cabo/domain/open_game/open_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
@@ -25,6 +27,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           players: players,
         ));
 
+  final OpenGameService openGameService = app<OpenGameService>();
+
   final bool useOwnRuleSet;
   StompClient? client;
 
@@ -40,30 +44,51 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         ? DateFormat.yMd().parse(game!.startedAt!)
         : DateTime.now();
 
-    app<GameService>().saveGame(game ??
+    Game currentGame = game ??
         Game(
           startedAt: DateFormat.yMd().format(startingDateTime),
           players: state.players,
           ruleSet: ruleSet,
-        ));
+        );
+
+    app<GameService>().saveGame(currentGame);
 
     emit(state.copyWith(
       gameId: game?.id,
+      game: currentGame,
       ruleSet: ruleSet,
       startedAt: startingDateTime,
     ));
   }
 
-  void publishGame() {
+  Future<String?> publishGame() async {
+    if (state.game == null) {
+      return null;
+    }
+
+    OpenGame openGame = await openGameService.publishGame(state.game!);
+    emit(
+      state.copyWith(
+        isPublic: true,
+        publicGame: openGame,
+        gameId: openGame.game.id,
+        game: openGame.game,
+      ),
+    );
+
     connectToWebSocket();
+
+    return openGame.publicId;
   }
 
   void connectToWebSocket() {
+    // http://10.0.2.2:8080
+    // http://cabo-web.eu-central-1.elasticbeanstalk.com
     client = StompClient(
         config: StompConfig.sockJS(
-      url: 'http://10.0.2.2:8080/cabo-board',
+      url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
       onConnect: onConnectCallback,
-      onWebSocketError: (dynamic error) => print(error.toString()),
+      onWebSocketError: (dynamic error) {},
     ));
     client?.activate();
   }
@@ -71,17 +96,71 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   void onConnectCallback(StompFrame connectFrame) {
     // client is connected and ready
     client?.subscribe(
-        destination: '/game/room/1',
+        destination: '/game/room/${state.publicGame?.publicId}',
         headers: {},
         callback: (frame) {
           // Received a frame for this subscription
-          final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
-          final Game game = Game.fromJson(json);
-          emit(state.copyWith(players: game.players));
+          if (frame.body != null) {
+            final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
+            if (json['event'] == 'UPDATE_GAME') {
+              final Game game = Game.fromJson(json['payload']['game']);
+              emit(
+                state.copyWith(
+                  players: game.players,
+                  game: game,
+                ),
+              );
+            }
+          }
         });
   }
 
-  Future<void> closeRound() async {
+  void closeOnlineGame() async {
+    final Player? closingPlayer = await app<StatisticsDialogService>()
+        .showRoundCloserDialog(players: state.players);
+
+    if (closingPlayer == null) {
+      return;
+    }
+
+    final Map<String, int?>? playerPointsmap =
+        await app<StatisticsDialogService>().showPointDialog(state.players);
+
+    if (playerPointsmap != null &&
+        state.publicGame?.publicId != null &&
+        state.game != null) {
+      Map<String, dynamic> message = {
+        "channel": ["GENERAL"],
+        "event": "ADD_ROUND",
+        "payload": {
+          "openGame": OpenGame(
+            id: state.publicGame!.id,
+            publicId: state.publicGame!.publicId!,
+            gameId: state.publicGame!.gameId!,
+            game: state.game!,
+          ).toJson(),
+          "closingPlayer": closingPlayer.toJson(),
+          "playerPointsMap": playerPointsmap,
+        },
+      };
+
+      client?.send(
+        destination: '/cabo/room/${state.publicGame!.publicId!}',
+        headers: {},
+        body: jsonEncode(message),
+      );
+    }
+  }
+
+  void closeRound() {
+    if (state.publicGame != null) {
+      closeOnlineGame();
+    } else {
+      closeOfflineRound();
+    }
+  }
+
+  Future<void> closeOfflineRound() async {
     RuleSet ruleSet = state.ruleSet ?? const RuleSet();
 
     if (state.players.isEmpty) {

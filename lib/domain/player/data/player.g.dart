@@ -7,8 +7,9 @@ part of 'player.dart';
 // **************************************************************************
 
 Player _$PlayerFromJson(Map<String, dynamic> json) => Player(
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
-      place: json['place'] as int?,
+      place: (json['place'] as num?)?.toInt(),
       rounds: (json['rounds'] as List<dynamic>?)
               ?.map((e) => Round.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -16,6 +17,7 @@ Player _$PlayerFromJson(Map<String, dynamic> json) => Player(
     );
 
 Map<String, dynamic> _$PlayerToJson(Player instance) => <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'place': instance.place,
       'rounds': instance.rounds,

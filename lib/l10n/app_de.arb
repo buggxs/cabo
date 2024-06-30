@@ -16,5 +16,8 @@
   "loadGameDialogButton": "Ja Spiel laden!",
   "notLoadGameDialogButton": "Nein, nicht laden.",
   "enterDialogButton": "Eintragen",
-  "enterPointsDialogTitle": "Enter points"
+  "enterPointsDialogTitle": "Enter points",
+  "publishDialogTitle": "Spiel veröffentlichen?",
+  "publishDialogButtonPublishText": "Veröffentlichen!",
+  "publishDialogButtonCloseText": "Doch nicht."
 }

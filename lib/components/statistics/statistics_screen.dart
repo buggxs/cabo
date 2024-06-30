@@ -10,7 +10,9 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
@@ -85,6 +87,7 @@ class StatisticsScreenContent extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(32, 45, 18, 0.9),
         onPressed: () => cubit.closeRound(),
@@ -101,30 +104,23 @@ class StatisticsScreenContent extends StatelessWidget {
           color: Color.fromRGBO(81, 120, 30, 1.0),
         ),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          final bool shouldPop =
-              await app<StatisticsDialogService>().showEndGame(context) ??
-                  false;
-          if (context.mounted) {
-            if (shouldPop) {
-              cubit.client?.deactivate();
-              DateTime finishedAt = DateTime.now();
-              app<GameService>().saveToGameHistory(
-                Game(
-                  id: state.gameId,
-                  players: state.players,
-                  ruleSet: state.ruleSet!,
-                  startedAt: DateFormat.yMd().format(state.startedAt!),
-                  finishedAt: DateFormat.yMd().format(finishedAt),
-                ),
-              );
-              Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
-            }
-          }
-
-          return false;
-        },
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => onPopScreen(context, cubit),
+        ),
+        actions: [
+          IconButton(
+            icon:
+                const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
+            onPressed: () => publishGameDialog(context, cubit.publishGame),
+          )
+        ],
+      ),
+      body: PopScope(
+        onPopInvoked: (_) => onPopScreen(context, cubit),
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -205,5 +201,153 @@ class StatisticsScreenContent extends StatelessWidget {
       );
     }
     return rounds;
+  }
+
+  Future<bool> onPopScreen(BuildContext context, StatisticsCubit cubit) async {
+    StatisticsState state = cubit.state;
+    final bool shouldPop =
+        await app<StatisticsDialogService>().showEndGame(context) ?? false;
+    if (context.mounted) {
+      if (shouldPop) {
+        cubit.client?.deactivate();
+        DateTime finishedAt = DateTime.now();
+        app<GameService>().saveToGameHistory(
+          Game(
+            id: state.gameId,
+            players: state.players,
+            ruleSet: state.ruleSet!,
+            startedAt: DateFormat.yMd().format(state.startedAt!),
+            finishedAt: DateFormat.yMd().format(finishedAt),
+          ),
+        );
+        Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> publishGameDialog(
+    BuildContext context,
+    Future<String?> Function() publishGame,
+  ) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext localContext) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+            child: ShowPublishGameScreen(
+              publishGame: publishGame,
+            ),
+          );
+        });
+  }
+}
+
+class ShowPublishGameScreen extends StatefulWidget {
+  const ShowPublishGameScreen({
+    super.key,
+    required this.publishGame,
+  });
+
+  final Future<String?> Function() publishGame;
+
+  @override
+  State<ShowPublishGameScreen> createState() => _ShowPublishGameScreenState();
+}
+
+class _ShowPublishGameScreenState extends State<ShowPublishGameScreen> {
+  String? publicGameId;
+
+  void onPublish() async {
+    String? newPublicGameId = await widget.publishGame();
+    setState(() {
+      publicGameId = newPublicGameId;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: publicGameId == null
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.publishDialogTitle,
+                  style: title,
+                  textAlign: TextAlign.center,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: onPublish,
+                        style: dialogButtonStyle,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .publishDialogButtonPublishText,
+                          style: const TextStyle(
+                            fontFamily: 'Aclonica',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: dialogButtonStyle,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .publishDialogButtonCloseText,
+                          style: const TextStyle(
+                            fontFamily: 'Aclonica',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.publishDialogTitle,
+                  style: title,
+                  textAlign: TextAlign.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      height: 250,
+                      width: 250,
+                      child: PrettyQrView.data(
+                        data:
+                            'http://cabo-web.eu-central-1.elasticbeanstalk.com/online-game/$publicGameId',
+                      ),
+                      // http://192.168.178.23:8080
+                      // http://cabo-web.eu-central-1.elasticbeanstalk.com
+                    ),
+                  ],
+                ),
+              ],
+            ),
+    );
   }
 }

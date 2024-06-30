@@ -12,6 +12,7 @@ class Game extends Equatable {
     this.id,
     this.finishedAt,
     this.startedAt,
+    this.ruleSetId,
     required this.players,
     required this.ruleSet,
   });
@@ -20,6 +21,7 @@ class Game extends Equatable {
   final String? startedAt;
   final String? finishedAt;
   final List<Player> players;
+  final int? ruleSetId;
   final RuleSet ruleSet;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
@@ -31,6 +33,7 @@ class Game extends Equatable {
     String? startedAt,
     String? finishedAt,
     List<Player>? players,
+    int? ruleSetId,
     RuleSet? ruleSet,
   }) {
     return Game(
@@ -38,6 +41,7 @@ class Game extends Equatable {
       finishedAt: finishedAt ?? this.finishedAt,
       startedAt: startedAt ?? this.startedAt,
       players: players ?? this.players,
+      ruleSetId: ruleSetId ?? this.ruleSetId,
       ruleSet: ruleSet ?? this.ruleSet,
     );
   }
@@ -69,5 +73,6 @@ class Game extends Equatable {
         finishedAt,
         players,
         ruleSet,
+        ruleSetId,
       ];
 }

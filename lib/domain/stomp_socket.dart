@@ -37,16 +37,16 @@ class StompSocket {
 
   void _updateReceived(dynamic data) {
     final lines = data.toString().split('\n');
-    if (lines.length != 0) {
+    if (lines.isNotEmpty) {
       final command = lines[0];
 
       if (command == "RECEIPT") {
         // typically this message comes after we send the command in the disconnect() method
         _socket?.close();
       } else if (command == "CONNECTED") {
-        print('Connected successfully to $destination @ $hostname');
+        // print('Connected successfully to $destination @ $hostname');
       } else if (command == "MESSAGE") {
-        final indexOfBody = lines.indexWhere((line) => line.length == 0) + 1;
+        final indexOfBody = lines.indexWhere((line) => line.isEmpty) + 1;
 
         // we dont want the last character, since it is weird.
         final bodyLine =

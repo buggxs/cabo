@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -11,6 +12,7 @@ import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -29,6 +31,16 @@ void main() {
     const Player(name: 'Maike'),
     const Player(name: 'Mia'),
   ];
+
+  RuleSet ruleSet = const RuleSet();
+
+  String gameStartedDate = DateFormat.yMd().format(DateTime.now());
+
+  Game expectedGame = Game(
+    players: playerList,
+    ruleSet: ruleSet,
+    startedAt: gameStartedDate,
+  );
 
   List<Player> expectedPlayerListWithDefaultRulesAndPenalty = [
     const Player(
@@ -292,6 +304,7 @@ void main() {
         StatisticsState(
           ruleSet: const RuleSet(),
           players: playerList,
+          game: expectedGame,
         ),
       ],
     );
@@ -304,7 +317,11 @@ void main() {
       build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
-        StatisticsState(ruleSet: const RuleSet(), players: playerList),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: playerList,
+          game: expectedGame,
+        ),
       ],
       tearDown: () {
         app.registerSingleton<RuleService>(ruleService);
@@ -320,9 +337,11 @@ void main() {
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
         StatisticsState(
-          ruleSet: kOwnRuleSet,
-          players: playerList,
-        ),
+            ruleSet: kOwnRuleSet,
+            players: playerList,
+            game: expectedGame.copyWith(
+              ruleSet: kOwnRuleSet,
+            )),
       ],
       tearDown: () {
         app.registerSingleton<RuleService>(ruleService);
@@ -341,7 +360,15 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        const StatisticsState(ruleSet: RuleSet(), players: <Player>[]),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: const <Player>[],
+          game: Game(
+            players: const <Player>[],
+            startedAt: gameStartedDate,
+            ruleSet: ruleSet,
+          ),
+        ),
       ],
     );
 
@@ -360,10 +387,15 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        StatisticsState(ruleSet: const RuleSet(), players: playerList),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: playerList,
+          game: expectedGame,
+        ),
         StatisticsState(
           ruleSet: const RuleSet(),
           players: expectedPlayerListWithDefaultRulesAndPenalty,
+          game: expectedGame,
         ),
       ],
     );
@@ -383,10 +415,15 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        StatisticsState(ruleSet: const RuleSet(), players: playerList),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          players: playerList,
+          game: expectedGame,
+        ),
         StatisticsState(
           ruleSet: const RuleSet(),
           players: expectedPlayerListWithDefaultRules,
+          game: expectedGame,
         ),
       ],
     );
@@ -406,9 +443,14 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        StatisticsState(ruleSet: const RuleSet(), players: playerList),
         StatisticsState(
           ruleSet: const RuleSet(),
+          players: playerList,
+          game: expectedGame,
+        ),
+        StatisticsState(
+          ruleSet: const RuleSet(),
+          game: expectedGame,
           players: expectedPlayerListWithDefaultRulesHittingKamikaze,
         ),
       ],
@@ -429,10 +471,19 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        StatisticsState(ruleSet: kOwnRuleSet, players: playerList),
+        StatisticsState(
+          ruleSet: kOwnRuleSet,
+          players: playerList,
+          game: expectedGame.copyWith(
+            ruleSet: kOwnRuleSet,
+          ),
+        ),
         StatisticsState(
           ruleSet: kOwnRuleSet,
           players: expectedPlayerListWithOwnRulesAndPenalty,
+          game: expectedGame.copyWith(
+            ruleSet: kOwnRuleSet,
+          ),
         ),
       ],
     );
@@ -452,10 +503,19 @@ void main() {
         ..loadRuleSet()
         ..closeRound(),
       expect: () => [
-        StatisticsState(ruleSet: kOwnRuleSet, players: playerList),
+        StatisticsState(
+          ruleSet: kOwnRuleSet,
+          players: playerList,
+          game: expectedGame.copyWith(
+            ruleSet: kOwnRuleSet,
+          ),
+        ),
         StatisticsState(
           ruleSet: kOwnRuleSet,
           players: expectedPlayerListWithOwnRules,
+          game: expectedGame.copyWith(
+            ruleSet: kOwnRuleSet,
+          ),
         ),
       ],
     );
