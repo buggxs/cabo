@@ -74,8 +74,8 @@ class MainMenuScreenContent extends StatelessWidget {
           ),
         ),
         constraints: const BoxConstraints.expand(),
-        child: WillPopScope(
-          onWillPop: cubit.onWillPop,
+        child: PopScope(
+          onPopInvoked: (_) => cubit.onWillPop,
           child: child,
         ),
       ),

@@ -12,14 +12,16 @@ class Game extends Equatable {
     this.id,
     this.finishedAt,
     this.startedAt,
+    this.ruleSetId,
     required this.players,
     required this.ruleSet,
   });
 
   final int? id;
-  final DateTime? startedAt;
-  final DateTime? finishedAt;
+  final String? startedAt;
+  final String? finishedAt;
   final List<Player> players;
+  final int? ruleSetId;
   final RuleSet ruleSet;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
@@ -28,9 +30,10 @@ class Game extends Equatable {
 
   Game copyWith({
     int? id,
-    DateTime? startedAt,
-    DateTime? finishedAt,
+    String? startedAt,
+    String? finishedAt,
     List<Player>? players,
+    int? ruleSetId,
     RuleSet? ruleSet,
   }) {
     return Game(
@@ -38,13 +41,16 @@ class Game extends Equatable {
       finishedAt: finishedAt ?? this.finishedAt,
       startedAt: startedAt ?? this.startedAt,
       players: players ?? this.players,
+      ruleSetId: ruleSetId ?? this.ruleSetId,
       ruleSet: ruleSet ?? this.ruleSet,
     );
   }
 
   String get gameDuration {
     if (startedAt != null && finishedAt != null) {
-      Duration duration = finishedAt!.difference(startedAt!);
+      Duration duration = DateFormat.yMd()
+          .parse(finishedAt!)
+          .difference(DateFormat.yMd().parse(startedAt!));
       String durationString = duration.toString().split('.').first;
 
       return durationString;
@@ -52,8 +58,9 @@ class Game extends Equatable {
     return '';
   }
 
-  String date(String locale) =>
-      startedAt != null ? DateFormat.yMd(locale).format(startedAt!) : '';
+  String dateToString(String locale) => startedAt != null
+      ? DateFormat.yMd(locale).format(DateTime.parse(startedAt!))
+      : '';
 
   bool get isGameFinished => players.any(
         (Player player) => player.totalPoints > ruleSet.totalGamePoints,
@@ -66,5 +73,6 @@ class Game extends Equatable {
         finishedAt,
         players,
         ruleSet,
+        ruleSetId,
       ];
 }

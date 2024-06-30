@@ -7,14 +7,16 @@ part of 'rule_set.dart';
 // **************************************************************************
 
 RuleSet _$RuleSetFromJson(Map<String, dynamic> json) => RuleSet(
-      totalGamePoints: json['totalGamePoints'] as int? ?? 100,
-      kamikazePoints: json['kamikazePoints'] as int? ?? 50,
+      id: (json['id'] as num?)?.toInt(),
+      totalGamePoints: (json['totalGamePoints'] as num?)?.toInt() ?? 100,
+      kamikazePoints: (json['kamikazePoints'] as num?)?.toInt() ?? 50,
       roundWinnerGetsZeroPoints:
           json['roundWinnerGetsZeroPoints'] as bool? ?? true,
       precisionLanding: json['precisionLanding'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$RuleSetToJson(RuleSet instance) => <String, dynamic>{
+      'id': instance.id,
       'totalGamePoints': instance.totalGamePoints,
       'kamikazePoints': instance.kamikazePoints,
       'roundWinnerGetsZeroPoints': instance.roundWinnerGetsZeroPoints,

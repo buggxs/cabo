@@ -8,6 +8,7 @@ part 'round.g.dart';
 @JsonSerializable()
 class Round extends Equatable {
   const Round({
+    this.id,
     required this.round,
     this.points = 0,
     this.hasPenaltyPoints = false,
@@ -15,6 +16,7 @@ class Round extends Equatable {
     this.hasPrecisionLanding = false,
   });
 
+  final int? id;
   final int round;
   final int points;
   final bool hasPenaltyPoints;
@@ -45,6 +47,7 @@ class Round extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         round,
         points,
         hasPenaltyPoints,

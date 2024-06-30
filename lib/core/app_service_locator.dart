@@ -1,6 +1,7 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
+import 'package:cabo/domain/open_game/open_game_service.dart';
 import 'package:cabo/domain/player/local_player_repository.dart';
 import 'package:cabo/domain/player/player_service.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
@@ -19,5 +20,6 @@ void setup() {
     ..registerFactory<StatisticsDialogService>(() => StatisticsDialogService())
     ..registerSingleton<NavigationService>(NavigationService())
     ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())
-    ..registerSingleton<LocalGameRepository>(LocalGameRepository());
+    ..registerSingleton<LocalGameRepository>(LocalGameRepository())
+    ..registerLazySingleton<OpenGameService>(OnlineOpenGameService.new);
 }

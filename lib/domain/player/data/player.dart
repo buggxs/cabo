@@ -9,11 +9,13 @@ part 'player.g.dart';
 @JsonSerializable()
 class Player extends Equatable {
   const Player({
+    this.id,
     required this.name,
     this.place,
     this.rounds = const <Round>[],
   });
 
+  final int? id;
   final String name;
   final int? place;
   final List<Round> rounds;
@@ -59,6 +61,7 @@ class Player extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         name,
         place,
         rounds,
