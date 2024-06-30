@@ -25,7 +25,7 @@ jobs:
       - run: flutter analyze
         name: "Lint"
 
-      - run: flutter format . --set-exit-if-changed
+      - run: dart format . --set-exit-if-changed
         name: "Format"
 
       - run: flutter test --no-sound-null-safety
