@@ -28,5 +28,5 @@ jobs:
       - run: dart format . --set-exit-if-changed
         name: "Format"
 
-      - run: flutter test --no-sound-null-safety
+      - run: flutter test
         name: "Run tests"
