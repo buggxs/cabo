@@ -6,11 +6,14 @@ part 'rule_set.g.dart';
 @JsonSerializable()
 class RuleSet extends Equatable {
   const RuleSet({
+    this.id,
     this.totalGamePoints = 100,
     this.kamikazePoints = 50,
     this.roundWinnerGetsZeroPoints = true,
     this.precisionLanding = true,
   });
+
+  final int? id;
 
   final int totalGamePoints;
   final int? kamikazePoints;
@@ -42,6 +45,7 @@ class RuleSet extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         totalGamePoints,
         kamikazePoints,
         roundWinnerGetsZeroPoints,

@@ -16,5 +16,8 @@
   "loadGameDialogButton": "Yes, load game!",
   "notLoadGameDialogButton": "No, do not load.",
   "enterDialogButton": "Save",
-  "enterPointsDialogTitle": "Enter points"
+  "enterPointsDialogTitle": "Enter points",
+  "publishDialogTitle": "Publish Game",
+  "publishDialogButtonPublishText": "Publish!",
+  "publishDialogButtonCloseText": "Return."
 }

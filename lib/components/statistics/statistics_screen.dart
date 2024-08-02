@@ -2,7 +2,9 @@ import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/main_menu/widgets/round_indicator.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
+import 'package:cabo/components/statistics/widgets/data_table.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
+import 'package:cabo/components/widgets/publish_game_dialog.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
@@ -10,6 +12,7 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
@@ -38,9 +41,6 @@ class StatisticsScreen extends StatelessWidget {
 
 class StatisticsScreenContent extends StatelessWidget {
   StatisticsScreenContent({Key? key}) : super(key: key);
-
-  final ScrollController _horizontal = ScrollController(),
-      _vertical = ScrollController();
 
   final TextStyle title = const TextStyle(
     fontStyle: FontStyle.italic,
@@ -84,6 +84,7 @@ class StatisticsScreenContent extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(32, 45, 18, 0.9),
         onPressed: () => cubit.closeRound(),
@@ -100,29 +101,23 @@ class StatisticsScreenContent extends StatelessWidget {
           color: Color.fromRGBO(81, 120, 30, 1.0),
         ),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          final bool shouldPop =
-              await app<StatisticsDialogService>().showEndGame(context) ??
-                  false;
-          if (context.mounted) {
-            if (shouldPop) {
-              DateTime finishedAt = DateTime.now();
-              app<GameService>().saveToGameHistory(
-                Game(
-                  id: state.gameId,
-                  players: state.players,
-                  ruleSet: state.ruleSet!,
-                  startedAt: state.startedAt,
-                  finishedAt: finishedAt,
-                ),
-              );
-              Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
-            }
-          }
-
-          return false;
-        },
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => _onPopScreen(context, cubit),
+        ),
+        actions: [
+          IconButton(
+            icon:
+                const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
+            onPressed: () => _publishGameDialog(context, cubit.publishGame),
+          )
+        ],
+      ),
+      body: PopScope(
+        onPopInvoked: (_) => _onPopScreen(context, cubit),
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -150,27 +145,10 @@ class StatisticsScreenContent extends StatelessWidget {
                 ),
                 child: (state.players.isEmpty)
                     ? const Text('No Players found!')
-                    : SingleChildScrollView(
-                        controller: _horizontal,
-                        scrollDirection: Axis.horizontal,
-                        child: SingleChildScrollView(
-                          controller: _vertical,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  ...titleCells,
-                                ],
-                              ),
-                              ...buildRounds(state.players),
-                            ],
-                          ),
-                        ),
+                    : CaboDataTable(
+                        titleCells: titleCells,
+                        rounds: _buildRounds(state.players),
+                        cubit: cubit,
                       ),
               ),
             ),
@@ -180,7 +158,7 @@ class StatisticsScreenContent extends StatelessWidget {
     );
   }
 
-  List<Row> buildRounds(List<Player> players) {
+  List<Row> _buildRounds(List<Player> players) {
     List<Row> rounds = <Row>[];
     for (int i = 0; i < players.first.rounds.length; i++) {
       rounds.add(
@@ -203,5 +181,45 @@ class StatisticsScreenContent extends StatelessWidget {
       );
     }
     return rounds;
+  }
+
+  Future<bool> _onPopScreen(BuildContext context, StatisticsCubit cubit) async {
+    StatisticsState state = cubit.state;
+    final bool shouldPop =
+        await app<StatisticsDialogService>().showEndGame(context) ?? false;
+    if (context.mounted) {
+      if (shouldPop) {
+        cubit.client?.deactivate();
+        DateTime finishedAt = DateTime.now();
+        app<GameService>().saveToGameHistory(
+          Game(
+            id: state.gameId,
+            players: state.players,
+            ruleSet: state.ruleSet!,
+            startedAt: DateFormat('dd-MM-yyyy').format(state.startedAt!),
+            finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
+          ),
+        );
+        Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+      }
+    }
+
+    return false;
+  }
+
+  Future<void> _publishGameDialog(
+    BuildContext context,
+    Future<String?> Function() publishGame,
+  ) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext localContext) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+            child: ShowPublishGameScreen(
+              publishGame: publishGame,
+            ),
+          );
+        });
   }
 }

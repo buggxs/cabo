@@ -17,8 +17,6 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String locale = Localizations.localeOf(context).languageCode;
-
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -46,7 +44,7 @@ class GameCard extends StatelessWidget {
                       width: 2,
                     ),
                     Text(
-                      game.date(locale),
+                      game.dateToString(),
                       style: style.copyWith(fontSize: 12),
                     ),
                   ],
