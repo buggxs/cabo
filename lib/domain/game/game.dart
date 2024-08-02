@@ -1,5 +1,6 @@
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -48,19 +49,31 @@ class Game extends Equatable {
 
   String get gameDuration {
     if (startedAt != null && finishedAt != null) {
-      Duration duration = DateFormat.yMd()
-          .parse(finishedAt!)
-          .difference(DateFormat.yMd().parse(startedAt!));
+      DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
+      DateTime? dateFinishedAt = DateFormat().parseCaboDateString(finishedAt!);
+      if (dateStartedAt == null || dateFinishedAt == null) {
+        return '';
+      }
+      Duration duration = dateStartedAt.difference(dateFinishedAt);
       String durationString = duration.toString().split('.').first;
-
       return durationString;
     }
     return '';
   }
 
-  String dateToString(String locale) => startedAt != null
-      ? DateFormat.yMd(locale).format(DateTime.parse(startedAt!))
-      : '';
+  String dateToString() {
+    if (startedAt == null) {
+      return '';
+    }
+
+    DateTime? startedDate = DateFormat().parseCaboDateString(startedAt!);
+
+    if (startedDate == null) {
+      return '';
+    }
+
+    return DateFormat('dd-MM-yyyy').format(startedDate);
+  }
 
   bool get isGameFinished => players.any(
         (Player player) => player.totalPoints > ruleSet.totalGamePoints,

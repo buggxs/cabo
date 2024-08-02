@@ -85,15 +85,18 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     // http://10.0.2.2:8080
     // http://cabo-web.eu-central-1.elasticbeanstalk.com
     client = StompClient(
-        config: StompConfig.sockJS(
-      url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
+        config: StompConfig(
+      url: 'ws://10.0.2.2:8080/cabo-ws',
       onConnect: onConnectCallback,
-      onWebSocketError: (dynamic error) {},
+      onWebSocketError: (dynamic error) {
+        print(error);
+      },
     ));
     client?.activate();
   }
 
   void onConnectCallback(StompFrame connectFrame) {
+    print('Websocket connected');
     // client is connected and ready
     client?.subscribe(
         destination: '/game/room/${state.publicGame?.publicId}',

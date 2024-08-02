@@ -11,12 +11,11 @@ abstract class OpenGameService {
 class OnlineOpenGameService implements OpenGameService {
   @override
   Future<OpenGame> publishGame(Game game) {
-    // http://cabo-web.eu-central-1.elasticbeanstalk.com
-    // http://10.0.2.2:8080
     return http
         .post(
       Uri.parse(
-          'http://cabo-web.eu-central-1.elasticbeanstalk.com/api/game/publish'),
+        'http://cabo-web.eu-central-1.elasticbeanstalk.com/api/game/publish',
+      ),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(game.toJson()),
     )

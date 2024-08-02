@@ -2,7 +2,9 @@ import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/main_menu/widgets/round_indicator.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
+import 'package:cabo/components/statistics/widgets/data_table.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
+import 'package:cabo/components/widgets/publish_game_dialog.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
@@ -10,9 +12,7 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
@@ -41,9 +41,6 @@ class StatisticsScreen extends StatelessWidget {
 
 class StatisticsScreenContent extends StatelessWidget {
   StatisticsScreenContent({Key? key}) : super(key: key);
-
-  final ScrollController _horizontal = ScrollController(),
-      _vertical = ScrollController();
 
   final TextStyle title = const TextStyle(
     fontStyle: FontStyle.italic,
@@ -109,18 +106,18 @@ class StatisticsScreenContent extends StatelessWidget {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => onPopScreen(context, cubit),
+          onPressed: () => _onPopScreen(context, cubit),
         ),
         actions: [
           IconButton(
             icon:
                 const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
-            onPressed: () => publishGameDialog(context, cubit.publishGame),
+            onPressed: () => _publishGameDialog(context, cubit.publishGame),
           )
         ],
       ),
       body: PopScope(
-        onPopInvoked: (_) => onPopScreen(context, cubit),
+        onPopInvoked: (_) => _onPopScreen(context, cubit),
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -148,27 +145,10 @@ class StatisticsScreenContent extends StatelessWidget {
                 ),
                 child: (state.players.isEmpty)
                     ? const Text('No Players found!')
-                    : SingleChildScrollView(
-                        controller: _horizontal,
-                        scrollDirection: Axis.horizontal,
-                        child: SingleChildScrollView(
-                          controller: _vertical,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  ...titleCells,
-                                ],
-                              ),
-                              ...buildRounds(state.players),
-                            ],
-                          ),
-                        ),
+                    : CaboDataTable(
+                        titleCells: titleCells,
+                        rounds: _buildRounds(state.players),
+                        cubit: cubit,
                       ),
               ),
             ),
@@ -178,7 +158,7 @@ class StatisticsScreenContent extends StatelessWidget {
     );
   }
 
-  List<Row> buildRounds(List<Player> players) {
+  List<Row> _buildRounds(List<Player> players) {
     List<Row> rounds = <Row>[];
     for (int i = 0; i < players.first.rounds.length; i++) {
       rounds.add(
@@ -203,7 +183,7 @@ class StatisticsScreenContent extends StatelessWidget {
     return rounds;
   }
 
-  Future<bool> onPopScreen(BuildContext context, StatisticsCubit cubit) async {
+  Future<bool> _onPopScreen(BuildContext context, StatisticsCubit cubit) async {
     StatisticsState state = cubit.state;
     final bool shouldPop =
         await app<StatisticsDialogService>().showEndGame(context) ?? false;
@@ -216,8 +196,8 @@ class StatisticsScreenContent extends StatelessWidget {
             id: state.gameId,
             players: state.players,
             ruleSet: state.ruleSet!,
-            startedAt: DateFormat.yMd().format(state.startedAt!),
-            finishedAt: DateFormat.yMd().format(finishedAt),
+            startedAt: DateFormat('dd-MM-yyyy').format(state.startedAt!),
+            finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
           ),
         );
         Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
@@ -227,7 +207,7 @@ class StatisticsScreenContent extends StatelessWidget {
     return false;
   }
 
-  Future<void> publishGameDialog(
+  Future<void> _publishGameDialog(
     BuildContext context,
     Future<String?> Function() publishGame,
   ) async {
@@ -241,113 +221,5 @@ class StatisticsScreenContent extends StatelessWidget {
             ),
           );
         });
-  }
-}
-
-class ShowPublishGameScreen extends StatefulWidget {
-  const ShowPublishGameScreen({
-    super.key,
-    required this.publishGame,
-  });
-
-  final Future<String?> Function() publishGame;
-
-  @override
-  State<ShowPublishGameScreen> createState() => _ShowPublishGameScreenState();
-}
-
-class _ShowPublishGameScreenState extends State<ShowPublishGameScreen> {
-  String? publicGameId;
-
-  void onPublish() async {
-    String? newPublicGameId = await widget.publishGame();
-    setState(() {
-      publicGameId = newPublicGameId;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: publicGameId == null
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.publishDialogTitle,
-                  style: title,
-                  textAlign: TextAlign.center,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: onPublish,
-                        style: dialogButtonStyle,
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .publishDialogButtonPublishText,
-                          style: const TextStyle(
-                            fontFamily: 'Aclonica',
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        style: dialogButtonStyle,
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .publishDialogButtonCloseText,
-                          style: const TextStyle(
-                            fontFamily: 'Aclonica',
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.publishDialogTitle,
-                  style: title,
-                  textAlign: TextAlign.center,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      height: 250,
-                      width: 250,
-                      child: PrettyQrView.data(
-                        data:
-                            'http://cabo-web.eu-central-1.elasticbeanstalk.com/online-game/$publicGameId',
-                      ),
-                      // http://192.168.178.23:8080
-                      // http://cabo-web.eu-central-1.elasticbeanstalk.com
-                    ),
-                  ],
-                ),
-              ],
-            ),
-    );
   }
 }
