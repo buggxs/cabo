@@ -23,13 +23,15 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit({
     required List<Player> players,
     this.useOwnRuleSet = false,
-  }) : super(StatisticsState(
-          players: players,
-        ));
+  }) : super(
+          StatisticsState(
+            players: players,
+          ),
+        );
 
   final OpenGameService openGameService = app<OpenGameService>();
-
   final bool useOwnRuleSet;
+
   StompClient? client;
 
   void loadRuleSet({Game? game}) async {
@@ -76,26 +78,26 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       ),
     );
 
-    connectToWebSocket();
-
+    _connectToWebSocket();
     return openGame.publicId;
   }
 
-  void connectToWebSocket() {
+  void _connectToWebSocket() {
     client = StompClient(
-        config: StompConfig(
-      url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
-      onConnect: onConnectCallback,
-    ));
+      config: StompConfig(
+        url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
+        onConnect: _onConnectCallback,
+      ),
+    );
     client?.activate();
   }
 
-  void onConnectCallback(StompFrame connectFrame) {
-    // client is connected and ready
+  /// [client] is connected and ready
+  void _onConnectCallback(StompFrame connectFrame) {
     client?.subscribe(
         destination: '/game/room/${state.publicGame?.publicId}',
         headers: {},
-        callback: (frame) {
+        callback: (StompFrame frame) {
           // Received a frame for this subscription
           if (frame.body != null) {
             final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
@@ -112,6 +114,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         });
   }
 
+  /// Close round when game is online
+  /// Game stats will be processed online on a server
   void closeOnlineGame() async {
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: state.players);
@@ -150,13 +154,16 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   }
 
   void closeRound() {
-    if (state.publicGame != null) {
+    if (state.isPublic) {
       closeOnlineGame();
     } else {
       closeOfflineRound();
     }
   }
 
+  /// Close round when game is offline game
+  /// Stats will be processed offline on the device
+  /// Game stats will be saved in local device storage
   Future<void> closeOfflineRound() async {
     RuleSet ruleSet = state.ruleSet ?? const RuleSet();
 
@@ -182,9 +189,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         int points = playerPointsmap[player.name] ?? 0;
 
         int pointsOfClosingPlayer =
-            getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
+            _getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
 
-        bool closingPlayerHasLost = isClosingPlayerLooser(
+        bool closingPlayerHasLost = _isClosingPlayerLooser(
           playerPointsmap,
           closingPlayer,
           pointsOfClosingPlayer,
@@ -198,13 +205,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           if (player == closingPlayer && !closingPlayerHasLost) {
             points = 0;
           } else if (closingPlayerHasLost &&
-              player.name == getPlayerWithLowestPoints(playerPointsmap)) {
+              player.name == _getPlayerWithLowestPoints(playerPointsmap)) {
             points = 0;
           }
         }
 
         if (ruleSet.useKamikazeRule &&
-            checkIfPlayerHitsKamikaze(playerPointsmap)) {
+            _checkIfPlayerHitsKamikaze(playerPointsmap)) {
           if (points == 55) {
             points = 0;
             closingPlayerHasLost = false;
@@ -221,7 +228,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
               points: points,
               hasClosedRound: closingPlayer == player,
               hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
-              hasPrecisionLanding: hasDonePrecisionLanding(player, points),
+              hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
             ),
           ],
         );
@@ -257,7 +264,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     }
   }
 
-  bool hasDonePrecisionLanding(Player player, int points) {
+  bool _hasDonePrecisionLanding(Player player, int points) {
     RuleSet ruleSet = state.ruleSet ?? const RuleSet();
     if (ruleSet.precisionLanding) {
       if ((player.totalPoints + points) == ruleSet.totalGamePoints) {
@@ -272,11 +279,11 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     client?.deactivate();
   }
 
-  bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
+  bool _checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
     return playerPointsmap.entries.any((element) => element.value == 50);
   }
 
-  String getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
+  String _getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
     MapEntry<String, int?>? lowest;
     for (var element in playerPointsmap.entries) {
       lowest ??= element;
@@ -287,7 +294,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     return lowest!.key;
   }
 
-  int getPointsOfClosingPlayer(
+  int _getPointsOfClosingPlayer(
     Map<String, int?> playerPointsmap,
     Player closingPlayer,
   ) {
@@ -299,7 +306,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         0;
   }
 
-  bool isClosingPlayerLooser(
+  bool _isClosingPlayerLooser(
     Map<String, int?> playerPointsmap,
     Player closingPlayer,
     int pointsOfClosingPlayer,

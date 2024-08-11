@@ -15,7 +15,7 @@ part 'main_menu_state.dart';
 class MainMenuCubit extends Cubit<MainMenuState> {
   MainMenuCubit() : super(MainMenu());
 
-  void pushToStatsScreen(
+  void _pushToStatsScreen(
     BuildContext context,
     List<Player> players, {
     bool? useOwnRuleSet,
@@ -53,7 +53,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
 
       if (shouldLoadGame) {
         if (currentContext.mounted) {
-          pushToStatsScreen(currentContext, game!.players, game: game);
+          _pushToStatsScreen(currentContext, game!.players, game: game);
           return;
         }
       }
@@ -117,7 +117,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
             .toList();
       }
     }
-    pushToStatsScreen(
+    _pushToStatsScreen(
       context,
       players,
       useOwnRuleSet: (state as ChoosePlayerNames).useOwnRuleSet,
