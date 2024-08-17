@@ -347,6 +347,46 @@ void main() {
     );
   });
 
+  /**
+   * Da die Zustandsänderung, die durch emit ausgelöst wird,
+   * im Konstruktor stattfindet, wird sie von blocTest nicht als
+   * Zustandsänderung erkannt, die nach der Initialisierung passiert.
+   */
+  group('Test to load correct game', () {
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Should load game',
+      build: () => StatisticsCubit(players: playerList),
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+      },
+      act: (cubit) => cubit.loadGame(game: expectedGame),
+      expect: () => [
+        StatisticsState(
+          players: playerList,
+          game: expectedGame,
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Should create game',
+      build: () => StatisticsCubit(players: playerList, useOwnRuleSet: true),
+      setUp: () {
+        when(ruleService.loadRuleSet(useOwnRules: true))
+            .thenReturn(kOwnRuleSet);
+      },
+      act: (cubit) => cubit.loadGame(),
+      expect: () => [
+        StatisticsState(
+          players: playerList,
+          game: expectedGame.copyWith(
+            ruleSet: kOwnRuleSet,
+          ),
+        ),
+      ],
+    );
+  });
+
   group('Test closing round method', () {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with default rule set and ZERO players',
@@ -354,7 +394,7 @@ void main() {
         when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
       },
       build: () => StatisticsCubit(players: <Player>[]),
-      act: (cubit) => cubit..closeRound(),
+      act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: const <Player>[],
@@ -378,7 +418,7 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRulesPenalty));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit..closeRound(),
+      act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: playerList,
@@ -404,7 +444,7 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRules));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit..closeRound(),
+      act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: playerList,
@@ -430,7 +470,7 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRulesKamikaze));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit..closeRound(),
+      act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: playerList,

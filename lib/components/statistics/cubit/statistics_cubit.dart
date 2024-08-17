@@ -29,7 +29,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
             players: players,
           ),
         ) {
-    _loadGame(game: game);
+    loadGame(game: game);
   }
 
   final OpenGameService openGameService = app<OpenGameService>();
@@ -37,7 +37,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   late final StompClient? client;
 
-  void _loadGame({Game? game}) {
+  void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
         ? DateFormat.yMd().parse(game!.startedAt!)
         : DateTime.now();

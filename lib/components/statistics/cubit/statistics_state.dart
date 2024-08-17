@@ -34,7 +34,6 @@ class StatisticsState extends Equatable {
         players,
         game,
         publicGame,
-        // TODO: find a good way to test it
         // startedAt,
       ];
 }
