@@ -23,44 +23,58 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit({
     required List<Player> players,
     this.useOwnRuleSet = false,
+    Game? game,
   }) : super(
           StatisticsState(
             players: players,
           ),
-        );
+        ) {
+    _loadGame(game: game);
+  }
 
   final OpenGameService openGameService = app<OpenGameService>();
   final bool useOwnRuleSet;
 
-  StompClient? client;
+  late final StompClient? client;
 
-  void loadRuleSet({Game? game}) async {
-    RuleSet ruleSet = app<RuleService>().loadRuleSet(
-      useOwnRules: useOwnRuleSet,
-    );
-
-    // Todo: add duration of playtime if a game is loaded.
-    // so an overall game time can be calculated also if a game is
-    // loaded on different days
+  void _loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
         ? DateFormat.yMd().parse(game!.startedAt!)
         : DateTime.now();
+    if (game == null) {
+      _createLocalGame(startingDateTime);
+    } else {
+      _startGame(game, startingDateTime);
+    }
+  }
 
-    Game currentGame = game ??
-        Game(
-          startedAt: DateFormat.yMd().format(startingDateTime),
-          players: state.players,
-          ruleSet: ruleSet,
-        );
+  void _createLocalGame(DateTime startedAt) async {
+    RuleSet ruleSet = await loadRuleSet();
 
-    app<GameService>().saveGame(currentGame);
-
-    emit(state.copyWith(
-      gameId: game?.id,
-      game: currentGame,
+    Game game = Game(
+      startedAt: DateFormat.yMd().format(startedAt),
+      players: state.players,
       ruleSet: ruleSet,
-      startedAt: startingDateTime,
+    );
+
+    Game currentGame = await app<GameService>().saveGame(game) ?? game;
+
+    _startGame(currentGame, startedAt);
+  }
+
+  void _startGame(Game game, DateTime startedAt) {
+    emit(state.copyWith(
+      gameId: game.id,
+      game: game,
+      ruleSet: game.ruleSet,
+      startedAt: startedAt,
     ));
+  }
+
+  Future<RuleSet> loadRuleSet() async {
+    return app<RuleService>().loadRuleSet(
+      useOwnRules: useOwnRuleSet,
+    );
   }
 
   Future<String?> publishGame() async {
@@ -109,6 +123,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
                   game: game,
                 ),
               );
+
+              app<GameService>().saveGame(game);
             }
           }
         });

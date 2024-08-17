@@ -15,13 +15,13 @@ class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
     Key? key,
     required this.players,
-    this.useOwnRuleSet = false,
+    this.shouldUseSpecialRules = false,
     this.game,
   }) : super(key: key);
 
   static const String route = 'statistics_screen';
   final List<Player> players;
-  final bool useOwnRuleSet;
+  final bool? shouldUseSpecialRules;
   final Game? game;
 
   @override
@@ -29,8 +29,9 @@ class StatisticsScreen extends StatelessWidget {
     return BlocProvider<StatisticsCubit>(
       create: (_) => StatisticsCubit(
         players: players,
-        useOwnRuleSet: useOwnRuleSet,
-      )..loadRuleSet(game: game),
+        useOwnRuleSet: shouldUseSpecialRules ?? false,
+        game: game,
+      ),
       child: const StatisticsScreenContent(),
     );
   }

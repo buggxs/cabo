@@ -18,14 +18,14 @@ class MainMenuCubit extends Cubit<MainMenuState> {
   void _pushToStatsScreen(
     BuildContext context,
     List<Player> players, {
-    bool? useOwnRuleSet,
+    bool? shouldUseSpecialRules,
     Game? game,
   }) {
     Navigator.of(context).pushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,
-        'useOwnRuleSet': useOwnRuleSet,
+        'shouldUseSpecialRules': shouldUseSpecialRules,
         'game': game,
       },
     );
@@ -58,7 +58,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
         }
       }
     }
-    emit(ChoosePlayerAmount(useOwnRuleSet: useOwnRuleSet));
+    emit(ChoosePlayerAmount(shouldUseSpecialRules: useOwnRuleSet));
   }
 
   void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
@@ -86,7 +86,8 @@ class MainMenuCubit extends Cubit<MainMenuState> {
       emit(
         ChoosePlayerNames(
             playerAmount: (state as ChoosePlayerAmount).playerAmount,
-            useOwnRuleSet: (state as ChoosePlayerAmount).useOwnRuleSet),
+            shouldUseSpecialRules:
+                (state as ChoosePlayerAmount).shouldUseSpecialRules),
       );
     }
   }
@@ -120,7 +121,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
     _pushToStatsScreen(
       context,
       players,
-      useOwnRuleSet: (state as ChoosePlayerNames).useOwnRuleSet,
+      shouldUseSpecialRules: (state as ChoosePlayerNames).shouldUseSpecialRules,
     );
   }
 
