@@ -64,9 +64,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   void _startGame(Game game, DateTime startedAt) {
     emit(state.copyWith(
-      gameId: game.id,
       game: game,
-      ruleSet: game.ruleSet,
       startedAt: startedAt,
     ));
   }
@@ -85,9 +83,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     OpenGame openGame = await openGameService.publishGame(state.game!);
     emit(
       state.copyWith(
-        isPublic: true,
         publicGame: openGame,
-        gameId: openGame.game.id,
         game: openGame.game,
       ),
     );
@@ -170,7 +166,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   }
 
   void closeRound() {
-    if (state.isPublic) {
+    if (state.isPublicGame) {
       closeOnlineGame();
     } else {
       closeOfflineRound();
@@ -181,7 +177,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   /// Stats will be processed offline on the device
   /// Game stats will be saved in local device storage
   Future<void> closeOfflineRound() async {
-    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
     if (state.players.isEmpty) {
       return;
@@ -261,15 +257,17 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     emit(
       state.copyWith(
         players: players,
+        game: state.game!.copyWith(
+          players: players,
+        ),
       ),
     );
 
-    Game? game = await app<GameService>().saveGame(Game(
-      id: state.gameId,
-      players: state.players,
-      ruleSet: state.ruleSet!,
-      startedAt: DateFormat.yMd().format(state.startedAt!),
-    ));
+    Game? game = await app<GameService>().saveGame(
+      state.game!.copyWith(
+        players: players,
+      ),
+    );
 
     if (game?.isGameFinished ?? false) {
       String finishedGame = DateFormat.yMd().format(DateTime.now());
@@ -281,7 +279,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   }
 
   bool _hasDonePrecisionLanding(Player player, int points) {
-    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
     if (ruleSet.precisionLanding) {
       if ((player.totalPoints + points) == ruleSet.totalGamePoints) {
         return true;

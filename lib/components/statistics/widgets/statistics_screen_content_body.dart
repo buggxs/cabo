@@ -5,7 +5,6 @@ import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
-import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
@@ -106,11 +105,7 @@ class StatisticsScreenContentBody extends StatelessWidget {
         cubit.client?.deactivate();
         DateTime finishedAt = DateTime.now();
         app<GameService>().saveToGameHistory(
-          Game(
-            id: state.gameId,
-            players: state.players,
-            ruleSet: state.ruleSet!,
-            startedAt: DateFormat('dd-MM-yyyy').format(state.startedAt!),
+          state.game!.copyWith(
             finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
           ),
         );

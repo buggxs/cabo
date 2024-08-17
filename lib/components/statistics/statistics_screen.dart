@@ -99,11 +99,7 @@ class StatisticsScreenContent extends StatelessWidget {
         cubit.client?.deactivate();
         DateTime finishedAt = DateTime.now();
         app<GameService>().saveToGameHistory(
-          Game(
-            id: state.gameId,
-            players: state.players,
-            ruleSet: state.ruleSet!,
-            startedAt: DateFormat('dd-MM-yyyy').format(state.startedAt!),
+          state.game!.copyWith(
             finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
           ),
         );

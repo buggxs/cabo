@@ -302,7 +302,6 @@ void main() {
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: playerList,
           game: expectedGame,
         ),
@@ -318,7 +317,6 @@ void main() {
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: playerList,
           game: expectedGame,
         ),
@@ -337,11 +335,11 @@ void main() {
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
         StatisticsState(
+          players: playerList,
+          game: expectedGame.copyWith(
             ruleSet: kOwnRuleSet,
-            players: playerList,
-            game: expectedGame.copyWith(
-              ruleSet: kOwnRuleSet,
-            )),
+          ),
+        ),
       ],
       tearDown: () {
         app.registerSingleton<RuleService>(ruleService);
@@ -356,12 +354,9 @@ void main() {
         when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
       },
       build: () => StatisticsCubit(players: <Player>[]),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      act: (cubit) => cubit..closeRound(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: const <Player>[],
           game: Game(
             players: const <Player>[],
@@ -383,19 +378,17 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRulesPenalty));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      act: (cubit) => cubit..closeRound(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: playerList,
           game: expectedGame,
         ),
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: expectedPlayerListWithDefaultRulesAndPenalty,
-          game: expectedGame,
+          game: expectedGame.copyWith(
+            players: expectedPlayerListWithDefaultRulesAndPenalty,
+          ),
         ),
       ],
     );
@@ -411,19 +404,17 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRules));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      act: (cubit) => cubit..closeRound(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: playerList,
           game: expectedGame,
         ),
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: expectedPlayerListWithDefaultRules,
-          game: expectedGame,
+          game: expectedGame.copyWith(
+            players: expectedPlayerListWithDefaultRules,
+          ),
         ),
       ],
     );
@@ -439,18 +430,16 @@ void main() {
             .thenAnswer((_) => Future.value(pointsMapDefaultRulesKamikaze));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      act: (cubit) => cubit..closeRound(),
       expect: () => [
         StatisticsState(
-          ruleSet: const RuleSet(),
           players: playerList,
           game: expectedGame,
         ),
         StatisticsState(
-          ruleSet: const RuleSet(),
-          game: expectedGame,
+          game: expectedGame.copyWith(
+            players: expectedPlayerListWithDefaultRulesHittingKamikaze,
+          ),
           players: expectedPlayerListWithDefaultRulesHittingKamikaze,
         ),
       ],
@@ -459,29 +448,36 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with OWN rule set and penalty',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(kOwnRuleSet);
+        when(ruleService.loadRuleSet(useOwnRules: true))
+            .thenReturn(kOwnRuleSet);
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(dialogService.showPointDialog(playerList))
             .thenAnswer((_) => Future.value(pointsMapOwnRulesPenalty));
       },
-      build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      build: () => StatisticsCubit(
+        players: playerList,
+        useOwnRuleSet: true,
+      ),
+      act: (cubit) async {
+        // Stellt sicher, dass der Cubit initialisiert wird
+        await Future.delayed(const Duration(
+          milliseconds: 50,
+        ));
+        cubit.closeRound();
+      },
       expect: () => [
         StatisticsState(
-          ruleSet: kOwnRuleSet,
           players: playerList,
           game: expectedGame.copyWith(
             ruleSet: kOwnRuleSet,
           ),
         ),
         StatisticsState(
-          ruleSet: kOwnRuleSet,
           players: expectedPlayerListWithOwnRulesAndPenalty,
           game: expectedGame.copyWith(
+            players: expectedPlayerListWithOwnRulesAndPenalty,
             ruleSet: kOwnRuleSet,
           ),
         ),
@@ -491,29 +487,36 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with OWN rule set',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(kOwnRuleSet);
+        when(ruleService.loadRuleSet(useOwnRules: true))
+            .thenReturn(kOwnRuleSet);
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(dialogService.showPointDialog(playerList))
             .thenAnswer((_) => Future.value(pointsMapOwnRules));
       },
-      build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit
-        ..loadRuleSet()
-        ..closeRound(),
+      build: () => StatisticsCubit(
+        players: playerList,
+        useOwnRuleSet: true,
+      ),
+      act: (cubit) async {
+        // Stellt sicher, dass der Cubit initialisiert wird
+        await Future.delayed(const Duration(
+          milliseconds: 50,
+        ));
+        cubit.closeRound();
+      },
       expect: () => [
         StatisticsState(
-          ruleSet: kOwnRuleSet,
           players: playerList,
           game: expectedGame.copyWith(
             ruleSet: kOwnRuleSet,
           ),
         ),
         StatisticsState(
-          ruleSet: kOwnRuleSet,
           players: expectedPlayerListWithOwnRules,
           game: expectedGame.copyWith(
+            players: expectedPlayerListWithOwnRules,
             ruleSet: kOwnRuleSet,
           ),
         ),
