@@ -1,7 +1,6 @@
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
-import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -65,12 +64,7 @@ class _CaboDataTableState extends State<CaboDataTable>
       widget.cubit.client?.deactivate();
       DateTime finishedAt = DateTime.now();
       app<GameService>().saveToGameHistory(
-        Game(
-          id: widget.cubit.state.gameId,
-          players: widget.cubit.state.players,
-          ruleSet: widget.cubit.state.ruleSet!,
-          startedAt:
-              DateFormat('dd-MM-yyyy').format(widget.cubit.state.startedAt!),
+        widget.cubit.state.game!.copyWith(
           finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
         ),
       );

@@ -15,17 +15,17 @@ part 'main_menu_state.dart';
 class MainMenuCubit extends Cubit<MainMenuState> {
   MainMenuCubit() : super(MainMenu());
 
-  void pushToStatsScreen(
+  void _pushToStatsScreen(
     BuildContext context,
     List<Player> players, {
-    bool? useOwnRuleSet,
+    bool? shouldUseSpecialRules,
     Game? game,
   }) {
     Navigator.of(context).pushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,
-        'useOwnRuleSet': useOwnRuleSet,
+        'shouldUseSpecialRules': shouldUseSpecialRules,
         'game': game,
       },
     );
@@ -53,12 +53,12 @@ class MainMenuCubit extends Cubit<MainMenuState> {
 
       if (shouldLoadGame) {
         if (currentContext.mounted) {
-          pushToStatsScreen(currentContext, game!.players, game: game);
+          _pushToStatsScreen(currentContext, game!.players, game: game);
           return;
         }
       }
     }
-    emit(ChoosePlayerAmount(useOwnRuleSet: useOwnRuleSet));
+    emit(ChoosePlayerAmount(shouldUseSpecialRules: useOwnRuleSet));
   }
 
   void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
@@ -86,7 +86,8 @@ class MainMenuCubit extends Cubit<MainMenuState> {
       emit(
         ChoosePlayerNames(
             playerAmount: (state as ChoosePlayerAmount).playerAmount,
-            useOwnRuleSet: (state as ChoosePlayerAmount).useOwnRuleSet),
+            shouldUseSpecialRules:
+                (state as ChoosePlayerAmount).shouldUseSpecialRules),
       );
     }
   }
@@ -117,10 +118,10 @@ class MainMenuCubit extends Cubit<MainMenuState> {
             .toList();
       }
     }
-    pushToStatsScreen(
+    _pushToStatsScreen(
       context,
       players,
-      useOwnRuleSet: (state as ChoosePlayerNames).useOwnRuleSet,
+      shouldUseSpecialRules: (state as ChoosePlayerNames).shouldUseSpecialRules,
     );
   }
 
