@@ -98,7 +98,7 @@ class _ShowPublishGameScreenState extends State<ShowPublishGameScreen> {
                       width: 250,
                       child: PrettyQrView.data(
                         data:
-                            'http://cabo-web.eu-central-1.elasticbeanstalk.com/online-game/$publicGameId',
+                            'http://18.156.177.170/online-game/$publicGameId',
                       ),
                     ),
                   ],
