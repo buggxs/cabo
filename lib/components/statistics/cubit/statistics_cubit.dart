@@ -95,7 +95,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   void _connectToWebSocket() {
     client = StompClient(
       config: StompConfig(
-        url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
+        url: 'http://18.156.177.170/cabo-ws',
         onConnect: _onConnectCallback,
       ),
     );

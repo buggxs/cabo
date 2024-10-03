@@ -14,7 +14,7 @@ class OnlineOpenGameService implements OpenGameService {
     return http
         .post(
       Uri.parse(
-        'http://cabo-web.eu-central-1.elasticbeanstalk.com/api/game/publish',
+        'http://18.156.177.170/api/game/publish',
       ),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(game.toJson()),
