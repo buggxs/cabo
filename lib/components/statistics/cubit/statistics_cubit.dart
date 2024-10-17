@@ -95,20 +95,30 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   void _connectToWebSocket() {
     client = StompClient(
       config: StompConfig(
-        url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
-        onConnect: _onConnectCallback,
-      ),
+          url: 'ws://18.156.177.170:80/cabo-ws',
+          onConnect: _onConnectCallback,
+          onStompError: (frame) {
+            print(frame);
+          },
+          onWebSocketError: (error) {
+            print(error);
+          },
+          onDebugMessage: (message) {
+            print(message);
+          }),
     );
     client?.activate();
   }
 
   /// [client] is connected and ready
   void _onConnectCallback(StompFrame connectFrame) {
+    print(connectFrame.body);
     client?.subscribe(
         destination: '/game/room/${state.publicGame?.publicId}',
         headers: {},
         callback: (StompFrame frame) {
           // Received a frame for this subscription
+          print(frame.body);
           if (frame.body != null) {
             final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
             if (json['event'] == 'UPDATE_GAME') {
