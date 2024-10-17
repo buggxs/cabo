@@ -23,42 +23,56 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit({
     required List<Player> players,
     this.useOwnRuleSet = false,
-  }) : super(StatisticsState(
-          players: players,
-        ));
+    Game? game,
+  }) : super(
+          StatisticsState(
+            players: players,
+          ),
+        ) {
+    loadGame(game: game);
+  }
 
   final OpenGameService openGameService = app<OpenGameService>();
-
   final bool useOwnRuleSet;
-  StompClient? client;
 
-  void loadRuleSet({Game? game}) async {
-    RuleSet ruleSet = app<RuleService>().loadRuleSet(
-      useOwnRules: useOwnRuleSet,
-    );
+  late final StompClient? client;
 
-    // Todo: add duration of playtime if a game is loaded.
-    // so an overall game time can be calculated also if a game is
-    // loaded on different days
+  void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
         ? DateFormat.yMd().parse(game!.startedAt!)
         : DateTime.now();
+    if (game == null) {
+      _createLocalGame(startingDateTime);
+    } else {
+      _startGame(game, startingDateTime);
+    }
+  }
 
-    Game currentGame = game ??
-        Game(
-          startedAt: DateFormat.yMd().format(startingDateTime),
-          players: state.players,
-          ruleSet: ruleSet,
-        );
+  void _createLocalGame(DateTime startedAt) async {
+    RuleSet ruleSet = await loadRuleSet();
 
-    app<GameService>().saveGame(currentGame);
-
-    emit(state.copyWith(
-      gameId: game?.id,
-      game: currentGame,
+    Game game = Game(
+      startedAt: DateFormat.yMd().format(startedAt),
+      players: state.players,
       ruleSet: ruleSet,
-      startedAt: startingDateTime,
+    );
+
+    Game currentGame = await app<GameService>().saveGame(game) ?? game;
+
+    _startGame(currentGame, startedAt);
+  }
+
+  void _startGame(Game game, DateTime startedAt) {
+    emit(state.copyWith(
+      game: game,
+      startedAt: startedAt,
     ));
+  }
+
+  Future<RuleSet> loadRuleSet() async {
+    return app<RuleService>().loadRuleSet(
+      useOwnRules: useOwnRuleSet,
+    );
   }
 
   Future<String?> publishGame() async {
@@ -69,33 +83,31 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     OpenGame openGame = await openGameService.publishGame(state.game!);
     emit(
       state.copyWith(
-        isPublic: true,
         publicGame: openGame,
-        gameId: openGame.game.id,
         game: openGame.game,
       ),
     );
 
-    connectToWebSocket();
-
+    _connectToWebSocket();
     return openGame.publicId;
   }
 
-  void connectToWebSocket() {
+  void _connectToWebSocket() {
     client = StompClient(
-        config: StompConfig(
-      url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
-      onConnect: onConnectCallback,
-    ));
+      config: StompConfig(
+        url: 'http://cabo-web.eu-central-1.elasticbeanstalk.com/cabo-ws',
+        onConnect: _onConnectCallback,
+      ),
+    );
     client?.activate();
   }
 
-  void onConnectCallback(StompFrame connectFrame) {
-    // client is connected and ready
+  /// [client] is connected and ready
+  void _onConnectCallback(StompFrame connectFrame) {
     client?.subscribe(
         destination: '/game/room/${state.publicGame?.publicId}',
         headers: {},
-        callback: (frame) {
+        callback: (StompFrame frame) {
           // Received a frame for this subscription
           if (frame.body != null) {
             final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
@@ -107,11 +119,15 @@ class StatisticsCubit extends Cubit<StatisticsState> {
                   game: game,
                 ),
               );
+
+              app<GameService>().saveGame(game);
             }
           }
         });
   }
 
+  /// Close round when game is online
+  /// Game stats will be processed online on a server
   void closeOnlineGame() async {
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: state.players);
@@ -150,15 +166,18 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   }
 
   void closeRound() {
-    if (state.publicGame != null) {
+    if (state.isPublicGame) {
       closeOnlineGame();
     } else {
       closeOfflineRound();
     }
   }
 
+  /// Close round when game is offline game
+  /// Stats will be processed offline on the device
+  /// Game stats will be saved in local device storage
   Future<void> closeOfflineRound() async {
-    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
     if (state.players.isEmpty) {
       return;
@@ -182,9 +201,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         int points = playerPointsmap[player.name] ?? 0;
 
         int pointsOfClosingPlayer =
-            getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
+            _getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
 
-        bool closingPlayerHasLost = isClosingPlayerLooser(
+        bool closingPlayerHasLost = _isClosingPlayerLooser(
           playerPointsmap,
           closingPlayer,
           pointsOfClosingPlayer,
@@ -198,13 +217,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           if (player == closingPlayer && !closingPlayerHasLost) {
             points = 0;
           } else if (closingPlayerHasLost &&
-              player.name == getPlayerWithLowestPoints(playerPointsmap)) {
+              player.name == _getPlayerWithLowestPoints(playerPointsmap)) {
             points = 0;
           }
         }
 
         if (ruleSet.useKamikazeRule &&
-            checkIfPlayerHitsKamikaze(playerPointsmap)) {
+            _checkIfPlayerHitsKamikaze(playerPointsmap)) {
           if (points == 55) {
             points = 0;
             closingPlayerHasLost = false;
@@ -221,7 +240,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
               points: points,
               hasClosedRound: closingPlayer == player,
               hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
-              hasPrecisionLanding: hasDonePrecisionLanding(player, points),
+              hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
             ),
           ],
         );
@@ -238,15 +257,17 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     emit(
       state.copyWith(
         players: players,
+        game: state.game!.copyWith(
+          players: players,
+        ),
       ),
     );
 
-    Game? game = await app<GameService>().saveGame(Game(
-      id: state.gameId,
-      players: state.players,
-      ruleSet: state.ruleSet!,
-      startedAt: DateFormat.yMd().format(state.startedAt!),
-    ));
+    Game? game = await app<GameService>().saveGame(
+      state.game!.copyWith(
+        players: players,
+      ),
+    );
 
     if (game?.isGameFinished ?? false) {
       String finishedGame = DateFormat.yMd().format(DateTime.now());
@@ -257,8 +278,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     }
   }
 
-  bool hasDonePrecisionLanding(Player player, int points) {
-    RuleSet ruleSet = state.ruleSet ?? const RuleSet();
+  bool _hasDonePrecisionLanding(Player player, int points) {
+    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
     if (ruleSet.precisionLanding) {
       if ((player.totalPoints + points) == ruleSet.totalGamePoints) {
         return true;
@@ -272,11 +293,11 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     client?.deactivate();
   }
 
-  bool checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
+  bool _checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
     return playerPointsmap.entries.any((element) => element.value == 50);
   }
 
-  String getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
+  String _getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
     MapEntry<String, int?>? lowest;
     for (var element in playerPointsmap.entries) {
       lowest ??= element;
@@ -287,7 +308,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     return lowest!.key;
   }
 
-  int getPointsOfClosingPlayer(
+  int _getPointsOfClosingPlayer(
     Map<String, int?> playerPointsmap,
     Player closingPlayer,
   ) {
@@ -299,7 +320,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
         0;
   }
 
-  bool isClosingPlayerLooser(
+  bool _isClosingPlayerLooser(
     Map<String, int?> playerPointsmap,
     Player closingPlayer,
     int pointsOfClosingPlayer,

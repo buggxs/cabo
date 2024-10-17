@@ -16,13 +16,13 @@ class AppNavigator {
         );
       case StatisticsScreen.route:
         List<Player> players = [];
-        bool? useOwnRuleSet;
+        bool? shouldUseSpecialRules;
         Game? game;
         if (args is Map && args.containsKey('players')) {
-          players = args['players'] ?? <Player>[];
+          players = args['players'];
         }
         if (args is Map && args.containsKey('useOwnRuleSet')) {
-          useOwnRuleSet = args['useOwnRuleSet'];
+          shouldUseSpecialRules = args['shouldUseSpecialRules'];
         }
         if (args is Map && args.containsKey('game')) {
           game = args['game'];
@@ -30,7 +30,7 @@ class AppNavigator {
         return MaterialPageRoute(
           builder: (_) => StatisticsScreen(
             players: players,
-            useOwnRuleSet: useOwnRuleSet ?? false,
+            shouldUseSpecialRules: shouldUseSpecialRules ?? false,
             game: game,
           ),
         );
