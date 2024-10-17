@@ -97,8 +97,7 @@ class _ShowPublishGameScreenState extends State<ShowPublishGameScreen> {
                       height: 250,
                       width: 250,
                       child: PrettyQrView.data(
-                        data:
-                            'http://18.156.177.170/online-game/$publicGameId',
+                        data: 'http://18.156.177.170/online-game/$publicGameId',
                       ),
                     ),
                   ],
