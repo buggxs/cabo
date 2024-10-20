@@ -35,7 +35,7 @@ abstract class LocalStorageRepository<T> {
     prefs.setString('${storageKey}_list', encodedJsonString);
   }
 
-  Future<T?> save(T object) async {
+  Future<T?> saveCurrent(T object) async {
     final SharedPreferences prefs = await _prefs;
     bool success = await prefs.setString(storageKey, jsonEncode(object));
     return success ? object : null;

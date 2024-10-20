@@ -123,12 +123,9 @@ class StatisticsDialogService {
     );
   }
 
-  Future<bool?> showEndGame(
-    BuildContext context,
-  ) {
-    return showDialog<bool?>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
+  Future<bool?> showEndGame() {
+    return app<NavigationService>().showAppDialog(dialog: (BuildContext context) {
+      return Dialog(
         backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -148,7 +145,8 @@ class StatisticsDialogService {
                       },
                       style: dialogButtonStyle,
                       child: Text(
-                        AppLocalizations.of(context)!.finishGameDialogButton,
+                        AppLocalizations.of(context)!
+                            .finishGameDialogButton,
                         style: const TextStyle(
                           fontFamily: 'Aclonica',
                           fontSize: 14,
@@ -170,7 +168,8 @@ class StatisticsDialogService {
                       },
                       style: dialogButtonStyle,
                       child: Text(
-                        AppLocalizations.of(context)!.continueGameDialogButton,
+                        AppLocalizations.of(context)!
+                            .continueGameDialogButton,
                         style: const TextStyle(
                           fontFamily: 'Aclonica',
                           fontSize: 14,
@@ -183,8 +182,8 @@ class StatisticsDialogService {
             ],
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Future<Player?> showRoundCloserDialog({

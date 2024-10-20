@@ -119,11 +119,10 @@ class MockStatisticsDialogService extends _i1.Mock
       ) as _i8.Future<Map<String, int?>?>);
 
   @override
-  _i8.Future<bool?> showEndGame(_i3.BuildContext? context) =>
-      (super.noSuchMethod(
+  _i8.Future<bool?> showEndGame() => (super.noSuchMethod(
         Invocation.method(
           #showEndGame,
-          [context],
+          [],
         ),
         returnValue: _i8.Future<bool?>.value(),
         returnValueForMissingStub: _i8.Future<bool?>.value(),
@@ -244,9 +243,9 @@ class MockLocalGameRepository extends _i1.Mock
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<_i4.Game?> save(_i4.Game? object) => (super.noSuchMethod(
+  _i8.Future<_i4.Game?> saveCurrent(_i4.Game? object) => (super.noSuchMethod(
         Invocation.method(
-          #save,
+          #saveCurrent,
           [object],
         ),
         returnValue: _i8.Future<_i4.Game?>.value(),
@@ -302,9 +301,10 @@ class MockLocalGameService extends _i1.Mock implements _i12.LocalGameService {
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<_i4.Game?> saveGame(_i4.Game? game) => (super.noSuchMethod(
+  _i8.Future<_i4.Game?> saveLastPlayedGame(_i4.Game? game) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #saveGame,
+          #saveLastPlayedGame,
           [game],
         ),
         returnValue: _i8.Future<_i4.Game?>.value(),
@@ -322,9 +322,9 @@ class MockLocalGameService extends _i1.Mock implements _i12.LocalGameService {
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<_i4.Game?> getCurrentGame() => (super.noSuchMethod(
+  _i8.Future<_i4.Game?> getLastPlayedGame() => (super.noSuchMethod(
         Invocation.method(
-          #getCurrentGame,
+          #getLastPlayedGame,
           [],
         ),
         returnValue: _i8.Future<_i4.Game?>.value(),
