@@ -57,7 +57,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       ruleSet: ruleSet,
     );
 
-    Game currentGame = await app<GameService>().saveGame(game) ?? game;
+    Game currentGame =
+        await app<GameService>().saveLastPlayedGame(game) ?? game;
 
     _startGame(currentGame, startedAt);
   }
@@ -121,6 +122,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           print(frame.body);
           if (frame.body != null) {
             final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
+
+            // Retrieving new game stats after _closeOnlineRound()
             if (json['event'] == 'UPDATE_GAME') {
               final Game game = Game.fromJson(json['payload']['game']);
               emit(
@@ -130,7 +133,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
                 ),
               );
 
-              app<GameService>().saveGame(game);
+              _saveGame(state.game!);
             }
           }
         });
@@ -138,7 +141,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   /// Close round when game is online
   /// Game stats will be processed online on a server
-  void closeOnlineGame() async {
+  void _closeOnlineRound() async {
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: state.players);
 
@@ -177,16 +180,22 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   void closeRound() {
     if (state.isPublicGame) {
-      closeOnlineGame();
+      _closeOnlineRound();
     } else {
-      closeOfflineRound();
+      _closeOfflineRound();
     }
+  }
+
+  /// Will force a game to finish.
+  /// It will set the finishedAt of [Game] to the current time
+  void onPopScreen() {
+    _saveGame(state.game!, forceFinish: true);
   }
 
   /// Close round when game is offline game
   /// Stats will be processed offline on the device
   /// Game stats will be saved in local device storage
-  Future<void> closeOfflineRound() async {
+  Future<void> _closeOfflineRound() async {
     RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
     if (state.players.isEmpty) {
@@ -273,19 +282,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
       ),
     );
 
-    Game? game = await app<GameService>().saveGame(
-      state.game!.copyWith(
-        players: players,
-      ),
-    );
-
-    if (game?.isGameFinished ?? false) {
-      String finishedGame = DateFormat.yMd().format(DateTime.now());
-
-      finishGame(game!.copyWith(
-        finishedAt: finishedGame,
-      ));
-    }
+    _saveGame(state.game!);
   }
 
   bool _hasDonePrecisionLanding(Player player, int points) {
@@ -298,9 +295,23 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     return false;
   }
 
-  void finishGame(Game game) {
-    app<GameService>().saveToGameHistory(game);
-    client?.deactivate();
+  void _saveGame(Game game, {bool forceFinish = false}) async {
+    if (game.isGameFinished || forceFinish) {
+      DateTime finishedAt = DateTime.now();
+      String finishedGame = DateFormat('dd-MM-yyyy').format(finishedAt);
+
+      game = game.copyWith(
+        finishedAt: finishedGame,
+      );
+
+      app<GameService>().saveToGameHistory(game);
+
+      if (state.isPublicGame && client != null) {
+        client?.deactivate();
+      }
+    }
+
+    await app<GameService>().saveLastPlayedGame(game);
   }
 
   bool _checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {

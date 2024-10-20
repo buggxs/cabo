@@ -40,7 +40,7 @@ class MainMenuCubit extends Cubit<MainMenuState> {
   }
 
   Future<void> checkForPossibleGame({bool? useOwnRuleSet}) async {
-    Game? game = await app<GameService>().getCurrentGame();
+    Game? game = await app<GameService>().getLastPlayedGame();
     BuildContext currentContext =
         app<NavigationService>().navigatorKey.currentContext!;
     if (!(game?.isGameFinished ?? true)) {

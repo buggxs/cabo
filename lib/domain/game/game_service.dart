@@ -9,9 +9,9 @@ abstract class GameService {
 
   Future<void> saveToGameHistory(Game game);
 
-  Future<Game?> saveGame(Game game);
+  Future<Game?> saveLastPlayedGame(Game game);
 
-  Future<Game?> getCurrentGame();
+  Future<Game?> getLastPlayedGame();
 }
 
 class LocalGameService implements GameService {
@@ -28,8 +28,8 @@ class LocalGameService implements GameService {
   }
 
   @override
-  Future<Game?> saveGame(Game game) async {
-    return localGameRepository.save(game);
+  Future<Game?> saveLastPlayedGame(Game game) async {
+    return localGameRepository.saveCurrent(game);
   }
 
   @override
@@ -40,7 +40,7 @@ class LocalGameService implements GameService {
       Game updatedGame = game.copyWith(id: games.length + 1);
       games.add(updatedGame);
       if (!updatedGame.isGameFinished) {
-        saveGame(updatedGame);
+        saveLastPlayedGame(updatedGame);
       }
     } else {
       games[index] = game;
@@ -49,7 +49,7 @@ class LocalGameService implements GameService {
   }
 
   @override
-  Future<Game?> getCurrentGame() {
+  Future<Game?> getLastPlayedGame() {
     return localGameRepository.getCurrent();
   }
 }

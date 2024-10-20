@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Cabo Board',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.green,
+         primarySwatch: Colors.green,
       ),
       navigatorKey: app<NavigationService>().navigatorKey,
       localizationsDelegates: const [

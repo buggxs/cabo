@@ -4,12 +4,10 @@ import 'package:cabo/components/statistics/widgets/statistics_screen_content_bod
 import 'package:cabo/components/widgets/publish_game_dialog.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
-import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({
@@ -71,7 +69,7 @@ class StatisticsScreenContent extends StatelessWidget {
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: () => _onPopScreen(context, cubit),
+          onPressed: () => _onPopScreen(cubit, context),
         ),
         actions: [
           IconButton(
@@ -86,23 +84,29 @@ class StatisticsScreenContent extends StatelessWidget {
           )
         ],
       ),
-      body: const StatisticsScreenContentBody(),
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) async {
+          if (didPop) {
+            return;
+          }
+          _onPopScreen(cubit, context);
+        },
+        child: const StatisticsScreenContentBody(),
+      ),
     );
   }
 
-  Future<bool> _onPopScreen(BuildContext context, StatisticsCubit cubit) async {
-    StatisticsState state = cubit.state;
-    final bool shouldPop =
-        await app<StatisticsDialogService>().showEndGame(context) ?? false;
-    if (context.mounted) {
-      if (shouldPop) {
-        cubit.client?.deactivate();
-        DateTime finishedAt = DateTime.now();
-        app<GameService>().saveToGameHistory(
-          state.game!.copyWith(
-            finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
-          ),
-        );
+  Future<bool> _onPopScreen(StatisticsCubit cubit, BuildContext context) async {
+    bool shouldPop = false;
+    await Future.delayed(Duration.zero, () async {
+      shouldPop = await app<StatisticsDialogService>().showEndGame() ?? false;
+    });
+
+    if (shouldPop) {
+      cubit.onPopScreen();
+
+      if (context.mounted) {
         Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
       }
     }
