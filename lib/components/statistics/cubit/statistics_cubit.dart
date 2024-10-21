@@ -11,6 +11,7 @@ import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -19,7 +20,7 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 
 part 'statistics_state.dart';
 
-class StatisticsCubit extends Cubit<StatisticsState> {
+class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   StatisticsCubit({
     required List<Player> players,
     this.useOwnRuleSet = false,
@@ -99,13 +100,13 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           url: 'ws://18.156.177.170:80/cabo-ws',
           onConnect: _onConnectCallback,
           onStompError: (frame) {
-            print(frame);
+            log.severe(frame);
           },
           onWebSocketError: (error) {
-            print(error);
+            log.severe(error);
           },
           onDebugMessage: (message) {
-            print(message);
+            log.info(message);
           }),
     );
     client?.activate();
@@ -113,13 +114,15 @@ class StatisticsCubit extends Cubit<StatisticsState> {
 
   /// [client] is connected and ready
   void _onConnectCallback(StompFrame connectFrame) {
-    print(connectFrame.body);
+    log.info('StompFrame Body content:');
+    log.info(connectFrame.body);
     client?.subscribe(
         destination: '/game/room/${state.publicGame?.publicId}',
         headers: {},
         callback: (StompFrame frame) {
           // Received a frame for this subscription
-          print(frame.body);
+          log.info('');
+          log.info(frame.body);
           if (frame.body != null) {
             final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
 
