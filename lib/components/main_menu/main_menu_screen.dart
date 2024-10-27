@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({Key? key}) : super(key: key);
 
-  static const String route = 'statistic_tracker_screen';
+  static const String route = 'main_menu_screen';
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +37,23 @@ class MainMenuScreenContent extends StatelessWidget {
       child = const ChoosePlayerNameScreen();
     }
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/cabo-main-menu-background.png'),
-            fit: BoxFit.cover,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+        cubit.onWillPop();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/cabo-main-menu-background.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        constraints: const BoxConstraints.expand(),
-        child: PopScope(
-          onPopInvoked: (_) => cubit.onWillPop,
+          constraints: const BoxConstraints.expand(),
           child: child,
         ),
       ),

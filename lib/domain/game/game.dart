@@ -75,9 +75,11 @@ class Game extends Equatable {
     return DateFormat('dd-MM-yyyy').format(startedDate);
   }
 
-  bool get isGameFinished => players.any(
+  bool get isGameFinished =>
+      players.any(
         (Player player) => player.totalPoints > ruleSet.totalGamePoints,
-      );
+      ) ||
+      finishedAt != null;
 
   @override
   List<Object?> get props => <Object?>[

@@ -32,6 +32,7 @@ dependencies:
   stomp_dart_client: ^1.0.3
   http: ^1.2.0
   pretty_qr_code: ^3.3.0
+  logging: 1.2.0
 
 dev_dependencies:
   flutter_test:

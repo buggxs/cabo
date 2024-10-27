@@ -7,12 +7,13 @@ import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 part 'main_menu_state.dart';
 
-class MainMenuCubit extends Cubit<MainMenuState> {
+class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   MainMenuCubit() : super(MainMenu());
 
   void _pushToStatsScreen(
@@ -34,13 +35,14 @@ class MainMenuCubit extends Cubit<MainMenuState> {
   void pushToGameHistoryScreen(
     BuildContext context,
   ) {
+    log.info('History screen');
     Navigator.of(context).pushNamed(
       GameHistoryScreen.route,
     );
   }
 
   Future<void> checkForPossibleGame({bool? useOwnRuleSet}) async {
-    Game? game = await app<GameService>().getCurrentGame();
+    Game? game = await app<GameService>().getLastPlayedGame();
     BuildContext currentContext =
         app<NavigationService>().navigatorKey.currentContext!;
     if (!(game?.isGameFinished ?? true)) {

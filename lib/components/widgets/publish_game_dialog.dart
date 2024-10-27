@@ -7,9 +7,11 @@ class ShowPublishGameScreen extends StatefulWidget {
   const ShowPublishGameScreen({
     super.key,
     required this.publishGame,
+    this.isAlreadyPublished = false,
   });
 
   final Future<String?> Function() publishGame;
+  final bool isAlreadyPublished;
 
   @override
   State<ShowPublishGameScreen> createState() => _ShowPublishGameScreenState();
@@ -23,6 +25,14 @@ class _ShowPublishGameScreenState extends State<ShowPublishGameScreen> {
     setState(() {
       publicGameId = newPublicGameId;
     });
+  }
+
+  @override
+  void initState() {
+    if (widget.isAlreadyPublished) {
+      onPublish();
+    }
+    super.initState();
   }
 
   @override

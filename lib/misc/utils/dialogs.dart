@@ -123,12 +123,10 @@ class StatisticsDialogService {
     );
   }
 
-  Future<bool?> showEndGame(
-    BuildContext context,
-  ) {
-    return showDialog<bool?>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
+  Future<bool?> showEndGame() {
+    return app<NavigationService>().showAppDialog(
+        dialog: (BuildContext context) {
+      return Dialog(
         backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -183,8 +181,8 @@ class StatisticsDialogService {
             ],
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Future<Player?> showRoundCloserDialog({
