@@ -79,7 +79,7 @@ class StatisticsScreenContent extends StatelessWidget {
             ),
             onPressed: () => _publishGameDialog(
               context,
-              cubit.publishGame,
+              cubit,
             ),
           )
         ],
@@ -116,15 +116,20 @@ class StatisticsScreenContent extends StatelessWidget {
 
   Future<void> _publishGameDialog(
     BuildContext context,
-    Future<String?> Function() publishGame,
+    StatisticsCubit cubit,
   ) async {
+    StatisticsState state = cubit.state;
+
     await showDialog(
         context: context,
         builder: (BuildContext localContext) {
           return Dialog(
             backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
             child: ShowPublishGameScreen(
-              publishGame: publishGame,
+              isAlreadyPublished: state.isPublicGame,
+              publishGame: state.isPublicGame
+                  ? () => Future.value(state.publicGame!.publicId)
+                  : cubit.publishGame,
             ),
           );
         });
