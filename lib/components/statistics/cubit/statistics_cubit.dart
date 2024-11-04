@@ -144,6 +144,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
   /// Close round when game is online
   /// Game stats will be processed online on a server
+  /// Points will be send via websocket to the server
   void _closeOnlineRound() async {
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: state.players);
