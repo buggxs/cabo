@@ -12,6 +12,7 @@
   "finishGameDialogButton": "Ja, beenden!",
   "continueGameDialogButton": "Nein, weiter spielen.",
   "dialogTextRoundFinishedBy": "Wer hat die Runde beendet?",
+  "dialogTitleLoadFinishedGame": "Nicht beendetes Spiel",
   "dialogTextLoadFinishedGame": "Du hast das letzt Spiel nicht beendet, soll es geladen werden?",
   "loadGameDialogButton": "Ja Spiel laden!",
   "notLoadGameDialogButton": "Nein, nicht laden.",

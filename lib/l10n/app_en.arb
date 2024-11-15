@@ -12,6 +12,7 @@
   "finishGameDialogButton": "Yes, finish!",
   "continueGameDialogButton": "No, keep playing.",
   "dialogTextRoundFinishedBy": "Who finished the round?",
+  "dialogTitleLoadFinishedGame": "Not Finished Game",
   "dialogTextLoadFinishedGame": "You have not finished the last game, should it be loaded?",
   "loadGameDialogButton": "Yes, load game!",
   "notLoadGameDialogButton": "No, do not load.",

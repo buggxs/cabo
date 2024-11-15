@@ -14,6 +14,7 @@ class Round extends Equatable {
     this.hasPenaltyPoints = false,
     this.hasClosedRound = false,
     this.hasPrecisionLanding = false,
+    this.isWonRound = false,
   });
 
   final int? id;
@@ -22,6 +23,7 @@ class Round extends Equatable {
   final bool hasPenaltyPoints;
   final bool hasClosedRound;
   final bool hasPrecisionLanding;
+  final bool isWonRound;
 
   factory Round.fromJson(Map<String, dynamic> json) => _$RoundFromJson(json);
 
@@ -35,6 +37,7 @@ class Round extends Equatable {
     bool? hasPenaltyPoints,
     bool? hasClosedRound,
     bool? hasPrecisionLanding,
+    bool? isWonRound,
   }) {
     return Round(
       round: round ?? this.round,
@@ -42,6 +45,7 @@ class Round extends Equatable {
       hasPenaltyPoints: hasPenaltyPoints ?? this.hasPenaltyPoints,
       hasClosedRound: hasClosedRound ?? this.hasClosedRound,
       hasPrecisionLanding: hasPrecisionLanding ?? this.hasPrecisionLanding,
+      isWonRound: isWonRound ?? this.isWonRound,
     );
   }
 
@@ -53,5 +57,6 @@ class Round extends Equatable {
         hasPenaltyPoints,
         hasClosedRound,
         hasPrecisionLanding,
+        isWonRound,
       ];
 }

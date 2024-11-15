@@ -61,4 +61,14 @@ flutter:
     - family: Aclonica
       fonts:
         - asset: fonts/Aclonica-Regular.ttf
+    - family: Archivo
+      fonts:
+        - asset: fonts/Archivo-Bold.ttf
+          weight: 700
+        - asset: fonts/Archivo-Light.ttf
+          weight: 300
+        - asset: fonts/Archivo-Medium.ttf
+          weight: 500
+        - asset: fonts/Archivo-Regular.ttf
+          weight: 400
 

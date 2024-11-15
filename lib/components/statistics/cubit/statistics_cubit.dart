@@ -264,6 +264,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               hasClosedRound: closingPlayer == player,
               hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
               hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+              isWonRound:
+                  player.name == _getPlayerWithLowestPoints(playerPointsmap),
             ),
           ],
         );

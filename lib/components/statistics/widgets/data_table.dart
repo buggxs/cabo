@@ -45,9 +45,6 @@ class _CaboDataTableState extends State<CaboDataTable>
             Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                const SizedBox(
-                  width: 20,
-                ),
                 ...widget.titleCells,
               ],
             ),

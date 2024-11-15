@@ -2,13 +2,50 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+const Color primaryColor = CaboTheme.primaryColor;
+const Color secondaryColor = CaboTheme.secondaryColor;
+const Color dialogBorderColor = Color.fromRGBO(81, 120, 30, 1);
+
 const TextStyle title = TextStyle(
-  fontFamily: 'Aclonica',
+  fontFamily: 'Archivo',
+  fontSize: 24,
+  fontWeight: FontWeight.w500,
+  color: Color.fromRGBO(142, 215, 46, 1.0),
+);
+
+const TextStyle primaryButtonTextStyle = TextStyle(
+  fontFamily: 'Archivo',
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+  color: Color.fromRGBO(185, 206, 1, 1.0),
+);
+
+const TextStyle secondaryButtonTextStyle = TextStyle(
+  fontFamily: 'Archivo',
   fontSize: 20,
-  color: Colors.black,
+  fontWeight: FontWeight.bold,
+  color: Color.fromRGBO(80, 119, 30, 1.0),
+);
+
+final ButtonStyle primaryButtonStyle = OutlinedButton.styleFrom(
+  foregroundColor: primaryColor,
+  side: const BorderSide(color: primaryColor, width: 2.0),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
+  ),
+);
+
+final RoundedRectangleBorder dialogBorderShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(5),
+  side: const BorderSide(
+    style: BorderStyle.solid,
+    color: dialogBorderColor,
+    width: 2,
+  ),
 );
 
 const InputDecoration inputDecoration = InputDecoration(
@@ -243,16 +280,28 @@ class StatisticsDialogService {
   Future<bool?> loadNotFinishedGame() async {
     return app<NavigationService>().showAppDialog<bool?>(
       dialog: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+        shape: dialogBorderShape,
+        backgroundColor: secondaryColor,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                AppLocalizations.of(context)!.dialogTextLoadFinishedGame,
-                style: title,
+                AppLocalizations.of(context)!.dialogTitleLoadFinishedGame,
+                style: title.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                AppLocalizations.of(context)!.dialogTextLoadFinishedGame,
+                style: title.copyWith(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 40,
               ),
               Row(
                 children: [
@@ -261,17 +310,17 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      style: dialogButtonStyle,
+                      style: primaryButtonStyle,
                       child: Text(
                         AppLocalizations.of(context)!.loadGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
-                        ),
+                        style: primaryButtonTextStyle,
                       ),
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Row(
                 children: [
@@ -280,13 +329,10 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      style: dialogButtonStyle,
+                      style: primaryButtonStyle,
                       child: Text(
                         AppLocalizations.of(context)!.notLoadGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
-                        ),
+                        style: secondaryButtonTextStyle,
                       ),
                     ),
                   ),
