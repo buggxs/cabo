@@ -2,6 +2,7 @@ import 'package:cabo/components/statistics/widgets/failure_chip.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class CaboDataCell extends StatelessWidget {
   const CaboDataCell({
@@ -46,34 +47,26 @@ class CaboDataCell extends StatelessWidget {
                   ),
                 ),
               // Just for display purposes calculated with -5
-              Text(
-                '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
-                style: CaboTheme.numberTextStyle.copyWith(
-                  // https://pub.dev/packages/simple_gradient_text
-                  shadows: const [
-                    Shadow(
-                      // bottomLeft
-                      offset: Offset(-1.5, -1.5),
-                      color: CaboTheme.secondaryColor,
+              if (!round.hasPenaltyPoints)
+                Text(
+                  '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
+                  style: CaboTheme.numberTextStyle.copyWith(
+                    shadows: CaboTheme().textStroke(
+                      CaboTheme.secondaryColor,
                     ),
-                    Shadow(
-                      // bottomRight
-                      offset: Offset(1.5, -1.5),
-                      color: CaboTheme.secondaryColor,
-                    ),
-                    Shadow(
-                      // topRight
-                      offset: Offset(1.5, 1.5),
-                      color: CaboTheme.secondaryColor,
-                    ),
-                    Shadow(
-                      // topLeft
-                      offset: Offset(-1.5, 1.5),
-                      color: CaboTheme.secondaryColor,
-                    ),
+                  ),
+                ),
+              if (round.hasPenaltyPoints)
+                GradientText(
+                  '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
+                  style: CaboTheme.numberTextStyle,
+                  gradientType: GradientType.linear,
+                  gradientDirection: GradientDirection.btt,
+                  colors: const [
+                    CaboTheme.failureRed,
+                    CaboTheme.primaryGreenColor,
                   ],
                 ),
-              ),
             ],
           ),
           const SizedBox(
