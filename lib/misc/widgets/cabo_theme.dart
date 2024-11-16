@@ -6,6 +6,7 @@ class CaboTheme {
   static const Color secondaryColor = Color.fromRGBO(32, 45, 18, 1);
   static const Color tertiaryColor = Color.fromRGBO(81, 120, 30, 1);
   static const Color fourthColor = Color.fromRGBO(108, 156, 45, 1.0);
+  static const Color secondaryBackgroundColor = Color.fromRGBO(35, 49, 19, 0.9);
 
   static const Color failureRed = Color.fromRGBO(166, 0, 0, 1.0);
   static const Color failureLightRed = Color.fromRGBO(255, 84, 84, 1.0);
@@ -13,8 +14,6 @@ class CaboTheme {
   static const Color firstPlaceColor = Color.fromRGBO(149, 136, 0, 1.0);
   static const Color secondPlaceColor = Color.fromRGBO(133, 133, 133, 1.0);
   static const Color thirdPlaceColor = Color.fromRGBO(128, 97, 29, 1.0);
-
-  static const Color secondaryBackgroundColor = Color.fromRGBO(35, 49, 19, 0.9);
 
   static const double cellWidth = 130;
 

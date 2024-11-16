@@ -49,9 +49,9 @@ class StatisticsScreenContentBody extends StatelessWidget {
             children: [
               StatisticInfoCard(
                 title: 'Round',
-                content: '3',
+                content: state.players.first.rounds.length.toString(),
               ),
-              StatisticInfoCard(
+              const StatisticInfoCard(
                 title: 'Play time',
                 shouldBeTimer: true,
               ),
