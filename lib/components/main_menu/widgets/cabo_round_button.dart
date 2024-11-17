@@ -7,7 +7,7 @@ class CaboRoundButton extends StatelessWidget {
     this.icon = const Icon(
       Icons.add,
       color: Colors.green,
-      size: 30,
+      size: 40,
     ),
   }) : super(key: key);
 
@@ -19,8 +19,8 @@ class CaboRoundButton extends StatelessWidget {
     return GestureDetector(
       onTap: changePlayerAmount,
       child: Container(
-        height: 50,
-        width: 50,
+        height: 65,
+        width: 65,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: const Color.fromRGBO(32, 45, 18, 1.0),

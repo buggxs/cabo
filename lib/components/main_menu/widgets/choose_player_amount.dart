@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_round_button.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,12 +14,10 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
     ChoosePlayerAmount state = cubit.state as ChoosePlayerAmount;
 
-    const TextStyle style = TextStyle(
-      color: Color.fromRGBO(81, 120, 30, 1.0),
-      fontFamily: 'Aclonica',
+    TextStyle style = CaboTheme.primaryTextStyle.copyWith(
       fontSize: 48,
-      fontWeight: FontWeight.bold,
-      shadows: [
+      fontWeight: FontWeight.w900,
+      shadows: const [
         Shadow(
           color: Color.fromRGBO(32, 45, 18, 1.0),
           blurRadius: 2.0,
@@ -66,7 +65,7 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
                   const Spacer(),
                   Text(
                     '${state.playerAmount}',
-                    style: style.copyWith(fontSize: 74),
+                    style: style.copyWith(fontSize: 120),
                   ),
                   const Spacer(),
                   CaboRoundButton(
@@ -74,7 +73,7 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
                     icon: const Icon(
                       Icons.remove,
                       color: Colors.red,
-                      size: 30,
+                      size: 40,
                     ),
                   ),
                   const SizedBox(

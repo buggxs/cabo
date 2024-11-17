@@ -17,6 +17,7 @@ class MenuButton extends StatelessWidget {
     fontFamily: 'Archivo',
     fontWeight: FontWeight.w800,
     fontSize: 32,
+    height: 0,
   );
 
   @override

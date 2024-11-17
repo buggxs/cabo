@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,37 +9,34 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ChoosePlayerNameScreen extends StatelessWidget {
   const ChoosePlayerNameScreen({Key? key}) : super(key: key);
 
-  static const TextStyle style = TextStyle(
-    color: Color.fromRGBO(81, 120, 30, 1.0),
-    fontFamily: 'Aclonica',
-    fontSize: 48,
-    fontWeight: FontWeight.bold,
-    letterSpacing: 10.0,
-    shadows: [
-      Shadow(
-        color: Color.fromRGBO(32, 45, 18, 1.0),
-        blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          2.0,
-        ),
-      ),
-      Shadow(
-        color: Color.fromRGBO(32, 45, 18, 1.0),
-        blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          -2.0,
-        ),
-      ),
-    ],
-  );
-
   @override
   Widget build(BuildContext context) {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
     ChoosePlayerNames state = cubit.state as ChoosePlayerNames;
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    final TextStyle style = CaboTheme.primaryTextStyle.copyWith(
+      fontSize: 48,
+      fontWeight: FontWeight.w900,
+      shadows: const [
+        Shadow(
+          color: Color.fromRGBO(32, 45, 18, 1.0),
+          blurRadius: 2.0,
+          offset: Offset(
+            2.0,
+            2.0,
+          ),
+        ),
+        Shadow(
+          color: Color.fromRGBO(32, 45, 18, 1.0),
+          blurRadius: 2.0,
+          offset: Offset(
+            2.0,
+            -2.0,
+          ),
+        ),
+      ],
+    );
 
     return SafeArea(
       child: Center(
@@ -91,18 +89,18 @@ class ChoosePlayerNameScreen extends StatelessWidget {
       Widget child = Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          width: 250,
           child: Focus(
             child: TextFormField(
               controller: controller,
               autocorrect: false,
               enableSuggestions: false,
-              cursorColor: const Color.fromRGBO(81, 120, 30, 1.0),
+              cursorColor: CaboTheme.tertiaryColor,
               decoration: dialogPointInputStyle,
-              style: const TextStyle(
-                color: Color.fromRGBO(81, 120, 30, 1.0),
+              style: CaboTheme.secondaryTextStyle.copyWith(
                 fontFamily: 'Aclonica',
-                fontSize: 20,
+                color: CaboTheme.primaryColor,
+                fontWeight: FontWeight.normal,
+                fontSize: 22,
               ),
               onSaved: (String? name) {
                 String? submittedName = name;

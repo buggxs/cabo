@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_amount.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_name.dart';
+import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_screen_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,9 +33,13 @@ class MainMenuScreenContent extends StatelessWidget {
     Widget child = const MainMenuScreenList();
 
     if (state is ChoosePlayerAmount) {
-      child = const ChoosePlayerAmountScreen();
+      child = const DarkScreenOverlay(
+        child: ChoosePlayerAmountScreen(),
+      );
     } else if (state is ChoosePlayerNames) {
-      child = const ChoosePlayerNameScreen();
+      child = const DarkScreenOverlay(
+        child: ChoosePlayerNameScreen(),
+      );
     }
 
     return PopScope(

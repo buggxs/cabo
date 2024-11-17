@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/widgets/game_header.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -43,12 +44,31 @@ class MainMenuScreenList extends StatelessWidget {
                     text: AppLocalizations.of(context)!.menuEntryGameHistory,
                     onTap: () => cubit.pushToGameHistoryScreen(context),
                   ),
+                  // TODO: Add About screen
+                  MenuButton(
+                    text: AppLocalizations.of(context)!.menuEntryGameRules,
+                    onTap: () => {},
+                  ),
+                  MenuButton(
+                    text:
+                        AppLocalizations.of(context)!.menuEntryGameAboutScreen,
+                    onTap: () => {},
+                  ),
                 ],
               ),
             ),
             const SizedBox(
-              height: 150,
+              height: 50,
             ),
+            Text(
+              '© Andre Salzmann 2025',
+              style: CaboTheme.primaryTextStyle.copyWith(
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            )
           ],
         );
       }),
