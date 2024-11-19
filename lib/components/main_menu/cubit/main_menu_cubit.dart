@@ -32,12 +32,10 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     );
   }
 
-  void pushToGameHistoryScreen(
-    BuildContext context,
-  ) {
+  void pushToScreen(BuildContext context, String? route) {
     log.info('History screen');
     Navigator.of(context).pushNamed(
-      GameHistoryScreen.route,
+      route ?? GameHistoryScreen.route,
     );
   }
 

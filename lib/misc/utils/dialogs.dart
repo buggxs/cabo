@@ -62,17 +62,18 @@ final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
 const InputDecoration dialogPointInputStyle = InputDecoration(
   isDense: true,
   border: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 2),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
   ),
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 2),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 2),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
+    gapPadding: 0,
   ),
   contentPadding: EdgeInsets.all(8.0),
   filled: true,
-  fillColor: Color.fromRGBO(32, 45, 18, 1),
+  fillColor: CaboTheme.secondaryColor,
 );
 
 class StatisticsDialogService {

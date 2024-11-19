@@ -1,5 +1,8 @@
+import 'package:cabo/components/about/about_screen.dart';
+import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/widgets/game_header.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
@@ -42,17 +45,25 @@ class MainMenuScreenList extends StatelessWidget {
                   ),
                   MenuButton(
                     text: AppLocalizations.of(context)!.menuEntryGameHistory,
-                    onTap: () => cubit.pushToGameHistoryScreen(context),
+                    onTap: () => cubit.pushToScreen(
+                      context,
+                      GameHistoryScreen.route,
+                    ),
                   ),
-                  // TODO: Add About screen
                   MenuButton(
                     text: AppLocalizations.of(context)!.menuEntryGameRules,
-                    onTap: () => {},
+                    onTap: () => cubit.pushToScreen(
+                      context,
+                      RuleSetScreen.route,
+                    ),
                   ),
                   MenuButton(
                     text:
                         AppLocalizations.of(context)!.menuEntryGameAboutScreen,
-                    onTap: () => {},
+                    onTap: () => cubit.pushToScreen(
+                      context,
+                      AboutScreen.route,
+                    ),
                   ),
                 ],
               ),
