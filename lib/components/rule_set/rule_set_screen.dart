@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
-import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cabo/misc/widgets/cabo_switch.dart';
+import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -44,29 +45,49 @@ class RuleSetScreen extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
+                const SizedBox(
+                  height: 100,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 48.0,
                     vertical: 6,
                   ),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    onChanged: (String points) {},
-                    minLines: 1,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Aclonica',
-                      color: CaboTheme.primaryColor,
-                    ),
-                    decoration: dialogPointInputStyle.copyWith(
-                        labelStyle: CaboTheme.secondaryTextStyle.copyWith(
-                          fontSize: 14,
-                          color: CaboTheme.primaryColor,
-                          backgroundColor: CaboTheme.tertiaryColor,
-                        ),
-                        labelText: 'Max. Game Points'),
+                  child: CaboTextField(
+                    labelText: 'Max. Game Points',
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 48.0,
+                    vertical: 6,
+                  ),
+                  child: CaboTextField(
+                    labelText: 'Kamikaze Points',
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 48.0,
+                    vertical: 6,
+                  ),
+                  child: CaboSwitch(
+                    labelText: 'Round Winner get 0 Points',
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 48.0,
+                    vertical: 6,
+                  ),
+                  child: CaboSwitch(
+                    labelText: 'Precision Landing',
+                  ),
+                ),
+                const Spacer(),
                 MenuButton(
                   text: 'Save',
                   padding: const EdgeInsets.symmetric(
@@ -86,6 +107,9 @@ class RuleSetScreen extends StatelessWidget {
                   ),
                   innerPadding: EdgeInsets.all(2),
                 ),
+                const SizedBox(
+                  height: 25,
+                )
               ],
             ),
           ),
