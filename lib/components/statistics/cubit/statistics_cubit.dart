@@ -23,7 +23,6 @@ part 'statistics_state.dart';
 class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   StatisticsCubit({
     required List<Player> players,
-    this.useOwnRuleSet = false,
     Game? game,
   }) : super(
           StatisticsState(
@@ -34,8 +33,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   final OpenGameService openGameService = app<OpenGameService>();
-  final bool useOwnRuleSet;
-
   late final StompClient? client;
 
   void loadGame({Game? game}) {
@@ -72,9 +69,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   Future<RuleSet> loadRuleSet() async {
-    return app<RuleService>().loadRuleSet(
-      useOwnRules: useOwnRuleSet,
-    );
+    return app<RuleService>().loadRuleSet();
   }
 
   Future<String?> publishGame() async {

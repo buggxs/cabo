@@ -3,10 +3,16 @@ import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class CaboTextField extends StatefulWidget {
-  const CaboTextField({this.value, this.labelText, super.key});
+  const CaboTextField({
+    this.value,
+    this.labelText,
+    this.onChanged,
+    super.key,
+  });
 
   final String? labelText;
   final String? value;
+  final void Function(String)? onChanged;
 
   @override
   State<CaboTextField> createState() => _CaboTextFieldState();
@@ -38,6 +44,8 @@ class _CaboTextFieldState extends State<CaboTextField> {
 
   @override
   Widget build(BuildContext context) {
+    _controller.text = widget.value ?? '';
+
     return TextField(
       keyboardType: TextInputType.number,
       onChanged: (String points) {
@@ -45,6 +53,7 @@ class _CaboTextFieldState extends State<CaboTextField> {
           setState(() {
             currentBackgroundColor = CaboTheme.tertiaryColor;
           });
+          widget.onChanged?.call(points);
         } else {
           setState(() {
             currentBackgroundColor = Colors.transparent;

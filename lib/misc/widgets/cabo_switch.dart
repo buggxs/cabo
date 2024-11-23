@@ -6,25 +6,19 @@ class CaboSwitch extends StatefulWidget {
   const CaboSwitch({
     this.initialValue = false,
     required this.labelText,
+    this.onChanged,
     super.key,
   });
 
-  final bool? initialValue;
+  final bool initialValue;
   final String labelText;
+  final void Function(bool)? onChanged;
 
   @override
   State<CaboSwitch> createState() => _CaboSwitchState();
 }
 
 class _CaboSwitchState extends State<CaboSwitch> {
-  bool active = false;
-
-  @override
-  void initState() {
-    super.initState();
-    active = widget.initialValue!;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -43,11 +37,14 @@ class _CaboSwitchState extends State<CaboSwitch> {
           child: Align(
             alignment: Alignment.centerRight,
             child: Switch(
-              value: active,
+              trackColor: WidgetStateProperty.all(CaboTheme.tertiaryColor),
+              trackOutlineColor:
+                  WidgetStateProperty.all(CaboTheme.primaryColor),
+              inactiveThumbColor: CaboTheme.secondaryColor,
+              activeColor: CaboTheme.primaryColor,
+              value: widget.initialValue,
               onChanged: (bool value) {
-                setState(() {
-                  active = value;
-                });
+                widget.onChanged?.call(value);
               },
             ),
           ),

@@ -1,9 +1,12 @@
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
+import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/misc/widgets/cabo_switch.dart';
 import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RuleSetScreen extends StatelessWidget {
   const RuleSetScreen({super.key});
@@ -12,6 +15,22 @@ class RuleSetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => RuleSetCubit()..loadRuleSet(),
+      child: const RuleSetScreenContent(),
+    );
+  }
+}
+
+class RuleSetScreenContent extends StatelessWidget {
+  const RuleSetScreenContent({super.key});
+
+  static const route = 'rule_set_screen';
+
+  @override
+  Widget build(BuildContext context) {
+    RuleSetCubit cubit = context.watch<RuleSetCubit>();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
@@ -54,7 +73,15 @@ class RuleSetScreen extends StatelessWidget {
                     vertical: 6,
                   ),
                   child: CaboTextField(
+                    value: cubit.state.ruleSet.totalGamePoints.toString(),
                     labelText: 'Max. Game Points',
+                    onChanged: (String points) {
+                      cubit.saveRuleSet(
+                        cubit.state.ruleSet.copyWith(
+                          totalGamePoints: int.tryParse(points),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -63,7 +90,16 @@ class RuleSetScreen extends StatelessWidget {
                     vertical: 6,
                   ),
                   child: CaboTextField(
+                    value: cubit.state.ruleSet.kamikazePoints.toString(),
                     labelText: 'Kamikaze Points',
+                    onChanged: (String points) {
+                      final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
+                        kamikazePoints: int.tryParse(points),
+                      );
+                      cubit.saveRuleSet(
+                        ruleSet,
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(
@@ -75,7 +111,15 @@ class RuleSetScreen extends StatelessWidget {
                     vertical: 6,
                   ),
                   child: CaboSwitch(
+                    initialValue: cubit.state.ruleSet.roundWinnerGetsZeroPoints,
                     labelText: 'Round Winner get 0 Points',
+                    onChanged: (bool value) {
+                      cubit.saveRuleSet(
+                        cubit.state.ruleSet.copyWith(
+                          roundWinnerGetsZeroPoints: value,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -84,7 +128,16 @@ class RuleSetScreen extends StatelessWidget {
                     vertical: 6,
                   ),
                   child: CaboSwitch(
+                    initialValue: cubit.state.ruleSet.precisionLanding,
                     labelText: 'Precision Landing',
+                    onChanged: (bool value) {
+                      final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
+                        precisionLanding: value,
+                      );
+                      cubit.saveRuleSet(
+                        ruleSet,
+                      );
+                    },
                   ),
                 ),
                 const Spacer(),
@@ -94,6 +147,7 @@ class RuleSetScreen extends StatelessWidget {
                     horizontal: 48.0,
                     vertical: 6,
                   ),
+                  onTap: () => Navigator.of(context).pop(),
                 ),
                 MenuButton(
                   text: 'Reset Settings',
@@ -105,7 +159,8 @@ class RuleSetScreen extends StatelessWidget {
                     horizontal: 48.0,
                     vertical: 6,
                   ),
-                  innerPadding: EdgeInsets.all(2),
+                  innerPadding: const EdgeInsets.all(2),
+                  onTap: cubit.resetRuleSet,
                 ),
                 const SizedBox(
                   height: 25,
