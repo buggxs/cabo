@@ -55,8 +55,9 @@ class Game extends Equatable {
         return '';
       }
       Duration duration = dateStartedAt.difference(dateFinishedAt);
-      String durationString = duration.toString().split('.').first;
-      return durationString;
+      return '${duration.inDays.remainder(60).toString().padLeft(2, '0')}:'
+          '${duration.inHours.remainder(60).toString().padLeft(2, '0')}:'
+          '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}';
     }
     return '';
   }

@@ -62,7 +62,7 @@ class _CaboDataTableState extends State<CaboDataTable>
       DateTime finishedAt = DateTime.now();
       app<GameService>().saveToGameHistory(
         widget.cubit.state.game!.copyWith(
-          finishedAt: DateFormat('dd-MM-yyyy').format(finishedAt),
+          finishedAt: DateFormat('dd-MM-yyyy HH:mm').format(finishedAt),
         ),
       );
     }

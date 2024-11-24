@@ -299,7 +299,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   void _saveGame(Game game, {bool forceFinish = false}) async {
     if (game.isGameFinished || forceFinish) {
       DateTime finishedAt = DateTime.now();
-      String finishedGame = DateFormat('dd-MM-yyyy').format(finishedAt);
+      String finishedGame = DateFormat('dd-MM-yyyy HH:mm').format(finishedAt);
 
       game = game.copyWith(
         finishedAt: finishedGame,

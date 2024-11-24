@@ -12,7 +12,7 @@ class CaboTheme {
   static const Color failureLightRed = Color.fromRGBO(255, 84, 84, 1.0);
 
   static const Color firstPlaceColor = Color.fromRGBO(149, 136, 0, 1.0);
-  static const Color secondPlaceColor = Color.fromRGBO(133, 133, 133, 1.0);
+  static const Color secondPlaceColor = Color.fromRGBO(164, 164, 164, 1.0);
   static const Color thirdPlaceColor = Color.fromRGBO(128, 97, 29, 1.0);
 
   static const double cellWidth = 130;

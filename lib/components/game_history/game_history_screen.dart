@@ -44,13 +44,28 @@ class GameHistoryScreenContent extends StatelessWidget {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-              children: cubit.state.games
-                  .map((Game game) => GameCard(game: game))
-                  .toList(),
+              children: _generateList(cubit.state.games),
             ),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _generateList(List<Game> games) {
+    final List<Widget> children = <Widget>[];
+    for (int i = 0; i < games.length; i++) {
+      children.add(
+        Padding(
+          padding: i % 2 == 0
+              ? const EdgeInsets.only(left: 50)
+              : const EdgeInsets.only(right: 50),
+          child: GameCard(
+            game: games[i],
+          ),
+        ),
+      );
+    }
+    return children;
   }
 }
