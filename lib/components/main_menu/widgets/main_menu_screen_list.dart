@@ -4,7 +4,6 @@ import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/widgets/game_header.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -38,7 +37,8 @@ class MainMenuScreenList extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                              AppLocalizations.of(context)!.loadedOwnRules),
+                            AppLocalizations.of(context)!.loadedOwnRules,
+                          ),
                         ),
                       );
                     },
@@ -71,15 +71,6 @@ class MainMenuScreenList extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            Text(
-              '© Andre Salzmann 2025',
-              style: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            )
           ],
         );
       }),

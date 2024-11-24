@@ -22,5 +22,17 @@
   "enterPointsDialogTitle": "Enter points",
   "publishDialogTitle": "Publish Game",
   "publishDialogButtonPublishText": "Publish!",
-  "publishDialogButtonCloseText": "Return."
+  "publishDialogButtonCloseText": "Return.",
+  "ruleScreenKamikazePointsLabel": "Kamikaze Points",
+  "ruleScreenTotalGamePointsLabel": "Max. Game Points",
+  "ruleScreenZeroPointsLabel": "Round Winner get 0 Points",
+  "ruleScreenPrecisionLandingLabel": "Precision Landing",
+  "ruleScreenSaveButton": "Save",
+  "ruleScreenResetRulesButton": "Reset Rules",
+  "aboutScreenTitle": "About",
+  "aboutScreenSendButton": "Send",
+  "aboutScreenTextAreaLabel": "Your Message",
+  "aboutScreenSuccess": "Thanks! Your feedback was send.",
+  "aboutScreenTextAreaDescription": "Did you find any bugs or have some improvement ideas? Please let me know.",
+  "aboutScreenText": "I´ve created this app to make the game experience of the CABO Card game even better."
 }

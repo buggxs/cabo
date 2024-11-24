@@ -7,6 +7,7 @@ import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RuleSetScreen extends StatelessWidget {
   const RuleSetScreen({super.key});
@@ -43,7 +44,7 @@ class RuleSetScreenContent extends StatelessWidget {
             Icons.arrow_back,
             color: CaboTheme.primaryColor,
           ),
-          onPressed: () => {},
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Rules',
@@ -74,7 +75,8 @@ class RuleSetScreenContent extends StatelessWidget {
                   ),
                   child: CaboTextField(
                     value: cubit.state.ruleSet.totalGamePoints.toString(),
-                    labelText: 'Max. Game Points',
+                    labelText: AppLocalizations.of(context)!
+                        .ruleScreenTotalGamePointsLabel,
                     onChanged: (String points) {
                       cubit.saveRuleSet(
                         cubit.state.ruleSet.copyWith(
@@ -91,7 +93,8 @@ class RuleSetScreenContent extends StatelessWidget {
                   ),
                   child: CaboTextField(
                     value: cubit.state.ruleSet.kamikazePoints.toString(),
-                    labelText: 'Kamikaze Points',
+                    labelText: AppLocalizations.of(context)!
+                        .ruleScreenKamikazePointsLabel,
                     onChanged: (String points) {
                       final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
                         kamikazePoints: int.tryParse(points),
@@ -112,7 +115,8 @@ class RuleSetScreenContent extends StatelessWidget {
                   ),
                   child: CaboSwitch(
                     initialValue: cubit.state.ruleSet.roundWinnerGetsZeroPoints,
-                    labelText: 'Round Winner get 0 Points',
+                    labelText:
+                        AppLocalizations.of(context)!.ruleScreenZeroPointsLabel,
                     onChanged: (bool value) {
                       cubit.saveRuleSet(
                         cubit.state.ruleSet.copyWith(
@@ -129,7 +133,8 @@ class RuleSetScreenContent extends StatelessWidget {
                   ),
                   child: CaboSwitch(
                     initialValue: cubit.state.ruleSet.precisionLanding,
-                    labelText: 'Precision Landing',
+                    labelText: AppLocalizations.of(context)!
+                        .ruleScreenPrecisionLandingLabel,
                     onChanged: (bool value) {
                       final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
                         precisionLanding: value,
@@ -140,9 +145,8 @@ class RuleSetScreenContent extends StatelessWidget {
                     },
                   ),
                 ),
-                const Spacer(),
                 MenuButton(
-                  text: 'Save',
+                  text: AppLocalizations.of(context)!.ruleScreenSaveButton,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 48.0,
                     vertical: 6,
@@ -150,7 +154,8 @@ class RuleSetScreenContent extends StatelessWidget {
                   onTap: () => Navigator.of(context).pop(),
                 ),
                 MenuButton(
-                  text: 'Reset Settings',
+                  text:
+                      AppLocalizations.of(context)!.ruleScreenResetRulesButton,
                   textStyle: CaboTheme.primaryTextStyle.copyWith(
                     color: CaboTheme.tertiaryColor,
                     fontSize: 24,

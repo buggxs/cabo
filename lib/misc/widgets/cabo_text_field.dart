@@ -7,12 +7,20 @@ class CaboTextField extends StatefulWidget {
     this.value,
     this.labelText,
     this.onChanged,
+    this.maxLines,
+    this.minLines,
+    this.expand,
+    this.keyboardType,
     super.key,
   });
 
   final String? labelText;
   final String? value;
   final void Function(String)? onChanged;
+  final int? maxLines;
+  final int? minLines;
+  final bool? expand;
+  final TextInputType? keyboardType;
 
   @override
   State<CaboTextField> createState() => _CaboTextFieldState();
@@ -44,10 +52,13 @@ class _CaboTextFieldState extends State<CaboTextField> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.text = widget.value ?? '';
+    _controller.text = widget.value ?? _controller.text ?? '';
 
     return TextField(
-      keyboardType: TextInputType.number,
+      keyboardType: widget.keyboardType ?? TextInputType.number,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      expands: widget.expand ?? false,
       onChanged: (String points) {
         if (points.isNotEmpty) {
           setState(() {
@@ -62,7 +73,6 @@ class _CaboTextFieldState extends State<CaboTextField> {
       },
       controller: _controller,
       focusNode: _focus,
-      minLines: 1,
       style: const TextStyle(
         fontSize: 18,
         fontFamily: 'Aclonica',
@@ -74,6 +84,7 @@ class _CaboTextFieldState extends State<CaboTextField> {
           color: CaboTheme.primaryColor,
           backgroundColor: currentBackgroundColor,
         ),
+        alignLabelWithHint: true,
         labelText: widget.labelText,
       ),
     );
