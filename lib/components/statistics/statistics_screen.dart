@@ -69,18 +69,6 @@ class StatisticsScreenContent extends StatelessWidget {
           ),
           onPressed: () => _onPopScreen(cubit, context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.qr_code_scanner_rounded,
-              color: Colors.white,
-            ),
-            onPressed: () => _publishGameDialog(
-              context,
-              cubit,
-            ),
-          )
-        ],
       ),
       body: PopScope(
         canPop: false,

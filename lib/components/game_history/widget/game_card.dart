@@ -97,7 +97,7 @@ class GameCard extends StatelessWidget {
               child: Column(
                 children: [
                   AutoSizeText(
-                    '${player.name}',
+                    player.name,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.fourthColor,
                       shadows: CaboTheme().textStroke(Colors.black),
@@ -132,7 +132,7 @@ class GameCard extends StatelessWidget {
           child: Column(
             children: [
               AutoSizeText(
-                '${player.name}',
+                player.name,
                 style: CaboTheme.secondaryTextStyle.copyWith(
                   color: CaboTheme.fourthColor,
                   shadows: CaboTheme().textStroke(Colors.black),
