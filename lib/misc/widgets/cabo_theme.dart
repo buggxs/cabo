@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CaboTheme {
   static const Color primaryColor = Color.fromRGBO(185, 206, 1, 1);
+  static const Color primaryColorLight = Color.fromRGBO(177, 218, 0, 1.0);
   static const Color primaryGreenColor = Color.fromRGBO(142, 215, 46, 1.0);
   static const Color secondaryColor = Color.fromRGBO(32, 45, 18, 1);
   static const Color tertiaryColor = Color.fromRGBO(81, 120, 30, 1);

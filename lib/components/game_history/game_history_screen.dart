@@ -6,6 +6,7 @@ import 'package:cabo/misc/utils/gaming_data.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameHistoryScreen extends StatelessWidget {
   const GameHistoryScreen({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class GameHistoryScreenContent extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+        foregroundColor: CaboTheme.primaryColor,
         elevation: 0,
       ),
       resizeToAvoidBottomInset: false,
@@ -47,17 +48,22 @@ class GameHistoryScreenContent extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              _headerCards(
-                playedRounds: calculatePlayedRounds(
-                  cubit.state.games,
+              SizedBox(
+                height: 80,
+                child: _headerCards(
+                  playedRounds: calculatePlayedRounds(
+                    cubit.state.games,
+                  ),
+                  gameAmount: cubit.state.games.length,
+                  gameTime: calculateTotalPlayTime(cubit.state.games),
+                  context: context,
                 ),
-                gameAmount: cubit.state.games.length,
-                gameTime: calculateTotalPlayTime(cubit.state.games),
               ),
               _totalPointsBanner(
                 totalCollectedPoints: calculateTotalPoints(
                   cubit.state.games,
                 ),
+                context: context,
               ),
               const SizedBox(
                 height: 50,
@@ -97,8 +103,10 @@ class GameHistoryScreenContent extends StatelessWidget {
     int gameAmount = 0,
     int playedRounds = 0,
     String gameTime = '0 Days \n 0 hours',
+    required BuildContext context,
   }) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 1,
@@ -111,7 +119,7 @@ class GameHistoryScreenContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Games',
+                    AppLocalizations.of(context)!.historyScreenGamesCardTitle,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.fourthColor,
                       height: 1,
@@ -139,7 +147,8 @@ class GameHistoryScreenContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AutoSizeText(
-                    'Game Time',
+                    AppLocalizations.of(context)!
+                        .historyScreenGameTimeCardTitle,
                     textAlign: TextAlign.center,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.fourthColor,
@@ -152,7 +161,7 @@ class GameHistoryScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: CaboTheme.numberTextStyle
                         .copyWith(color: Colors.white, fontSize: 14),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -169,7 +178,8 @@ class GameHistoryScreenContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AutoSizeText(
-                    'Played Rounds',
+                    AppLocalizations.of(context)!
+                        .historyScreenPlayedRoundsCardTitle,
                     textAlign: TextAlign.center,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.fourthColor,
@@ -192,7 +202,10 @@ class GameHistoryScreenContent extends StatelessWidget {
     );
   }
 
-  Widget _totalPointsBanner({int totalCollectedPoints = 0}) {
+  Widget _totalPointsBanner({
+    int totalCollectedPoints = 0,
+    required BuildContext context,
+  }) {
     return Row(
       children: [
         Expanded(
@@ -206,7 +219,7 @@ class GameHistoryScreenContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AutoSizeText(
-                    'Total amount of collected Points',
+                    AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.fourthColor,
                       height: 1,

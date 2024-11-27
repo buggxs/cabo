@@ -109,3 +109,92 @@ class _CaboTextFieldState extends State<CaboTextField> {
     }
   }
 }
+
+class CaboTextFormField extends StatefulWidget {
+  const CaboTextFormField({
+    required this.controller,
+    this.labelText,
+    this.onChanged,
+    this.maxLines,
+    this.minLines,
+    this.expand,
+    this.keyboardType,
+    super.key,
+  });
+
+  final String? labelText;
+  final void Function(String)? onChanged;
+  final int? maxLines;
+  final int? minLines;
+  final bool? expand;
+  final TextInputType? keyboardType;
+  final TextEditingController controller;
+
+  @override
+  State<CaboTextFormField> createState() => _CaboTextFormFieldState();
+}
+
+class _CaboTextFormFieldState extends State<CaboTextFormField> {
+  Color currentBackgroundColor = CaboTheme.tertiaryColor;
+  final FocusNode _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller.text.isEmpty) {
+      currentBackgroundColor = Colors.transparent;
+    }
+    _focus.addListener(_onFocusChanged);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focus.removeListener(_onFocusChanged);
+    _focus.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      keyboardType: widget.keyboardType ?? TextInputType.number,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      expands: widget.expand ?? false,
+      controller: widget.controller,
+      style: const TextStyle(
+        fontSize: 18,
+        fontFamily: 'Aclonica',
+        color: CaboTheme.primaryColor,
+      ),
+      decoration: dialogPointInputStyle.copyWith(
+        labelStyle: CaboTheme.secondaryTextStyle.copyWith(
+          fontSize: 14,
+          color: CaboTheme.primaryColor,
+          backgroundColor: currentBackgroundColor,
+        ),
+        alignLabelWithHint: true,
+        labelText: widget.labelText,
+      ),
+    );
+  }
+
+  void _onFocusChanged() {
+    setState(() {
+      currentBackgroundColor =
+          _focus.hasFocus ? CaboTheme.tertiaryColor : Colors.transparent;
+    });
+  }
+
+  void adjustBackgroundColor() {
+    if (widget.controller.text.isNotEmpty) {
+      setState(() {
+        currentBackgroundColor = CaboTheme.tertiaryColor;
+      });
+    } else {
+      setState(() {
+        currentBackgroundColor = Colors.transparent;
+      });
+    }
+  }
+}

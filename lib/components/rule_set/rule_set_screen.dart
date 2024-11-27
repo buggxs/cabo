@@ -31,6 +31,15 @@ class RuleSetScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RuleSetCubit cubit = context.watch<RuleSetCubit>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    final TextEditingController totalGamePointsController =
+        TextEditingController(
+      text: cubit.state.ruleSet.totalGamePoints.toString(),
+    );
+    final TextEditingController kamikazePointsController =
+        TextEditingController(
+      text: cubit.state.ruleSet.kamikazePoints.toString(),
+    );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -63,114 +72,116 @@ class RuleSetScreenContent extends StatelessWidget {
         constraints: const BoxConstraints.expand(),
         child: DarkScreenOverlay(
           child: SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 100,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 100,
                   ),
-                  child: CaboTextField(
-                    value: cubit.state.ruleSet.totalGamePoints.toString(),
-                    labelText: AppLocalizations.of(context)!
-                        .ruleScreenTotalGamePointsLabel,
-                    onChanged: (String points) {
-                      cubit.saveRuleSet(
-                        cubit.state.ruleSet.copyWith(
-                          totalGamePoints: int.tryParse(points),
-                        ),
-                      );
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    child: CaboTextFormField(
+                      controller: totalGamePointsController,
+                      labelText: AppLocalizations.of(context)!
+                          .ruleScreenTotalGamePointsLabel,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    child: CaboTextFormField(
+                      controller: kamikazePointsController,
+                      labelText: AppLocalizations.of(context)!
+                          .ruleScreenKamikazePointsLabel,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    child: CaboSwitch(
+                      initialValue:
+                          cubit.state.ruleSet.roundWinnerGetsZeroPoints,
+                      labelText: AppLocalizations.of(context)!
+                          .ruleScreenZeroPointsLabel,
+                      onChanged: (bool value) {
+                        cubit.saveRuleSet(
+                          cubit.state.ruleSet.copyWith(
+                            roundWinnerGetsZeroPoints: value,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    child: CaboSwitch(
+                      initialValue: cubit.state.ruleSet.precisionLanding,
+                      labelText: AppLocalizations.of(context)!
+                          .ruleScreenPrecisionLandingLabel,
+                      onChanged: (bool value) {
+                        final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
+                          precisionLanding: value,
+                        );
+                        cubit.saveRuleSet(
+                          ruleSet,
+                        );
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                  MenuFormButton(
+                    text: AppLocalizations.of(context)!.ruleScreenSaveButton,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    onTap: () {
+                      if (formKey.currentState!.validate()) {
+                        cubit.saveRuleSet(
+                          cubit.state.ruleSet.copyWith(
+                            totalGamePoints:
+                                int.tryParse(totalGamePointsController.text),
+                            kamikazePoints:
+                                int.tryParse(kamikazePointsController.text),
+                          ),
+                        );
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
+                  MenuButton(
+                    text: AppLocalizations.of(context)!
+                        .ruleScreenResetRulesButton,
+                    textStyle: CaboTheme.primaryTextStyle.copyWith(
+                      color: CaboTheme.tertiaryColor,
+                      fontSize: 24,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    innerPadding: const EdgeInsets.all(2),
+                    onTap: cubit.resetRuleSet,
                   ),
-                  child: CaboTextField(
-                    value: cubit.state.ruleSet.kamikazePoints.toString(),
-                    labelText: AppLocalizations.of(context)!
-                        .ruleScreenKamikazePointsLabel,
-                    onChanged: (String points) {
-                      final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
-                        kamikazePoints: int.tryParse(points),
-                      );
-                      cubit.saveRuleSet(
-                        ruleSet,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  child: CaboSwitch(
-                    initialValue: cubit.state.ruleSet.roundWinnerGetsZeroPoints,
-                    labelText:
-                        AppLocalizations.of(context)!.ruleScreenZeroPointsLabel,
-                    onChanged: (bool value) {
-                      cubit.saveRuleSet(
-                        cubit.state.ruleSet.copyWith(
-                          roundWinnerGetsZeroPoints: value,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  child: CaboSwitch(
-                    initialValue: cubit.state.ruleSet.precisionLanding,
-                    labelText: AppLocalizations.of(context)!
-                        .ruleScreenPrecisionLandingLabel,
-                    onChanged: (bool value) {
-                      final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
-                        precisionLanding: value,
-                      );
-                      cubit.saveRuleSet(
-                        ruleSet,
-                      );
-                    },
-                  ),
-                ),
-                MenuButton(
-                  text: AppLocalizations.of(context)!.ruleScreenSaveButton,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  onTap: () => Navigator.of(context).pop(),
-                ),
-                MenuButton(
-                  text:
-                      AppLocalizations.of(context)!.ruleScreenResetRulesButton,
-                  textStyle: CaboTheme.primaryTextStyle.copyWith(
-                    color: CaboTheme.tertiaryColor,
-                    fontSize: 24,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  innerPadding: const EdgeInsets.all(2),
-                  onTap: cubit.resetRuleSet,
-                ),
-                const SizedBox(
-                  height: 25,
-                )
-              ],
+                  const SizedBox(
+                    height: 25,
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -35,7 +35,9 @@ class CaboDataCell extends StatelessWidget {
             children: [
               if (round.isWonRound)
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
+                  padding: EdgeInsets.only(
+                    left: _isHigherPoints(round) ? 40.0 : 20.0,
+                  ),
                   child: Transform(
                     transform: Matrix4.rotationZ(
                       -100,
@@ -85,5 +87,9 @@ class CaboDataCell extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool _isHigherPoints(Round round) {
+    return round.points.toString().length == 2;
   }
 }

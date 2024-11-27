@@ -8,9 +8,7 @@ int calculatePlayedRounds(List<Game> games) {
   int totalRounds = 0;
 
   for (Game game in games) {
-    for (Player player in game.players) {
-      totalRounds += player.rounds.length;
-    }
+    totalRounds += game.players.first.rounds.length;
   }
 
   return totalRounds;
@@ -51,8 +49,8 @@ String calculateTotalPlayTime(List<Game> games) {
     result += '$days Days';
   }
 
-  if (result.isNotEmpty) result += ' ';
-  result += '\n$hours Hours';
+  if (result.isNotEmpty) result += '\n';
+  result += '$hours Hours';
 
   return result.isNotEmpty ? result : '0 Hours';
 }

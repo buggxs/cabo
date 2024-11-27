@@ -87,8 +87,8 @@ class TitleCell extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 30,
-                    height: 30,
+                    width: 35,
+                    height: 35,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(
@@ -101,7 +101,7 @@ class TitleCell extends StatelessWidget {
                         '${player.totalPoints}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 19,
                           fontFamily: 'Aclonica',
                           color: CaboTheme.primaryGreenColor,
                         ),

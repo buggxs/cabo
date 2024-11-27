@@ -60,13 +60,13 @@ class GameCard extends StatelessWidget {
                         size: 18,
                       ),
                       const SizedBox(
-                        width: 2,
+                        width: 6,
                       ),
                       Text(
                         game.gameDuration,
                         style: CaboTheme.numberTextStyle.copyWith(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 12,
                         ),
                       ),
                     ],
