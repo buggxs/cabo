@@ -37,7 +37,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
-        ? DateFormat.yMd().parse(game!.startedAt!)
+        ? DateFormat('dd-MM-yyyy HH:mm').parse(game!.startedAt!)
         : DateTime.now();
     if (game == null) {
       _createLocalGame(startingDateTime);
