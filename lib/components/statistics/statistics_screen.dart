@@ -1,7 +1,6 @@
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
-import 'package:cabo/components/widgets/publish_game_dialog.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -98,26 +97,5 @@ class StatisticsScreenContent extends StatelessWidget {
     }
 
     return false;
-  }
-
-  Future<void> _publishGameDialog(
-    BuildContext context,
-    StatisticsCubit cubit,
-  ) async {
-    StatisticsState state = cubit.state;
-
-    await showDialog(
-        context: context,
-        builder: (BuildContext localContext) {
-          return Dialog(
-            backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
-            child: ShowPublishGameScreen(
-              isAlreadyPublished: state.isPublicGame,
-              publishGame: state.isPublicGame
-                  ? () => Future.value(state.publicGame!.publicId)
-                  : cubit.publishGame,
-            ),
-          );
-        });
   }
 }

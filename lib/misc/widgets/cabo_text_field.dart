@@ -52,7 +52,7 @@ class _CaboTextFieldState extends State<CaboTextField> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.text = widget.value ?? _controller.text ?? '';
+    _controller.text = widget.value ?? _controller.text;
 
     return TextField(
       keyboardType: widget.keyboardType ?? TextInputType.number,
