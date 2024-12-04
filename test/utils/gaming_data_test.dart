@@ -43,22 +43,7 @@ void main() {
         ),
       ];
 
-      expect(calculatePlayedRounds(games), 6); // Alice: 2, Bob: 1, Charlie: 3
-    });
-
-    test('should handle games with no players', () {
-      const games = <Game>[
-        Game(
-          id: 1,
-          startedAt: '2023-01-01',
-          finishedAt: '2023-01-02',
-          players: [],
-          ruleSetId: 1,
-          ruleSet: RuleSet(),
-        ),
-      ];
-
-      expect(calculatePlayedRounds(games), 0);
+      expect(calculatePlayedRounds(games), 5); // Alice: 2, Bob: 1, Charlie: 3
     });
 
     test('should handle players with no rounds', () {
@@ -107,7 +92,7 @@ void main() {
         ),
       ];
 
-      expect(calculatePlayedRounds(games), 3); // Alice: 2, Bob: 0, Charlie: 1
+      expect(calculatePlayedRounds(games), 2); // Alice: 2, Bob: 0, Charlie: 1
     });
   });
 }

@@ -36,7 +36,8 @@ void main() {
 
   RuleSet ruleSet = const RuleSet();
 
-  String gameStartedDate = DateFormat.yMd().format(DateTime.now());
+  String gameStartedDate =
+      DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
 
   Game expectedGame = Game(
     players: playerList,
@@ -159,6 +160,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isWonRound: true,
         ),
       ],
     ),
