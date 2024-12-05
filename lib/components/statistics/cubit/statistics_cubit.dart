@@ -23,7 +23,6 @@ part 'statistics_state.dart';
 class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   StatisticsCubit({
     required List<Player> players,
-    this.useOwnRuleSet = false,
     Game? game,
   }) : super(
           StatisticsState(
@@ -34,13 +33,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   final OpenGameService openGameService = app<OpenGameService>();
-  final bool useOwnRuleSet;
-
   late final StompClient? client;
 
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
-        ? DateFormat.yMd().parse(game!.startedAt!)
+        ? DateFormat('dd-MM-yyyy HH:mm').parse(game!.startedAt!)
         : DateTime.now();
     if (game == null) {
       _createLocalGame(startingDateTime);
@@ -53,7 +50,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     RuleSet ruleSet = await loadRuleSet();
 
     Game game = Game(
-      startedAt: DateFormat.yMd().format(startedAt),
+      startedAt: DateFormat('dd-MM-yyyy HH:mm').format(startedAt),
       players: state.players,
       ruleSet: ruleSet,
     );
@@ -72,9 +69,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   Future<RuleSet> loadRuleSet() async {
-    return app<RuleService>().loadRuleSet(
-      useOwnRules: useOwnRuleSet,
-    );
+    return app<RuleService>().loadRuleSet();
   }
 
   Future<String?> publishGame() async {
@@ -247,7 +242,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
         if (ruleSet.useKamikazeRule &&
             _checkIfPlayerHitsKamikaze(playerPointsmap)) {
-          if (points == 55) {
+          if (points == 55 || points == 50) {
             points = 0;
             closingPlayerHasLost = false;
           } else {
@@ -264,6 +259,12 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               hasClosedRound: closingPlayer == player,
               hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
               hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+              isWonRound: _hasWonRound(
+                player.name,
+                playerPointsmap,
+                ruleSet,
+                points,
+              ),
             ),
           ],
         );
@@ -289,6 +290,23 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     _saveGame(state.game!);
   }
 
+  bool _hasWonRound(
+    String playerName,
+    Map<String, int?> playerPointsmap,
+    RuleSet ruleSet,
+    int points,
+  ) {
+    if (ruleSet.useKamikazeRule &&
+        _checkIfPlayerHitsKamikaze(playerPointsmap)) {
+      if (points == 55 || points == 50) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return playerName == _getPlayerWithLowestPoints(playerPointsmap);
+  }
+
   bool _hasDonePrecisionLanding(Player player, int points) {
     RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
     if (ruleSet.precisionLanding) {
@@ -302,7 +320,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   void _saveGame(Game game, {bool forceFinish = false}) async {
     if (game.isGameFinished || forceFinish) {
       DateTime finishedAt = DateTime.now();
-      String finishedGame = DateFormat('dd-MM-yyyy').format(finishedAt);
+      String finishedGame = DateFormat('dd-MM-yyyy HH:mm').format(finishedAt);
 
       game = game.copyWith(
         finishedAt: finishedGame,

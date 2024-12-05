@@ -4,6 +4,7 @@ import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/open_game/open_game_service.dart';
 import 'package:cabo/domain/player/local_player_repository.dart';
 import 'package:cabo/domain/player/player_service.dart';
+import 'package:cabo/domain/rule_set/local_rule_set_repository.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:get_it/get_it.dart';
@@ -21,5 +22,6 @@ void setup() {
     ..registerSingleton<NavigationService>(NavigationService())
     ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())
     ..registerSingleton<LocalGameRepository>(LocalGameRepository())
+    ..registerLazySingleton<LocalRuleSetRepository>(LocalRuleSetRepository.new)
     ..registerLazySingleton<OpenGameService>(OnlineOpenGameService.new);
 }

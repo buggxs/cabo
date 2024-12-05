@@ -26,7 +26,7 @@ class RuleSet extends Equatable {
 
   Map<String, dynamic> toJson() => _$RuleSetToJson(this);
 
-  bool get useKamikazeRule => kamikazePoints != null || kamikazePoints == -1;
+  bool get useKamikazeRule => kamikazePoints != null && kamikazePoints! > 0;
 
   RuleSet copyWith({
     int? totalGamePoints,
@@ -55,7 +55,7 @@ class RuleSet extends Equatable {
 
 const RuleSet kOwnRuleSet = RuleSet(
   totalGamePoints: 100,
-  kamikazePoints: -1,
+  kamikazePoints: 0,
   roundWinnerGetsZeroPoints: false,
   precisionLanding: false,
 );

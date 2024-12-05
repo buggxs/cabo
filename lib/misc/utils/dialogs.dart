@@ -2,13 +2,50 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+const Color primaryColor = CaboTheme.primaryColor;
+const Color secondaryColor = CaboTheme.secondaryColor;
+const Color dialogBorderColor = Color.fromRGBO(81, 120, 30, 1);
+
 const TextStyle title = TextStyle(
-  fontFamily: 'Aclonica',
+  fontFamily: 'Archivo',
+  fontSize: 24,
+  fontWeight: FontWeight.w500,
+  color: Color.fromRGBO(142, 215, 46, 1.0),
+);
+
+const TextStyle primaryButtonTextStyle = TextStyle(
+  fontFamily: 'Archivo',
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+  color: Color.fromRGBO(185, 206, 1, 1.0),
+);
+
+const TextStyle secondaryButtonTextStyle = TextStyle(
+  fontFamily: 'Archivo',
   fontSize: 20,
-  color: Colors.black,
+  fontWeight: FontWeight.bold,
+  color: Color.fromRGBO(80, 119, 30, 1.0),
+);
+
+final ButtonStyle primaryButtonStyle = OutlinedButton.styleFrom(
+  foregroundColor: primaryColor,
+  side: const BorderSide(color: primaryColor, width: 2.0),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
+  ),
+);
+
+final RoundedRectangleBorder dialogBorderShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(5),
+  side: const BorderSide(
+    style: BorderStyle.solid,
+    color: dialogBorderColor,
+    width: 2,
+  ),
 );
 
 const InputDecoration inputDecoration = InputDecoration(
@@ -25,17 +62,18 @@ final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
 const InputDecoration dialogPointInputStyle = InputDecoration(
   isDense: true,
   border: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
   ),
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0), width: 1),
+    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
+    gapPadding: 0,
   ),
   contentPadding: EdgeInsets.all(8.0),
   filled: true,
-  fillColor: Color.fromRGBO(32, 45, 18, 1),
+  fillColor: CaboTheme.secondaryColor,
 );
 
 class StatisticsDialogService {
@@ -45,7 +83,8 @@ class StatisticsDialogService {
     Map<String, int?> playerPointsMap = {};
     return app<NavigationService>().showAppDialog<Map<String, int?>>(
       dialog: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+        shape: dialogBorderShape,
+        backgroundColor: secondaryColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
           child: SingleChildScrollView(
@@ -54,7 +93,11 @@ class StatisticsDialogService {
               children: <Widget>[
                 Text(
                   AppLocalizations.of(context)!.enterPointsDialogTitle,
-                  style: title,
+                  style: CaboTheme.primaryTextStyle.copyWith(
+                    color: CaboTheme.primaryGreenColor,
+                    fontFamily: 'Archivo Black',
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 ...?players
                     ?.map(
@@ -65,15 +108,13 @@ class StatisticsDialogService {
                           children: [
                             AutoSizeText(
                               player.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Aclonica',
-                                color: Colors.black,
+                              style: CaboTheme.primaryTextStyle.copyWith(
+                                fontWeight: FontWeight.w900,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(
-                              width: 50,
+                              width: 150,
                               child: TextField(
                                 keyboardType: TextInputType.number,
                                 onChanged: (String points) {
@@ -81,12 +122,26 @@ class StatisticsDialogService {
                                       int.tryParse(points);
                                 },
                                 minLines: 1,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Aclonica',
-                                  color: Color.fromRGBO(81, 120, 30, 1.0),
+                                style: CaboTheme.numberTextStyle.copyWith(
+                                  color: CaboTheme.primaryColor,
+                                  fontSize: 20,
                                 ),
-                                decoration: dialogPointInputStyle,
+                                decoration: dialogPointInputStyle.copyWith(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 8,
+                                  ),
+                                  labelText: AppLocalizations.of(context)!
+                                      .dialogPointsLabel,
+                                  labelStyle:
+                                      CaboTheme.secondaryTextStyle.copyWith(
+                                    color: CaboTheme.primaryColor.withAlpha(
+                                      100,
+                                    ),
+                                    fontFamily: 'Aclonica',
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -103,11 +158,12 @@ class StatisticsDialogService {
                           onPressed: () {
                             Navigator.of(context).pop(playerPointsMap);
                           },
-                          style: dialogButtonStyle,
+                          style: primaryButtonStyle,
                           child: Text(
                             AppLocalizations.of(context)!.enterDialogButton,
-                            style: const TextStyle(
-                              fontFamily: 'Aclonica',
+                            style: CaboTheme.primaryTextStyle.copyWith(
+                              fontWeight: FontWeight.w900,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
@@ -127,15 +183,23 @@ class StatisticsDialogService {
     return app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) {
       return Dialog(
-        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+        shape: dialogBorderShape,
+        backgroundColor: secondaryColor,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
+              AutoSizeText(
                 AppLocalizations.of(context)!.finishCurrentGame,
-                style: title,
+                style: CaboTheme.primaryTextStyle.copyWith(
+                  color: CaboTheme.primaryGreenColor,
+                  fontFamily: 'Archivo Black',
+                  fontWeight: FontWeight.w900,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
               Row(
                 children: [
@@ -144,12 +208,12 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      style: dialogButtonStyle,
+                      style: primaryButtonStyle,
                       child: Text(
                         AppLocalizations.of(context)!.finishGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
+                        style: CaboTheme.primaryTextStyle.copyWith(
+                          fontWeight: FontWeight.w700,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
@@ -166,12 +230,12 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      style: dialogButtonStyle,
-                      child: Text(
+                      style: primaryButtonStyle,
+                      child: AutoSizeText(
                         AppLocalizations.of(context)!.continueGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
+                        style: CaboTheme.secondaryTextStyle.copyWith(
+                          overflow: TextOverflow.ellipsis,
+                          color: CaboTheme.tertiaryColor,
                         ),
                       ),
                     ),
@@ -196,21 +260,16 @@ class StatisticsDialogService {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            side: const BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
+                          style: primaryButtonStyle,
                           onPressed: () {
                             Navigator.of(context).pop(player);
                           },
                           child: AutoSizeText(
                             player.name,
-                            style: const TextStyle(
-                              fontFamily: 'Aclonica',
+                            style: CaboTheme.primaryTextStyle.copyWith(
+                              fontWeight: FontWeight.w900,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
@@ -220,18 +279,34 @@ class StatisticsDialogService {
                 .toList() ??
             <OutlinedButton>[];
         return Dialog(
-          backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+          shape: dialogBorderShape,
+          backgroundColor: secondaryColor,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 28.0,
+              vertical: 8,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(
+                AutoSizeText(
+                  maxLines: 2,
                   AppLocalizations.of(context)!.dialogTextRoundFinishedBy,
-                  style: title,
+                  style: CaboTheme.primaryTextStyle.copyWith(
+                    color: CaboTheme.primaryGreenColor,
+                    fontFamily: 'Archivo Black',
+                    fontWeight: FontWeight.w900,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
-                if (buttons.isNotEmpty) ...buttons
+                if (buttons.isNotEmpty)
+                  ...buttons.map(
+                    (Widget button) => Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: button,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -243,16 +318,28 @@ class StatisticsDialogService {
   Future<bool?> loadNotFinishedGame() async {
     return app<NavigationService>().showAppDialog<bool?>(
       dialog: (BuildContext context) => Dialog(
-        backgroundColor: const Color.fromRGBO(81, 120, 30, 1),
+        shape: dialogBorderShape,
+        backgroundColor: secondaryColor,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                AppLocalizations.of(context)!.dialogTextLoadFinishedGame,
-                style: title,
+                AppLocalizations.of(context)!.dialogTitleLoadFinishedGame,
+                style: title.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                AppLocalizations.of(context)!.dialogTextLoadFinishedGame,
+                style: title.copyWith(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 40,
               ),
               Row(
                 children: [
@@ -261,17 +348,17 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      style: dialogButtonStyle,
+                      style: primaryButtonStyle,
                       child: Text(
                         AppLocalizations.of(context)!.loadGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
-                        ),
+                        style: primaryButtonTextStyle,
                       ),
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Row(
                 children: [
@@ -280,13 +367,10 @@ class StatisticsDialogService {
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      style: dialogButtonStyle,
+                      style: primaryButtonStyle,
                       child: Text(
                         AppLocalizations.of(context)!.notLoadGameDialogButton,
-                        style: const TextStyle(
-                          fontFamily: 'Aclonica',
-                          fontSize: 14,
-                        ),
+                        style: secondaryButtonTextStyle,
                       ),
                     ),
                   ),

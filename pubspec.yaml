@@ -33,6 +33,7 @@ dependencies:
   http: ^1.2.0
   pretty_qr_code: ^3.3.0
   logging: 1.2.0
+  simple_gradient_text: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -61,4 +62,14 @@ flutter:
     - family: Aclonica
       fonts:
         - asset: fonts/Aclonica-Regular.ttf
+    - family: Archivo
+      fonts:
+        - asset: fonts/Archivo-Bold.ttf
+          weight: 700
+        - asset: fonts/Archivo-Light.ttf
+          weight: 300
+        - asset: fonts/Archivo-Medium.ttf
+          weight: 500
+        - asset: fonts/Archivo-Regular.ttf
+          weight: 400
 

@@ -11,6 +11,7 @@ class GameHistoryCubit extends Cubit<GameHistoryState> {
 
   Future<void> loadGames() async {
     List<Game> games = await app<GameService>().getGames() ?? <Game>[];
-    emit(state.copyWith(games: games));
+
+    emit(state.copyWith(games: games.reversed.toList()));
   }
 }

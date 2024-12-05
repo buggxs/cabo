@@ -1,7 +1,11 @@
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -48,15 +52,17 @@ class Game extends Equatable {
   }
 
   String get gameDuration {
+    BuildContext context =
+        app<NavigationService>().navigatorKey.currentContext!;
     if (startedAt != null && finishedAt != null) {
       DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
       DateTime? dateFinishedAt = DateFormat().parseCaboDateString(finishedAt!);
       if (dateStartedAt == null || dateFinishedAt == null) {
         return '';
       }
-      Duration duration = dateStartedAt.difference(dateFinishedAt);
-      String durationString = duration.toString().split('.').first;
-      return durationString;
+      Duration duration = dateFinishedAt.difference(dateStartedAt);
+      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenHours}, \n'
+          '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenMinutes}';
     }
     return '';
   }

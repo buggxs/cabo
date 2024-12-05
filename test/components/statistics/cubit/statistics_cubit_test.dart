@@ -8,6 +8,7 @@ import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:cabo/domain/rule_set/local_rule_set_repository.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,7 @@ import 'statistics_cubit_test.mocks.dart';
   MockSpec<StatisticsDialogService>(),
   MockSpec<NavigationService>(),
   MockSpec<LocalGameRepository>(),
+  MockSpec<LocalRuleSetRepository>(),
   MockSpec<LocalGameService>(),
 ])
 void main() {
@@ -34,7 +36,8 @@ void main() {
 
   RuleSet ruleSet = const RuleSet();
 
-  String gameStartedDate = DateFormat.yMd().format(DateTime.now());
+  String gameStartedDate =
+      DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
 
   Game expectedGame = Game(
     players: playerList,
@@ -52,6 +55,7 @@ void main() {
           points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isWonRound: true,
         ),
       ],
     ),
@@ -91,6 +95,7 @@ void main() {
           points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: true,
+          isWonRound: true,
         ),
       ],
     ),
@@ -142,6 +147,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isWonRound: true,
         ),
       ],
     ),
@@ -154,6 +160,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isWonRound: true,
         ),
       ],
     ),
@@ -169,6 +176,7 @@ void main() {
           points: 3,
           hasPenaltyPoints: false,
           hasClosedRound: true,
+          isWonRound: true,
         ),
       ],
     ),
@@ -208,6 +216,7 @@ void main() {
           points: 1,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isWonRound: true,
         ),
       ],
     ),
@@ -272,6 +281,7 @@ void main() {
   late NavigationService navigationService;
   late LocalGameRepository localGameRepository;
   late LocalGameService localGameService;
+  late LocalRuleSetRepository localRuleSetRepository;
   late GetIt app = GetIt.instance;
 
   setUpAll(() {
@@ -282,12 +292,14 @@ void main() {
     navigationService = MockNavigationService();
     localGameRepository = MockLocalGameRepository();
     localGameService = MockLocalGameService();
+    localRuleSetRepository = MockLocalRuleSetRepository();
 
     app.registerSingleton<RuleService>(ruleService);
     app.registerSingleton<StatisticsDialogService>(dialogService);
     app.registerSingleton<NavigationService>(navigationService);
     app.registerSingleton<LocalGameRepository>(localGameRepository);
     app.registerSingleton<GameService>(localGameService);
+    app.registerSingleton<LocalRuleSetRepository>(localRuleSetRepository);
   });
 
   tearDownAll(() => app.reset());
@@ -296,7 +308,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'load rule set and emit to state',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.loadRuleSet(),
@@ -311,7 +325,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should load default rule set with local service',
       setUp: () {
-        app.registerSingleton<RuleService>(LocalRuleService());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.loadRuleSet(),
@@ -329,9 +345,11 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should load own rule set with local service',
       setUp: () {
-        app.registerSingleton<RuleService>(LocalRuleService());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(kOwnRuleSet),
+        );
       },
-      build: () => StatisticsCubit(players: playerList, useOwnRuleSet: true),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.loadRuleSet(),
       expect: () => [
         StatisticsState(
@@ -357,7 +375,9 @@ void main() {
       'Should load game',
       build: () => StatisticsCubit(players: playerList),
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
       },
       act: (cubit) => cubit.loadGame(game: expectedGame),
       expect: () => [
@@ -370,10 +390,11 @@ void main() {
 
     blocTest<StatisticsCubit, StatisticsState>(
       'Should create game',
-      build: () => StatisticsCubit(players: playerList, useOwnRuleSet: true),
+      build: () => StatisticsCubit(players: playerList),
       setUp: () {
-        when(ruleService.loadRuleSet(useOwnRules: true))
-            .thenReturn(kOwnRuleSet);
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(kOwnRuleSet),
+        );
       },
       act: (cubit) => cubit.loadGame(),
       expect: () => [
@@ -391,7 +412,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with default rule set and ZERO players',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
       },
       build: () => StatisticsCubit(players: <Player>[]),
       act: (cubit) => cubit.closeRound(),
@@ -410,7 +433,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with DEFAULT rule set and penalty',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
@@ -436,7 +461,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with DEFAULT rule set',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
@@ -462,7 +489,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with player hitting kamikaze ',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenReturn(const RuleSet());
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
@@ -488,8 +517,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with OWN rule set and penalty',
       setUp: () {
-        when(ruleService.loadRuleSet(useOwnRules: true))
-            .thenReturn(kOwnRuleSet);
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(kOwnRuleSet),
+        );
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
@@ -498,7 +528,6 @@ void main() {
       },
       build: () => StatisticsCubit(
         players: playerList,
-        useOwnRuleSet: true,
       ),
       act: (cubit) async {
         // Stellt sicher, dass der Cubit initialisiert wird
@@ -527,8 +556,9 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with OWN rule set',
       setUp: () {
-        when(ruleService.loadRuleSet(useOwnRules: true))
-            .thenReturn(kOwnRuleSet);
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(kOwnRuleSet),
+        );
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
@@ -537,7 +567,6 @@ void main() {
       },
       build: () => StatisticsCubit(
         players: playerList,
-        useOwnRuleSet: true,
       ),
       act: (cubit) async {
         // Stellt sicher, dass der Cubit initialisiert wird

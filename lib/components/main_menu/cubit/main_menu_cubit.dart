@@ -32,12 +32,10 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     );
   }
 
-  void pushToGameHistoryScreen(
-    BuildContext context,
-  ) {
+  void pushToScreen(BuildContext context, String? route) {
     log.info('History screen');
     Navigator.of(context).pushNamed(
-      GameHistoryScreen.route,
+      route ?? GameHistoryScreen.route,
     );
   }
 
@@ -60,11 +58,11 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
         }
       }
     }
-    emit(ChoosePlayerAmount(shouldUseSpecialRules: useOwnRuleSet));
+    emit(const ChoosePlayerAmount());
   }
 
-  void showChoosePlayerAmountScreen({bool? useOwnRuleSet}) {
-    checkForPossibleGame(useOwnRuleSet: useOwnRuleSet);
+  void showChoosePlayerAmountScreen() {
+    checkForPossibleGame();
   }
 
   void increasePlayerAmount() {

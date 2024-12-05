@@ -1,10 +1,11 @@
-import 'package:cabo/components/main_menu/widgets/round_indicator.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
+import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +20,11 @@ class StatisticsScreenContentBody extends StatelessWidget {
     List<TitleCell> titleCells = state.players
         .map(
           (Player player) => TitleCell(
-            titleStyle: title,
+            titleStyle: title.copyWith(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: CaboTheme.primaryGreenColor,
+            ),
             player: player,
             isLastColumn: player == state.players.last,
           ),
@@ -34,23 +39,35 @@ class StatisticsScreenContentBody extends StatelessWidget {
         ),
       ),
       constraints: const BoxConstraints.expand(),
-      child: Center(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(
-              color: Color.fromRGBO(81, 120, 30, 1.0),
-            ),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 100,
           ),
-          margin: const EdgeInsets.all(12.0),
-          color: const Color.fromRGBO(32, 45, 18, 0.8),
-          shadowColor: Colors.black,
-          elevation: 5.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
-              horizontal: 4.0,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StatisticInfoCard(
+                title: 'Round',
+                content: state.players.first.rounds.length.toString(),
+              ),
+              const StatisticInfoCard(
+                title: 'Play time',
+                shouldBeTimer: true,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 75,
+          ),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
+            margin: const EdgeInsets.all(12.0),
+            color: CaboTheme.secondaryBackgroundColor,
+            shadowColor: Colors.black,
+            elevation: 5.0,
             child: (state.players.isEmpty)
                 ? const Text('No Players found!')
                 : CaboDataTable(
@@ -59,7 +76,7 @@ class StatisticsScreenContentBody extends StatelessWidget {
                     cubit: cubit,
                   ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -71,9 +88,6 @@ class StatisticsScreenContentBody extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            RoundIndicator(
-              round: players.first.rounds[i].round,
-            ),
             ...players
                 .map(
                   (Player player) => CaboDataCell(
