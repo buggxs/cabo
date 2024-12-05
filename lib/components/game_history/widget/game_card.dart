@@ -190,7 +190,7 @@ class GameCard extends StatelessWidget {
       case 3:
         return 45;
       default:
-        return 30;
+        return 40;
     }
   }
 

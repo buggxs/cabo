@@ -30,18 +30,9 @@ class MainMenuScreenList extends StatelessWidget {
                   MenuButton(
                     text: AppLocalizations.of(context)!.menuEntryTrackStats,
                     onTap: () => cubit.showChoosePlayerAmountScreen(),
-                    onDoubleTap: () {
-                      cubit.showChoosePlayerAmountScreen(
-                        useOwnRuleSet: true,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            AppLocalizations.of(context)!.loadedOwnRules,
-                          ),
-                        ),
-                      );
-                    },
+                  ),
+                  const SizedBox(
+                    height: 8,
                   ),
                   MenuButton(
                     text: AppLocalizations.of(context)!.menuEntryGameHistory,
@@ -50,12 +41,18 @@ class MainMenuScreenList extends StatelessWidget {
                       GameHistoryScreen.route,
                     ),
                   ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   MenuButton(
                     text: AppLocalizations.of(context)!.menuEntryGameRules,
                     onTap: () => cubit.pushToScreen(
                       context,
                       RuleSetScreen.route,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 8,
                   ),
                   MenuButton(
                     text:

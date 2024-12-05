@@ -10,6 +10,7 @@
   "loadedOwnRules": "Own rules loaded.",
   "playerNames": "Player Names",
   "start": "Start",
+  "dialogPointsLabel": "Points",
   "finishCurrentGame": "Do you really want to finish the game?",
   "finishGameDialogButton": "Yes, finish!",
   "continueGameDialogButton": "No, keep playing.",

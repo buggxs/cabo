@@ -131,7 +131,8 @@ class StatisticsDialogService {
                                     vertical: 2,
                                     horizontal: 8,
                                   ),
-                                  labelText: 'Points',
+                                  labelText: AppLocalizations.of(context)!
+                                      .dialogPointsLabel,
                                   labelStyle:
                                       CaboTheme.secondaryTextStyle.copyWith(
                                     color: CaboTheme.primaryColor.withAlpha(

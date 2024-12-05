@@ -33,7 +33,7 @@ class MenuButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(6.0),
+        padding: padding ?? const EdgeInsets.all(3.0),
         child: GestureDetector(
           onDoubleTap: onDoubleTap,
           onTap: onTap,

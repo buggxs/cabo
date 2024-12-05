@@ -10,6 +10,7 @@
   "loadedOwnRules": "Eigene Regeln geladen.",
   "playerNames": "Spieler Namen",
   "start": "Starten",
+  "dialogPointsLabel": "Punkte",
   "finishCurrentGame": "Möchtest du das Spiel wirklich beenden?",
   "finishGameDialogButton": "Ja, beenden!",
   "continueGameDialogButton": "Nein, weiter spielen.",
