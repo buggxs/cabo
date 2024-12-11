@@ -188,6 +188,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   /// Will force a game to finish.
   /// It will set the finishedAt of [Game] to the current time
   void onPopScreen() {
+    if (state.game?.isGameFinished ?? false) {
+      return;
+    }
     _saveGame(state.game!, forceFinish: true);
   }
 
