@@ -38,8 +38,8 @@ class StatisticsScreenContentBody extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      constraints: const BoxConstraints.expand(),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(
             height: 100,
@@ -60,21 +60,23 @@ class StatisticsScreenContentBody extends StatelessWidget {
           const SizedBox(
             height: 75,
           ),
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              margin: const EdgeInsets.all(12.0),
+              color: CaboTheme.secondaryBackgroundColor,
+              shadowColor: Colors.black,
+              elevation: 5.0,
+              child: (state.players.isEmpty)
+                  ? const Text('No Players found!')
+                  : CaboDataTable(
+                      titleCells: titleCells,
+                      rounds: _buildRounds(state.players),
+                      cubit: cubit,
+                    ),
             ),
-            margin: const EdgeInsets.all(12.0),
-            color: CaboTheme.secondaryBackgroundColor,
-            shadowColor: Colors.black,
-            elevation: 5.0,
-            child: (state.players.isEmpty)
-                ? const Text('No Players found!')
-                : CaboDataTable(
-                    titleCells: titleCells,
-                    rounds: _buildRounds(state.players),
-                    cubit: cubit,
-                  ),
           ),
         ],
       ),
