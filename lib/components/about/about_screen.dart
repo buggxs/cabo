@@ -1,7 +1,5 @@
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
-import 'package:cabo/components/main_menu/widgets/menu_button.dart';
-import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -112,44 +110,9 @@ class AboutScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  child: CaboTextField(
-                    labelText:
-                        AppLocalizations.of(context)!.aboutScreenTextAreaLabel,
-                    maxLines: 5,
-                    minLines: 5,
-                    keyboardType: TextInputType.multiline,
-                    onChanged: (String message) => cubit.updateMessage(message),
-                  ),
-                ),
-                MenuButton(
-                  text: AppLocalizations.of(context)!.aboutScreenSendButton,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  textStyle: CaboTheme.primaryTextStyle.copyWith(
-                    fontSize: 22,
-                  ),
-                  innerPadding: const EdgeInsets.all(4),
-                  onTap: () {
-                    cubit.sendEmail();
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            AppLocalizations.of(context)!.aboutScreenSuccess),
-                      ),
-                    );
-                  },
-                ),
                 const Spacer(),
                 Text(
-                  '© Andre Salzmann 2025',
+                  '© Andre Salzmann ${DateTime.now().year}',
                   style: CaboTheme.primaryTextStyle.copyWith(
                     fontSize: 15,
                   ),
