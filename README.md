@@ -10,9 +10,9 @@ It is currently available at the Google Play store in testing phase. To publish 
 You are also welcome to participate in the further development of the app.
 
 <p float="left">
-  <img src="https://github.com/buggxs/cabo/assets/32867155/f86ab142-6397-4322-8212-92be5d739a18" width="200" />
-  <img src="https://github.com/buggxs/cabo/assets/32867155/cd03ab5d-7706-40e7-884f-afc8d910cf10" width="200" />
-  <img src="https://github.com/buggxs/cabo/assets/32867155/0e37a9c9-cffd-4856-bf94-cfa56f4b7bd9" width="200" />
-  <img src="https://github.com/buggxs/cabo/assets/32867155/6b4456e5-d3fa-4470-8f9c-924c00f71470" width="200" />
+  <img src="https://github.com/user-attachments/assets/6d750656-e5ba-427e-8def-59c817348847" width="200" />
+  <img src="https://github.com/user-attachments/assets/f09791ba-ec12-4d24-8b64-4203f0551506" width="200" />
+  <img src="https://github.com/user-attachments/assets/e1526ef2-76e7-41f4-9b6c-46413eb0fd43" width="200" />
+  <img src="https://github.com/user-attachments/assets/c560a852-dfbd-434f-8a7f-5bf1cc52186f" width="200" />
 </p>
 
