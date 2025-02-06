@@ -25,54 +25,48 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
   final Stopwatch _stopwatch = Stopwatch();
   late Duration _elapsedTime;
   late String _elapsedTimeString;
-  late Timer timer;
+  Timer? _timer; // Make timer nullable
 
   @override
   void initState() {
     super.initState();
-
     _elapsedTime = Duration.zero;
     _elapsedTimeString = _formatElapsedTime(_elapsedTime);
 
-    // Create a timer that runs a callback every 100 milliseconds to update UI
     if (widget.shouldBeTimer) {
-      timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-        log.info('Game duration: $_elapsedTimeString');
+      _startTimer();
+    }
+  }
+
+  void _startTimer() {
+    _stopwatch.start();
+    // Create a timer that runs a callback every second to update UI
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      log.info('Game duration: $_elapsedTimeString');
+      if (mounted) {
+        // Check if widget is still mounted
         setState(() {
-          // Update elapsed time only if the stopwatch is running
           if (_stopwatch.isRunning) {
             _updateElapsedTime();
           }
         });
-      });
-    }
-
-    if (!_stopwatch.isRunning && widget.shouldBeTimer) {
-      _stopwatch.start();
-    }
-  }
-
-  // Update elapsed time and formatted time string
-  void _updateElapsedTime() {
-    setState(() {
-      _elapsedTime = _stopwatch.elapsed;
-      _elapsedTimeString = _formatElapsedTime(_elapsedTime);
+      }
     });
   }
 
-  // Format a Duration into a string (MM:SS.SS)
+  void _updateElapsedTime() {
+    _elapsedTime = _stopwatch.elapsed;
+    _elapsedTimeString = _formatElapsedTime(_elapsedTime);
+  }
+
   String _formatElapsedTime(Duration time) {
     return '${time.inHours.remainder(60).toString().padLeft(2, '0')}:${(time.inMinutes.remainder(60)).toString().padLeft(2, '0')}';
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
-    timer.cancel();
+    _timer?.cancel(); // Only cancel if timer exists
+    _stopwatch.stop();
     super.dispose();
   }
 

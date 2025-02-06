@@ -11,6 +11,8 @@
   "playerNames": "Spieler Namen",
   "start": "Starten",
   "dialogPointsLabel": "Punkte",
+  "statsCardRound": "Runde",
+  "statsCardTime": "Spielzeit",
   "finishCurrentGame": "Möchtest du das Spiel wirklich beenden?",
   "finishGameDialogButton": "Ja, beenden!",
   "continueGameDialogButton": "Nein, weiter spielen.",
