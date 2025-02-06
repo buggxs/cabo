@@ -2,6 +2,7 @@ import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,24 +35,37 @@ class _CaboDataTableState extends State<CaboDataTable>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _horizontal,
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        controller: _vertical,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                ...widget.titleCells,
-              ],
-            ),
-            ...widget.rounds,
-          ],
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          controller: _horizontal,
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Sticky header
+              Material(
+                elevation: _vertical.hasClients && _vertical.offset > 0 ? 2 : 0,
+                color: CaboTheme.secondaryBackgroundColor,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: widget.titleCells,
+                ),
+              ),
+              // Scrollable content
+              Flexible(
+                child: SingleChildScrollView(
+                  controller: _vertical,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: widget.rounds,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -66,5 +80,13 @@ class _CaboDataTableState extends State<CaboDataTable>
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _horizontal.dispose();
+    _vertical.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }

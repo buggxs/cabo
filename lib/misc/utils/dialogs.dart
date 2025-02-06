@@ -81,6 +81,13 @@ class StatisticsDialogService {
     List<Player>? players,
   ) {
     Map<String, int?> playerPointsMap = {};
+    final Map<String, FocusNode> focusNodes = {};
+
+    // Create focus nodes for each player
+    players?.forEach((player) {
+      focusNodes[player.name] = FocusNode();
+    });
+
     return app<NavigationService>().showAppDialog<Map<String, int?>>(
       dialog: (BuildContext context) => Dialog(
         shape: dialogBorderShape,
@@ -116,6 +123,7 @@ class StatisticsDialogService {
                             SizedBox(
                               width: 150,
                               child: TextField(
+                                focusNode: focusNodes[player.name],
                                 keyboardType: TextInputType.number,
                                 onChanged: (String points) {
                                   playerPointsMap[player.name] =
@@ -156,6 +164,13 @@ class StatisticsDialogService {
                         padding: const EdgeInsets.all(8.0),
                         child: OutlinedButton(
                           onPressed: () {
+                            // Unfocus and dispose before popping
+                            for (var node in focusNodes.values) {
+                              if (node.hasFocus) {
+                                node.unfocus();
+                              }
+                              node.dispose();
+                            }
                             Navigator.of(context).pop(playerPointsMap);
                           },
                           style: primaryButtonStyle,
