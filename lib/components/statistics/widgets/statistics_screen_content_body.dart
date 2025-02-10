@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'animated_border_container.dart';
+
 class StatisticsScreenContentBody extends StatelessWidget {
   const StatisticsScreenContentBody({super.key});
 
@@ -92,38 +94,30 @@ class StatisticsScreenContentBody extends StatelessWidget {
     List<Widget> rounds = <Widget>[];
     int lastIndex = players.first.rounds.length - 1;
     for (int i = 0; i < players.first.rounds.length; i++) {
-      rounds.add(
-        i == lastIndex
-            ? InkWell(
-                onLongPress: () => cubit.closeRound(index: lastIndex),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    ...players
-                        .map(
-                          (Player player) => CaboDataCell(
-                            round: player.rounds[i],
-                            isLastColumn: player == players.last,
-                          ),
-                        )
-                        .toList(),
-                  ],
+      Widget roundRow = Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ...players
+              .map(
+                (Player player) => CaboDataCell(
+                  round: player.rounds[i],
+                  isLastColumn: player == players.last,
                 ),
               )
-            : Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  ...players
-                      .map(
-                        (Player player) => CaboDataCell(
-                          round: player.rounds[i],
-                          isLastColumn: player == players.last,
-                        ),
-                      )
-                      .toList(),
-                ],
-              ),
+              .toList(),
+        ],
       );
+
+      if (i == lastIndex) {
+        rounds.add(
+          AnimatedBorderContainer(
+            onTap: () => cubit.closeRound(index: lastIndex),
+            child: roundRow,
+          ),
+        );
+      } else {
+        rounds.add(roundRow);
+      }
     }
     return rounds;
   }
