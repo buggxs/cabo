@@ -15,7 +15,7 @@ class CaboDataTable extends StatefulWidget {
   });
 
   final List<TitleCell> titleCells;
-  final List<Row> rounds;
+  final List<Widget> rounds;
   final StatisticsCubit cubit;
 
   @override
