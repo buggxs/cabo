@@ -22,6 +22,7 @@ class AboutScreen extends StatelessWidget {
 class AboutScreenContent extends StatelessWidget {
   const AboutScreenContent({super.key});
 
+  // Test comment
   @override
   Widget build(BuildContext context) {
     return Scaffold(
