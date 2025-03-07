@@ -47,5 +47,10 @@
   "aboutScreenSuccess": "Danke! Dein Feedback wurde abgeschickt.",
   "aboutScreenTextAreaLabel": "Deine Nachricht",
   "aboutScreenTextAreaDescription": "Hast Du Fehler gefunden oder hast du Verbesserungsvorschläge? Bitte lass es mich wissen.",
-  "aboutScreenText": "Ich habe diese App entwickelt, um das Spielerlebnis des CABO-Kartenspiels noch besser zu machen."
+  "aboutScreenText": "Ich habe diese App entwickelt, um das Spielerlebnis des CABO-Kartenspiels noch besser zu machen.",
+  "winnerDialogTitle": "Spiel vorbei!",
+  "hasWonText": "hat gewonnen!",
+  "withPointsText": "mit",
+  "pointsText": "Punkten",
+  "okButton": "OK"
 }

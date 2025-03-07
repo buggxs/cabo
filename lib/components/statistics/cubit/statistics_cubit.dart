@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:cabo/components/main_menu/main_menu_screen.dart';
+import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
@@ -12,7 +15,9 @@ import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/utils/logger.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
@@ -306,16 +311,34 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       players[i] = players[i].copyWith(place: i + 1);
     }
 
+    // Create the updated game with the new player data
+    Game updatedGame = state.game!.copyWith(players: players);
+
+    // Update the state with the new players and game data
     emit(
       state.copyWith(
         players: players,
-        game: state.game!.copyWith(
-          players: players,
-        ),
+        game: updatedGame,
       ),
     );
 
-    _saveGame(state.game!);
+    // Save the game state
+    _saveGame(updatedGame);
+
+    if (updatedGame.isGameFinished) {
+      Player winner = players.firstWhere((player) => player.place == 1);
+
+      // Show the winner dialog
+      _showWinnerDialog(
+        winner: winner,
+        onConfirm: () {
+          app<NavigationService>()
+              .navigatorKey
+              .currentState
+              ?.popAndPushNamed(MainMenuScreen.route);
+        },
+      );
+    }
   }
 
   bool _hasWonRound(
@@ -399,5 +422,26 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     return playerPointsmap.entries.any((MapEntry<String, int?> element) =>
         element.key != closingPlayer.name &&
         (element.value ?? 0) < pointsOfClosingPlayer);
+  }
+
+  // Shows the winner dialog with animation
+  void _showWinnerDialog({
+    required Player winner,
+    void Function()? onConfirm,
+  }) {
+    app<NavigationService>().showAppDialog(
+      dialog: (BuildContext context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(
+            style: BorderStyle.solid,
+            color: CaboTheme.tertiaryColor,
+            width: 2,
+          ),
+        ),
+        backgroundColor: CaboTheme.secondaryColor,
+        child: WinnerDialog(winner: winner, onConfirm: onConfirm),
+      ),
+    );
   }
 }
