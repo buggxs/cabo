@@ -1,6 +1,7 @@
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
+import 'package:cabo/components/rule_set/widgets/rule_set_info.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/misc/widgets/cabo_switch.dart';
 import 'package:cabo/misc/widgets/cabo_text_field.dart';
@@ -84,10 +85,25 @@ class RuleSetScreenContent extends StatelessWidget {
                       horizontal: 48.0,
                       vertical: 6,
                     ),
-                    child: CaboTextFormField(
-                      controller: totalGamePointsController,
-                      labelText: AppLocalizations.of(context)!
-                          .ruleScreenTotalGamePointsLabel,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: CaboTextFormField(
+                            controller: totalGamePointsController,
+                            labelText: AppLocalizations.of(context)!
+                                .ruleScreenTotalGamePointsLabel,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 1,
+                          child: RuleInfo(
+                            info: AppLocalizations.of(context)!
+                                .ruleScreenTotalPointsHint,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
@@ -95,10 +111,25 @@ class RuleSetScreenContent extends StatelessWidget {
                       horizontal: 48.0,
                       vertical: 6,
                     ),
-                    child: CaboTextFormField(
-                      controller: kamikazePointsController,
-                      labelText: AppLocalizations.of(context)!
-                          .ruleScreenKamikazePointsLabel,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: CaboTextFormField(
+                            controller: kamikazePointsController,
+                            labelText: AppLocalizations.of(context)!
+                                .ruleScreenKamikazePointsLabel,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 1,
+                          child: RuleInfo(
+                            info: AppLocalizations.of(context)!
+                                .ruleScreenKamikazeHint,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(
@@ -109,18 +140,33 @@ class RuleSetScreenContent extends StatelessWidget {
                       horizontal: 48.0,
                       vertical: 6,
                     ),
-                    child: CaboSwitch(
-                      initialValue:
-                          cubit.state.ruleSet.roundWinnerGetsZeroPoints,
-                      labelText: AppLocalizations.of(context)!
-                          .ruleScreenZeroPointsLabel,
-                      onChanged: (bool value) {
-                        cubit.saveRuleSet(
-                          cubit.state.ruleSet.copyWith(
-                            roundWinnerGetsZeroPoints: value,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: CaboSwitch(
+                            initialValue:
+                                cubit.state.ruleSet.roundWinnerGetsZeroPoints,
+                            labelText: AppLocalizations.of(context)!
+                                .ruleScreenZeroPointsLabel,
+                            onChanged: (bool value) {
+                              cubit.saveRuleSet(
+                                cubit.state.ruleSet.copyWith(
+                                  roundWinnerGetsZeroPoints: value,
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 1,
+                          child: RuleInfo(
+                            info: AppLocalizations.of(context)!
+                                .ruleScreenRoundWinnerHint,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
@@ -128,18 +174,34 @@ class RuleSetScreenContent extends StatelessWidget {
                       horizontal: 48.0,
                       vertical: 6,
                     ),
-                    child: CaboSwitch(
-                      initialValue: cubit.state.ruleSet.precisionLanding,
-                      labelText: AppLocalizations.of(context)!
-                          .ruleScreenPrecisionLandingLabel,
-                      onChanged: (bool value) {
-                        final RuleSet ruleSet = cubit.state.ruleSet.copyWith(
-                          precisionLanding: value,
-                        );
-                        cubit.saveRuleSet(
-                          ruleSet,
-                        );
-                      },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: CaboSwitch(
+                            initialValue: cubit.state.ruleSet.precisionLanding,
+                            labelText: AppLocalizations.of(context)!
+                                .ruleScreenPrecisionLandingLabel,
+                            onChanged: (bool value) {
+                              final RuleSet ruleSet =
+                                  cubit.state.ruleSet.copyWith(
+                                precisionLanding: value,
+                              );
+                              cubit.saveRuleSet(
+                                ruleSet,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 1,
+                          child: RuleInfo(
+                            info: AppLocalizations.of(context)!
+                                .ruleScreenExactly100Hint,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Spacer(),

@@ -177,11 +177,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
   }
 
-  void closeRound() {
+  void closeRound({int? index}) {
     if (state.isPublicGame) {
       _closeOnlineRound();
     } else {
-      _closeOfflineRound();
+      _closeOfflineRound(index);
     }
   }
 
@@ -197,7 +197,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   /// Close round when game is offline game
   /// Stats will be processed offline on the device
   /// Game stats will be saved in local device storage
-  Future<void> _closeOfflineRound() async {
+  Future<void> _closeOfflineRound(int? index) async {
     RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
     if (state.players.isEmpty) {
@@ -253,24 +253,49 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
           }
         }
 
-        players[i] = player.copyWith(
-          rounds: [
-            ...player.rounds,
-            Round(
-              round: player.rounds.length + 1,
-              points: points,
-              hasClosedRound: closingPlayer == player,
-              hasPenaltyPoints: closingPlayer == player && closingPlayerHasLost,
-              hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
-              isWonRound: _hasWonRound(
-                player.name,
-                playerPointsmap,
-                ruleSet,
-                points,
+        if (index != null) {
+          List<Round> round = List.of(players[i].rounds);
+          round.removeAt(index);
+          players[i] = player.copyWith(
+            rounds: [
+              ...round,
+              Round(
+                round: player.rounds.length + 1,
+                points: points,
+                hasClosedRound: closingPlayer == player,
+                hasPenaltyPoints:
+                    closingPlayer == player && closingPlayerHasLost,
+                hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+                isWonRound: _hasWonRound(
+                  player.name,
+                  playerPointsmap,
+                  ruleSet,
+                  points,
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          );
+        } else {
+          players[i] = player.copyWith(
+            rounds: [
+              ...player.rounds,
+              Round(
+                round: player.rounds.length + 1,
+                points: points,
+                hasClosedRound: closingPlayer == player,
+                hasPenaltyPoints:
+                    closingPlayer == player && closingPlayerHasLost,
+                hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+                isWonRound: _hasWonRound(
+                  player.name,
+                  playerPointsmap,
+                  ruleSet,
+                  points,
+                ),
+              ),
+            ],
+          );
+        }
       }
     }
 

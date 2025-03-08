@@ -8,6 +8,9 @@ import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'animated_border_container.dart';
 
 class StatisticsScreenContentBody extends StatelessWidget {
   const StatisticsScreenContentBody({super.key});
@@ -38,69 +41,83 @@ class StatisticsScreenContentBody extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-            height: 100,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              StatisticInfoCard(
-                title: 'Round',
-                content: state.players.first.rounds.length.toString(),
-              ),
-              const StatisticInfoCard(
-                title: 'Play time',
-                shouldBeTimer: true,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 75,
-          ),
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.all(12.0),
-              color: CaboTheme.secondaryBackgroundColor,
-              shadowColor: Colors.black,
-              elevation: 5.0,
-              child: (state.players.isEmpty)
-                  ? const Text('No Players found!')
-                  : CaboDataTable(
-                      titleCells: titleCells,
-                      rounds: _buildRounds(state.players),
-                      cubit: cubit,
+      constraints: const BoxConstraints.expand(),
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      StatisticInfoCard(
+                        title: AppLocalizations.of(context)!.statsCardRound,
+                        content: state.players.first.rounds.length.toString(),
+                      ),
+                      StatisticInfoCard(
+                        title: AppLocalizations.of(context)!.statsCardTime,
+                        shouldBeTimer: true,
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-            ),
-          ),
-        ],
+                    margin: const EdgeInsets.all(12.0),
+                    color: CaboTheme.secondaryBackgroundColor,
+                    shadowColor: Colors.black,
+                    elevation: 5.0,
+                    child: (state.players.isEmpty)
+                        ? const Text('No Players found!')
+                        : CaboDataTable(
+                            titleCells: titleCells,
+                            rounds: _buildRounds(state.players, cubit),
+                            cubit: cubit,
+                          ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  List<Row> _buildRounds(List<Player> players) {
-    List<Row> rounds = <Row>[];
+  List<Widget> _buildRounds(List<Player> players, StatisticsCubit cubit) {
+    List<Widget> rounds = <Widget>[];
+    int lastIndex = players.first.rounds.length - 1;
     for (int i = 0; i < players.first.rounds.length; i++) {
-      rounds.add(
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ...players
-                .map(
-                  (Player player) => CaboDataCell(
-                    round: player.rounds[i],
-                    isLastColumn: player == players.last,
-                  ),
-                )
-                .toList(),
-          ],
-        ),
+      Widget roundRow = Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ...players
+              .map(
+                (Player player) => CaboDataCell(
+                  round: player.rounds[i],
+                  isLastColumn: player == players.last,
+                ),
+              )
+              .toList(),
+        ],
       );
+
+      if (i == lastIndex) {
+        rounds.add(
+          AnimatedBorderContainer(
+            onTap: () => cubit.closeRound(index: lastIndex),
+            child: roundRow,
+          ),
+        );
+      } else {
+        rounds.add(roundRow);
+      }
     }
     return rounds;
   }

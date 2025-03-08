@@ -24,8 +24,6 @@ class AboutScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AboutCubit cubit = context.watch<AboutCubit>();
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,

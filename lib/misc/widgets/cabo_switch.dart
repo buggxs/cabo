@@ -28,6 +28,7 @@ class _CaboSwitchState extends State<CaboSwitch> {
           child: AutoSizeText(
             widget.labelText,
             style: CaboTheme.primaryTextStyle.copyWith(
+              fontSize: 18,
               fontWeight: FontWeight.w900,
             ),
           ),

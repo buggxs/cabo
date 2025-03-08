@@ -77,7 +77,7 @@ class TitleCell extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  AutoSizeText(
                     '#${player.place ?? '-'}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class TitleCell extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Text(
+                      child: AutoSizeText(
                         '${player.totalPoints}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
