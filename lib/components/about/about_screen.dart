@@ -1,5 +1,6 @@
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
+import 'package:cabo/components/widgets/rating_dialog.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,6 +109,9 @@ class AboutScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: () => RatingDialog.show(),
+                    child: Text('Rate App')),
                 const Spacer(),
                 Text(
                   '© Andre Salzmann ${DateTime.now().year}',
