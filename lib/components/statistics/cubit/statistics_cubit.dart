@@ -10,6 +10,7 @@ import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/open_game/open_game.dart';
 import 'package:cabo/domain/open_game/open_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
@@ -336,6 +337,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               .navigatorKey
               .currentState
               ?.popAndPushNamed(MainMenuScreen.route);
+
+          app<RatingService>().trackGameCompletion();
         },
       );
     }

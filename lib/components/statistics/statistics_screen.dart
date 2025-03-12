@@ -4,6 +4,7 @@ import 'package:cabo/components/statistics/widgets/statistics_screen_content_bod
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
@@ -94,6 +95,8 @@ class StatisticsScreenContent extends StatelessWidget {
       if (context.mounted) {
         Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
       }
+
+      app<RatingService>().trackGameCompletion();
     }
 
     return false;
