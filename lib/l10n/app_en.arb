@@ -53,5 +53,10 @@
   "rateAppDescription": "How would you rate your experience with Cabo Board?",
   "feedbackLabel": "Your Feedback (Optional)",
   "submitRating": "Submit",
-  "maybeLater": "Maybe Later"
+  "maybeLater": "Maybe Later",
+  "winnerDialogTitle": "Game Finshed!",
+  "hasWonText": "has won!",
+  "withPointsText": "with",
+  "pointsText": "points",
+  "okButton": "OK"
 }
