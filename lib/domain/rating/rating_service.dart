@@ -8,8 +8,7 @@ class RatingService with LoggerMixin {
   static const String _hasRatedKey = 'has_rated_app';
   static const String _lastPromptDateKey = 'last_rating_prompt_date';
   static const int _gamesUntilRating = 3;
-  static const int _minDaysBetweenPrompts =
-      14; // Don't prompt more often than every 14 days
+  static const int _minDaysBetweenPrompts = 7;
 
   final InAppReview _inAppReview = InAppReview.instance;
 

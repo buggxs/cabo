@@ -1,6 +1,7 @@
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
-import 'package:cabo/components/widgets/rating_dialog.dart';
+import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,9 +110,30 @@ class AboutScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                const SizedBox(
+                  height: 50,
+                ),
                 ElevatedButton(
-                    onPressed: () => RatingDialog.show(),
-                    child: Text('Rate App')),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: CaboTheme.primaryColor,
+                    backgroundColor: CaboTheme.secondaryColor,
+                    textStyle: CaboTheme.secondaryTextStyle.copyWith(
+                      color: CaboTheme.primaryColor,
+                      fontSize: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      side: const BorderSide(
+                        color: CaboTheme.primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                  onPressed: () => app<RatingService>().openStoreListing(),
+                  child: Text(
+                    AppLocalizations.of(context)!.aboutScreenRatingButton,
+                  ),
+                ),
                 const Spacer(),
                 Text(
                   '© Andre Salzmann ${DateTime.now().year}',
