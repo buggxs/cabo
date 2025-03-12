@@ -145,5 +145,6 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 
-google-services.json
 cabo-9be98-02767045067f.json
+google-services.json
+
