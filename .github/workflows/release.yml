@@ -2,7 +2,7 @@ name: Release to Play Store
 
 on:
   release:
-    types: [ published ]
+    types: [published]
 
 jobs:
   release:
@@ -25,38 +25,38 @@ jobs:
               repo: context.repo.repo,
               release_id: context.payload.release.id
             });
-            
+
             const releaseNotes = release.data.body;
             const fs = require('fs');
-            
+
             // Erstelle whatsnew Verzeichnis
             if (!fs.existsSync('whatsnew')) {
               fs.mkdirSync('whatsnew');
             }
-            
+
             // Parse Release Notes nach Sprachen
             const languages = {
               'en-US': '🇺🇸 English',
               'de-DE': '🇩🇪 Deutsch',
               // Weitere Sprachen hier hinzufügen
             };
-            
+
             for (const [langCode, langMarker] of Object.entries(languages)) {
               // Suche den Abschnitt für die aktuelle Sprache
               const langPattern = new RegExp(`## ${langMarker}\\s*([^#]*)`);
               const match = releaseNotes.match(langPattern);
-            
+
               if (match) {
                 let notes = match[1].trim();
-            
+
                 // Entferne Markdown-Listen-Marker wenn vorhanden
                 notes = notes.replace(/^\s*[-*]\s*/gm, '');
-            
+
                 // Begrenze auf 500 Zeichen (Play Store Limit)
                 if (notes.length > 500) {
                   notes = notes.substring(0, 497) + '...';
                 }
-            
+
                 // Schreibe in sprachspezifische Datei
                 fs.writeFileSync(`whatsnew/whatsnew-${langCode}`, notes);
                 console.log(`Created whatsnew file for ${langCode}`);
@@ -68,14 +68,14 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '21'
+          distribution: "zulu"
+          java-version: "17"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.3'
-          channel: 'stable'
+          flutter-version: "3.24.3"
+          channel: "stable"
 
       - name: Get dependencies
         run: flutter pub get
