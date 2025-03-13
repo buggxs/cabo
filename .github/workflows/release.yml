@@ -89,6 +89,9 @@ jobs:
           # Dekodiere die base64-kodierten Secrets in Dateien
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > $HOME/keystores/upload-keystore.jks
 
+          # Prüfe, ob die Datei korrekt erstellt wurde
+          file $HOME/keystores/upload-keystore.jks
+
           # Erstelle key.properties Datei
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
@@ -98,6 +101,38 @@ jobs:
           # Überprüfe, ob die Dateien erstellt wurden
           ls -la android/app/
           cat android/key.properties
+
+      - name: Ensure Gradle wrapper has execution permission
+        run: chmod +x ./android/gradlew
+
+      - name: Verify keystore
+        run: |
+          # Prüfe, ob der Keystore ein gültiges JKS-Format hat
+          if [ -f "$HOME/keystores/upload-keystore.jks" ]; then
+            echo "Keystore file exists"
+            # Versuche den Keystore zu lesen (ohne Passwort zu zeigen)
+            if keytool -list -keystore $HOME/keystores/upload-keystore.jks -storepass ${{ secrets.STORE_PASSWORD }} 2>/dev/null; then
+              echo "✅ Keystore is valid and can be read with the provided password"
+            else
+              echo "❌ Failed to read keystore with provided password"
+              # Zeige Dateiformat an
+              file $HOME/keystores/upload-keystore.jks
+            fi
+          else
+            echo "❌ Keystore file does not exist"
+          fi
+
+          # Zeige gradle.properties
+          echo "Checking gradle.properties:"
+          if [ -f "android/gradle.properties" ]; then
+            cat android/gradle.properties
+          else
+            echo "gradle.properties not found"
+          fi
+
+          # Überprüfe, ob der Android-Build-Prozess das Keystore-File finden kann
+          echo "Checking android app build.gradle keystore configuration:"
+          grep -A 10 "signingConfigs" android/app/build.gradle || echo "No signingConfigs found in build.gradle"
 
       - name: Build Android App Bundle
         run: flutter build appbundle --release
