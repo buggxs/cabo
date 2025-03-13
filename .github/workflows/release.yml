@@ -99,7 +99,7 @@ jobs:
           echo "storeFile=$HOME/keystores/upload-keystore.jks" >> android/key.properties
 
           # Überprüfe, ob die Dateien erstellt wurden
-          ls -la android/app/
+          ls -la $HOME/keystores/
           cat android/key.properties
 
       - name: Ensure Gradle wrapper has execution permission
