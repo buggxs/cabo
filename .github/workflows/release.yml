@@ -102,9 +102,6 @@ jobs:
           ls -la $HOME/keystores/
           cat android/key.properties
 
-      - name: Ensure Gradle wrapper has execution permission
-        run: chmod +x ./android/gradle/wrapper/gradlew
-
       - name: Verify keystore
         run: |
           # Prüfe, ob der Keystore ein gültiges JKS-Format hat
