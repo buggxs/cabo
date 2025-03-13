@@ -103,7 +103,7 @@ jobs:
           cat android/key.properties
 
       - name: Ensure Gradle wrapper has execution permission
-        run: chmod +x ./android/gradlew
+        run: chmod +x ./android/gradle/wrapper/gradlew
 
       - name: Verify keystore
         run: |
