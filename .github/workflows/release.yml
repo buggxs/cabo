@@ -80,6 +80,23 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+        # Setup keystore for signing
+      - name: Setup Keystore
+        run: |
+          # Dekodiere die base64-kodierten Secrets in Dateien
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ~/cabo/upload-keystore.jks
+          
+          # Erstelle key.properties Datei
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=~/cabo/upload-keystore.jks" >> android/key.properties
+          
+          # Überprüfe, ob die Dateien erstellt wurden
+          ls -la android/app/
+          cat android/key.properties
+
+
       - name: Build Android App Bundle
         run: flutter build appbundle --release
 
