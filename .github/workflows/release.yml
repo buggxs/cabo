@@ -68,8 +68,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: '16'
-          distribution: 'corretto'
+          java-version: "16"
+          distribution: "corretto"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -83,19 +83,21 @@ jobs:
         # Setup keystore for signing
       - name: Setup Keystore
         run: |
+          # Erstelle einen sicheren Ordner außerhalb des Projektverzeichnisses
+          mkdir -p $HOME/keystores
+
           # Dekodiere die base64-kodierten Secrets in Dateien
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ~/cabo/upload-keystore.jks
-          
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > $HOME/keystores/upload-keystore.jks
+
           # Erstelle key.properties Datei
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=~/cabo/upload-keystore.jks" >> android/key.properties
-          
+          echo "storeFile=$HOME/keystores/upload-keystore.jks" >> android/key.properties
+
           # Überprüfe, ob die Dateien erstellt wurden
           ls -la android/app/
           cat android/key.properties
-
 
       - name: Build Android App Bundle
         run: flutter build appbundle --release
