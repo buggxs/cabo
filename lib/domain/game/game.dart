@@ -1,10 +1,13 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -61,7 +64,7 @@ class Game extends Equatable {
         return '';
       }
       Duration duration = dateFinishedAt.difference(dateStartedAt);
-      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenHours}, \n'
+      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenHours}, '
           '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenMinutes}';
     }
     return '';
@@ -80,6 +83,30 @@ class Game extends Equatable {
 
     return DateFormat('dd-MM-yyyy').format(startedDate);
   }
+
+  List<GameStreak> getGameStreaks() {
+    final BuildContext context =
+        app<NavigationService>().navigatorKey.currentContext!;
+    List<GameStreak> streaks = <GameStreak>[];
+
+    if (_hasWonFiveRoundsInARow) {
+      streaks.add(
+        GameStreak(
+          message: AppLocalizations.of(context)!.streakFiveRoundsWon,
+          icon: const Icon(
+            Icons.local_fire_department_rounded, // Fire icon for streak
+            color: Colors.orangeAccent, // Fiery color
+            size: 18, // Slightly smaller icon inside border
+          ),
+        ),
+      );
+    }
+
+    return streaks;
+  }
+
+  bool get _hasWonFiveRoundsInARow =>
+      players.any((Player player) => player.hasRoundWinStreak(5));
 
   bool get isGameFinished =>
       players.any(

@@ -28,6 +28,7 @@ class GameHistoryScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GameHistoryCubit cubit = context.watch<GameHistoryCubit>();
+    const Color cardBackgroundColor = Color(0xFF2A402A);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -49,12 +50,13 @@ class GameHistoryScreenContent extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: 80,
+                height: 110,
                 child: _headerCards(
                   playedRounds: calculatePlayedRounds(
                     cubit.state.games,
                   ),
                   gameAmount: cubit.state.games.length,
+                  backgroundColor: cardBackgroundColor,
                   gameTime: calculateTotalPlayTime(cubit.state.games),
                   context: context,
                 ),
@@ -63,10 +65,8 @@ class GameHistoryScreenContent extends StatelessWidget {
                 totalCollectedPoints: calculateTotalPoints(
                   cubit.state.games,
                 ),
+                backgroundColor: cardBackgroundColor,
                 context: context,
-              ),
-              const SizedBox(
-                height: 50,
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -102,138 +102,155 @@ class GameHistoryScreenContent extends StatelessWidget {
   Widget _headerCards({
     int gameAmount = 0,
     int playedRounds = 0,
-    String gameTime = '0 Days \n 0 hours',
+    String gameTime = '0 Days\n0 Hours', // Expecting newline separated string
     required BuildContext context,
+    required Color backgroundColor,
   }) {
+    // Parse gameTime string
+    final gameTimeParts = gameTime.split('\n');
+    final days = gameTimeParts.isNotEmpty ? gameTimeParts[0] : '0 Days';
+    final hours = gameTimeParts.length > 1 ? gameTimeParts[1] : '0 Hours';
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          CrossAxisAlignment.start, // Align tops if heights differ
       children: [
         Expanded(
-          flex: 1,
-          child: Card(
-            color: CaboTheme.secondaryBackgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.historyScreenGamesCardTitle,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.fourthColor,
-                      height: 1,
-                    ),
-                  ),
-                  Text(
-                    '$gameAmount',
-                    style: CaboTheme.numberTextStyle.copyWith(
-                      color: Colors.white,
-                    ),
-                  )
-                ],
+          child: _buildStatCard(
+            icon: '🎮',
+            valueWidget: AutoSizeText(
+              '$gameAmount',
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
+            label: AppLocalizations.of(context)!.historyScreenGamesCardTitle,
+            backgroundColor: backgroundColor,
           ),
         ),
+        const SizedBox(width: 16.0), // Gap between cards
         Expanded(
-          flex: 1,
-          child: Card(
-            color: CaboTheme.secondaryBackgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AutoSizeText(
-                    AppLocalizations.of(context)!
-                        .historyScreenGameTimeCardTitle,
-                    textAlign: TextAlign.center,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.fourthColor,
-                      height: 1,
-                      fontSize: 14,
-                    ),
+          child: _buildStatCard(
+            icon: '⏰',
+            valueWidget: Column(
+              // Use Column for two lines
+              children: [
+                AutoSizeText(
+                  days,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12.0, // Smaller font for time
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  AutoSizeText(
-                    gameTime,
-                    textAlign: TextAlign.center,
-                    style: CaboTheme.numberTextStyle
-                        .copyWith(color: Colors.white, fontSize: 14),
+                ),
+                AutoSizeText(
+                  hours,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12.0, // Smaller font for time
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            label: AppLocalizations.of(context)!.historyScreenGameTimeCardTitle,
+            backgroundColor: backgroundColor,
           ),
         ),
+        const SizedBox(width: 16.0), // Gap between cards
         Expanded(
-          flex: 1,
-          child: Card(
-            color: CaboTheme.secondaryBackgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AutoSizeText(
-                    AppLocalizations.of(context)!
-                        .historyScreenPlayedRoundsCardTitle,
-                    textAlign: TextAlign.center,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.fourthColor,
-                      height: 1,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    '$playedRounds',
-                    style: CaboTheme.numberTextStyle.copyWith(
-                      color: Colors.white,
-                    ),
-                  )
-                ],
+          child: _buildStatCard(
+            icon: '🏅',
+            valueWidget: AutoSizeText(
+              '$playedRounds',
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
+            label: AppLocalizations.of(context)!
+                .historyScreenPlayedRoundsCardTitle,
+            backgroundColor: backgroundColor,
           ),
         ),
       ],
     );
   }
 
+  Widget _buildStatCard({
+    required String icon,
+    required Widget valueWidget,
+    required String label,
+    required Color backgroundColor,
+    EdgeInsets padding = const EdgeInsets.all(0.0),
+    EdgeInsetsGeometry? margin,
+  }) {
+    return Card(
+      color: backgroundColor,
+      elevation: 5.0,
+      margin: margin,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Padding(
+        padding: padding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AutoSizeText(
+              icon,
+              style: const TextStyle(fontSize: 20.0, color: Colors.white),
+            ),
+            valueWidget,
+            AutoSizeText(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13.0,
+                color: Colors.grey[300],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _totalPointsBanner({
     int totalCollectedPoints = 0,
     required BuildContext context,
+    required Color backgroundColor,
   }) {
     return Row(
       children: [
         Expanded(
           flex: 1,
-          child: Card(
-            color: CaboTheme.secondaryBackgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AutoSizeText(
-                    AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.fourthColor,
-                      height: 1,
-                    ),
-                  ),
-                  Text(
-                    '$totalCollectedPoints',
-                    style: CaboTheme.numberTextStyle.copyWith(
-                      color: Colors.white,
-                    ),
-                  )
-                ],
+          child: _buildStatCard(
+            icon: '⭐',
+            valueWidget: Text(
+              '$totalCollectedPoints',
+              style: const TextStyle(
+                fontSize: 34.0, // Larger font for total points
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
+            label: AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
+            backgroundColor: backgroundColor,
+            margin: const EdgeInsets.only(
+              top: 4,
+              bottom: 0,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+              horizontal: 8,
+            ), // Larger padding for banner
           ),
         ),
       ],

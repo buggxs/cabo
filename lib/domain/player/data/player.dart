@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cabo/domain/round/round.dart';
 import 'package:equatable/equatable.dart';
@@ -45,6 +46,66 @@ class Player extends Equatable {
             .map((Round round) => round.points)
             .reduce((pointsA, pointsB) => pointsA + pointsB) +
         precisionLandingRounds;
+  }
+
+  /// Checks if the player has won at least [streakLength] rounds consecutively
+  /// within this game, based on the `isWonRound` flag of their rounds.
+  ///
+  /// Assumes the `rounds` list is ordered chronologically by round number.
+  /// If order is not guaranteed, sorting would be needed first.
+  ///
+  /// Example: `player.hasRoundWinStreak(5)` checks for a 5-round win streak.
+  bool hasRoundWinStreak(int streakLength) {
+    if (streakLength <= 0) {
+      return false;
+    }
+    if (rounds.length < streakLength) {
+      return false;
+    }
+
+    int currentStreak = 0;
+    // Sort rounds by round number to ensure correct order for streak check
+    final sortedRounds = List<Round>.from(rounds)
+      ..sort((a, b) => a.round.compareTo(b.round));
+
+    for (final round in sortedRounds) {
+      if (round.isWonRound) {
+        currentStreak++;
+        if (currentStreak >= streakLength) {
+          return true;
+        }
+      } else {
+        currentStreak = 0;
+      }
+    }
+
+    return false;
+  }
+
+  /// Finds the longest consecutive round win streak for the player in this game.
+  /// Returns 0 if no rounds were won.
+  int get longestRoundWinStreak {
+    if (rounds.isEmpty) {
+      return 0;
+    }
+
+    int maxStreak = 0;
+    int currentStreak = 0;
+    // Sort rounds by round number to ensure correct order for streak check
+    final sortedRounds = List<Round>.from(rounds)
+      ..sort((a, b) => a.round.compareTo(b.round));
+
+    for (final round in sortedRounds) {
+      if (round.isWonRound) {
+        currentStreak++;
+      } else {
+        maxStreak = max(maxStreak, currentStreak);
+        currentStreak = 0;
+      }
+    }
+    maxStreak = max(maxStreak, currentStreak);
+
+    return maxStreak;
   }
 
   Player copyWith({

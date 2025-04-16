@@ -58,5 +58,7 @@
   "hasWonText": "hat gewonnen!",
   "withPointsText": "mit",
   "pointsText": "Punkten",
-  "okButton": "OK"
+  "okButton": "OK",
+  "streakTitle": "Streaks",
+  "streakFiveRoundsWon": "5 Runden infolge gewonnen."
 }
