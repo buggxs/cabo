@@ -32,6 +32,7 @@
   "historyScreenGameTimeCardTitle": "Spielzeit",
   "historyScreenPlayedRoundsCardTitle": "Gespielte Runden",
   "historyScreenTotalPointsTitle": "Gesammelte Punkte",
+  "ruleScreenTitle": "Regeln",
   "ruleScreenKamikazePointsLabel": "Kamikaze Punkte",
   "ruleScreenTotalGamePointsLabel": "Gesammtpunktzahl",
   "ruleScreenZeroPointsLabel": "Rundengewinner erhält 0 Punkte",
