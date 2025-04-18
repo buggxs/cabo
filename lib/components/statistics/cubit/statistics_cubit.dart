@@ -371,7 +371,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == null) {
       // If closing Player and another player have same points
       if (!closingPlayerHasLost &&
-          points == _getLowestPoints(playerPointsmap)) {
+          points == _getLowestPoints(playerPointsmap) &&
+          playerName != closingPlayer.name) {
         return false;
       }
 

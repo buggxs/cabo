@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/components/game_history/cubit/game_history_cubit.dart';
+import 'package:cabo/components/game_history/widget/animated_total_points_banner.dart';
 import 'package:cabo/components/game_history/widget/game_card.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/utils/gaming_data.dart';
@@ -30,6 +31,11 @@ class GameHistoryScreenContent extends StatelessWidget {
     final GameHistoryCubit cubit = context.watch<GameHistoryCubit>();
     const Color cardBackgroundColor = Color(0xFF2A402A);
 
+    final int playedRounds = calculatePlayedRounds(cubit.state.games);
+    final int gameAmount = cubit.state.games.length;
+    final String gameTime = calculateTotalPlayTime(cubit.state.games);
+    final int totalCollectedPoints = calculateTotalPoints(cubit.state.games);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -52,21 +58,16 @@ class GameHistoryScreenContent extends StatelessWidget {
               SizedBox(
                 height: 110,
                 child: _headerCards(
-                  playedRounds: calculatePlayedRounds(
-                    cubit.state.games,
-                  ),
-                  gameAmount: cubit.state.games.length,
+                  playedRounds: playedRounds,
+                  gameAmount: gameAmount,
                   backgroundColor: cardBackgroundColor,
-                  gameTime: calculateTotalPlayTime(cubit.state.games),
+                  gameTime: gameTime,
                   context: context,
                 ),
               ),
-              _totalPointsBanner(
-                totalCollectedPoints: calculateTotalPoints(
-                  cubit.state.games,
-                ),
+              AnimatedTotalPointsBanner(
+                totalCollectedPoints: totalCollectedPoints,
                 backgroundColor: cardBackgroundColor,
-                context: context,
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -137,15 +138,16 @@ class GameHistoryScreenContent extends StatelessWidget {
             valueWidget: Column(
               // Use Column for two lines
               children: [
-                AutoSizeText(
-                  days,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 12.0, // Smaller font for time
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                if (gameTimeParts.length > 1)
+                  AutoSizeText(
+                    days,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12.0, // Smaller font for time
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
                 AutoSizeText(
                   hours,
                   textAlign: TextAlign.center,
@@ -219,41 +221,6 @@ class GameHistoryScreenContent extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _totalPointsBanner({
-    int totalCollectedPoints = 0,
-    required BuildContext context,
-    required Color backgroundColor,
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: _buildStatCard(
-            icon: '⭐',
-            valueWidget: Text(
-              '$totalCollectedPoints',
-              style: const TextStyle(
-                fontSize: 34.0, // Larger font for total points
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            label: AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
-            backgroundColor: backgroundColor,
-            margin: const EdgeInsets.only(
-              top: 4,
-              bottom: 0,
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 8,
-            ), // Larger padding for banner
-          ),
-        ),
-      ],
     );
   }
 }

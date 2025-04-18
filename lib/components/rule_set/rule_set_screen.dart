@@ -57,8 +57,7 @@ class RuleSetScreenContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          AppLocalizations.of(context)!
-                                .ruleScreenTitle,
+          AppLocalizations.of(context)!.ruleScreenTitle,
           style: CaboTheme.primaryTextStyle.copyWith(
             fontSize: 38,
           ),

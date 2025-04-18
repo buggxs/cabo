@@ -61,5 +61,6 @@
   "pointsText": "Punkten",
   "okButton": "OK",
   "streakTitle": "Streaks",
-  "streakFiveRoundsWon": "5 Runden infolge gewonnen."
+  "streakFiveRoundsWon": "5 Runden infolge gewonnen.",
+  "streakOneHourGame": "Spiellänge über 1 Stunde"
 }

@@ -138,10 +138,15 @@ class GameCard extends StatelessWidget {
                         ...game
                             .getGameStreaks()
                             .map(
-                              (GameStreak streak) => Tooltip(
-                                message: streak.message,
-                                triggerMode: TooltipTriggerMode.tap,
-                                child: streak.icon,
+                              (GameStreak streak) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 3.0,
+                                ),
+                                child: Tooltip(
+                                  message: streak.message,
+                                  triggerMode: TooltipTriggerMode.tap,
+                                  child: streak.icon,
+                                ),
                               ),
                             )
                             .toList(),

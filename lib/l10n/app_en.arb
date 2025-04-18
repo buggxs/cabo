@@ -32,7 +32,7 @@
   "historyScreenGameTimeCardTitle": "Game Time",
   "historyScreenPlayedRoundsCardTitle": "Played Rounds",
   "historyScreenTotalPointsTitle": "Total amount of collected Points",
-  "ruleScreenTitle": "Regeln",
+  "ruleScreenTitle": "Rules",
   "ruleScreenKamikazePointsLabel": "Kamikaze Points",
   "ruleScreenTotalGamePointsLabel": "Total score",
   "ruleScreenZeroPointsLabel": "Round Winner get 0 Points",
@@ -61,5 +61,6 @@
   "pointsText": "points",
   "okButton": "OK",
   "streakTitle": "Streaks",
-  "streakFiveRoundsWon": "5 Round Win Streak."
+  "streakFiveRoundsWon": "5 Round Win Streak.",
+  "streakOneHourGame": "Game Time Over 1 Hour"
 }

@@ -2,7 +2,6 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
@@ -85,28 +84,55 @@ class Game extends Equatable {
   }
 
   List<GameStreak> getGameStreaks() {
-    final BuildContext context =
-        app<NavigationService>().navigatorKey.currentContext!;
-    List<GameStreak> streaks = <GameStreak>[];
+    List<GameStreakType> streaks = <GameStreakType>[];
 
     if (_hasWonFiveRoundsInARow) {
+      GameStreakType winStreak = GameStreakType.fiveRoundsWon;
+      if (players.any((Player player) => player.hasRoundWinStreak(7))) {
+        winStreak = GameStreakType.sevenRoundsWon;
+      }
+      if (players.any((Player player) => player.hasRoundWinStreak(10))) {
+        winStreak = GameStreakType.tenRoundsWon;
+      }
       streaks.add(
-        GameStreak(
-          message: AppLocalizations.of(context)!.streakFiveRoundsWon,
-          icon: const Icon(
-            Icons.local_fire_department_rounded, // Fire icon for streak
-            color: Colors.orangeAccent, // Fiery color
-            size: 18, // Slightly smaller icon inside border
-          ),
-        ),
+        winStreak,
       );
     }
 
-    return streaks;
+    if (_isLongerThan(const Duration(hours: 1))) {
+      GameStreakType winStreak = GameStreakType.oneHourGame;
+      if (_isLongerThan(const Duration(hours: 1, minutes: 30))) {
+        winStreak = GameStreakType.oneAndHalfHoursGame;
+      }
+      if (_isLongerThan(const Duration(hours: 2))) {
+        winStreak = GameStreakType.twoHoursGame;
+      }
+      streaks.add(winStreak);
+    }
+
+    return streaks.map((GameStreakType streak) => streak.streak!).toList();
   }
 
   bool get _hasWonFiveRoundsInARow =>
       players.any((Player player) => player.hasRoundWinStreak(5));
+
+  bool _isLongerThan(Duration streakDuration) {
+    if (startedAt == null || finishedAt == null) {
+      return false;
+    }
+    DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
+    DateTime? dateFinishedAt = DateFormat().parseCaboDateString(finishedAt!);
+    if (dateStartedAt == null || dateFinishedAt == null) {
+      return false;
+    }
+
+    if (dateFinishedAt.isBefore(dateStartedAt)) {
+      return false;
+    }
+
+    Duration duration = dateFinishedAt.difference(dateStartedAt);
+    return duration.compareTo(streakDuration) >= 0;
+  }
 
   bool get isGameFinished =>
       players.any(
