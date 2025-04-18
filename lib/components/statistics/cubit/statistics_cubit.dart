@@ -260,7 +260,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
           }
         }
 
-        if(_hasDonePrecisionLanding(player, playerPoints)) {
+        if (_hasDonePrecisionLanding(player, playerPoints)) {
           playerPoints = 50;
         }
 
@@ -283,6 +283,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                   playerPointsmap,
                   ruleSet,
                   playerPoints,
+                  closingPlayer,
+                  closingPlayerHasLost,
                 ),
               ),
             ],
@@ -304,6 +306,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                   playerPointsmap,
                   ruleSet,
                   playerPoints,
+                  closingPlayer,
+                  closingPlayerHasLost,
                 ),
               ),
             ],
@@ -360,9 +364,17 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Map<String, int?> playerPointsmap,
     RuleSet ruleSet,
     int points,
+    Player closingPlayer,
+    bool closingPlayerHasLost,
   ) {
     if (!ruleSet.useKamikazeRule ||
         _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == null) {
+      // If closing Player and another player have same points
+      if (!closingPlayerHasLost &&
+          points == _getLowestPoints(playerPointsmap)) {
+        return false;
+      }
+
       return playerPointsmap[playerName] == _getLowestPoints(playerPointsmap);
     }
 

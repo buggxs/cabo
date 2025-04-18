@@ -497,6 +497,333 @@ void main() {
     mia: 50,
   };
 
+  List<Player> expectedPlayerListSixthRound = [
+    const Player(
+      name: mia,
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 6,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 11,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 8,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 5,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 6,
+          points: 8,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: leo,
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 4,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 3,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 4,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 5,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 6,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: bob,
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 2,
+          points: 7,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 3,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 12,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+        Round(
+          round: 5,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 6,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+      ],
+    ),
+  ];
+
+  Map<String, int> pointsMapSixthRound = {
+    leo: 2,
+    bob: 2,
+    mia: 3,
+  };
+
+  List<Player> expectedPlayerListSeventhRound = [
+    const Player(
+      name: mia,
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 6,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 11,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 8,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 5,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 6,
+          points: 8,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+        Round(
+          round: 7,
+          points: 8,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: leo,
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 4,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 3,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 4,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 5,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 6,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 7,
+          points: 4,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: bob,
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 2,
+          points: 7,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 3,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 12,
+          hasPenaltyPoints: true,
+          hasClosedRound: true,
+          isWonRound: false,
+        ),
+        Round(
+          round: 5,
+          points: 50,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 6,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: true,
+        ),
+        Round(
+          round: 7,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+      ],
+    ),
+  ];
+
+  Map<String, int> pointsMapSeventhRound = {
+    leo: 4,
+    bob: 4,
+    mia: 8,
+  };
+
   late RuleService ruleService;
   late StatisticsDialogService dialogService;
   late NavigationService navigationService;
@@ -688,6 +1015,76 @@ void main() {
           players: expectedPlayerListFivthRound,
           game: game.copyWith(
             players: expectedPlayerListFivthRound,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should simulate closing sixth round with closing player lost and the '
+      'other two lowest players are on a tie',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
+
+        when(
+          dialogService.showRoundCloserDialog(players: anyNamed('players')),
+        ).thenAnswer((_) => Future.value(expectedPlayerListFivthRound[0]));
+
+        when(dialogService.showPointDialog(any))
+            .thenAnswer((_) => Future.value(pointsMapSixthRound));
+      },
+      seed: () => StatisticsState(
+        players: expectedPlayerListFivthRound,
+        game: game.copyWith(
+          players: expectedPlayerListFivthRound,
+        ),
+      ),
+      build: () => StatisticsCubit(
+        players: playerList,
+      ),
+      act: (cubit) => cubit.closeRound(),
+      expect: () => [
+        StatisticsState(
+          players: expectedPlayerListSixthRound,
+          game: game.copyWith(
+            players: expectedPlayerListSixthRound,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should simulate closing seventh round with closing player winning and '
+      'another player is on tie with round closer',
+      setUp: () {
+        when(ruleService.loadRuleSet()).thenAnswer(
+          (_) => Future.value(const RuleSet()),
+        );
+
+        when(
+          dialogService.showRoundCloserDialog(players: anyNamed('players')),
+        ).thenAnswer((_) => Future.value(expectedPlayerListSixthRound[2]));
+
+        when(dialogService.showPointDialog(any))
+            .thenAnswer((_) => Future.value(pointsMapSeventhRound));
+      },
+      seed: () => StatisticsState(
+        players: expectedPlayerListSixthRound,
+        game: game.copyWith(
+          players: expectedPlayerListSixthRound,
+        ),
+      ),
+      build: () => StatisticsCubit(
+        players: playerList,
+      ),
+      act: (cubit) => cubit.closeRound(),
+      expect: () => [
+        StatisticsState(
+          players: expectedPlayerListSeventhRound,
+          game: game.copyWith(
+            players: expectedPlayerListSeventhRound,
           ),
         ),
       ],
