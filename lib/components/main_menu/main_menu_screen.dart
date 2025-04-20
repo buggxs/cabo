@@ -47,7 +47,7 @@ class MainMenuScreenContent extends StatelessWidget {
         }
         cubit.onWillPop();
       },
-      canPop: state is MainMenu ? true : false,
+      canPop: state is MainMenu,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
