@@ -39,7 +39,7 @@ extension GameStreakTypeExtension on GameStreakType {
         );
       case GameStreakType.sevenRoundsWon:
         return GameStreak(
-          message: AppLocalizations.of(context)!.streakFiveRoundsWon,
+          message: AppLocalizations.of(context)!.streakSevenRoundsWon,
           icon: const Icon(
             Icons.local_fire_department_rounded, // Fire icon for streak
             color: Colors.deepOrangeAccent, // Fiery color
@@ -48,7 +48,7 @@ extension GameStreakTypeExtension on GameStreakType {
         );
       case GameStreakType.tenRoundsWon:
         return GameStreak(
-          message: AppLocalizations.of(context)!.streakFiveRoundsWon,
+          message: AppLocalizations.of(context)!.streakTenRoundsWon,
           icon: const Icon(
             Icons.local_fire_department_rounded, // Fire icon for streak
             color: Colors.redAccent, // Fiery color
@@ -66,7 +66,7 @@ extension GameStreakTypeExtension on GameStreakType {
         );
       case GameStreakType.oneAndHalfHoursGame:
         return GameStreak(
-          message: AppLocalizations.of(context)!.streakOneHourGame,
+          message: AppLocalizations.of(context)!.streakOneAndHalfHourGame,
           icon: const Icon(
             Icons.timer_outlined, // Timer icon for streak
             color: Colors.lightBlueAccent,
@@ -75,7 +75,7 @@ extension GameStreakTypeExtension on GameStreakType {
         );
       case GameStreakType.twoHoursGame:
         return GameStreak(
-          message: AppLocalizations.of(context)!.streakOneHourGame,
+          message: AppLocalizations.of(context)!.streakTwoHourGame,
           icon: const Icon(
             Icons.timer_outlined, // Timer icon for streak
             color: Colors.blueAccent,
