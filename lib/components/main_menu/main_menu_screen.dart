@@ -13,11 +13,9 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider<MainMenuCubit>(
-        create: (_) => MainMenuCubit(),
-        child: const MainMenuScreenContent(),
-      ),
+    return BlocProvider<MainMenuCubit>(
+      create: (_) => MainMenuCubit(),
+      child: const MainMenuScreenContent(),
     );
   }
 }
@@ -49,6 +47,7 @@ class MainMenuScreenContent extends StatelessWidget {
         }
         cubit.onWillPop();
       },
+      canPop: state is MainMenu,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(

@@ -213,7 +213,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     List<Player> players = List.from(state.players);
 
     final Player? closingPlayer = await app<StatisticsDialogService>()
-        .showRoundCloserDialog(players: state.players);
+        .showRoundCloserDialog(players: players);
 
     if (closingPlayer == null) {
       return;
@@ -225,7 +225,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     if (playerPointsmap != null) {
       for (int i = 0; i < players.length; i++) {
         Player player = players[i];
-        int points = playerPointsmap[player.name] ?? 0;
+        int playerPoints = playerPointsmap[player.name] ?? 0;
 
         int pointsOfClosingPlayer =
             _getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
@@ -237,26 +237,31 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         );
 
         if (player == closingPlayer && closingPlayerHasLost) {
-          points = points + 5;
+          playerPoints = playerPoints + 5;
         }
 
         if (ruleSet.roundWinnerGetsZeroPoints) {
           if (player == closingPlayer && !closingPlayerHasLost) {
-            points = 0;
+            playerPoints = 0;
           } else if (closingPlayerHasLost &&
-              player.name == _getPlayerWithLowestPoints(playerPointsmap)) {
-            points = 0;
+              playerPoints == _getLowestPoints(playerPointsmap)) {
+            playerPoints = 0;
           }
         }
 
         if (ruleSet.useKamikazeRule &&
-            _checkIfPlayerHitsKamikaze(playerPointsmap)) {
-          if (points == 55 || points == 50) {
-            points = 0;
+            _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) != null) {
+          if (_checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) ==
+              player.name) {
+            playerPoints = 0;
             closingPlayerHasLost = false;
           } else {
-            points = 50;
+            playerPoints = 50;
           }
+        }
+
+        if (_hasDonePrecisionLanding(player, playerPoints)) {
+          playerPoints = 50;
         }
 
         if (index != null) {
@@ -267,16 +272,19 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               ...round,
               Round(
                 round: player.rounds.length + 1,
-                points: points,
+                points: playerPoints,
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
                     closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+                hasPrecisionLanding:
+                    _hasDonePrecisionLanding(player, playerPoints),
                 isWonRound: _hasWonRound(
                   player.name,
                   playerPointsmap,
                   ruleSet,
-                  points,
+                  playerPoints,
+                  closingPlayer,
+                  closingPlayerHasLost,
                 ),
               ),
             ],
@@ -287,16 +295,19 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               ...player.rounds,
               Round(
                 round: player.rounds.length + 1,
-                points: points,
+                points: playerPoints,
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
                     closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding: _hasDonePrecisionLanding(player, points),
+                hasPrecisionLanding:
+                    _hasDonePrecisionLanding(player, playerPoints),
                 isWonRound: _hasWonRound(
                   player.name,
                   playerPointsmap,
                   ruleSet,
-                  points,
+                  playerPoints,
+                  closingPlayer,
+                  closingPlayerHasLost,
                 ),
               ),
             ],
@@ -327,21 +338,25 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     _saveGame(updatedGame);
 
     if (updatedGame.isGameFinished) {
-      Player winner = players.firstWhere((player) => player.place == 1);
-
-      // Show the winner dialog
-      _showWinnerDialog(
-        winner: winner,
-        onConfirm: () {
-          app<NavigationService>()
-              .navigatorKey
-              .currentState
-              ?.popAndPushNamed(MainMenuScreen.route);
-
-          app<RatingService>().trackGameCompletion();
-        },
-      );
+      _finishGame(players);
     }
+  }
+
+  void _finishGame(List<Player> players) {
+    Player winner = players.firstWhere((player) => player.place == 1);
+
+    // Show the winner dialog
+    _showWinnerDialog(
+      winner: winner,
+      onConfirm: () {
+        app<NavigationService>()
+            .navigatorKey
+            .currentState
+            ?.popAndPushNamed(MainMenuScreen.route);
+
+        app<RatingService>().trackGameCompletion();
+      },
+    );
   }
 
   bool _hasWonRound(
@@ -349,16 +364,26 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Map<String, int?> playerPointsmap,
     RuleSet ruleSet,
     int points,
+    Player closingPlayer,
+    bool closingPlayerHasLost,
   ) {
-    if (ruleSet.useKamikazeRule &&
-        _checkIfPlayerHitsKamikaze(playerPointsmap)) {
-      if (points == 55 || points == 50) {
-        return true;
-      } else {
+    if (!ruleSet.useKamikazeRule ||
+        _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == null) {
+      // If closing Player and another player have same points
+      if (!closingPlayerHasLost &&
+          points == _getLowestPoints(playerPointsmap) &&
+          playerName != closingPlayer.name) {
         return false;
       }
+
+      return playerPointsmap[playerName] == _getLowestPoints(playerPointsmap);
     }
-    return playerName == _getPlayerWithLowestPoints(playerPointsmap);
+
+    if (_checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == playerName) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   bool _hasDonePrecisionLanding(Player player, int points) {
@@ -390,19 +415,27 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     await app<GameService>().saveLastPlayedGame(game);
   }
 
-  bool _checkIfPlayerHitsKamikaze(Map<String, int?> playerPointsmap) {
-    return playerPointsmap.entries.any((element) => element.value == 50);
+  String? _checkIfPlayerHitsKamikaze(
+    Map<String, int?> playerPointsmap,
+    RuleSet ruleSet,
+  ) {
+    return playerPointsmap.entries
+        .where(
+          (element) => element.value == ruleSet.kamikazePoints,
+        )
+        .firstOrNull
+        ?.key;
   }
 
-  String _getPlayerWithLowestPoints(Map<String, int?> playerPointsmap) {
+  int _getLowestPoints(Map<String, int?> playerPointsmap) {
     MapEntry<String, int?>? lowest;
     for (var element in playerPointsmap.entries) {
       lowest ??= element;
-      if ((lowest.value ?? 0) > (element.value ?? 0)) {
+      if ((lowest.value ?? 0) >= (element.value ?? 0)) {
         lowest = element;
       }
     }
-    return lowest!.key;
+    return lowest!.value ?? 0;
   }
 
   int _getPointsOfClosingPlayer(

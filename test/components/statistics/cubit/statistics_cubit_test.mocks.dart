@@ -122,6 +122,17 @@ class MockLocalRuleService extends _i1.Mock implements _i7.LocalRuleService {
           ),
         )),
       ) as _i8.Future<_i3.RuleSet>);
+
+  @override
+  _i8.Future<_i3.RuleSet?> saveRuleSet(_i3.RuleSet? ruleSet) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveRuleSet,
+          [ruleSet],
+        ),
+        returnValue: _i8.Future<_i3.RuleSet?>.value(),
+        returnValueForMissingStub: _i8.Future<_i3.RuleSet?>.value(),
+      ) as _i8.Future<_i3.RuleSet?>);
 }
 
 /// A class which mocks [StatisticsDialogService].

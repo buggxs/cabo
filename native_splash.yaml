@@ -1,0 +1,14 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  # https://www.youtube.com/watch?v=U1BErwaE3zo&ab_channel=FlutterCraft
+  #https://github.com/jonbhanson/flutter_native_splash/issues/578
+  background_image: "assets/images/cabo-main-menu-background.png"
+  image: "assets/images/splash_icon.png"
+  branding: "assets/images/branding.png"
+
+  android_12:
+    color: "#D8E0CC"
+    image: "assets/images/splash_icon.png"
+    branding: "assets/images/branding.png"

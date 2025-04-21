@@ -16,7 +16,7 @@ class RuleSet extends Equatable {
   final int? id;
 
   final int totalGamePoints;
-  final int? kamikazePoints;
+  final int kamikazePoints;
 
   final bool roundWinnerGetsZeroPoints;
   final bool precisionLanding;
@@ -26,7 +26,7 @@ class RuleSet extends Equatable {
 
   Map<String, dynamic> toJson() => _$RuleSetToJson(this);
 
-  bool get useKamikazeRule => kamikazePoints != null && kamikazePoints! > 0;
+  bool get useKamikazeRule => kamikazePoints > 0;
 
   RuleSet copyWith({
     int? totalGamePoints,

@@ -32,6 +32,7 @@
   "historyScreenGameTimeCardTitle": "Spielzeit",
   "historyScreenPlayedRoundsCardTitle": "Gespielte Runden",
   "historyScreenTotalPointsTitle": "Gesammelte Punkte",
+  "ruleScreenTitle": "Regeln",
   "ruleScreenKamikazePointsLabel": "Kamikaze Punkte",
   "ruleScreenTotalGamePointsLabel": "Gesammtpunktzahl",
   "ruleScreenZeroPointsLabel": "Rundengewinner erhält 0 Punkte",
@@ -46,7 +47,7 @@
   "aboutScreenSendButton": "Abschicken",
   "aboutScreenSuccess": "Danke! Dein Feedback wurde abgeschickt.",
   "aboutScreenTextAreaLabel": "Deine Nachricht",
-  "aboutScreenTextAreaDescription": "Hast Du Fehler gefunden oder hast du Verbesserungsvorschläge? Bitte lass es mich wissen.",
+  "aboutScreenTextAreaDescription": "Gefällt dir die App? Ich würde mich über eine Bewertung freuen!",
   "aboutScreenText": "Ich habe diese App entwickelt, um das Spielerlebnis des CABO-Kartenspiels noch besser zu machen.",
   "aboutScreenRatingButton": "Bewerten",
   "rateAppTitle": "Bewerte diese App",
@@ -58,5 +59,12 @@
   "hasWonText": "hat gewonnen!",
   "withPointsText": "mit",
   "pointsText": "Punkten",
-  "okButton": "OK"
+  "okButton": "OK",
+  "streakTitle": "Streaks",
+  "streakFiveRoundsWon": "Ein Spieler hat 5 Runden infolge gewonnen.",
+  "streakSevenRoundsWon": "Ein Spieler hat 7 Runden infolge gewonnen.",
+  "streakTenRoundsWon": "Ein Spieler hat 10 Runden infolge gewonnen.",
+  "streakOneHourGame": "Spiellänge über 1 Stunde",
+  "streakOneAndHalfHourGame": "Spiellänge über 1,5 Stunde",
+  "streakTwoHourGame": "Spiellänge über 2 Stunde"
 }
