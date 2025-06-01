@@ -13,7 +13,7 @@ class FailureChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      width: 45,
+      width: 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(

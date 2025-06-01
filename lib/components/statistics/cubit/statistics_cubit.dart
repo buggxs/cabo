@@ -260,10 +260,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
           }
         }
 
-        if (_hasDonePrecisionLanding(player, playerPoints)) {
-          playerPoints = 50;
-        }
-
         if (index != null) {
           List<Round> round = List.of(players[i].rounds);
           round.removeAt(index);
@@ -276,8 +272,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
                     closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding:
-                    _hasDonePrecisionLanding(player, playerPoints),
+                hasPrecisionLanding: _hasDonePrecisionLanding(
+                  player,
+                  playerPoints,
+                ),
                 isWonRound: _hasWonRound(
                   player.name,
                   playerPointsmap,
@@ -299,8 +297,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                 hasClosedRound: closingPlayer == player,
                 hasPenaltyPoints:
                     closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding:
-                    _hasDonePrecisionLanding(player, playerPoints),
+                hasPrecisionLanding: _hasDonePrecisionLanding(
+                  player,
+                  playerPoints,
+                ),
                 isWonRound: _hasWonRound(
                   player.name,
                   playerPointsmap,
