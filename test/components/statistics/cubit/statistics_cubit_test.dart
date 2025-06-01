@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
@@ -34,6 +36,90 @@ void main() {
     const Player(name: 'Mia'),
   ];
 
+  List<Player> playerListPrecisionLanding = [
+    const Player(
+      name: 'Mia',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 22,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 3,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Kevin',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 2,
+          points: 35,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 25,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Maike',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 20,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 40,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 20,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+      ],
+    ),
+  ];
+
   RuleSet ruleSet = const RuleSet();
 
   String gameStartedDate =
@@ -41,6 +127,12 @@ void main() {
 
   Game expectedGame = Game(
     players: playerList,
+    ruleSet: ruleSet,
+    startedAt: gameStartedDate,
+  );
+
+  Game expectedPrecisionLandingGame = Game(
+    players: playerListPrecisionLanding,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
   );
@@ -167,6 +259,112 @@ void main() {
     ),
   ];
 
+  List<Player> expectedPlayerListWithDefaultRulesPrecisionLanding = [
+    const Player(
+      name: 'Mia',
+      place: 1,
+      rounds: [
+        Round(
+          round: 1,
+          points: 22,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 3,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 4,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Maike',
+      place: 2,
+      rounds: [
+        Round(
+          round: 1,
+          points: 20,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 2,
+          points: 40,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 20,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 20,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          hasPrecisionLanding: true,
+          isWonRound: false,
+        ),
+      ],
+    ),
+    const Player(
+      name: 'Kevin',
+      place: 3,
+      rounds: [
+        Round(
+          round: 1,
+          points: 0,
+          hasPenaltyPoints: false,
+          hasClosedRound: true,
+          isWonRound: true,
+        ),
+        Round(
+          round: 2,
+          points: 35,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 3,
+          points: 25,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+        Round(
+          round: 4,
+          points: 11,
+          hasPenaltyPoints: false,
+          hasClosedRound: false,
+          isWonRound: false,
+        ),
+      ],
+    ),
+  ];
+
   List<Player> expectedPlayerListWithOwnRules = [
     const Player(
       name: 'Kevin',
@@ -275,6 +473,12 @@ void main() {
     playerList[0].name: 50,
     playerList[1].name: 4,
     playerList[2].name: 6,
+  };
+
+  Map<String, int> pointsMapDefaultRulesPrecisionLanding = {
+    playerListPrecisionLanding[0].name: 6,
+    playerListPrecisionLanding[1].name: 11,
+    playerListPrecisionLanding[2].name: 20,
   };
 
   late RuleService ruleService;
@@ -592,5 +796,40 @@ void main() {
         ),
       ],
     );
+  });
+
+  group('Test precision landing on round close ', () {
+    blocTest<StatisticsCubit, StatisticsState>(
+        'should reset to 50 points on precision landing',
+        setUp: () {
+          when(ruleService.loadRuleSet()).thenAnswer(
+            (_) => Future.value(const RuleSet()),
+          );
+          when(
+            dialogService.showRoundCloserDialog(
+                players: playerListPrecisionLanding),
+          ).thenAnswer((_) => Future.value(playerListPrecisionLanding[0]));
+          when(dialogService.showPointDialog(playerListPrecisionLanding))
+              .thenAnswer(
+                  (_) => Future.value(pointsMapDefaultRulesPrecisionLanding));
+        },
+        build: () => StatisticsCubit(players: playerListPrecisionLanding),
+        act: (cubit) => cubit.closeRound(),
+        expect: () => [
+              StatisticsState(
+                players: playerListPrecisionLanding,
+                game: expectedPrecisionLandingGame,
+              ),
+              StatisticsState(
+                players: expectedPlayerListWithDefaultRulesPrecisionLanding,
+                game: expectedPrecisionLandingGame.copyWith(
+                  players: expectedPlayerListWithDefaultRulesPrecisionLanding,
+                ),
+              ),
+            ],
+        verify: (cubit) {
+          expect(cubit.state.game?.players[1].name, 'Maike');
+          expect(cubit.state.game?.players[1].totalPoints, 50);
+        });
   });
 }
