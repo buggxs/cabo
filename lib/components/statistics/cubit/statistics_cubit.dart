@@ -274,7 +274,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                     closingPlayer == player && closingPlayerHasLost,
                 hasPrecisionLanding: _hasDonePrecisionLanding(
                   player,
-                  playerPointsmap[player.name] ?? 0,
+                  playerPoints,
                 ),
                 isWonRound: _hasWonRound(
                   player.name,
@@ -299,7 +299,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                     closingPlayer == player && closingPlayerHasLost,
                 hasPrecisionLanding: _hasDonePrecisionLanding(
                   player,
-                  playerPointsmap[player.name] ?? 0,
+                  playerPoints,
                 ),
                 isWonRound: _hasWonRound(
                   player.name,
