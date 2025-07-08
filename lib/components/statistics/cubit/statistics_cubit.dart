@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
@@ -7,8 +5,6 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
-import 'package:cabo/domain/open_game/open_game.dart';
-import 'package:cabo/domain/open_game/open_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
@@ -20,9 +16,6 @@ import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:stomp_dart_client/stomp.dart';
-import 'package:stomp_dart_client/stomp_config.dart';
-import 'package:stomp_dart_client/stomp_frame.dart';
 
 part 'statistics_state.dart';
 
@@ -37,9 +30,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         ) {
     loadGame(game: game);
   }
-
-  final OpenGameService openGameService = app<OpenGameService>();
-  late final StompClient? client;
 
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
@@ -78,117 +68,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     return app<RuleService>().loadRuleSet();
   }
 
-  Future<String?> publishGame() async {
-    if (state.game == null) {
-      return null;
-    }
-
-    OpenGame openGame = await openGameService.publishGame(state.game!);
-    emit(
-      state.copyWith(
-        publicGame: openGame,
-        game: openGame.game,
-      ),
-    );
-
-    _connectToWebSocket();
-    return openGame.publicId;
-  }
-
-  void _connectToWebSocket() {
-    client = StompClient(
-      config: StompConfig(
-          url: 'ws://18.156.177.170:80/cabo-ws',
-          onConnect: _onConnectCallback,
-          onStompError: (frame) {
-            log.severe(frame);
-          },
-          onWebSocketError: (error) {
-            log.severe(error);
-          },
-          onDebugMessage: (message) {
-            log.info(message);
-          }),
-    );
-    client?.activate();
-  }
-
-  /// [client] is connected and ready
-  void _onConnectCallback(StompFrame connectFrame) {
-    log.info('StompFrame Body content:');
-    log.info(connectFrame.body);
-    client?.subscribe(
-        destination: '/game/room/${state.publicGame?.publicId}',
-        headers: {},
-        callback: (StompFrame frame) {
-          // Received a frame for this subscription
-          log.info('');
-          log.info(frame.body);
-          if (frame.body != null) {
-            final Map<String, dynamic> json = jsonDecode(frame.body ?? '');
-
-            // Retrieving new game stats after _closeOnlineRound()
-            if (json['event'] == 'UPDATE_GAME') {
-              final Game game = Game.fromJson(json['payload']['game']);
-              emit(
-                state.copyWith(
-                  players: game.players,
-                  game: game,
-                ),
-              );
-
-              _saveGame(state.game!);
-            }
-          }
-        });
-  }
-
-  /// Close round when game is online
-  /// Game stats will be processed online on a server
-  /// Points will be send via websocket to the server
-  void _closeOnlineRound() async {
-    final Player? closingPlayer = await app<StatisticsDialogService>()
-        .showRoundCloserDialog(players: state.players);
-
-    if (closingPlayer == null) {
-      return;
-    }
-
-    final Map<String, int?>? playerPointsmap =
-        await app<StatisticsDialogService>().showPointDialog(state.players);
-
-    if (playerPointsmap != null &&
-        state.publicGame?.publicId != null &&
-        state.game != null) {
-      Map<String, dynamic> message = {
-        "channel": ["GENERAL"],
-        "event": "ADD_ROUND",
-        "payload": {
-          "openGame": OpenGame(
-            id: state.publicGame!.id,
-            publicId: state.publicGame!.publicId!,
-            gameId: state.publicGame!.gameId!,
-            game: state.game!,
-          ).toJson(),
-          "closingPlayer": closingPlayer.toJson(),
-          "playerPointsMap": playerPointsmap,
-        },
-      };
-
-      client?.send(
-        destination: '/cabo/room/${state.publicGame!.publicId!}',
-        headers: {},
-        body: jsonEncode(message),
-      );
-    }
-  }
-
   void closeRound({int? index}) {
-    if (state.isPublicGame) {
-      _closeOnlineRound();
-    } else {
-      _closeOfflineRound(index);
-    }
+    _closeOfflineRound(index);
   }
 
   /// Will force a game to finish.
@@ -406,10 +287,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       );
 
       app<GameService>().saveToGameHistory(game);
-
-      if (state.isPublicGame && client != null) {
-        client?.deactivate();
-      }
     }
 
     await app<GameService>().saveLastPlayedGame(game);

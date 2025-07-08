@@ -72,7 +72,6 @@ class _CaboDataTableState extends State<CaboDataTable>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      widget.cubit.client?.deactivate();
       DateTime finishedAt = DateTime.now();
       app<GameService>().saveToGameHistory(
         widget.cubit.state.game!.copyWith(
