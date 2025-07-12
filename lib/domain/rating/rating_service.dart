@@ -1,4 +1,3 @@
-import 'package:cabo/components/widgets/rating_dialog.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,13 +40,8 @@ class RatingService with LoggerMixin {
           await setHasRated(true);
         } catch (e) {
           log.warning(
-              'Native review flow failed: $e - Falling back to custom dialog');
-          await RatingDialog.show();
+              'Native review flow failed: $e');
         }
-      } else {
-        // If the native review flow is not available, show our custom dialog
-        log.info('Native review not available, showing custom dialog');
-        await RatingDialog.show();
       }
 
       await prefs.setInt(_gameCountKey, 0); // Reset count after showing dialog
@@ -100,40 +94,6 @@ class RatingService with LoggerMixin {
       await _inAppReview.openStoreListing();
     } catch (e) {
       log.warning('Error opening store listing: $e');
-    }
-  }
-
-  // Handle rating submission
-  Future<void> submitRating(int rating, String? feedback) async {
-    log.info('User submitted rating: $rating, feedback: $feedback');
-
-    try {
-      await _requestStoreReview();
-    } catch (e) {
-      log.warning('Error handling rating submission: $e');
-    }
-
-    // Mark that the user has rated the app
-    await setHasRated(true);
-  }
-
-  // Request a review from the app store
-  Future<void> _requestStoreReview() async {
-    try {
-      // Check if the app store review flow is available
-      final available = await _inAppReview.isAvailable();
-
-      if (available) {
-        log.info('Requesting app store review');
-        await _inAppReview.requestReview();
-      } else {
-        log.info(
-            'App store review not available, opening store listing instead');
-        // If in-app review is not available, open the store listing
-        await _inAppReview.openStoreListing();
-      }
-    } catch (e) {
-      log.warning('Error requesting app store review: $e');
     }
   }
 }
