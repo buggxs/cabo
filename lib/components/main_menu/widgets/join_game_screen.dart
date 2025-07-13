@@ -1,7 +1,9 @@
+import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class JoinGameScreen extends StatelessWidget {
@@ -44,7 +46,9 @@ class JoinGameScreen extends StatelessWidget {
             const CaboScannerWindow(),
             MenuButton(
               text: 'Spiel beitreten',
-              onTap: () {},
+              onTap: () {
+                context.read<ApplicationCubit>().signInWithGoogle();
+              },
             ),
           ]),
         ),

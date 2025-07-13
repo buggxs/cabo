@@ -1,3 +1,4 @@
+import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_amount.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_name.dart';
@@ -56,14 +57,26 @@ class MainMenuScreenContent extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: [
-            IconButton(
-              onPressed: () {
-                // TODO: Implement authentication logic
+            BlocBuilder<ApplicationCubit, ApplicationState>(
+              builder: (context, state) {
+                if (state is ApplicationAuthenticated) {
+                  return IconButton(
+                    onPressed: () {
+                      context.read<ApplicationCubit>().signOut();
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: CaboTheme.primaryColor,
+                    ),
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    context.read<ApplicationCubit>().signInAnonymously();
+                  },
+                  icon: const Icon(Icons.login, color: CaboTheme.primaryColor),
+                );
               },
-              icon: const Icon(
-                Icons.person_outline,
-                color: CaboTheme.primaryColor,
-              ),
             )
           ],
         ),

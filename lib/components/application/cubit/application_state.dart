@@ -1,10 +1,21 @@
 part of 'application_cubit.dart';
 
-sealed class ApplicationState extends Equatable {
+abstract class ApplicationState extends Equatable {
   const ApplicationState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class ApplicationInitial extends ApplicationState {}
+class ApplicationInitial extends ApplicationState {}
+
+class ApplicationUnauthenticated extends ApplicationState {}
+
+class ApplicationAuthenticated extends ApplicationState {
+  const ApplicationAuthenticated(this.user);
+
+  final User user;
+
+  @override
+  List<Object?> get props => [user];
+}

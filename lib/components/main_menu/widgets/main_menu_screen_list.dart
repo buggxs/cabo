@@ -1,4 +1,5 @@
 import 'package:cabo/components/about/about_screen.dart';
+import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
@@ -45,7 +46,12 @@ class MainMenuScreenList extends StatelessWidget {
                           MenuButton(
                             text:
                                 AppLocalizations.of(context)!.menuEntryJoinGame,
-                            onTap: () => cubit.showJoinGameDialog(context),
+                            onTap: () {
+                              context
+                                  .read<ApplicationCubit>()
+                                  .signInAnonymously();
+                              cubit.showJoinGameDialog(context);
+                            },
                           ),
                           const SizedBox(
                             height: 8,
