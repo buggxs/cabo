@@ -51,6 +51,7 @@ class MenuButton extends StatelessWidget {
               child: Text(
                 text,
                 style: textStyle ?? _style,
+                textAlign: TextAlign.center,
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:cabo/components/main_menu/widgets/choose_player_amount.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_name.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_screen_list.dart';
+import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,6 +51,22 @@ class MainMenuScreenContent extends StatelessWidget {
       canPop: state is MainMenu,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: [
+            IconButton(
+              onPressed: () {
+                // TODO: Implement authentication logic
+              },
+              icon: const Icon(
+                Icons.person_outline,
+                color: CaboTheme.primaryColor,
+              ),
+            )
+          ],
+        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(

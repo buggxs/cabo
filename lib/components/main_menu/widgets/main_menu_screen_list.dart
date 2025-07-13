@@ -23,46 +23,74 @@ class MainMenuScreenList extends StatelessWidget {
               height: 100,
             ),
             const GameHeader(),
-            const Spacer(),
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  MenuButton(
-                    text: AppLocalizations.of(context)!.menuEntryTrackStats,
-                    onTap: () => cubit.showChoosePlayerAmountScreen(),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  MenuButton(
-                    text: AppLocalizations.of(context)!.menuEntryGameHistory,
-                    onTap: () => cubit.pushToScreen(
-                      context,
-                      GameHistoryScreen.route,
+            Expanded(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          MenuButton(
+                            text: AppLocalizations.of(context)!
+                                .menuEntryTrackStats,
+                            onTap: () => cubit.showChoosePlayerAmountScreen(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          MenuButton(
+                            text:
+                                AppLocalizations.of(context)!.menuEntryJoinGame,
+                            onTap: () => cubit.showJoinGameDialog(context),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: MenuButton(
+                                  text: AppLocalizations.of(context)!
+                                      .menuEntryGameRules,
+                                  onTap: () => cubit.pushToScreen(
+                                    context,
+                                    RuleSetScreen.route,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: MenuButton(
+                                  text: AppLocalizations.of(context)!
+                                      .menuEntryGameHistory,
+                                  onTap: () => cubit.pushToScreen(
+                                    context,
+                                    GameHistoryScreen.route,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          MenuButton(
+                            text: AppLocalizations.of(context)!
+                                .menuEntryGameAboutScreen,
+                            onTap: () => cubit.pushToScreen(
+                              context,
+                              AboutScreen.route,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  MenuButton(
-                    text: AppLocalizations.of(context)!.menuEntryGameRules,
-                    onTap: () => cubit.pushToScreen(
-                      context,
-                      RuleSetScreen.route,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  MenuButton(
-                    text:
-                        AppLocalizations.of(context)!.menuEntryGameAboutScreen,
-                    onTap: () => cubit.pushToScreen(
-                      context,
-                      AboutScreen.route,
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             const SizedBox(

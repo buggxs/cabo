@@ -20,6 +20,6 @@ tasks.register("clean", Delete) {
 ext {
     flutter = [
             minSdkVersion   : 24,
-            targetSdkVersion: 34
+            targetSdkVersion: 35
     ]
 }

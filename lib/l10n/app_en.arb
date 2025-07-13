@@ -3,6 +3,7 @@
   "gameSubTitle": "Board",
   "menuEntryTrackStats": "Start Game",
   "menuEntryGameHistory": "Game History",
+  "menuEntryJoinGame": "Join Game",
   "menuEntryGameRules": "Game Rules",
   "menuEntryGameAboutScreen": "About",
   "playerAmountDialogTitle": "Player Amount",

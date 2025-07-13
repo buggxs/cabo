@@ -3,6 +3,7 @@
   "gameSubTitle": "Bord",
   "menuEntryTrackStats": "Spiel starten",
   "menuEntryGameHistory": "Spielhistorie",
+  "menuEntryJoinGame": "Spiel beitreten",
   "menuEntryGameRules": "Spiel Regeln",
   "menuEntryGameAboutScreen": "About",
   "playerAmountDialogTitle": "Spieler Anzahl",
