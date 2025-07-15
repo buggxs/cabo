@@ -69,6 +69,15 @@ class StatisticsScreenContent extends StatelessWidget {
           ),
           onPressed: () => _onPopScreen(cubit, context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.public,
+              color: CaboTheme.primaryColor,
+            ),
+            onPressed: () => cubit.showPublicGameDialog(context),
+          ),
+        ],
       ),
       body: PopScope(
         canPop: false,

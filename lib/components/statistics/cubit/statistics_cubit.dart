@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
+import 'package:cabo/components/statistics/widgets/public_game_screen.dart';
 import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
@@ -13,6 +15,7 @@ import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +34,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     loadGame(game: game);
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>>? gameStream;
+
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
         ? DateFormat('dd-MM-yyyy HH:mm').parse(game!.startedAt!)
@@ -40,6 +45,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     } else {
       _startGame(game, startingDateTime);
     }
+
+    _subscribePublicGame();
   }
 
   void _createLocalGame(DateTime startedAt) async {
@@ -79,6 +86,56 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       return;
     }
     _saveGame(state.game!, forceFinish: true);
+  }
+
+  void showPublicGameDialog(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => PublicGameScreen(
+          publishGame: _publishGame,
+          gameId: state.game?.publicId,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  Future<String?> _publishGame() async {
+    Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
+      game: state.game!,
+    );
+    emit(state.copyWith(game: publicGame));
+
+    _subscribePublicGame();
+
+    return publicGame.publicId;
+  }
+
+  Future<void> _subscribePublicGame() async {
+    gameStream = app<PublicGameService>().subscribeToGame(
+      state.game!.publicId!,
+    );
+
+    if (gameStream == null) {
+      return;
+    }
+
+    gameStream!.listen((snapshot) {
+      if (snapshot.exists) {
+        final Game gameData = Game.fromJson(snapshot.data()!);
+        log.info('Game was updated');
+
+        if (state.game == gameData) {
+          return;
+        }
+
+        emit(state.copyWith(
+          game: gameData.copyWith(
+            publicId: snapshot.id,
+          ),
+        ));
+      }
+    });
   }
 
   /// Close round when game is offline game
@@ -287,6 +344,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       );
 
       app<GameService>().saveToGameHistory(game);
+    }
+    if (state.game?.isPublic ?? false) {
+      app<PublicGameService>().saveOrUpdateGame(game: game);
     }
 
     await app<GameService>().saveLastPlayedGame(game);

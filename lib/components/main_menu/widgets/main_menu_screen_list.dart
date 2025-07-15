@@ -5,6 +5,7 @@ import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/widgets/game_header.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -47,9 +48,11 @@ class MainMenuScreenList extends StatelessWidget {
                             text:
                                 AppLocalizations.of(context)!.menuEntryJoinGame,
                             onTap: () {
-                              context
-                                  .read<ApplicationCubit>()
-                                  .signInAnonymously();
+                              if (FirebaseAuth.instance.currentUser == null) {
+                                context
+                                    .read<ApplicationCubit>()
+                                    .signInAnonymously();
+                              }
                               cubit.showJoinGameDialog(context);
                             },
                           ),

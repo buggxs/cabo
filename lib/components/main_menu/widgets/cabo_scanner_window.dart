@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CaboScannerWindow extends StatefulWidget {
-  const CaboScannerWindow({super.key});
+  const CaboScannerWindow({
+    super.key,
+    required this.onDetectPublicId,
+  });
+
+  final void Function(String? publicId) onDetectPublicId;
 
   @override
   State<CaboScannerWindow> createState() => _CaboScannerWindowState();
@@ -33,6 +38,7 @@ class _CaboScannerWindowState extends State<CaboScannerWindow> {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
               debugPrint('Barcode found! ${barcode.rawValue}');
+              widget.onDetectPublicId(barcode.rawValue);
             }
           },
         ),

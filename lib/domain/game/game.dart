@@ -17,6 +17,8 @@ part 'game.g.dart';
 class Game extends Equatable {
   const Game({
     this.id,
+    this.ownerId,
+    this.publicId,
     this.finishedAt,
     this.startedAt,
     this.ruleSetId,
@@ -25,6 +27,8 @@ class Game extends Equatable {
   });
 
   final int? id;
+  final String? ownerId;
+  final String? publicId;
   final String? startedAt;
   final String? finishedAt;
   final List<Player> players;
@@ -37,6 +41,8 @@ class Game extends Equatable {
 
   Game copyWith({
     int? id,
+    String? ownerId,
+    String? publicId,
     String? startedAt,
     String? finishedAt,
     List<Player>? players,
@@ -45,6 +51,8 @@ class Game extends Equatable {
   }) {
     return Game(
       id: id ?? this.id,
+      ownerId: ownerId ?? this.ownerId,
+      publicId: publicId ?? this.publicId,
       finishedAt: finishedAt ?? this.finishedAt,
       startedAt: startedAt ?? this.startedAt,
       players: players ?? this.players,
@@ -52,6 +60,8 @@ class Game extends Equatable {
       ruleSet: ruleSet ?? this.ruleSet,
     );
   }
+
+  bool get isPublic => publicId != null && ownerId != null;
 
   String get gameDuration {
     BuildContext context =
@@ -143,6 +153,8 @@ class Game extends Equatable {
   @override
   List<Object?> get props => <Object?>[
         id,
+        ownerId,
+        publicId,
         startedAt,
         finishedAt,
         players,
