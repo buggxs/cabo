@@ -46,7 +46,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _startGame(game, startingDateTime);
     }
 
-    _subscribePublicGame();
+    if (game?.isPublic ?? false) {
+      _subscribePublicGame();
+    }
   }
 
   void _createLocalGame(DateTime startedAt) async {

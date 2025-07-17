@@ -316,11 +316,12 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
     );
   }
 
-  Widget _buildTextField(
-      {required TextEditingController controller,
-      required String hintText,
-      required IconData icon,
-      bool obscureText = false}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool obscureText = false,
+  }) {
     return TextField(
       controller: controller,
       obscureText: obscureText,

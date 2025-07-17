@@ -1,5 +1,7 @@
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
+import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
@@ -18,6 +20,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   Game? _publicGame;
   bool _isLoading = false;
   String? _scannedQrCode;
+  String? _loadingStatusText;
 
   @override
   Widget build(BuildContext context) {
@@ -51,35 +54,32 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           ),
         ),
         constraints: const BoxConstraints.expand(),
-        child: SafeArea(
-          child: Column(
-            children: [
-              CaboScannerWindow(
-                onDetectPublicId: _retrieveQrCodeData,
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: _buildGameInfo(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: MenuButton(
-                  text: 'Spiel laden',
-                  onTap: _publicGame != null
-                      ? () {
-                          // TODO: Implementiere hier die Logik, um das Spiel zu laden und zur Spielansicht zu navigieren.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Spiellogik noch nicht implementiert.'),
-                              backgroundColor: Colors.orangeAccent,
-                            ),
-                          );
-                        }
-                      : null,
+        child: DarkScreenOverlay(
+          darken: 0.70,
+          child: SafeArea(
+            child: Column(
+              children: [
+                CaboScannerWindow(
+                  onDetectPublicId: _retrieveQrCodeData,
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                _buildGameInfo(),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: MenuButton(
+                    text: 'Spiel laden',
+                    onTap: (_publicGame != null && !_isLoading)
+                        ? () => app<NavigationService>().pushToStatsScreen(
+                              context,
+                              _publicGame!.players,
+                              game: _publicGame,
+                            )
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -88,9 +88,26 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
 
   Widget _buildGameInfo() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: CaboTheme.primaryColor,
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(
+              color: CaboTheme.primaryColor,
+            ),
+            const SizedBox(height: 20),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: Text(
+                _loadingStatusText ?? '',
+                key: ValueKey<String>(_loadingStatusText ?? ''),
+                textAlign: TextAlign.center,
+                style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -139,25 +156,24 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             thickness: 1,
             height: 30,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: game.players.length,
-              itemBuilder: (context, index) {
-                final player = game.players[index];
-                return ListTile(
-                  title: Text(
-                    player.name,
-                    style: CaboTheme.primaryTextStyle.copyWith(fontSize: 20),
-                  ),
-                  trailing: Text(
-                    '${player.totalPoints} Punkte',
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      fontSize: 20,
-                      color: CaboTheme.primaryGreenColor,
-                    ),
-                  ),
-                );
-              },
+          SingleChildScrollView(
+            child: Column(
+              children: game.players
+                  .map((player) => ListTile(
+                        title: Text(
+                          player.name,
+                          style:
+                              CaboTheme.primaryTextStyle.copyWith(fontSize: 20),
+                        ),
+                        trailing: Text(
+                          '${player.totalPoints} Punkte',
+                          style: CaboTheme.secondaryTextStyle.copyWith(
+                            fontSize: 20,
+                            color: CaboTheme.primaryGreenColor,
+                          ),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ],
@@ -175,6 +191,18 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       _isLoading = true;
       _scannedQrCode = qrCode;
       _publicGame = null;
+      _loadingStatusText = 'Es wurde eine Spiel-ID erkannt';
+    });
+
+    // Kurze Pause, damit der Benutzer den ersten Schritt sieht
+    await Future.delayed(const Duration(milliseconds: 1200));
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _loadingStatusText = 'Suche nach dem Spiel...';
     });
 
     try {
@@ -185,6 +213,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         setState(() {
           _publicGame = publicGame;
           _isLoading = false;
+          _loadingStatusText = null;
         });
       }
     } catch (e) {
@@ -192,6 +221,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         setState(() {
           _isLoading = false;
           _scannedQrCode = null; // Erlaube erneutes Scannen nach einem Fehler
+          _loadingStatusText = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
