@@ -1,6 +1,7 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
+import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/local_player_repository.dart';
 import 'package:cabo/domain/player/player_service.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
@@ -18,6 +19,7 @@ void setup() {
     ..registerFactory<PlayerService>(() => LocalPlayerService())
     ..registerFactory<RuleService>(() => LocalRuleService())
     ..registerFactory<GameService>(() => LocalGameService())
+    ..registerFactory<PublicGameService>(() => PublicGameService())
     ..registerFactory<StatisticsDialogService>(() => StatisticsDialogService())
     ..registerSingleton<NavigationService>(NavigationService())
     ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())

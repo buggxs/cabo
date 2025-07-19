@@ -50,13 +50,13 @@ class StatisticsScreenContent extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100),
           side: const BorderSide(
-            color: Color.fromRGBO(81, 120, 30, 1.0),
+            color: CaboTheme.primaryColor,
           ),
         ),
         child: const Icon(
           Icons.add,
           size: 28,
-          color: Color.fromRGBO(81, 120, 30, 1.0),
+          color: CaboTheme.primaryColor,
         ),
       ),
       appBar: AppBar(
@@ -69,6 +69,15 @@ class StatisticsScreenContent extends StatelessWidget {
           ),
           onPressed: () => _onPopScreen(cubit, context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.public,
+              color: CaboTheme.primaryColor,
+            ),
+            onPressed: () => cubit.showPublicGameDialog(context),
+          ),
+        ],
       ),
       body: PopScope(
         canPop: false,

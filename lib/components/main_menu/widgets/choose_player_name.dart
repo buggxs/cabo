@@ -69,7 +69,7 @@ class ChoosePlayerNameScreen extends StatelessWidget {
                 ),
                 MenuButton(
                   text: AppLocalizations.of(context)!.start,
-                  onTap: () => cubit.startGame(context, formKey),
+                  onTap: () => cubit.startGame(formKey),
                 ),
               ],
             ),

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
-import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/components/main_menu/widgets/join_game_screen.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -17,18 +17,14 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   MainMenuCubit() : super(MainMenu());
 
   void _pushToStatsScreen(
-    BuildContext context,
     List<Player> players, {
     bool? shouldUseSpecialRules,
     Game? game,
   }) {
-    Navigator.of(context).pushNamed(
-      StatisticsScreen.route,
-      arguments: {
-        'players': players,
-        'shouldUseSpecialRules': shouldUseSpecialRules,
-        'game': game,
-      },
+    app<NavigationService>().pushToStatsScreen(
+      players: players,
+      shouldUseSpecialRules: shouldUseSpecialRules,
+      game: game,
     );
   }
 
@@ -36,6 +32,15 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     log.info('History screen');
     Navigator.of(context).pushNamed(
       route ?? GameHistoryScreen.route,
+    );
+  }
+
+  void showJoinGameDialog(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const JoinGameScreen(),
+        fullscreenDialog: true,
+      ),
     );
   }
 
@@ -53,7 +58,10 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
 
       if (shouldLoadGame) {
         if (currentContext.mounted) {
-          _pushToStatsScreen(currentContext, game!.players, game: game);
+          _pushToStatsScreen(
+            game!.players,
+            game: game,
+          );
           return;
         }
       }
@@ -106,7 +114,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     }
   }
 
-  void startGame(BuildContext context, GlobalKey<FormState> formKey) {
+  void startGame(GlobalKey<FormState> formKey) {
     List<Player> players = <Player>[];
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
@@ -119,7 +127,6 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
       }
     }
     _pushToStatsScreen(
-      context,
       players,
       shouldUseSpecialRules: (state as ChoosePlayerNames).shouldUseSpecialRules,
     );
