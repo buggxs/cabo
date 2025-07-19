@@ -15,13 +15,12 @@ class NavigationService {
     );
   }
 
-  void pushToStatsScreen(
-    BuildContext context,
-    List<Player> players, {
+  void pushToStatsScreen({
+    required List<Player> players,
     bool? shouldUseSpecialRules,
     Game? game,
   }) {
-    Navigator.of(context).pushNamed(
+    Navigator.of(navigatorKey.currentContext!).pushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,

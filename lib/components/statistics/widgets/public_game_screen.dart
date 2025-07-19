@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PublicGameScreen extends StatefulWidget {
   const PublicGameScreen({
@@ -25,7 +26,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
   bool _showEmailForm = false;
 
   String? _publicGameId;
-  bool _showCheck = false;
+  bool _isPreparing = false;
   bool _isPublishing = false;
 
   final _emailController = TextEditingController();
@@ -65,8 +66,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
           ),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-        title: const Text(
-          'Spiel veröffentlichen',
+        title: Text(
+          AppLocalizations.of(context)!.publishDialogTitle,
           style: CaboTheme.primaryTextStyle,
         ),
       ),
@@ -102,8 +103,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
 
     if (_publicGameId != null) {
       currentView = _buildQrCodeView(context, _publicGameId!);
-    } else if (_showCheck) {
-      currentView = _buildCheckmarkView();
+    } else if (_isPreparing) {
+      currentView = _buildLoadingView();
     } else {
       currentView = _buildPublishButtonView(context);
     }
@@ -117,15 +118,19 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
     );
   }
 
-  Widget _buildCheckmarkView() {
-    return const Column(
-      key: ValueKey<String>('check-view'),
+  Widget _buildLoadingView() {
+    return Column(
+      key: const ValueKey<String>('loading-view'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Icon(
-          Icons.check_circle_outline_rounded,
-          color: Colors.greenAccent,
-          size: 140,
+        const CircularProgressIndicator(
+          color: CaboTheme.primaryColor,
+        ),
+        const SizedBox(height: 20),
+        Text(
+          AppLocalizations.of(context)!.publishDialogLoading,
+          textAlign: TextAlign.center,
+          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 22),
         ),
       ],
     );
@@ -143,12 +148,24 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
       key: const ValueKey<String>('qr-code-view'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        const Icon(
+          Icons.check_circle_outline_rounded,
+          color: Colors.greenAccent,
+          size: 100,
+        ),
+        const SizedBox(height: 20),
+        Text(
+          AppLocalizations.of(context)!.publishDialogGamePublished,
+          textAlign: TextAlign.center,
+          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 26),
+        ),
+        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
-            'Andere können dem Spiel mit diesem QR Code beitreten:',
+            AppLocalizations.of(context)!.publishDialogFriendsCanJoin,
             textAlign: TextAlign.center,
-            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 24),
+            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 22),
           ),
         ),
         const SizedBox(height: 30),
@@ -176,14 +193,14 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Dein Spiel ist bereit, veröffentlicht zu werden.',
+            AppLocalizations.of(context)!.publishDialogReadyToPublish,
             textAlign: TextAlign.center,
             style: CaboTheme.primaryTextStyle.copyWith(fontSize: 26),
           ),
         ),
         const SizedBox(height: 20),
         MenuButton(
-          text: 'Spiel veröffentlichen',
+          text: AppLocalizations.of(context)!.publishDialogPublish,
           onTap: _isPublishing ? null : _handlePublishGame,
           textStyle: CaboTheme.primaryTextStyle.copyWith(
             fontSize: 18,
@@ -202,23 +219,27 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
 
     if (publicGameId != null && mounted) {
       setState(() {
-        _showCheck = true;
+        _isPreparing = true;
         _isPublishing = false;
       });
 
-      await Future<void>.delayed(const Duration(milliseconds: 1200));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
 
-      setState(() {
-        _publicGameId = publicGameId;
-      });
+      if (mounted) {
+        setState(() {
+          _publicGameId = publicGameId;
+        });
+      }
     } else {
       setState(() {
         _isPublishing = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Spiel konnte nicht veröffentlicht werden.'),
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.publishDialogFailedToPublish,
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -235,14 +256,14 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 80.0, bottom: 20.0),
             child: Text(
-              'Melde dich an, um dein Spiel zu veröffentlichen.',
+              AppLocalizations.of(context)!.authScreenSignInToPublish,
               textAlign: TextAlign.center,
               style: CaboTheme.primaryTextStyle.copyWith(fontSize: 28),
             ),
           ),
           if (!_showEmailForm) ...[
             MenuButton(
-              text: 'Mit Google anmelden',
+              text: AppLocalizations.of(context)!.authScreenSignInWithGoogle,
               onTap: () {
                 context.read<ApplicationCubit>().signInWithGoogle();
               },
@@ -252,7 +273,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
             ),
             const SizedBox(height: 12),
             MenuButton(
-              text: 'Mit E-Mail anmelden/registrieren',
+              text: AppLocalizations.of(context)!.authScreenSignInWithEmail,
               onTap: () {
                 setState(() {
                   _showEmailForm = true;
@@ -274,26 +295,26 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
       children: [
         _buildTextField(
           controller: _emailController,
-          hintText: 'E-Mail',
+          hintText: AppLocalizations.of(context)!.authScreenEmail,
           icon: Icons.email,
         ),
         const SizedBox(height: 12),
         _buildTextField(
           controller: _passwordController,
-          hintText: 'Passwort',
+          hintText: AppLocalizations.of(context)!.authScreenPassword,
           icon: Icons.lock,
           obscureText: true,
         ),
         const SizedBox(height: 12),
         _buildTextField(
           controller: _confirmPasswordController,
-          hintText: 'Passwort bestätigen',
+          hintText: AppLocalizations.of(context)!.authScreenPasswordRepeat,
           icon: Icons.lock_outline,
           obscureText: true,
         ),
         const SizedBox(height: 20),
         MenuButton(
-          text: 'Anmelden / Registrieren',
+          text: '${AppLocalizations.of(context)!.authScreenSignIn} / ${AppLocalizations.of(context)!.authScreenRegister}',
           onTap: () {
             // Hier kommt die Logik für die E-Mail-Anmeldung hin
           },
@@ -307,8 +328,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
               _showEmailForm = false;
             });
           },
-          child: const Text(
-            'Zurück',
+          child: Text(
+            AppLocalizations.of(context)!.authScreenBack,
             style: TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
           ),
         )

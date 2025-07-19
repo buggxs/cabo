@@ -41,7 +41,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         ),
         title: Text(
           AppLocalizations.of(context)!.menuEntryJoinGame,
-          style: CaboTheme.secondaryTextStyle.copyWith(
+          style: CaboTheme.primaryTextStyle.copyWith(
             fontSize: 38,
           ),
         ),
@@ -71,8 +71,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
                     text: 'Spiel laden',
                     onTap: (_publicGame != null && !_isLoading)
                         ? () => app<NavigationService>().pushToStatsScreen(
-                              context,
-                              _publicGame!.players,
+                              players: _publicGame!.players,
                               game: _publicGame,
                             )
                         : null,
@@ -118,7 +117,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
 
     return Center(
       child: Text(
-        'Scanne einen QR-Code, um einem Spiel beizutreten.',
+        AppLocalizations.of(context)!.joinGameScreenScanToJoin,
         textAlign: TextAlign.center,
         style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
       ),
@@ -138,13 +137,13 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Spiel gefunden!',
+            AppLocalizations.of(context)!.joinGameScreenGameFound,
             textAlign: TextAlign.center,
             style: CaboTheme.primaryTextStyle.copyWith(fontSize: 24),
           ),
           const SizedBox(height: 8),
           Text(
-            'Runden: ${game.players.firstOrNull?.rounds.length ?? 0}',
+            '${AppLocalizations.of(context)!.joinGameScreenGameRounds}: ${game.players.firstOrNull?.rounds.length ?? 0}',
             textAlign: TextAlign.center,
             style: CaboTheme.secondaryTextStyle.copyWith(
               fontSize: 18,
@@ -166,7 +165,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
                               CaboTheme.primaryTextStyle.copyWith(fontSize: 20),
                         ),
                         trailing: Text(
-                          '${player.totalPoints} Punkte',
+                          '${player.totalPoints} ${AppLocalizations.of(context)!.joinGameScreenGamePoints}',
                           style: CaboTheme.secondaryTextStyle.copyWith(
                             fontSize: 20,
                             color: CaboTheme.primaryGreenColor,
@@ -191,7 +190,8 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       _isLoading = true;
       _scannedQrCode = qrCode;
       _publicGame = null;
-      _loadingStatusText = 'Es wurde eine Spiel-ID erkannt';
+      _loadingStatusText =
+          AppLocalizations.of(context)!.joinGameScreenLoadingStatus;
     });
 
     // Kurze Pause, damit der Benutzer den ersten Schritt sieht
@@ -202,7 +202,8 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     }
 
     setState(() {
-      _loadingStatusText = 'Suche nach dem Spiel...';
+      _loadingStatusText =
+          AppLocalizations.of(context)!.joinGameScreenSearchingGame;
     });
 
     try {
@@ -226,7 +227,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Spiel mit der ID "$qrCode" konnte nicht gefunden werden.',
+              AppLocalizations.of(context)!.joinGameScreenGameNotFound,
             ),
             backgroundColor: Colors.redAccent,
           ),

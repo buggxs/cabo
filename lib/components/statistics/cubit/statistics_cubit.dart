@@ -7,6 +7,7 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
@@ -46,7 +47,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _startGame(game, startingDateTime);
     }
 
-    if (game?.isPublic ?? false) {
+    if ((game?.isPublic ?? false) && FirebaseAuth.instance.currentUser != null) {
       _subscribePublicGame();
     }
   }

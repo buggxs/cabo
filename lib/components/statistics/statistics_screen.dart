@@ -50,13 +50,13 @@ class StatisticsScreenContent extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100),
           side: const BorderSide(
-            color: Color.fromRGBO(81, 120, 30, 1.0),
+            color: CaboTheme.primaryColor,
           ),
         ),
         child: const Icon(
           Icons.add,
           size: 28,
-          color: Color.fromRGBO(81, 120, 30, 1.0),
+          color: CaboTheme.primaryColor,
         ),
       ),
       appBar: AppBar(
