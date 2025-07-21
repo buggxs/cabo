@@ -85,7 +85,9 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
             child: BlocBuilder<ApplicationCubit, ApplicationState>(
               builder: (context, state) {
                 if ((state is ApplicationAuthenticated &&
-                    !(FirebaseAuth.instance.currentUser?.isAnonymous ?? true)) || _publicGameId != null) {
+                        !(FirebaseAuth.instance.currentUser?.isAnonymous ??
+                            true)) ||
+                    _publicGameId != null) {
                   return _buildAuthenticatedView(context);
                 } else {
                   return _buildLoginOptions(context);
