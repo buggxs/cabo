@@ -54,7 +54,8 @@ class DefaultFirebaseOptions {
     appId: '1:787934087365:android:35b8efdbe106dc6800c8ac',
     messagingSenderId: '787934087365',
     projectId: 'cabo-9be98',
-    databaseURL: 'https://cabo-9be98-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://cabo-9be98-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'cabo-9be98.firebasestorage.app',
   );
 
@@ -63,10 +64,13 @@ class DefaultFirebaseOptions {
     appId: '1:787934087365:ios:fe48875372e1c1fe00c8ac',
     messagingSenderId: '787934087365',
     projectId: 'cabo-9be98',
-    databaseURL: 'https://cabo-9be98-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://cabo-9be98-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'cabo-9be98.firebasestorage.app',
-    androidClientId: '787934087365-eong57bv1h7q611iotli2bvvlpfvjslp.apps.googleusercontent.com',
-    iosClientId: '787934087365-o3pood9aonln9jkij0fs9puq76fukinu.apps.googleusercontent.com',
+    androidClientId:
+        '787934087365-eong57bv1h7q611iotli2bvvlpfvjslp.apps.googleusercontent.com',
+    iosClientId:
+        '787934087365-o3pood9aonln9jkij0fs9puq76fukinu.apps.googleusercontent.com',
     iosBundleId: 'com.buggxs.cabo',
   );
 }

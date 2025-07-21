@@ -47,7 +47,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _startGame(game, startingDateTime);
     }
 
-    if ((game?.isPublic ?? false) && FirebaseAuth.instance.currentUser != null) {
+    if ((game?.isPublic ?? false) &&
+        FirebaseAuth.instance.currentUser != null) {
       _subscribePublicGame();
     }
   }
