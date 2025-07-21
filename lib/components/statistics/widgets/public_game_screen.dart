@@ -314,7 +314,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         ),
         const SizedBox(height: 20),
         MenuButton(
-          text: '${AppLocalizations.of(context)!.authScreenSignIn} / ${AppLocalizations.of(context)!.authScreenRegister}',
+          text:
+              '${AppLocalizations.of(context)!.authScreenSignIn} / ${AppLocalizations.of(context)!.authScreenRegister}',
           onTap: () {
             // Hier kommt die Logik für die E-Mail-Anmeldung hin
           },
@@ -330,7 +331,10 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
           },
           child: Text(
             AppLocalizations.of(context)!.authScreenBack,
-            style: TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
+            style: const TextStyle(
+              color: CaboTheme.primaryColor,
+              fontSize: 16,
+            ),
           ),
         )
       ],

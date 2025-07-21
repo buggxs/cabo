@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 part 'application_state.dart';
 
-class ApplicationCubit extends Cubit<ApplicationState> {
+class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   ApplicationCubit() : super(ApplicationInitial()) {
     _authSubscription =
         FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -30,10 +31,11 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     try {
       await FirebaseAuth.instance.signInAnonymously();
     } on FirebaseAuthException catch (e) {
-      // Hier könntest du einen Fehlerzustand ausgeben oder ein Logging durchführen
-      // z.B. emit(ApplicationAuthError('Failed to sign in anonymously.'));
-      print(e.message);
-      print(e.stackTrace);
+      log.severe(
+        'Error signing in anonymously: ${e.message}',
+        e,
+        e.stackTrace,
+      );
     }
   }
 
@@ -62,10 +64,53 @@ class ApplicationCubit extends Cubit<ApplicationState> {
       } else {
         await FirebaseAuth.instance.signInWithCredential(credential);
       }
-    } on FirebaseAuthException {
+    } on FirebaseAuthException catch (e) {
       // Fehlerbehandlung für Firebase-spezifische Fehler
+      log.severe('Error during Google sign-in: ${e.message}', e);
     } catch (e) {
       // Allgemeine Fehlerbehandlung (z.B. Netzwerkprobleme)
+      log.severe('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<void> signInOrRegisterWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      // First, try to sign in the user.
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      // If the user is not found, create a new account.
+      if (e.code == 'user-not-found') {
+        try {
+          final currentUser = FirebaseAuth.instance.currentUser;
+          // If an anonymous user is signed in, link the account.
+          if (currentUser != null && currentUser.isAnonymous) {
+            final credential =
+                EmailAuthProvider.credential(email: email, password: password);
+            await currentUser.linkWithCredential(credential);
+          } else {
+            // Otherwise, create a completely new user.
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
+          }
+        } on FirebaseAuthException catch (e) {
+          log.severe('Error during registration: ${e.message}', e);
+          rethrow;
+        }
+      } else {
+        log.severe('Error during sign in: ${e.message}', e);
+        rethrow;
+      }
+    } catch (e) {
+      log.severe('An unexpected error occurred: $e');
+      rethrow;
     }
   }
 
