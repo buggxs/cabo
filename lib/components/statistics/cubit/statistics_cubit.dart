@@ -98,6 +98,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         builder: (BuildContext context) => PublicGameScreen(
           publishGame: _publishGame,
           gameId: state.game?.publicId,
+          game: state.game,
         ),
         fullscreenDialog: true,
       ),
@@ -109,6 +110,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       game: state.game!,
     );
     emit(state.copyWith(game: publicGame));
+
+    if (publicGame.publicId == null) {
+      await app<PublicGameService>().saveOrUpdateGame(game: publicGame);
+    }
 
     _subscribePublicGame();
 
@@ -137,6 +142,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
           game: gameData.copyWith(
             publicId: snapshot.id,
           ),
+          players: gameData.players,
         ));
       }
     });

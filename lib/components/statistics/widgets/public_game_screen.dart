@@ -1,6 +1,7 @@
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class PublicGameScreen extends StatefulWidget {
     super.key,
     required this.publishGame,
     this.gameId,
+    this.game,
   });
 
   final Future<String?> Function() publishGame;
   final String? gameId;
+  final Game? game;
 
   @override
   State<PublicGameScreen> createState() => _PublicGameScreenState();
@@ -146,6 +149,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
 
     final QrImage qrImage = QrImage(qrCode);
 
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+
     return Column(
       key: const ValueKey<String>('qr-code-view'),
       mainAxisAlignment: MainAxisAlignment.center,
@@ -157,7 +162,9 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         ),
         const SizedBox(height: 20),
         Text(
-          AppLocalizations.of(context)!.publishDialogGamePublished,
+          userId != widget.game?.ownerId
+              ? AppLocalizations.of(context)!.publishDialogJoinedGame
+              : AppLocalizations.of(context)!.publishDialogGamePublished,
           textAlign: TextAlign.center,
           style: CaboTheme.primaryTextStyle.copyWith(fontSize: 26),
         ),

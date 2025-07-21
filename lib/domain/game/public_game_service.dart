@@ -25,13 +25,6 @@ class PublicGameService with LoggerMixin {
       throw Exception('Um ein Spiel zu speichern, musst du angemeldet sein.');
     }
 
-    // An anonymous user cannot create or update a public game.
-    if (user.isAnonymous) {
-      log.warning('Anonymous user tried to save a public game.');
-      throw Exception(
-          'Anonyme Benutzer können keine öffentlichen Spiele erstellen.');
-    }
-
     // A public game must have an owner.
     Game gameToSave = game.copyWith(ownerId: user.uid);
 

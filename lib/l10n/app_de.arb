@@ -28,6 +28,7 @@
   "publishDialogReadyToPublish": "Dein Spiel ist bereit, veröffentlicht zu werden.",
   "publishDialogLoading": "Dein Spiel wird veröffentlicht...",
   "publishDialogGamePublished": "Dein Spiel ist jetzt öffentlich",
+  "publishDialogJoinedGame": "Dein Spiel in einem öffentlich Spiel",
   "publishDialogFriendsCanJoin": "Andere können dem Spiel mit diesem QR Code beitreten:",
   "publishDialogPublish": "Spiel veröffentlichen",
   "publishDialogFailedToPublish": "Spiel konnte nicht veröffentlicht werden.",

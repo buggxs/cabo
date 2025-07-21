@@ -28,6 +28,7 @@
   "publishDialogReadyToPublish": "Your game is ready to be published.",
   "publishDialogLoading": "Your game will be published...",
   "publishDialogGamePublished": "Your game is now public",
+  "publishDialogJoinedGame": "You are in a public game",
   "publishDialogFriendsCanJoin": "Others can join the game using this QR code:",
   "publishDialogPublish": "Publish game",
   "publishDialogFailedToPublish": "Game could not be published.",
