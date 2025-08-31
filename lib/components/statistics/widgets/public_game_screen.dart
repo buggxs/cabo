@@ -1,6 +1,7 @@
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/components/statistics/widgets/auth_form.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +18,7 @@ class PublicGameScreen extends StatefulWidget {
     this.game,
   });
 
-  final Future<String?> Function() publishGame;
+  final Future<Game?> Function() publishGame;
   final String? gameId;
   final Game? game;
 
@@ -26,23 +27,10 @@ class PublicGameScreen extends StatefulWidget {
 }
 
 class _PublicGameScreenState extends State<PublicGameScreen> {
-  bool _showEmailForm = false;
-
   String? _publicGameId;
   bool _isPreparing = false;
   bool _isPublishing = false;
-
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
+  Game? _game;
 
   @override
   void initState() {
@@ -50,6 +38,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
     if (widget.gameId != null) {
       _publicGameId = widget.gameId;
     }
+    _game = widget.game;
   }
 
   @override
@@ -93,7 +82,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
                     _publicGameId != null) {
                   return _buildAuthenticatedView(context);
                 } else {
-                  return _buildLoginOptions(context);
+                  return const AuthForm();
                 }
               },
             ),
@@ -162,7 +151,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         ),
         const SizedBox(height: 20),
         Text(
-          userId != widget.game?.ownerId
+          userId != _game?.ownerId
               ? AppLocalizations.of(context)!.publishDialogJoinedGame
               : AppLocalizations.of(context)!.publishDialogGamePublished,
           textAlign: TextAlign.center,
@@ -224,9 +213,9 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
       _isPublishing = true;
     });
 
-    final String? publicGameId = await widget.publishGame();
+    final Game? publicGame = await widget.publishGame();
 
-    if (publicGameId != null && mounted) {
+    if (publicGame?.publicId != null && mounted) {
       setState(() {
         _isPreparing = true;
         _isPublishing = false;
@@ -236,7 +225,8 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
 
       if (mounted) {
         setState(() {
-          _publicGameId = publicGameId;
+          _publicGameId = publicGame!.publicId;
+          _game = publicGame;
         });
       }
     } else {
@@ -254,127 +244,5 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         );
       }
     }
-  }
-
-  Widget _buildLoginOptions(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 80.0, bottom: 20.0),
-            child: Text(
-              AppLocalizations.of(context)!.authScreenSignInToPublish,
-              textAlign: TextAlign.center,
-              style: CaboTheme.primaryTextStyle.copyWith(fontSize: 28),
-            ),
-          ),
-          if (!_showEmailForm) ...[
-            MenuButton(
-              text: AppLocalizations.of(context)!.authScreenSignInWithGoogle,
-              onTap: () {
-                context.read<ApplicationCubit>().signInWithGoogle();
-              },
-              textStyle: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 12),
-            MenuButton(
-              text: AppLocalizations.of(context)!.authScreenSignInWithEmail,
-              onTap: () {
-                setState(() {
-                  _showEmailForm = true;
-                });
-              },
-              textStyle: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 18,
-              ),
-            ),
-          ],
-          if (_showEmailForm) _buildEmailForm(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmailForm(BuildContext context) {
-    return Column(
-      children: [
-        _buildTextField(
-          controller: _emailController,
-          hintText: AppLocalizations.of(context)!.authScreenEmail,
-          icon: Icons.email,
-        ),
-        const SizedBox(height: 12),
-        _buildTextField(
-          controller: _passwordController,
-          hintText: AppLocalizations.of(context)!.authScreenPassword,
-          icon: Icons.lock,
-          obscureText: true,
-        ),
-        const SizedBox(height: 12),
-        _buildTextField(
-          controller: _confirmPasswordController,
-          hintText: AppLocalizations.of(context)!.authScreenPasswordRepeat,
-          icon: Icons.lock_outline,
-          obscureText: true,
-        ),
-        const SizedBox(height: 20),
-        MenuButton(
-          text:
-              '${AppLocalizations.of(context)!.authScreenSignIn} / ${AppLocalizations.of(context)!.authScreenRegister}',
-          onTap: () {
-            // Hier kommt die Logik für die E-Mail-Anmeldung hin
-          },
-          textStyle: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 18,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _showEmailForm = false;
-            });
-          },
-          child: Text(
-            AppLocalizations.of(context)!.authScreenBack,
-            style: const TextStyle(
-              color: CaboTheme.primaryColor,
-              fontSize: 16,
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool obscureText = false,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      style: const TextStyle(color: CaboTheme.primaryColor),
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: CaboTheme.primaryColor),
-        hintText: hintText,
-        hintStyle: TextStyle(color: CaboTheme.primaryColor.withOpacity(0.7)),
-        filled: true,
-        fillColor: CaboTheme.secondaryBackgroundColor,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(color: CaboTheme.tertiaryColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(color: CaboTheme.primaryColor),
-        ),
-      ),
-    );
   }
 }

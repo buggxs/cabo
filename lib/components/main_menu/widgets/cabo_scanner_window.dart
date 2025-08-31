@@ -15,6 +15,23 @@ class CaboScannerWindow extends StatefulWidget {
 }
 
 class _CaboScannerWindowState extends State<CaboScannerWindow> {
+  late final MobileScannerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = MobileScannerController(
+      detectionTimeoutMs: 1000,
+      returnImage: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -30,10 +47,7 @@ class _CaboScannerWindowState extends State<CaboScannerWindow> {
           ),
         ),
         child: MobileScanner(
-          controller: MobileScannerController(
-            detectionTimeoutMs: 1000,
-            returnImage: true,
-          ),
+          controller: controller,
           onDetect: (capture) {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {

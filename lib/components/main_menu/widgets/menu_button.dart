@@ -1,5 +1,6 @@
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class MenuButton extends StatelessWidget {
   const MenuButton({
@@ -48,8 +49,12 @@ class MenuButton extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             ),
             child: Center(
-              child: Text(
+              child: AutoSizeText(
                 text,
+                minFontSize: 8,
+                maxFontSize: 32,
+                softWrap: false,
+                maxLines: 1,
                 style: textStyle ?? _style,
                 textAlign: TextAlign.center,
               ),

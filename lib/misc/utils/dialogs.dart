@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -194,9 +196,10 @@ class StatisticsDialogService {
     );
   }
 
-  Future<bool?> showEndGame() {
+  Future<bool?> showEndGame(Game? game) {
     return app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) {
+      final String? uid = FirebaseAuth.instance.currentUser?.uid;
       return Dialog(
         shape: dialogBorderShape,
         backgroundColor: secondaryColor,
@@ -225,7 +228,11 @@ class StatisticsDialogService {
                       },
                       style: primaryButtonStyle,
                       child: Text(
-                        AppLocalizations.of(context)!.finishGameDialogButton,
+                        uid == game?.ownerId
+                            ? AppLocalizations.of(context)!
+                                .finishGameDialogButton
+                            : AppLocalizations.of(context)!
+                                .leaveGameDialogButton,
                         style: CaboTheme.primaryTextStyle.copyWith(
                           fontWeight: FontWeight.w700,
                           overflow: TextOverflow.ellipsis,

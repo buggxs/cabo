@@ -75,6 +75,14 @@ class Game extends Equatable {
       Duration duration = dateFinishedAt.difference(dateStartedAt);
       return '${duration.inHours.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenHours}, '
           '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenMinutes}';
+    } else if (startedAt != null && finishedAt == null) {
+      DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
+      DateTime dateFinishedAt = DateTime.now();
+      if (dateStartedAt == null) {
+        return '';
+      }
+      Duration duration = dateFinishedAt.difference(dateStartedAt);
+      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')}:${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}';
     }
     return '';
   }

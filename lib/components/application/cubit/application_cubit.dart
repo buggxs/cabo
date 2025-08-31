@@ -73,7 +73,27 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     }
   }
 
-  Future<void> signInOrRegisterWithEmailAndPassword(
+  Future<String?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return 'Password oder Email falsch.';
+      }
+      if (e.code == 'wrong-password') {
+        return 'Password oder Email falsch.';
+      }
+    }
+    return null;
+  }
+
+  Future<void> registerWithEmailAndPassword(
     String email,
     String password,
   ) async {

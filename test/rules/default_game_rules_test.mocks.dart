@@ -152,10 +152,10 @@ class MockStatisticsDialogService extends _i1.Mock
       ) as _i8.Future<Map<String, int?>?>);
 
   @override
-  _i8.Future<bool?> showEndGame() => (super.noSuchMethod(
+  _i8.Future<bool?> showEndGame(_i5.Game? game) => (super.noSuchMethod(
         Invocation.method(
           #showEndGame,
-          [],
+          [game],
         ),
         returnValue: _i8.Future<bool?>.value(),
         returnValueForMissingStub: _i8.Future<bool?>.value(),
@@ -214,6 +214,25 @@ class MockNavigationService extends _i1.Mock implements _i11.NavigationService {
         returnValue: _i8.Future<T?>.value(),
         returnValueForMissingStub: _i8.Future<T?>.value(),
       ) as _i8.Future<T?>);
+
+  @override
+  void pushToStatsScreen({
+    required List<_i10.Player>? players,
+    bool? shouldUseSpecialRules,
+    _i5.Game? game,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #pushToStatsScreen,
+          [],
+          {
+            #players: players,
+            #shouldUseSpecialRules: shouldUseSpecialRules,
+            #game: game,
+          },
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [LocalGameRepository].

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'dart:async';
 import 'package:cabo/components/main_menu/main_menu_screen.dart';
 import 'package:cabo/components/statistics/widgets/public_game_screen.dart';
 import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
@@ -35,7 +36,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     loadGame(game: game);
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>>? gameStream;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
 
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
@@ -89,6 +90,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     if (state.game?.isGameFinished ?? false) {
       return;
     }
+
     _saveGame(state.game!, forceFinish: true);
   }
 
@@ -105,31 +107,32 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     );
   }
 
-  Future<String?> _publishGame() async {
+  Future<Game?> _publishGame() async {
     Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
       game: state.game!,
     );
-    emit(state.copyWith(game: publicGame));
 
     if (publicGame.publicId == null) {
-      await app<PublicGameService>().saveOrUpdateGame(game: publicGame);
+      publicGame =
+          await app<PublicGameService>().saveOrUpdateGame(game: publicGame);
     }
+
+    emit(state.copyWith(game: publicGame));
+
+    app<PublicGameService>().saveOrUpdateGame(game: publicGame);
 
     _subscribePublicGame();
 
-    return publicGame.publicId;
+    return publicGame;
   }
 
   Future<void> _subscribePublicGame() async {
-    gameStream = app<PublicGameService>().subscribeToGame(
+    await _gameSubscription?.cancel();
+    _gameSubscription = app<PublicGameService>()
+        .subscribeToGame(
       state.game!.publicId!,
-    );
-
-    if (gameStream == null) {
-      return;
-    }
-
-    gameStream!.listen((snapshot) {
+    )
+        .listen((snapshot) {
       if (snapshot.exists) {
         final Game gameData = Game.fromJson(snapshot.data()!);
         log.info('Game was updated');
@@ -148,9 +151,12 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     });
   }
 
-  /// Close round when game is offline game
-  /// Stats will be processed offline on the device
-  /// Game stats will be saved in local device storage
+  @override
+  Future<void> close() {
+    _gameSubscription?.cancel();
+    return super.close();
+  }
+
   Future<void> _closeOfflineRound(int? index) async {
     RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
@@ -349,9 +355,18 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       DateTime finishedAt = DateTime.now();
       String finishedGame = DateFormat('dd-MM-yyyy HH:mm').format(finishedAt);
 
-      game = game.copyWith(
-        finishedAt: finishedGame,
-      );
+      if (forceFinish) {
+        String? uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid == game.ownerId) {
+          game = game.copyWith(
+            finishedAt: finishedGame,
+          );
+        }
+      } else {
+        game = game.copyWith(
+          finishedAt: finishedGame,
+        );
+      }
 
       app<GameService>().saveToGameHistory(game);
     }

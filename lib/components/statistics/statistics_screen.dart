@@ -71,9 +71,11 @@ class StatisticsScreenContent extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.public,
-              color: CaboTheme.primaryColor,
+              color: (cubit.state.game?.isPublic ?? false)
+                  ? CaboTheme.primaryColor
+                  : CaboTheme.failureLightRed,
             ),
             onPressed: () => cubit.showPublicGameDialog(context),
           ),
@@ -95,7 +97,9 @@ class StatisticsScreenContent extends StatelessWidget {
   Future<bool> _onPopScreen(StatisticsCubit cubit, BuildContext context) async {
     bool shouldPop = false;
     await Future.delayed(Duration.zero, () async {
-      shouldPop = await app<StatisticsDialogService>().showEndGame() ?? false;
+      shouldPop =
+          await app<StatisticsDialogService>().showEndGame(cubit.state.game) ??
+              false;
     });
 
     if (shouldPop) {
