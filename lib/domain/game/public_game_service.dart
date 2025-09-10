@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,11 +9,30 @@ class PublicGameService with LoggerMixin {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
-  PublicGameService({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance;
+  PublicGameService({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
+
+  String _generateReadableId() {
+    final random = math.Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const digits = '0123456789';
+
+    String randomPart1 = String.fromCharCodes(
+      Iterable.generate(
+        3,
+        (_) => digits.codeUnitAt(random.nextInt(digits.length)),
+      ),
+    );
+    String randomPart2 = String.fromCharCodes(
+      Iterable.generate(
+        3,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
+    );
+
+    return 'cabo-$randomPart1-$randomPart2';
+  }
 
   /// Saves a game to Firestore and returns the new document ID.
   ///
@@ -36,10 +57,22 @@ class PublicGameService with LoggerMixin {
           .set(gameToSave.toJson());
       return gameToSave;
     } else {
-      final docRef =
-          await _firestore.collection('games').add(gameToSave.toJson());
-      log.info('Game saved successfully with id: ${docRef.id}');
-      return gameToSave.copyWith(publicId: docRef.id);
+      String publicId;
+      DocumentSnapshot<Map<String, dynamic>> existingDoc;
+
+      do {
+        publicId = _generateReadableId();
+        existingDoc = await _firestore.collection('games').doc(publicId).get();
+      } while (existingDoc.exists);
+
+      final gameWithPublicId = gameToSave.copyWith(publicId: publicId);
+
+      await _firestore
+          .collection('games')
+          .doc(publicId)
+          .set(gameWithPublicId.toJson());
+      log.info('Game saved successfully with id: $publicId');
+      return gameWithPublicId;
     }
   }
 
@@ -52,7 +85,8 @@ class PublicGameService with LoggerMixin {
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> subscribeToGame(
-      String publicId) {
+    String publicId,
+  ) {
     return _firestore.collection('games').doc(publicId).snapshots();
   }
 }

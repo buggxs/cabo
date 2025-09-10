@@ -6,6 +6,7 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
+import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,8 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   bool _isLoading = false;
   String? _scannedQrCode;
   String? _loadingStatusText;
+  bool _showManualInput = false;
+  final TextEditingController _idController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,15 +59,41 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           darken: 0.70,
           child: SafeArea(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CaboScannerWindow(onDetectPublicId: _retrieveQrCodeData),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _showManualInput
+                      ? _buildManualInput()
+                      : CaboScannerWindow(
+                          onDetectPublicId: _retrieveQrCodeData,
+                        ),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showManualInput = !_showManualInput;
+                    });
+                  },
+                  child: Text(
+                    _showManualInput
+                        ? 'QR-Code scannen'
+                        : 'Stattdessen ID eingeben',
+                    style: const TextStyle(
+                      color: CaboTheme.primaryColor,
+                      decoration: TextDecoration.underline,
+                      decorationColor: CaboTheme.primaryColor,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
                 _buildGameInfo(),
                 const Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: MenuButton(
-                    text: 'Spiel laden',
+                    text: AppLocalizations.of(context)!.loadGameDialogButton,
                     onTap: (_publicGame != null && !_isLoading)
                         ? () => app<NavigationService>().pushToStatsScreen(
                             players: _publicGame!.players,
@@ -77,6 +106,28 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildManualInput() {
+    Color currentBackgroundColor = CaboTheme.tertiaryColor;
+
+    return Padding(
+      key: const ValueKey('manual-input'),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          CaboTextFormField(
+            controller: _idController,
+            labelText: 'Game ID (z.B. cabo-123-xyz)',
+          ),
+          const SizedBox(height: 20),
+          MenuButton(
+            text: 'Suchen',
+            onTap: () => _retrieveQrCodeData(_idController.text),
+          ),
+        ],
       ),
     );
   }
@@ -111,7 +162,9 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
 
     return Center(
       child: Text(
-        AppLocalizations.of(context)!.joinGameScreenScanToJoin,
+        _showManualInput
+            ? 'Gebe die Spiele-ID ein, um einem Spiel beizutreten.'
+            : AppLocalizations.of(context)!.joinGameScreenScanToJoin,
         textAlign: TextAlign.center,
         style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
       ),

@@ -117,9 +117,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
       key: const ValueKey<String>('loading-view'),
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const CircularProgressIndicator(
-          color: CaboTheme.primaryColor,
-        ),
+        const CircularProgressIndicator(color: CaboTheme.primaryColor),
         const SizedBox(height: 20),
         Text(
           AppLocalizations.of(context)!.publishDialogLoading,
@@ -175,8 +173,15 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
           ),
           width: 200,
           height: 200,
-          child: PrettyQrView(
-            qrImage: qrImage,
+          child: PrettyQrView(qrImage: qrImage),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          gameId,
+          style: CaboTheme.secondaryTextStyle.copyWith(
+            fontSize: 20,
+            color: CaboTheme.primaryColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
@@ -200,9 +205,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
         MenuButton(
           text: AppLocalizations.of(context)!.publishDialogPublish,
           onTap: _isPublishing ? null : _handlePublishGame,
-          textStyle: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 18,
-          ),
+          textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
         ),
       ],
     );
