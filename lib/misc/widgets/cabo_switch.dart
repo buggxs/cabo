@@ -42,7 +42,7 @@ class _CaboSwitchState extends State<CaboSwitch> {
               trackOutlineColor:
                   WidgetStateProperty.all(CaboTheme.primaryColor),
               inactiveThumbColor: CaboTheme.secondaryColor,
-              activeColor: CaboTheme.primaryColor,
+              activeThumbColor: CaboTheme.primaryColor,
               value: widget.initialValue,
               onChanged: (bool value) {
                 widget.onChanged?.call(value);

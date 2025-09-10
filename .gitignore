@@ -6,7 +6,6 @@ api-keys.prod.json
 
 # FVM
 .fvm
-.fvmrc
 
 # Miscellaneous
 *.class

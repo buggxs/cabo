@@ -3,10 +3,10 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const Color primaryColor = CaboTheme.primaryColor;
 const Color secondaryColor = CaboTheme.secondaryColor;

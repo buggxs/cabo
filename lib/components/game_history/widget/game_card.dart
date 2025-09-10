@@ -2,11 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Helper function to darken a color
 // amount should be between 0.0 and 1.0
@@ -27,10 +27,7 @@ Color lightenColor(Color color, [double amount = 0.1]) {
 }
 
 class GameCard extends StatelessWidget {
-  const GameCard({
-    Key? key,
-    required this.game,
-  }) : super(key: key);
+  const GameCard({Key? key, required this.game}) : super(key: key);
 
   final Game game;
 
@@ -44,9 +41,7 @@ class GameCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       clipBehavior: Clip.antiAlias, // Ensures content respects border radius
       child: Container(
         decoration: BoxDecoration(
@@ -93,8 +88,9 @@ class GameCard extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               DateFormat('dd MMM yyyy').format(
-                  DateFormat().parseCaboDateString(game.startedAt!) ??
-                      DateTime.now()), // More readable format
+                DateFormat().parseCaboDateString(game.startedAt!) ??
+                    DateTime.now(),
+              ), // More readable format
               style: CaboTheme.secondaryTextStyle.copyWith(
                 color: Colors.white,
                 fontSize: 14,
@@ -104,66 +100,75 @@ class GameCard extends StatelessWidget {
           ],
         ),
         if (isWinningStreak)
-          Builder(builder: (context) {
-            return Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.3), // Subtle border color
-                  width: 1.0,
+          Builder(
+            builder: (context) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
                 ),
-                borderRadius: BorderRadius.circular(
-                    12.0), // Rounded corners for the border
-                color: Colors.black.withOpacity(0.15), // Slight background tint
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Take minimum space
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.streakTitle, // Label
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3), // Subtle border color
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    12.0,
+                  ), // Rounded corners for the border
+                  color: Colors.black.withOpacity(
+                    0.15,
+                  ), // Slight background tint
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Take minimum space
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.streakTitle, // Label
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                      height: 4.0), // Space between label and icon(s)
-                  // Row for icons if multiple streaks/badges exist
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isWinningStreak)
-                        ...game
-                            .getGameStreaks()
-                            .map(
-                              (GameStreak streak) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 3.0,
+                    const SizedBox(
+                      height: 4.0,
+                    ), // Space between label and icon(s)
+                    // Row for icons if multiple streaks/badges exist
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isWinningStreak)
+                          ...game
+                              .getGameStreaks()
+                              .map(
+                                (GameStreak streak) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 3.0,
+                                  ),
+                                  child: Tooltip(
+                                    message: streak.message,
+                                    triggerMode: TooltipTriggerMode.tap,
+                                    child: streak.icon,
+                                  ),
                                 ),
-                                child: Tooltip(
-                                  message: streak.message,
-                                  triggerMode: TooltipTriggerMode.tap,
-                                  child: streak.icon,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }),
+                              )
+                              .toList(),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }
 
   Widget _buildPlayerList(BuildContext context, List<Player> players) {
     return Column(
-      children:
-          players.map((player) => _buildPlayerRow(context, player)).toList(),
+      children: players
+          .map((player) => _buildPlayerRow(context, player))
+          .toList(),
     );
   }
 

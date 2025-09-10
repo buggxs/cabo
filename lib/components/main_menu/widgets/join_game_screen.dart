@@ -5,9 +5,9 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class JoinGameScreen extends StatefulWidget {
   const JoinGameScreen({super.key});
@@ -41,9 +41,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         ),
         title: Text(
           AppLocalizations.of(context)!.menuEntryJoinGame,
-          style: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 38,
-          ),
+          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
         ),
       ),
       body: Container(
@@ -59,9 +57,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           child: SafeArea(
             child: Column(
               children: [
-                CaboScannerWindow(
-                  onDetectPublicId: _retrieveQrCodeData,
-                ),
+                CaboScannerWindow(onDetectPublicId: _retrieveQrCodeData),
                 const SizedBox(height: 20),
                 _buildGameInfo(),
                 const Spacer(),
@@ -71,9 +67,9 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
                     text: 'Spiel laden',
                     onTap: (_publicGame != null && !_isLoading)
                         ? () => app<NavigationService>().pushToStatsScreen(
-                              players: _publicGame!.players,
-                              game: _publicGame,
-                            )
+                            players: _publicGame!.players,
+                            game: _publicGame,
+                          )
                         : null,
                   ),
                 ),
@@ -91,9 +87,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(
-              color: CaboTheme.primaryColor,
-            ),
+            const CircularProgressIndicator(color: CaboTheme.primaryColor),
             const SizedBox(height: 20),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -158,20 +152,23 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           SingleChildScrollView(
             child: Column(
               children: game.players
-                  .map((player) => ListTile(
-                        title: Text(
-                          player.name,
-                          style:
-                              CaboTheme.primaryTextStyle.copyWith(fontSize: 20),
+                  .map(
+                    (player) => ListTile(
+                      title: Text(
+                        player.name,
+                        style: CaboTheme.primaryTextStyle.copyWith(
+                          fontSize: 20,
                         ),
-                        trailing: Text(
-                          '${player.totalPoints} ${AppLocalizations.of(context)!.joinGameScreenGamePoints}',
-                          style: CaboTheme.secondaryTextStyle.copyWith(
-                            fontSize: 20,
-                            color: CaboTheme.primaryGreenColor,
-                          ),
+                      ),
+                      trailing: Text(
+                        '${player.totalPoints} ${AppLocalizations.of(context)!.joinGameScreenGamePoints}',
+                        style: CaboTheme.secondaryTextStyle.copyWith(
+                          fontSize: 20,
+                          color: CaboTheme.primaryGreenColor,
                         ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -190,8 +187,9 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       _isLoading = true;
       _scannedQrCode = qrCode;
       _publicGame = null;
-      _loadingStatusText =
-          AppLocalizations.of(context)!.joinGameScreenLoadingStatus;
+      _loadingStatusText = AppLocalizations.of(
+        context,
+      )!.joinGameScreenLoadingStatus;
     });
 
     // Kurze Pause, damit der Benutzer den ersten Schritt sieht
@@ -202,13 +200,15 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     }
 
     setState(() {
-      _loadingStatusText =
-          AppLocalizations.of(context)!.joinGameScreenSearchingGame;
+      _loadingStatusText = AppLocalizations.of(
+        context,
+      )!.joinGameScreenSearchingGame;
     });
 
     try {
-      final Game publicGame =
-          await app<PublicGameService>().getPublicGame(qrCode);
+      final Game publicGame = await app<PublicGameService>().getPublicGame(
+        qrCode,
+      );
 
       if (mounted) {
         setState(() {

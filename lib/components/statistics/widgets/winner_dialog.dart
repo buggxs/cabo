@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WinnerDialog extends StatefulWidget {
   const WinnerDialog({

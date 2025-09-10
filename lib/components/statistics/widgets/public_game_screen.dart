@@ -3,12 +3,12 @@ import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/statistics/widgets/auth_form.dart';
 import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PublicGameScreen extends StatefulWidget {
   const PublicGameScreen({

@@ -1,10 +1,10 @@
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_round_button.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChoosePlayerAmountScreen extends StatelessWidget {
   const ChoosePlayerAmountScreen({Key? key}) : super(key: key);
@@ -21,18 +21,12 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
         Shadow(
           color: Color.fromRGBO(32, 45, 18, 1.0),
           blurRadius: 2.0,
-          offset: Offset(
-            2.0,
-            2.0,
-          ),
+          offset: Offset(2.0, 2.0),
         ),
         Shadow(
           color: Color.fromRGBO(32, 45, 18, 1.0),
           blurRadius: 2.0,
-          offset: Offset(
-            2.0,
-            -2.0,
-          ),
+          offset: Offset(2.0, -2.0),
         ),
       ],
     );
@@ -44,9 +38,7 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               Text(
                 AppLocalizations.of(context)!.playerAmountDialogTitle,
                 style: style,
@@ -56,9 +48,7 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(
-                    width: 25,
-                  ),
+                  const SizedBox(width: 25),
                   CaboRoundButton(
                     changePlayerAmount: cubit.increasePlayerAmount,
                   ),
@@ -70,15 +60,9 @@ class ChoosePlayerAmountScreen extends StatelessWidget {
                   const Spacer(),
                   CaboRoundButton(
                     changePlayerAmount: cubit.decreasePlayerAmount,
-                    icon: const Icon(
-                      Icons.remove,
-                      color: Colors.red,
-                      size: 40,
-                    ),
+                    icon: const Icon(Icons.remove, color: Colors.red, size: 40),
                   ),
-                  const SizedBox(
-                    width: 25,
-                  ),
+                  const SizedBox(width: 25),
                 ],
               ),
               const Spacer(),

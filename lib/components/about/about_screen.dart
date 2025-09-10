@@ -2,10 +2,10 @@ import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -34,17 +34,12 @@ class AboutScreenContent extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: CaboTheme.primaryColor,
-          ),
+          icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           AppLocalizations.of(context)!.aboutScreenTitle,
-          style: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 38,
-          ),
+          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
         ),
       ),
       body: Container(
@@ -60,9 +55,7 @@ class AboutScreenContent extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 100,
-                ),
+                const SizedBox(height: 100),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 48.0,
@@ -85,17 +78,16 @@ class AboutScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 50),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 48.0,
                     vertical: 6,
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!
-                        .aboutScreenTextAreaDescription,
+                    AppLocalizations.of(
+                      context,
+                    )!.aboutScreenTextAreaDescription,
                     style: CaboTheme.secondaryTextStyle.copyWith(
                       color: CaboTheme.primaryColor,
                       fontSize: 16,
@@ -110,9 +102,7 @@ class AboutScreenContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 50),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: CaboTheme.primaryColor,
@@ -137,13 +127,9 @@ class AboutScreenContent extends StatelessWidget {
                 const Spacer(),
                 Text(
                   '© Andre Salzmann ${DateTime.now().year}',
-                  style: CaboTheme.primaryTextStyle.copyWith(
-                    fontSize: 15,
-                  ),
+                  style: CaboTheme.primaryTextStyle.copyWith(fontSize: 15),
                 ),
-                const SizedBox(
-                  height: 15,
-                )
+                const SizedBox(height: 15),
               ],
             ),
           ),

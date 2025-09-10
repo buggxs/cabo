@@ -3,12 +3,12 @@ import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
 import 'package:cabo/components/rule_set/widgets/rule_set_info.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/widgets/cabo_switch.dart';
 import 'package:cabo/misc/widgets/cabo_text_field.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RuleSetScreen extends StatelessWidget {
   const RuleSetScreen({super.key});

@@ -3,11 +3,11 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 

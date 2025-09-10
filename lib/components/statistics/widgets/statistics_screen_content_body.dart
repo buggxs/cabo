@@ -5,11 +5,11 @@ import 'package:cabo/components/statistics/widgets/data_table.dart';
 import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'animated_border_container.dart';
 

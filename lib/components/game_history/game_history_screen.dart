@@ -3,11 +3,11 @@ import 'package:cabo/components/game_history/cubit/game_history_cubit.dart';
 import 'package:cabo/components/game_history/widget/animated_total_points_banner.dart';
 import 'package:cabo/components/game_history/widget/game_card.dart';
 import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/gaming_data.dart';
 import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameHistoryScreen extends StatelessWidget {
   const GameHistoryScreen({Key? key}) : super(key: key);
@@ -71,9 +71,7 @@ class GameHistoryScreenContent extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: _generateList(cubit.state.games),
-                  ),
+                  child: Column(children: _generateList(cubit.state.games)),
                 ),
               ),
             ],
@@ -91,9 +89,7 @@ class GameHistoryScreenContent extends StatelessWidget {
           padding: i % 2 == 0
               ? const EdgeInsets.only(right: 50)
               : const EdgeInsets.only(left: 50),
-          child: GameCard(
-            game: games[i],
-          ),
+          child: GameCard(game: games[i]),
         ),
       );
     }
@@ -175,8 +171,9 @@ class GameHistoryScreenContent extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            label: AppLocalizations.of(context)!
-                .historyScreenPlayedRoundsCardTitle,
+            label: AppLocalizations.of(
+              context,
+            )!.historyScreenPlayedRoundsCardTitle,
             backgroundColor: backgroundColor,
           ),
         ),
@@ -196,9 +193,7 @@ class GameHistoryScreenContent extends StatelessWidget {
       color: backgroundColor,
       elevation: 5.0,
       margin: margin,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Padding(
         padding: padding,
         child: Column(
@@ -213,10 +208,7 @@ class GameHistoryScreenContent extends StatelessWidget {
             AutoSizeText(
               label,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13.0,
-                color: Colors.grey[300],
-              ),
+              style: TextStyle(fontSize: 13.0, color: Colors.grey[300]),
             ),
           ],
         ),
