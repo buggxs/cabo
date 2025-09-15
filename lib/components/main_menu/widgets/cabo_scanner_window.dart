@@ -1,12 +1,9 @@
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CaboScannerWindow extends StatefulWidget {
-  const CaboScannerWindow({
-    super.key,
-    required this.onDetectPublicId,
-  });
+  const CaboScannerWindow({super.key, required this.onDetectPublicId});
 
   final void Function(String? publicId) onDetectPublicId;
 
@@ -41,10 +38,7 @@ class _CaboScannerWindowState extends State<CaboScannerWindow> {
         width: 250,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: CaboTheme.primaryColor,
-            width: 2,
-          ),
+          border: Border.all(color: CaboTheme.primaryColor, width: 2),
         ),
         child: MobileScanner(
           controller: controller,

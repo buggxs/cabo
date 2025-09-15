@@ -1,11 +1,8 @@
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class RuleInfo extends StatefulWidget {
-  const RuleInfo({
-    super.key,
-    required this.info,
-  });
+  const RuleInfo({super.key, required this.info});
 
   final String info;
 

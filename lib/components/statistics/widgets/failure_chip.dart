@@ -1,11 +1,8 @@
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class FailureChip extends StatelessWidget {
-  const FailureChip({
-    super.key,
-    required this.chipContent,
-  });
+  const FailureChip({super.key, required this.chipContent});
 
   final String chipContent;
 
@@ -17,10 +14,7 @@ class FailureChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          colors: [
-            CaboTheme.failureRed,
-            CaboTheme.failureLightRed,
-          ],
+          colors: [CaboTheme.failureRed, CaboTheme.failureLightRed],
         ),
       ),
       child: Center(

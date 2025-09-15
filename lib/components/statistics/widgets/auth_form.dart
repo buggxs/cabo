@@ -1,7 +1,7 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,9 +50,7 @@ class _AuthFormState extends State<AuthForm> {
               onTap: () {
                 context.read<ApplicationCubit>().signInWithGoogle();
               },
-              textStyle: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 18,
-              ),
+              textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
             ),
             const SizedBox(height: 12),
             MenuButton(
@@ -62,9 +60,7 @@ class _AuthFormState extends State<AuthForm> {
                   _authFormType = AuthFormType.login;
                 });
               },
-              textStyle: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 18,
-              ),
+              textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
             ),
           ],
           if (_authFormType == AuthFormType.login) _buildLoginForm(context),
@@ -112,19 +108,14 @@ class _AuthFormState extends State<AuthForm> {
               return;
             }
           },
-          textStyle: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 18,
-          ),
+          textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
         ),
         TextButton(
           onPressed: () =>
               setState(() => _authFormType = AuthFormType.register),
           child: Text(
             AppLocalizations.of(context)!.authScreenStartRegister,
-            style: const TextStyle(
-              color: CaboTheme.primaryColor,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
           ),
         ),
         TextButton(
@@ -135,12 +126,9 @@ class _AuthFormState extends State<AuthForm> {
           },
           child: Text(
             AppLocalizations.of(context)!.authScreenBack,
-            style: const TextStyle(
-              color: CaboTheme.primaryColor,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
           ),
-        )
+        ),
       ],
     );
   }
@@ -183,22 +171,17 @@ class _AuthFormState extends State<AuthForm> {
               return;
             }
             context.read<ApplicationCubit>().registerWithEmailAndPassword(
-                  _emailController.text,
-                  _passwordController.text,
-                );
+              _emailController.text,
+              _passwordController.text,
+            );
           },
-          textStyle: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 18,
-          ),
+          textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
         ),
         TextButton(
           onPressed: () => setState(() => _authFormType = AuthFormType.login),
           child: Text(
             AppLocalizations.of(context)!.authScreenAlreadyAccount,
-            style: const TextStyle(
-              color: CaboTheme.primaryColor,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
           ),
         ),
         TextButton(
@@ -209,12 +192,9 @@ class _AuthFormState extends State<AuthForm> {
           },
           child: Text(
             AppLocalizations.of(context)!.authScreenBack,
-            style: const TextStyle(
-              color: CaboTheme.primaryColor,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: CaboTheme.primaryColor, fontSize: 16),
           ),
-        )
+        ),
       ],
     );
   }

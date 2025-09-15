@@ -1,15 +1,12 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/failure_chip.dart';
 import 'package:cabo/domain/round/round.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class CaboDataCell extends StatelessWidget {
-  const CaboDataCell({
-    Key? key,
-    required this.round,
-    this.isLastColumn = false,
-  }) : super(key: key);
+  const CaboDataCell({Key? key, required this.round, this.isLastColumn = false})
+    : super(key: key);
 
   final Round round;
   final bool isLastColumn;
@@ -21,9 +18,7 @@ class CaboDataCell extends StatelessWidget {
         border: Border(
           right: isLastColumn
               ? BorderSide.none
-              : const BorderSide(
-                  color: Color.fromRGBO(81, 120, 30, 1.0),
-                ),
+              : const BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0)),
         ),
       ),
       width: CaboTheme.cellWidth,
@@ -41,9 +36,7 @@ class CaboDataCell extends StatelessWidget {
                       left: _isHigherPoints(round) ? 40.0 : 20.0,
                     ),
                     child: Transform(
-                      transform: Matrix4.rotationZ(
-                        -100,
-                      ),
+                      transform: Matrix4.rotationZ(-100),
                       child: const Image(
                         image: AssetImage('assets/icon/winner_trophy.png'),
                         width: 20,
@@ -55,9 +48,7 @@ class CaboDataCell extends StatelessWidget {
                   Text(
                     '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
                     style: CaboTheme.numberTextStyle.copyWith(
-                      shadows: CaboTheme().textStroke(
-                        CaboTheme.secondaryColor,
-                      ),
+                      shadows: CaboTheme().textStroke(CaboTheme.secondaryColor),
                     ),
                   ),
                 if (round.hasPenaltyPoints)
@@ -73,9 +64,7 @@ class CaboDataCell extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(
-              width: 12,
-            ),
+            const SizedBox(width: 12),
             if (round.hasPenaltyPoints) const FailureChip(chipContent: '+5'),
             if (round.hasPrecisionLanding)
               const Text(

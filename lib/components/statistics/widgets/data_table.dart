@@ -1,8 +1,8 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_service.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class CaboDataTable extends StatefulWidget {

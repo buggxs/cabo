@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/misc/utils/logger.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -61,7 +61,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
     _elapsedTime = _stopwatch.elapsed;
     _elapsedTimeString =
         context.read<StatisticsCubit>().state.game?.gameDuration ??
-            _formatElapsedTime(_elapsedTime);
+        _formatElapsedTime(_elapsedTime);
   }
 
   String _formatElapsedTime(Duration time) {
@@ -79,18 +79,13 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
   Widget build(BuildContext context) {
     return Flexible(
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.all(12.0),
         color: CaboTheme.secondaryBackgroundColor,
         shadowColor: Colors.black,
         elevation: 5.0,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 4.0,
-            horizontal: 16.0,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
           child: Column(
             children: [
               if (widget.title != null)
