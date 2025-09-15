@@ -1,10 +1,10 @@
+import 'package:cabo/common/presentation/widgets/game_header.dart';
 import 'package:cabo/components/about/about_screen.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
-import 'package:cabo/components/widgets/game_header.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

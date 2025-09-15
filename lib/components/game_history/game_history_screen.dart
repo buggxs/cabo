@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/game_history/cubit/game_history_cubit.dart';
 import 'package:cabo/components/game_history/widget/animated_total_points_banner.dart';
 import 'package:cabo/components/game_history/widget/game_card.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/gaming_data.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

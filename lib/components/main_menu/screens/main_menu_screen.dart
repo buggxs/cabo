@@ -1,10 +1,10 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_amount.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_name.dart';
-import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_screen_list.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,13 +33,9 @@ class MainMenuScreenContent extends StatelessWidget {
     Widget child = const MainMenuScreenList();
 
     if (state is ChoosePlayerAmount) {
-      child = const DarkScreenOverlay(
-        child: ChoosePlayerAmountScreen(),
-      );
+      child = const DarkScreenOverlay(child: ChoosePlayerAmountScreen());
     } else if (state is ChoosePlayerNames) {
-      child = const DarkScreenOverlay(
-        child: ChoosePlayerNameScreen(),
-      );
+      child = const DarkScreenOverlay(child: ChoosePlayerNameScreen());
     }
 
     return PopScope(
@@ -77,7 +73,7 @@ class MainMenuScreenContent extends StatelessWidget {
                   icon: const Icon(Icons.login, color: CaboTheme.primaryColor),
                 );
               },
-            )
+            ),
           ],
         ),
         body: Container(

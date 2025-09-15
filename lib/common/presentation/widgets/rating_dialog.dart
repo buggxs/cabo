@@ -2,18 +2,15 @@
 // This file contains the rating dialog that appears after playing 3 games
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:cabo/misc/widgets/cabo_text_field.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class RatingDialog extends StatefulWidget {
-  const RatingDialog({
-    Key? key,
-    this.onSubmit,
-  }) : super(key: key);
+  const RatingDialog({Key? key, this.onSubmit}) : super(key: key);
 
   final void Function(int rating, String? feedback)? onSubmit;
 
@@ -31,9 +28,7 @@ class RatingDialog extends StatefulWidget {
           ),
         ),
         backgroundColor: CaboTheme.secondaryColor,
-        child: RatingDialog(
-          onSubmit: onSubmit,
-        ),
+        child: RatingDialog(onSubmit: onSubmit),
       ),
     );
   }
@@ -85,7 +80,8 @@ class _RatingDialogState extends State<RatingDialog> {
             _buildStarRating(),
             const SizedBox(height: 16),
             CaboTextField(
-              labelText: AppLocalizations.of(context)?.feedbackLabel ??
+              labelText:
+                  AppLocalizations.of(context)?.feedbackLabel ??
                   'Your Feedback (Optional)',
               maxLines: 4,
               minLines: 2,
@@ -104,10 +100,11 @@ class _RatingDialogState extends State<RatingDialog> {
                         ? () {
                             if (widget.onSubmit != null) {
                               widget.onSubmit!(
-                                  _selectedRating,
-                                  _feedbackController.text.isNotEmpty
-                                      ? _feedbackController.text
-                                      : null);
+                                _selectedRating,
+                                _feedbackController.text.isNotEmpty
+                                    ? _feedbackController.text
+                                    : null,
+                              );
                             }
                             Navigator.of(context).pop();
                           }
@@ -116,12 +113,14 @@ class _RatingDialogState extends State<RatingDialog> {
                       foregroundColor: CaboTheme.primaryColor,
                       backgroundColor: CaboTheme.secondaryColor,
                       side: const BorderSide(
-                          color: CaboTheme.primaryColor, width: 2.0),
+                        color: CaboTheme.primaryColor,
+                        width: 2.0,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      disabledForegroundColor:
-                          CaboTheme.tertiaryColor.withOpacity(0.5),
+                      disabledForegroundColor: CaboTheme.tertiaryColor
+                          .withOpacity(0.5),
                       disabledBackgroundColor: CaboTheme.secondaryColor,
                     ),
                     child: Text(

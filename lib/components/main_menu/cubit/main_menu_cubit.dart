@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
-import 'package:cabo/components/main_menu/widgets/join_game_screen.dart';
+import 'package:cabo/components/main_menu/screens/join_game_screen.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -30,9 +30,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
 
   void pushToScreen(BuildContext context, String? route) {
     log.info('History screen');
-    Navigator.of(context).pushNamed(
-      route ?? GameHistoryScreen.route,
-    );
+    Navigator.of(context).pushNamed(route ?? GameHistoryScreen.route);
   }
 
   void showJoinGameDialog(BuildContext context) {
@@ -49,8 +47,8 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     BuildContext currentContext =
         app<NavigationService>().navigatorKey.currentContext!;
     if (!(game?.isGameFinished ?? true)) {
-      bool? shouldLoadGame =
-          await app<StatisticsDialogService>().loadNotFinishedGame();
+      bool? shouldLoadGame = await app<StatisticsDialogService>()
+          .loadNotFinishedGame();
 
       if (shouldLoadGame == null) {
         return;
@@ -58,10 +56,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
 
       if (shouldLoadGame) {
         if (currentContext.mounted) {
-          _pushToStatsScreen(
-            game!.players,
-            game: game,
-          );
+          _pushToStatsScreen(game!.players, game: game);
           return;
         }
       }
@@ -93,9 +88,10 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     if (state is ChoosePlayerAmount) {
       emit(
         ChoosePlayerNames(
-            playerAmount: (state as ChoosePlayerAmount).playerAmount,
-            shouldUseSpecialRules:
-                (state as ChoosePlayerAmount).shouldUseSpecialRules),
+          playerAmount: (state as ChoosePlayerAmount).playerAmount,
+          shouldUseSpecialRules:
+              (state as ChoosePlayerAmount).shouldUseSpecialRules,
+        ),
       );
     }
   }
@@ -105,10 +101,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
       ChoosePlayerNames currentState = state as ChoosePlayerNames;
       emit(
         currentState.copyWith(
-          playerNames: [
-            ...currentState.playerNames,
-            playerName,
-          ],
+          playerNames: [...currentState.playerNames, playerName],
         ),
       );
     }
@@ -120,8 +113,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
       formKey.currentState!.save();
       ChoosePlayerNames currentState = state as ChoosePlayerNames;
       if (currentState.playerNames.isNotEmpty) {
-        players = (state as ChoosePlayerNames)
-            .playerNames
+        players = (state as ChoosePlayerNames).playerNames
             .map((String name) => Player(name: name))
             .toList();
       }

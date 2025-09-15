@@ -1,13 +1,13 @@
+import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
-import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:cabo/misc/widgets/cabo_text_field.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class JoinGameScreen extends StatefulWidget {

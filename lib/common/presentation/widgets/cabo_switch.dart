@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class CaboSwitch extends StatefulWidget {

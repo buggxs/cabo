@@ -1,4 +1,5 @@
-import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
@@ -7,7 +8,6 @@ import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

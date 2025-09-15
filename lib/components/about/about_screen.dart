@@ -1,9 +1,9 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
-import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

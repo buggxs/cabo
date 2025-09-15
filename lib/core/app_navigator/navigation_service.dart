@@ -1,4 +1,4 @@
-import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/components/statistics/screens/statistics_screen.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';

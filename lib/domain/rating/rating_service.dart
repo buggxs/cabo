@@ -1,4 +1,4 @@
-import 'package:cabo/components/widgets/rating_dialog.dart';
+import 'package:cabo/common/presentation/widgets/rating_dialog.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +41,8 @@ class RatingService with LoggerMixin {
           await setHasRated(true);
         } catch (e) {
           log.warning(
-              'Native review flow failed: $e - Falling back to custom dialog');
+            'Native review flow failed: $e - Falling back to custom dialog',
+          );
           await RatingDialog.show();
         }
       } else {
@@ -128,7 +129,8 @@ class RatingService with LoggerMixin {
         await _inAppReview.requestReview();
       } else {
         log.info(
-            'App store review not available, opening store listing instead');
+          'App store review not available, opening store listing instead',
+        );
         // If in-app review is not available, open the store listing
         await _inAppReview.openStoreListing();
       }
