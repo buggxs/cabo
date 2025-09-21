@@ -1,12 +1,8 @@
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedBorderContainer extends StatefulWidget {
-  const AnimatedBorderContainer({
-    super.key,
-    required this.child,
-    this.onTap,
-  });
+  const AnimatedBorderContainer({super.key, required this.child, this.onTap});
 
   final Widget child;
   final VoidCallback? onTap;
@@ -32,10 +28,7 @@ class _AnimatedBorderContainerState extends State<AnimatedBorderContainer>
     _animation = Tween<double>(
       begin: 0.2,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -54,7 +47,9 @@ class _AnimatedBorderContainerState extends State<AnimatedBorderContainer>
           return Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: CaboTheme.primaryColor.withOpacity(_animation.value),
+                color: CaboTheme.primaryColor.withValues(
+                  alpha: _animation.value,
+                ),
                 width: 1,
               ),
             ),

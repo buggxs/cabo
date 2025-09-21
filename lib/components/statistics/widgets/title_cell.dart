@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class TitleCell extends StatelessWidget {
@@ -22,12 +22,8 @@ class TitleCell extends StatelessWidget {
         border: Border(
           right: isLastColumn
               ? BorderSide.none
-              : const BorderSide(
-                  color: Color.fromRGBO(81, 120, 30, 1.0),
-                ),
-          bottom: const BorderSide(
-            color: Color.fromRGBO(81, 120, 30, 1.0),
-          ),
+              : const BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0)),
+          bottom: const BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0)),
         ),
       ),
       width: CaboTheme.cellWidth,
@@ -91,9 +87,7 @@ class TitleCell extends StatelessWidget {
                     height: 35,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
-                      border: Border.all(
-                        color: CaboTheme.primaryGreenColor,
-                      ),
+                      border: Border.all(color: CaboTheme.primaryGreenColor),
                       shape: BoxShape.circle,
                     ),
                     child: Center(

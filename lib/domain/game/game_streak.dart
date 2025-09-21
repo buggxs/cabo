@@ -1,13 +1,10 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class GameStreak {
-  const GameStreak({
-    required this.message,
-    required this.icon,
-  });
+  const GameStreak({required this.message, required this.icon});
 
   final String message;
   final Icon icon;
@@ -82,8 +79,6 @@ extension GameStreakTypeExtension on GameStreakType {
             size: 18,
           ),
         );
-      default:
-        return null;
     }
   }
 }

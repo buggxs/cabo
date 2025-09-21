@@ -1,14 +1,14 @@
-import 'package:cabo/components/main_menu/widgets/dark_screen_overlay.dart';
+import 'package:cabo/common/presentation/widgets/cabo_switch.dart';
+import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
 import 'package:cabo/components/rule_set/widgets/rule_set_info.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
-import 'package:cabo/misc/widgets/cabo_switch.dart';
-import 'package:cabo/misc/widgets/cabo_text_field.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RuleSetScreen extends StatelessWidget {
   const RuleSetScreen({super.key});
@@ -35,12 +35,12 @@ class RuleSetScreenContent extends StatelessWidget {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     final TextEditingController totalGamePointsController =
         TextEditingController(
-      text: cubit.state.ruleSet.totalGamePoints.toString(),
-    );
+          text: cubit.state.ruleSet.totalGamePoints.toString(),
+        );
     final TextEditingController kamikazePointsController =
         TextEditingController(
-      text: cubit.state.ruleSet.kamikazePoints.toString(),
-    );
+          text: cubit.state.ruleSet.kamikazePoints.toString(),
+        );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -50,17 +50,12 @@ class RuleSetScreenContent extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: CaboTheme.primaryColor,
-          ),
+          icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           AppLocalizations.of(context)!.ruleScreenTitle,
-          style: CaboTheme.primaryTextStyle.copyWith(
-            fontSize: 38,
-          ),
+          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
         ),
       ),
       body: Container(
@@ -77,9 +72,7 @@ class RuleSetScreenContent extends StatelessWidget {
               key: formKey,
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 100,
-                  ),
+                  const SizedBox(height: 100),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 48.0,
@@ -91,16 +84,18 @@ class RuleSetScreenContent extends StatelessWidget {
                           flex: 4,
                           child: CaboTextFormField(
                             controller: totalGamePointsController,
-                            labelText: AppLocalizations.of(context)!
-                                .ruleScreenTotalGamePointsLabel,
+                            labelText: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenTotalGamePointsLabel,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           flex: 1,
                           child: RuleInfo(
-                            info: AppLocalizations.of(context)!
-                                .ruleScreenTotalPointsHint,
+                            info: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenTotalPointsHint,
                           ),
                         ),
                       ],
@@ -117,24 +112,24 @@ class RuleSetScreenContent extends StatelessWidget {
                           flex: 4,
                           child: CaboTextFormField(
                             controller: kamikazePointsController,
-                            labelText: AppLocalizations.of(context)!
-                                .ruleScreenKamikazePointsLabel,
+                            labelText: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenKamikazePointsLabel,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           flex: 1,
                           child: RuleInfo(
-                            info: AppLocalizations.of(context)!
-                                .ruleScreenKamikazeHint,
+                            info: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenKamikazeHint,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 48.0,
@@ -147,8 +142,9 @@ class RuleSetScreenContent extends StatelessWidget {
                           child: CaboSwitch(
                             initialValue:
                                 cubit.state.ruleSet.roundWinnerGetsZeroPoints,
-                            labelText: AppLocalizations.of(context)!
-                                .ruleScreenZeroPointsLabel,
+                            labelText: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenZeroPointsLabel,
                             onChanged: (bool value) {
                               cubit.saveRuleSet(
                                 cubit.state.ruleSet.copyWith(
@@ -162,8 +158,9 @@ class RuleSetScreenContent extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: RuleInfo(
-                            info: AppLocalizations.of(context)!
-                                .ruleScreenRoundWinnerHint,
+                            info: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenRoundWinnerHint,
                           ),
                         ),
                       ],
@@ -180,16 +177,13 @@ class RuleSetScreenContent extends StatelessWidget {
                           flex: 4,
                           child: CaboSwitch(
                             initialValue: cubit.state.ruleSet.precisionLanding,
-                            labelText: AppLocalizations.of(context)!
-                                .ruleScreenPrecisionLandingLabel,
+                            labelText: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenPrecisionLandingLabel,
                             onChanged: (bool value) {
-                              final RuleSet ruleSet =
-                                  cubit.state.ruleSet.copyWith(
-                                precisionLanding: value,
-                              );
-                              cubit.saveRuleSet(
-                                ruleSet,
-                              );
+                              final RuleSet ruleSet = cubit.state.ruleSet
+                                  .copyWith(precisionLanding: value);
+                              cubit.saveRuleSet(ruleSet);
                             },
                           ),
                         ),
@@ -197,8 +191,9 @@ class RuleSetScreenContent extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: RuleInfo(
-                            info: AppLocalizations.of(context)!
-                                .ruleScreenExactly100Hint,
+                            info: AppLocalizations.of(
+                              context,
+                            )!.ruleScreenExactly100Hint,
                           ),
                         ),
                       ],
@@ -215,10 +210,12 @@ class RuleSetScreenContent extends StatelessWidget {
                       if (formKey.currentState!.validate()) {
                         cubit.saveRuleSet(
                           cubit.state.ruleSet.copyWith(
-                            totalGamePoints:
-                                int.tryParse(totalGamePointsController.text),
-                            kamikazePoints:
-                                int.tryParse(kamikazePointsController.text),
+                            totalGamePoints: int.tryParse(
+                              totalGamePointsController.text,
+                            ),
+                            kamikazePoints: int.tryParse(
+                              kamikazePointsController.text,
+                            ),
                           ),
                         );
                         Navigator.of(context).pop();
@@ -226,8 +223,9 @@ class RuleSetScreenContent extends StatelessWidget {
                     },
                   ),
                   MenuButton(
-                    text: AppLocalizations.of(context)!
-                        .ruleScreenResetRulesButton,
+                    text: AppLocalizations.of(
+                      context,
+                    )!.ruleScreenResetRulesButton,
                     textStyle: CaboTheme.primaryTextStyle.copyWith(
                       color: CaboTheme.tertiaryColor,
                       fontSize: 24,
@@ -239,9 +237,7 @@ class RuleSetScreenContent extends StatelessWidget {
                     innerPadding: const EdgeInsets.all(2),
                     onTap: cubit.resetRuleSet,
                   ),
-                  const SizedBox(
-                    height: 25,
-                  )
+                  const SizedBox(height: 25),
                 ],
               ),
             ),

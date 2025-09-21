@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
-import 'package:cabo/components/statistics/statistics_screen.dart';
+import 'package:cabo/components/main_menu/screens/join_game_screen.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -17,25 +17,28 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   MainMenuCubit() : super(MainMenu());
 
   void _pushToStatsScreen(
-    BuildContext context,
     List<Player> players, {
     bool? shouldUseSpecialRules,
     Game? game,
   }) {
-    Navigator.of(context).pushNamed(
-      StatisticsScreen.route,
-      arguments: {
-        'players': players,
-        'shouldUseSpecialRules': shouldUseSpecialRules,
-        'game': game,
-      },
+    app<NavigationService>().pushToStatsScreen(
+      players: players,
+      shouldUseSpecialRules: shouldUseSpecialRules,
+      game: game,
     );
   }
 
   void pushToScreen(BuildContext context, String? route) {
     log.info('History screen');
-    Navigator.of(context).pushNamed(
-      route ?? GameHistoryScreen.route,
+    Navigator.of(context).pushNamed(route ?? GameHistoryScreen.route);
+  }
+
+  void showJoinGameDialog(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const JoinGameScreen(),
+        fullscreenDialog: true,
+      ),
     );
   }
 
@@ -44,8 +47,8 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     BuildContext currentContext =
         app<NavigationService>().navigatorKey.currentContext!;
     if (!(game?.isGameFinished ?? true)) {
-      bool? shouldLoadGame =
-          await app<StatisticsDialogService>().loadNotFinishedGame();
+      bool? shouldLoadGame = await app<StatisticsDialogService>()
+          .loadNotFinishedGame();
 
       if (shouldLoadGame == null) {
         return;
@@ -53,7 +56,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
 
       if (shouldLoadGame) {
         if (currentContext.mounted) {
-          _pushToStatsScreen(currentContext, game!.players, game: game);
+          _pushToStatsScreen(game!.players, game: game);
           return;
         }
       }
@@ -85,9 +88,10 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     if (state is ChoosePlayerAmount) {
       emit(
         ChoosePlayerNames(
-            playerAmount: (state as ChoosePlayerAmount).playerAmount,
-            shouldUseSpecialRules:
-                (state as ChoosePlayerAmount).shouldUseSpecialRules),
+          playerAmount: (state as ChoosePlayerAmount).playerAmount,
+          shouldUseSpecialRules:
+              (state as ChoosePlayerAmount).shouldUseSpecialRules,
+        ),
       );
     }
   }
@@ -97,29 +101,24 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
       ChoosePlayerNames currentState = state as ChoosePlayerNames;
       emit(
         currentState.copyWith(
-          playerNames: [
-            ...currentState.playerNames,
-            playerName,
-          ],
+          playerNames: [...currentState.playerNames, playerName],
         ),
       );
     }
   }
 
-  void startGame(BuildContext context, GlobalKey<FormState> formKey) {
+  void startGame(GlobalKey<FormState> formKey) {
     List<Player> players = <Player>[];
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       ChoosePlayerNames currentState = state as ChoosePlayerNames;
       if (currentState.playerNames.isNotEmpty) {
-        players = (state as ChoosePlayerNames)
-            .playerNames
+        players = (state as ChoosePlayerNames).playerNames
             .map((String name) => Player(name: name))
             .toList();
       }
     }
     _pushToStatsScreen(
-      context,
       players,
       shouldUseSpecialRules: (state as ChoosePlayerNames).shouldUseSpecialRules,
     );

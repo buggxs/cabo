@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class CaboSwitch extends StatefulWidget {
@@ -39,10 +39,11 @@ class _CaboSwitchState extends State<CaboSwitch> {
             alignment: Alignment.centerRight,
             child: Switch(
               trackColor: WidgetStateProperty.all(CaboTheme.tertiaryColor),
-              trackOutlineColor:
-                  WidgetStateProperty.all(CaboTheme.primaryColor),
+              trackOutlineColor: WidgetStateProperty.all(
+                CaboTheme.primaryColor,
+              ),
               inactiveThumbColor: CaboTheme.secondaryColor,
-              activeColor: CaboTheme.primaryColor,
+              activeThumbColor: CaboTheme.primaryColor,
               value: widget.initialValue,
               onChanged: (bool value) {
                 widget.onChanged?.call(value);

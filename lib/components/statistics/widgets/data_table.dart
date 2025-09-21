@@ -1,10 +1,9 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_service.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CaboDataTable extends StatefulWidget {
   const CaboDataTable({
@@ -72,12 +71,7 @@ class _CaboDataTableState extends State<CaboDataTable>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      DateTime finishedAt = DateTime.now();
-      app<GameService>().saveToGameHistory(
-        widget.cubit.state.game!.copyWith(
-          finishedAt: DateFormat('dd-MM-yyyy HH:mm').format(finishedAt),
-        ),
-      );
+      app<GameService>().saveLastPlayedGame(widget.cubit.state.game!);
     }
   }
 

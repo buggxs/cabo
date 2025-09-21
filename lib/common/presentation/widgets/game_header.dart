@@ -1,5 +1,5 @@
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameHeader extends StatelessWidget {
   const GameHeader({super.key});
@@ -14,18 +14,12 @@ class GameHeader extends StatelessWidget {
       Shadow(
         color: Color.fromRGBO(32, 45, 18, 1.0),
         blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          2.0,
-        ),
+        offset: Offset(2.0, 2.0),
       ),
       Shadow(
         color: Color.fromRGBO(32, 45, 18, 1.0),
         blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          -2.0,
-        ),
+        offset: Offset(2.0, -2.0),
       ),
     ],
   );

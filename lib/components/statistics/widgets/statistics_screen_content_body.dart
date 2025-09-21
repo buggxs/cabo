@@ -1,14 +1,15 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
 import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'animated_border_container.dart';
 
@@ -42,49 +43,52 @@ class StatisticsScreenContentBody extends StatelessWidget {
         ),
       ),
       constraints: const BoxConstraints.expand(),
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      StatisticInfoCard(
-                        title: AppLocalizations.of(context)!.statsCardRound,
-                        content: state.players.first.rounds.length.toString(),
-                      ),
-                      StatisticInfoCard(
-                        title: AppLocalizations.of(context)!.statsCardTime,
-                        shouldBeTimer: true,
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+      child: DarkScreenOverlay(
+        darken: 0.20,
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        StatisticInfoCard(
+                          title: AppLocalizations.of(context)!.statsCardRound,
+                          content: state.players.first.rounds.length.toString(),
+                        ),
+                        StatisticInfoCard(
+                          title: AppLocalizations.of(context)!.statsCardTime,
+                          shouldBeTimer: true,
+                        ),
+                      ],
                     ),
-                    margin: const EdgeInsets.all(12.0),
-                    color: CaboTheme.secondaryBackgroundColor,
-                    shadowColor: Colors.black,
-                    elevation: 5.0,
-                    child: (state.players.isEmpty)
-                        ? const Text('No Players found!')
-                        : CaboDataTable(
-                            titleCells: titleCells,
-                            rounds: _buildRounds(state.players, cubit),
-                            cubit: cubit,
-                          ),
                   ),
-                ),
-              ],
-            );
-          },
+                  Flexible(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      margin: const EdgeInsets.all(12.0),
+                      color: CaboTheme.secondaryBackgroundColor,
+                      shadowColor: Colors.black,
+                      elevation: 5.0,
+                      child: (state.players.isEmpty)
+                          ? const Text('No Players found!')
+                          : CaboDataTable(
+                              titleCells: titleCells,
+                              rounds: _buildRounds(state.players, cubit),
+                              cubit: cubit,
+                            ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

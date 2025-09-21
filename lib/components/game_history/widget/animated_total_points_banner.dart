@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnimatedTotalPointsBanner extends StatefulWidget {
   final int totalCollectedPoints;
@@ -36,8 +36,10 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
       curve: Curves.easeInOut,
     );
 
-    _animation = IntTween(begin: 0, end: widget.totalCollectedPoints)
-        .animate(curvedAnimation);
+    _animation = IntTween(
+      begin: 0,
+      end: widget.totalCollectedPoints,
+    ).animate(curvedAnimation);
 
     _controller.forward();
   }
@@ -50,8 +52,10 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
         parent: _controller,
         curve: Curves.easeIn,
       );
-      _animation = IntTween(begin: 0, end: widget.totalCollectedPoints)
-          .animate(curvedAnimation);
+      _animation = IntTween(
+        begin: 0,
+        end: widget.totalCollectedPoints,
+      ).animate(curvedAnimation);
 
       _controller
         ..reset()
@@ -101,10 +105,7 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 minFontSize: 10,
-                style: TextStyle(
-                  fontSize: 13.0,
-                  color: Colors.grey[300],
-                ),
+                style: TextStyle(fontSize: 13.0, color: Colors.grey[300]),
               ),
             ],
           ),
@@ -133,16 +134,8 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
             ),
             label: AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
             backgroundColor: widget.backgroundColor,
-            margin: const EdgeInsets.only(
-              top: 4,
-              left: 4,
-              right: 4,
-              bottom: 0,
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 8,
-            ),
+            margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
           ),
         ),
       ],

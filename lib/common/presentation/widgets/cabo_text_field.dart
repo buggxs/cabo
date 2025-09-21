@@ -1,5 +1,5 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class CaboTextField extends StatefulWidget {
@@ -34,9 +34,7 @@ class _CaboTextFieldState extends State<CaboTextField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: widget.value,
-    );
+    _controller = TextEditingController(text: widget.value);
     if (widget.value?.isEmpty ?? true) {
       currentBackgroundColor = Colors.transparent;
     }
@@ -92,8 +90,9 @@ class _CaboTextFieldState extends State<CaboTextField> {
 
   void _onFocusChanged() {
     setState(() {
-      currentBackgroundColor =
-          _focus.hasFocus ? CaboTheme.tertiaryColor : Colors.transparent;
+      currentBackgroundColor = _focus.hasFocus
+          ? CaboTheme.tertiaryColor
+          : Colors.transparent;
     });
   }
 
@@ -181,8 +180,9 @@ class _CaboTextFormFieldState extends State<CaboTextFormField> {
 
   void _onFocusChanged() {
     setState(() {
-      currentBackgroundColor =
-          _focus.hasFocus ? CaboTheme.tertiaryColor : Colors.transparent;
+      currentBackgroundColor = _focus.hasFocus
+          ? CaboTheme.tertiaryColor
+          : Colors.transparent;
     });
   }
 

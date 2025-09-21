@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/misc/utils/logger.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StatisticInfoCard extends StatefulWidget {
   const StatisticInfoCard({
@@ -41,7 +44,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
   void _startTimer() {
     _stopwatch.start();
     // Create a timer that runs a callback every second to update UI
-    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
       log.info('Game duration: $_elapsedTimeString');
       if (mounted) {
         // Check if widget is still mounted
@@ -56,7 +59,9 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
 
   void _updateElapsedTime() {
     _elapsedTime = _stopwatch.elapsed;
-    _elapsedTimeString = _formatElapsedTime(_elapsedTime);
+    _elapsedTimeString =
+        context.read<StatisticsCubit>().state.game?.gameDuration ??
+        _formatElapsedTime(_elapsedTime);
   }
 
   String _formatElapsedTime(Duration time) {
@@ -72,50 +77,48 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      margin: const EdgeInsets.all(12.0),
-      color: CaboTheme.secondaryBackgroundColor,
-      shadowColor: Colors.black,
-      elevation: 5.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 4.0,
-          horizontal: 16.0,
-        ),
-        child: Column(
-          children: [
-            if (widget.title != null)
-              Text(
-                widget.title!,
-                style: CaboTheme.primaryTextStyle.copyWith(
-                  height: 0,
-                  fontFamily: 'Archivo Black',
-                  color: CaboTheme.fourthColor,
-                  fontWeight: FontWeight.w800,
+    return Flexible(
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: const EdgeInsets.all(12.0),
+        color: CaboTheme.secondaryBackgroundColor,
+        shadowColor: Colors.black,
+        elevation: 5.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          child: Column(
+            children: [
+              if (widget.title != null)
+                Text(
+                  widget.title!,
+                  style: CaboTheme.primaryTextStyle.copyWith(
+                    height: 0,
+                    fontFamily: 'Archivo Black',
+                    color: CaboTheme.fourthColor,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-              ),
-            if (!widget.shouldBeTimer)
-              Text(
-                widget.content ?? 'Empty',
-                style: CaboTheme.numberTextStyle.copyWith(
-                  height: 0,
-                  fontSize: 24,
-                  color: Colors.white,
+              if (!widget.shouldBeTimer)
+                Text(
+                  widget.content ?? 'Empty',
+                  style: CaboTheme.numberTextStyle.copyWith(
+                    height: 0,
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            if (widget.shouldBeTimer)
-              Text(
-                _elapsedTimeString,
-                style: CaboTheme.numberTextStyle.copyWith(
-                  height: 0,
-                  fontSize: 24,
-                  color: Colors.white,
+              if (widget.shouldBeTimer)
+                AutoSizeText(
+                  _elapsedTimeString,
+                  softWrap: true,
+                  style: CaboTheme.numberTextStyle.copyWith(
+                    height: 0,
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

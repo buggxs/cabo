@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:cabo/components/main_menu/main_menu_screen.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
+import 'package:cabo/components/statistics/screens/public_game_screen.dart';
 import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
+import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
@@ -12,24 +17,21 @@ import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/utils/logger.dart';
-import 'package:cabo/misc/widgets/cabo_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 part 'statistics_state.dart';
 
 class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
-  StatisticsCubit({
-    required List<Player> players,
-    Game? game,
-  }) : super(
-          StatisticsState(
-            players: players,
-          ),
-        ) {
+  StatisticsCubit({required List<Player> players, Game? game})
+    : super(StatisticsState(players: players)) {
     loadGame(game: game);
   }
+
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
 
   void loadGame({Game? game}) {
     DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
@@ -39,6 +41,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _createLocalGame(startingDateTime);
     } else {
       _startGame(game, startingDateTime);
+    }
+
+    if ((game?.isPublic ?? false) &&
+        FirebaseAuth.instance.currentUser != null) {
+      _subscribePublicGame();
     }
   }
 
@@ -58,10 +65,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   void _startGame(Game game, DateTime startedAt) {
-    emit(state.copyWith(
-      game: game,
-      startedAt: startedAt,
-    ));
+    emit(state.copyWith(game: game, startedAt: startedAt));
   }
 
   Future<RuleSet> loadRuleSet() async {
@@ -78,12 +82,72 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     if (state.game?.isGameFinished ?? false) {
       return;
     }
+
     _saveGame(state.game!, forceFinish: true);
   }
 
-  /// Close round when game is offline game
-  /// Stats will be processed offline on the device
-  /// Game stats will be saved in local device storage
+  void showPublicGameDialog(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => PublicGameScreen(
+          publishGame: _publishGame,
+          gameId: state.game?.publicId,
+          game: state.game,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  Future<Game?> _publishGame() async {
+    Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
+      game: state.game!,
+    );
+
+    if (publicGame.publicId == null) {
+      publicGame = await app<PublicGameService>().saveOrUpdateGame(
+        game: publicGame,
+      );
+    }
+
+    emit(state.copyWith(game: publicGame));
+
+    app<PublicGameService>().saveOrUpdateGame(game: publicGame);
+
+    _subscribePublicGame();
+
+    return publicGame;
+  }
+
+  Future<void> _subscribePublicGame() async {
+    await _gameSubscription?.cancel();
+    _gameSubscription = app<PublicGameService>()
+        .subscribeToGame(state.game!.publicId!)
+        .listen((snapshot) {
+          if (snapshot.exists) {
+            final Game gameData = Game.fromJson(snapshot.data()!);
+            log.info('Game was updated');
+
+            if (state.game == gameData) {
+              return;
+            }
+
+            emit(
+              state.copyWith(
+                game: gameData.copyWith(publicId: snapshot.id),
+                players: gameData.players,
+              ),
+            );
+          }
+        });
+  }
+
+  @override
+  Future<void> close() {
+    _gameSubscription?.cancel();
+    return super.close();
+  }
+
   Future<void> _closeOfflineRound(int? index) async {
     RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
 
@@ -108,8 +172,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         Player player = players[i];
         int playerPoints = playerPointsmap[player.name] ?? 0;
 
-        int pointsOfClosingPlayer =
-            _getPointsOfClosingPlayer(playerPointsmap, closingPlayer);
+        int pointsOfClosingPlayer = _getPointsOfClosingPlayer(
+          playerPointsmap,
+          closingPlayer,
+        );
 
         bool closingPlayerHasLost = _isClosingPlayerLooser(
           playerPointsmap,
@@ -197,8 +263,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       }
     }
 
-    players
-        .sort((Player a, Player b) => a.totalPoints.compareTo(b.totalPoints));
+    players.sort(
+      (Player a, Player b) => a.totalPoints.compareTo(b.totalPoints),
+    );
 
     for (int i = 0; i < players.length; i++) {
       players[i] = players[i].copyWith(place: i + 1);
@@ -208,12 +275,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Game updatedGame = state.game!.copyWith(players: players);
 
     // Update the state with the new players and game data
-    emit(
-      state.copyWith(
-        players: players,
-        game: updatedGame,
-      ),
-    );
+    emit(state.copyWith(players: players, game: updatedGame));
 
     // Save the game state
     _saveGame(updatedGame);
@@ -230,10 +292,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     _showWinnerDialog(
       winner: winner,
       onConfirm: () {
-        app<NavigationService>()
-            .navigatorKey
-            .currentState
-            ?.popAndPushNamed(MainMenuScreen.route);
+        app<NavigationService>().navigatorKey.currentState?.popAndPushNamed(
+          MainMenuScreen.route,
+        );
 
         app<RatingService>().trackGameCompletion();
       },
@@ -282,11 +343,19 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       DateTime finishedAt = DateTime.now();
       String finishedGame = DateFormat('dd-MM-yyyy HH:mm').format(finishedAt);
 
-      game = game.copyWith(
-        finishedAt: finishedGame,
-      );
+      if (forceFinish) {
+        String? uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid == game.ownerId) {
+          game = game.copyWith(finishedAt: finishedGame);
+        }
+      } else {
+        game = game.copyWith(finishedAt: finishedGame);
+      }
 
       app<GameService>().saveToGameHistory(game);
+    }
+    if (state.game?.isPublic ?? false) {
+      app<PublicGameService>().saveOrUpdateGame(game: game);
     }
 
     await app<GameService>().saveLastPlayedGame(game);
@@ -297,9 +366,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     RuleSet ruleSet,
   ) {
     return playerPointsmap.entries
-        .where(
-          (element) => element.value == ruleSet.kamikazePoints,
-        )
+        .where((element) => element.value == ruleSet.kamikazePoints)
         .firstOrNull
         ?.key;
   }
@@ -332,16 +399,15 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Player closingPlayer,
     int pointsOfClosingPlayer,
   ) {
-    return playerPointsmap.entries.any((MapEntry<String, int?> element) =>
-        element.key != closingPlayer.name &&
-        (element.value ?? 0) < pointsOfClosingPlayer);
+    return playerPointsmap.entries.any(
+      (MapEntry<String, int?> element) =>
+          element.key != closingPlayer.name &&
+          (element.value ?? 0) < pointsOfClosingPlayer,
+    );
   }
 
   // Shows the winner dialog with animation
-  void _showWinnerDialog({
-    required Player winner,
-    void Function()? onConfirm,
-  }) {
+  void _showWinnerDialog({required Player winner, void Function()? onConfirm}) {
     app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) => Dialog(
         shape: RoundedRectangleBorder(
