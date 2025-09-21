@@ -3,7 +3,7 @@ name: CI
 on: pull_request
 
 env:
-  flutter-version: "3.24.3"
+  flutter-version: "3.35.3"
 
 jobs:
   validate_code:
