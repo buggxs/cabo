@@ -20,9 +20,7 @@ abstract class LocalStorageRepository<T> {
     }
     final List<dynamic> list = jsonDecode(listString!);
     final List<T> localList = list
-        .map(
-          (dynamic e) => castMapToObject(e as Map<String, dynamic>),
-        )
+        .map((dynamic e) => castMapToObject(e as Map<String, dynamic>))
         .toList();
     return Future<List<T>?>.value(localList);
   }

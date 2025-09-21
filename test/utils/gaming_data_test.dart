@@ -20,9 +20,10 @@ void main() {
           finishedAt: '2023-01-02',
           players: [
             Player(
-                id: 1,
-                name: 'Alice',
-                rounds: [Round(round: 1), Round(round: 1)]),
+              id: 1,
+              name: 'Alice',
+              rounds: [Round(round: 1), Round(round: 1)],
+            ),
             Player(id: 2, name: 'Bob', rounds: [Round(round: 1)]),
           ],
           ruleSetId: 1,
@@ -34,9 +35,10 @@ void main() {
           finishedAt: '2023-01-04',
           players: [
             Player(
-                id: 3,
-                name: 'Charlie',
-                rounds: [Round(round: 1), Round(round: 1), Round(round: 1)]),
+              id: 3,
+              name: 'Charlie',
+              rounds: [Round(round: 1), Round(round: 1), Round(round: 1)],
+            ),
           ],
           ruleSetId: 2,
           ruleSet: RuleSet(),
@@ -72,9 +74,10 @@ void main() {
           finishedAt: '2023-01-02',
           players: [
             Player(
-                id: 1,
-                name: 'Alice',
-                rounds: [Round(round: 1), Round(round: 1)]),
+              id: 1,
+              name: 'Alice',
+              rounds: [Round(round: 1), Round(round: 1)],
+            ),
           ],
           ruleSetId: 1,
           ruleSet: RuleSet(),

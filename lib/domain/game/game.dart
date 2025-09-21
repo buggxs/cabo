@@ -112,9 +112,7 @@ class Game extends Equatable {
       if (players.any((Player player) => player.hasRoundWinStreak(10))) {
         winStreak = GameStreakType.tenRoundsWon;
       }
-      streaks.add(
-        winStreak,
-      );
+      streaks.add(winStreak);
     }
 
     if (_isLongerThan(const Duration(hours: 1))) {
@@ -160,13 +158,13 @@ class Game extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        ownerId,
-        publicId,
-        startedAt,
-        finishedAt,
-        players,
-        ruleSet,
-        ruleSetId,
-      ];
+    id,
+    ownerId,
+    publicId,
+    startedAt,
+    finishedAt,
+    players,
+    ruleSet,
+    ruleSetId,
+  ];
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RoundIndicator extends StatelessWidget {
-  const RoundIndicator({
-    Key? key,
-    required this.round,
-  }) : super(key: key);
+  const RoundIndicator({Key? key, required this.round}) : super(key: key);
 
   final int round;
 

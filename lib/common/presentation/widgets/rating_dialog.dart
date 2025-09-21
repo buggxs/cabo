@@ -120,7 +120,7 @@ class _RatingDialogState extends State<RatingDialog> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       disabledForegroundColor: CaboTheme.tertiaryColor
-                          .withOpacity(0.5),
+                          .withValues(alpha: 0.5),
                       disabledBackgroundColor: CaboTheme.secondaryColor,
                     ),
                     child: Text(

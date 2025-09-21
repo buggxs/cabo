@@ -40,8 +40,9 @@ void main() {
 
   RuleSet ruleSet = const RuleSet();
 
-  String gameStartedDate =
-      DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now());
+  String gameStartedDate = DateFormat(
+    'dd-MM-yyyy HH:mm',
+  ).format(DateTime.now());
 
   Game game = Game(
     players: playerList,
@@ -89,11 +90,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFirstRound = {
-    bob: 3,
-    leo: 4,
-    mia: 6,
-  };
+  Map<String, int> pointsMapFirstRound = {bob: 3, leo: 4, mia: 6};
 
   List<Player> expectedPlayerListSecondRound = [
     const Player(
@@ -158,11 +155,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSecondRound = {
-    bob: 7,
-    leo: 2,
-    mia: 11,
-  };
+  Map<String, int> pointsMapSecondRound = {bob: 7, leo: 2, mia: 11};
 
   List<Player> expectedPlayerListThirdRound = [
     const Player(
@@ -248,11 +241,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapThirdRound = {
-    bob: 3,
-    leo: 2,
-    mia: 3,
-  };
+  Map<String, int> pointsMapThirdRound = {bob: 3, leo: 2, mia: 3};
 
   List<Player> expectedPlayerListFourthRound = [
     const Player(
@@ -359,11 +348,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFourthRound = {
-    leo: 4,
-    bob: 7,
-    mia: 4,
-  };
+  Map<String, int> pointsMapFourthRound = {leo: 4, bob: 7, mia: 4};
 
   List<Player> expectedPlayerListFivthRound = [
     const Player(
@@ -491,11 +476,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFivthRound = {
-    leo: 2,
-    bob: 6,
-    mia: 50,
-  };
+  Map<String, int> pointsMapFivthRound = {leo: 2, bob: 6, mia: 50};
 
   List<Player> expectedPlayerListSixthRound = [
     const Player(
@@ -644,11 +625,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSixthRound = {
-    leo: 2,
-    bob: 2,
-    mia: 3,
-  };
+  Map<String, int> pointsMapSixthRound = {leo: 2, bob: 2, mia: 3};
 
   List<Player> expectedPlayerListSeventhRound = [
     const Player(
@@ -818,11 +795,7 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSeventhRound = {
-    leo: 4,
-    bob: 4,
-    mia: 8,
-  };
+  Map<String, int> pointsMapSeventhRound = {leo: 4, bob: 4, mia: 8};
 
   late RuleService ruleService;
   late StatisticsDialogService dialogService;
@@ -856,29 +829,25 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close first round with correct points',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
 
-        when(dialogService.showPointDialog(playerList))
-            .thenAnswer((_) => Future.value(pointsMapFirstRound));
+        when(
+          dialogService.showPointDialog(playerList),
+        ).thenAnswer((_) => Future.value(pointsMapFirstRound));
       },
       build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
-        StatisticsState(
-          players: playerList,
-          game: game,
-        ),
+        StatisticsState(players: playerList, game: game),
         StatisticsState(
           players: expectedPlayerListFirstRound,
-          game: game.copyWith(
-            players: expectedPlayerListFirstRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListFirstRound),
         ),
       ],
     );
@@ -886,33 +855,28 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should simulate closing second round with place swap',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListFirstRound[1]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapSecondRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapSecondRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFirstRound,
-        game: game.copyWith(
-          players: expectedPlayerListFirstRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListFirstRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListSecondRound,
-          game: game.copyWith(
-            players: expectedPlayerListSecondRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListSecondRound),
         ),
       ],
     );
@@ -920,33 +884,28 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should simulate closing third round with penalty points',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListSecondRound[2]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapThirdRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapThirdRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListSecondRound,
-        game: game.copyWith(
-          players: expectedPlayerListSecondRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListSecondRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListThirdRound,
-          game: game.copyWith(
-            players: expectedPlayerListThirdRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListThirdRound),
         ),
       ],
     );
@@ -955,33 +914,28 @@ void main() {
       'should simulate closing fourth round with penalty points and '
       'tie between the two players who won',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListThirdRound[1]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapFourthRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapFourthRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListThirdRound,
-        game: game.copyWith(
-          players: expectedPlayerListThirdRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListThirdRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListFourthRound,
-          game: game.copyWith(
-            players: expectedPlayerListFourthRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListFourthRound),
         ),
       ],
     );
@@ -989,33 +943,28 @@ void main() {
     blocTest<StatisticsCubit, StatisticsState>(
       'should simulate closing fivth round with kamikatze and place swap',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListFourthRound[2]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapFivthRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapFivthRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFourthRound,
-        game: game.copyWith(
-          players: expectedPlayerListFourthRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListFourthRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListFivthRound,
-          game: game.copyWith(
-            players: expectedPlayerListFivthRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListFivthRound),
         ),
       ],
     );
@@ -1024,33 +973,28 @@ void main() {
       'should simulate closing sixth round with closing player lost and the '
       'other two lowest players are on a tie',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListFivthRound[0]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapSixthRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapSixthRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFivthRound,
-        game: game.copyWith(
-          players: expectedPlayerListFivthRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListFivthRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListSixthRound,
-          game: game.copyWith(
-            players: expectedPlayerListSixthRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListSixthRound),
         ),
       ],
     );
@@ -1059,33 +1003,28 @@ void main() {
       'should simulate closing seventh round with closing player winning and '
       'another player is on tie with round closer',
       setUp: () {
-        when(ruleService.loadRuleSet()).thenAnswer(
-          (_) => Future.value(const RuleSet()),
-        );
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(expectedPlayerListSixthRound[2]));
 
-        when(dialogService.showPointDialog(any))
-            .thenAnswer((_) => Future.value(pointsMapSeventhRound));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapSeventhRound));
       },
       seed: () => StatisticsState(
         players: expectedPlayerListSixthRound,
-        game: game.copyWith(
-          players: expectedPlayerListSixthRound,
-        ),
+        game: game.copyWith(players: expectedPlayerListSixthRound),
       ),
-      build: () => StatisticsCubit(
-        players: playerList,
-      ),
+      build: () => StatisticsCubit(players: playerList),
       act: (cubit) => cubit.closeRound(),
       expect: () => [
         StatisticsState(
           players: expectedPlayerListSeventhRound,
-          game: game.copyWith(
-            players: expectedPlayerListSeventhRound,
-          ),
+          game: game.copyWith(players: expectedPlayerListSeventhRound),
         ),
       ],
     );

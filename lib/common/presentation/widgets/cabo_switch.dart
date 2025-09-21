@@ -39,8 +39,9 @@ class _CaboSwitchState extends State<CaboSwitch> {
             alignment: Alignment.centerRight,
             child: Switch(
               trackColor: WidgetStateProperty.all(CaboTheme.tertiaryColor),
-              trackOutlineColor:
-                  WidgetStateProperty.all(CaboTheme.primaryColor),
+              trackOutlineColor: WidgetStateProperty.all(
+                CaboTheme.primaryColor,
+              ),
               inactiveThumbColor: CaboTheme.secondaryColor,
               activeThumbColor: CaboTheme.primaryColor,
               value: widget.initialValue,

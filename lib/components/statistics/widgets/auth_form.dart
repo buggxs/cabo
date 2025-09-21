@@ -212,7 +212,9 @@ class _AuthFormState extends State<AuthForm> {
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: CaboTheme.primaryColor),
         hintText: hintText,
-        hintStyle: TextStyle(color: CaboTheme.primaryColor.withOpacity(0.7)),
+        hintStyle: TextStyle(
+          color: CaboTheme.primaryColor.withValues(alpha: 0.7),
+        ),
         filled: true,
         fillColor: CaboTheme.secondaryBackgroundColor,
         enabledBorder: OutlineInputBorder(

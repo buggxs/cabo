@@ -4,11 +4,7 @@ class CaboRoundButton extends StatelessWidget {
   const CaboRoundButton({
     Key? key,
     required this.changePlayerAmount,
-    this.icon = const Icon(
-      Icons.add,
-      color: Colors.green,
-      size: 40,
-    ),
+    this.icon = const Icon(Icons.add, color: Colors.green, size: 40),
   }) : super(key: key);
 
   final void Function() changePlayerAmount;

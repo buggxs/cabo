@@ -45,12 +45,12 @@ class RuleSet extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        totalGamePoints,
-        kamikazePoints,
-        roundWinnerGetsZeroPoints,
-        precisionLanding,
-      ];
+    id,
+    totalGamePoints,
+    kamikazePoints,
+    roundWinnerGetsZeroPoints,
+    precisionLanding,
+  ];
 }
 
 const RuleSet kOwnRuleSet = RuleSet(

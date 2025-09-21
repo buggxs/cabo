@@ -10,20 +10,13 @@ class MainMenu extends MainMenuState {
 }
 
 class ChoosePlayerAmount extends MainMenuState {
-  const ChoosePlayerAmount({
-    this.playerAmount = 3,
-    this.shouldUseSpecialRules,
-  });
+  const ChoosePlayerAmount({this.playerAmount = 3, this.shouldUseSpecialRules});
 
   final int playerAmount;
   final bool? shouldUseSpecialRules;
 
-  ChoosePlayerAmount copyWith({
-    int? playerAmount,
-  }) {
-    return ChoosePlayerAmount(
-      playerAmount: playerAmount ?? this.playerAmount,
-    );
+  ChoosePlayerAmount copyWith({int? playerAmount}) {
+    return ChoosePlayerAmount(playerAmount: playerAmount ?? this.playerAmount);
   }
 
   @override

@@ -14,18 +14,12 @@ class GameHeader extends StatelessWidget {
       Shadow(
         color: Color.fromRGBO(32, 45, 18, 1.0),
         blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          2.0,
-        ),
+        offset: Offset(2.0, 2.0),
       ),
       Shadow(
         color: Color.fromRGBO(32, 45, 18, 1.0),
         blurRadius: 2.0,
-        offset: Offset(
-          2.0,
-          -2.0,
-        ),
+        offset: Offset(2.0, -2.0),
       ),
     ],
   );

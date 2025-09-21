@@ -7,13 +7,9 @@ class AboutState extends Equatable {
   final String message;
 
   AboutState copyWith({String? message}) {
-    return AboutState(
-      message: message ?? this.message,
-    );
+    return AboutState(message: message ?? this.message);
   }
 
   @override
-  List<Object?> get props => [
-        message,
-      ];
+  List<Object?> get props => [message];
 }

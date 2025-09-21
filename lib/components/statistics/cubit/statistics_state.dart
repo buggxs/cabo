@@ -1,11 +1,7 @@
 part of 'statistics_cubit.dart';
 
 class StatisticsState extends Equatable {
-  const StatisticsState({
-    this.game,
-    required this.players,
-    this.startedAt,
-  });
+  const StatisticsState({this.game, required this.players, this.startedAt});
 
   final Game? game;
   final List<Player> players;
@@ -25,8 +21,8 @@ class StatisticsState extends Equatable {
 
   @override
   List<Object?> get props => [
-        players,
-        game,
-        // startedAt,
-      ];
+    players,
+    game,
+    // startedAt,
+  ];
 }

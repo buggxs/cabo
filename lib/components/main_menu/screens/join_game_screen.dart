@@ -111,8 +111,6 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   }
 
   Widget _buildManualInput() {
-    Color currentBackgroundColor = CaboTheme.tertiaryColor;
-
     return Padding(
       key: const ValueKey('manual-input'),
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -176,7 +174,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 24.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: CaboTheme.secondaryColor.withOpacity(0.8),
+        color: CaboTheme.secondaryColor.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(color: CaboTheme.tertiaryColor, width: 2),
       ),

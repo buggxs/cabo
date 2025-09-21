@@ -51,12 +51,12 @@ class Round extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        round,
-        points,
-        hasPenaltyPoints,
-        hasClosedRound,
-        hasPrecisionLanding,
-        isWonRound,
-      ];
+    id,
+    round,
+    points,
+    hasPenaltyPoints,
+    hasClosedRound,
+    hasPrecisionLanding,
+    isWonRound,
+  ];
 }

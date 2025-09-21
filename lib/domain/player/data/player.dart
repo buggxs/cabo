@@ -36,7 +36,8 @@ class Player extends Equatable {
       return rounds.first.points;
     }
 
-    int precisionLandingRounds = rounds
+    int precisionLandingRounds =
+        rounds
             .where((Round round) => round.hasPrecisionLanding)
             .toList()
             .length *
@@ -108,11 +109,7 @@ class Player extends Equatable {
     return maxStreak;
   }
 
-  Player copyWith({
-    String? name,
-    int? place,
-    List<Round>? rounds,
-  }) {
+  Player copyWith({String? name, int? place, List<Round>? rounds}) {
     return Player(
       name: name ?? this.name,
       place: place ?? this.place,
@@ -121,11 +118,5 @@ class Player extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        place,
-        rounds,
-        totalPoints,
-      ];
+  List<Object?> get props => [id, name, place, rounds, totalPoints];
 }

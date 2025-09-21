@@ -10,8 +10,9 @@ part 'application_state.dart';
 
 class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   ApplicationCubit() : super(ApplicationInitial()) {
-    _authSubscription =
-        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
+      User? user,
+    ) {
       if (user == null) {
         emit(ApplicationUnauthenticated());
       } else {
@@ -31,11 +32,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     try {
       await FirebaseAuth.instance.signInAnonymously();
     } on FirebaseAuthException catch (e) {
-      log.severe(
-        'Error signing in anonymously: ${e.message}',
-        e,
-        e.stackTrace,
-      );
+      log.severe('Error signing in anonymously: ${e.message}', e, e.stackTrace);
     }
   }
 
@@ -110,8 +107,10 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
           final currentUser = FirebaseAuth.instance.currentUser;
           // If an anonymous user is signed in, link the account.
           if (currentUser != null && currentUser.isAnonymous) {
-            final credential =
-                EmailAuthProvider.credential(email: email, password: password);
+            final credential = EmailAuthProvider.credential(
+              email: email,
+              password: password,
+            );
             await currentUser.linkWithCredential(credential);
           } else {
             // Otherwise, create a completely new user.

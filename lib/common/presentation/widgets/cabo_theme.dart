@@ -39,34 +39,34 @@ class CaboTheme {
   );
 
   List<Shadow> textStroke(Color color) => [
-        Shadow(
-          // bottomLeft
-          offset: const Offset(-1.5, -1.5),
-          color: color,
-        ),
-        Shadow(
-          // bottomRight
-          offset: const Offset(1.5, -1.5),
-          color: color,
-        ),
-        Shadow(
-          // topRight
-          offset: const Offset(1.5, 1.5),
-          color: color,
-        ),
-        Shadow(
-          // topLeft
-          offset: const Offset(-1.5, 1.5),
-          color: color,
-        ),
-      ];
+    Shadow(
+      // bottomLeft
+      offset: const Offset(-1.5, -1.5),
+      color: color,
+    ),
+    Shadow(
+      // bottomRight
+      offset: const Offset(1.5, -1.5),
+      color: color,
+    ),
+    Shadow(
+      // topRight
+      offset: const Offset(1.5, 1.5),
+      color: color,
+    ),
+    Shadow(
+      // topLeft
+      offset: const Offset(-1.5, 1.5),
+      color: color,
+    ),
+  ];
 }
 
 extension ColorToMaterialConverter on Color {
   MaterialColor get toMaterialColor {
-    final int red = this.red;
-    final int green = this.green;
-    final int blue = this.blue;
+    final int red = r.toInt();
+    final int green = g.toInt();
+    final int blue = b.toInt();
 
     final Map<int, Color> shades = {
       50: Color.fromRGBO(red, green, blue, .1),
@@ -81,6 +81,6 @@ extension ColorToMaterialConverter on Color {
       900: Color.fromRGBO(red, green, blue, 1),
     };
 
-    return MaterialColor(value, shades);
+    return MaterialColor(toARGB32(), shades);
   }
 }

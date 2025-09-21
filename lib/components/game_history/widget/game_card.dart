@@ -109,14 +109,16 @@ class GameCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3), // Subtle border color
+                    color: Colors.white.withValues(
+                      alpha: 0.3,
+                    ), // Subtle border color
                     width: 1.0,
                   ),
                   borderRadius: BorderRadius.circular(
                     12.0,
                   ), // Rounded corners for the border
-                  color: Colors.black.withOpacity(
-                    0.15,
+                  color: Colors.black.withValues(
+                    alpha: 0.15,
                   ), // Slight background tint
                 ),
                 child: Column(
@@ -125,7 +127,7 @@ class GameCard extends StatelessWidget {
                     Text(
                       AppLocalizations.of(context)!.streakTitle, // Label
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white..withValues(alpha: 0.7),
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
@@ -178,14 +180,15 @@ class GameCard extends StatelessWidget {
       children: [
         Icon(
           Icons.timer_outlined,
-          color: Colors.white.withOpacity(0.6), // More subtle icon color
+          color: Colors.white.withValues(alpha: 0.6), // More subtle icon color
           size: 14,
         ),
         const SizedBox(width: 4),
         Text(
           game.gameDuration,
           style: CaboTheme.secondaryTextStyle.copyWith(
-            color: Colors.white.withOpacity(0.8), // More subtle text color
+            color: Colors.white
+              ..withValues(alpha: 0.8), // More subtle text color
             fontSize: 12, // Smaller font size
             fontWeight: FontWeight.w400,
           ),
@@ -236,7 +239,7 @@ class GameCard extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.8),
+        color: color.withValues(alpha: 0.8),
         shape: BoxShape.circle,
         // Use the helper function
         border: Border.all(color: lightenColor(color, 0.2), width: 1.5),
