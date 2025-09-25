@@ -1,11 +1,17 @@
+import 'dart:io';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -21,8 +27,103 @@ class AboutScreen extends StatelessWidget {
   }
 }
 
-class AboutScreenContent extends StatelessWidget {
+class AboutScreenContent extends StatefulWidget {
   const AboutScreenContent({super.key});
+
+  @override
+  State<AboutScreenContent> createState() => _AboutScreenContentState();
+}
+
+class _AboutScreenContentState extends State<AboutScreenContent> {
+  final _feedbackController = TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
+
+  XFile? _imageFile;
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? selectedImage = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80, // Komprimiert das Bild etwas für schnellere Uploads
+    );
+
+    if (selectedImage != null) {
+      setState(() {
+        _imageFile = selectedImage;
+      });
+    }
+  }
+
+  Future<void> _submitFeedback() async {
+    if (_feedbackController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bitte gib dein Feedback ein.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      String? imageUrl;
+
+      // 1. Bild hochladen, falls eines ausgewählt wurde
+      if (_imageFile != null) {
+        final fileName = DateTime.now().toIso8601String();
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('feedback_images')
+            .child('$fileName.jpg');
+
+        await ref.putFile(File(_imageFile!.path));
+        imageUrl = await ref.getDownloadURL();
+      }
+
+      // 2. Feedback in Firestore speichern
+      await FirebaseFirestore.instance.collection('feedback').add({
+        'text': _feedbackController.text,
+        'imageUrl':
+            imageUrl, // wird null sein, wenn kein Bild hochgeladen wurde
+        'timestamp': FieldValue.serverTimestamp(),
+        // Optional: Hier könntest du auch User-ID, App-Version etc. mitsenden
+      });
+
+      // 3. UI zurücksetzen und Erfolgsmeldung zeigen
+      _feedbackController.clear();
+      setState(() {
+        _imageFile = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vielen Dank für dein Feedback!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      // Fehlerbehandlung
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler beim Senden: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,84 +154,189 @@ class AboutScreenContent extends StatelessWidget {
         child: DarkScreenOverlay(
           darken: 0.70,
           child: SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 100),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.aboutScreenText,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.primaryColor,
-                      fontFamily: 'Archivo Black',
-                      fontWeight: FontWeight.w800,
-                      shadows: [
-                        Shadow(
-                          // topRight
-                          offset: const Offset(1.5, 1.5),
-                          color: Colors.black.withAlpha(200),
-                        ),
-                      ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48.0,
-                    vertical: 6,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(
-                      context,
-                    )!.aboutScreenTextAreaDescription,
-                    style: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.primaryColor,
-                      fontSize: 16,
-                      shadows: [
-                        Shadow(
-                          // topRight
-                          offset: const Offset(1.5, 1.5),
-                          color: Colors.black.withAlpha(200),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: 50),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: CaboTheme.primaryColor,
-                    backgroundColor: CaboTheme.secondaryColor,
-                    textStyle: CaboTheme.secondaryTextStyle.copyWith(
-                      color: CaboTheme.primaryColor,
-                      fontSize: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      side: const BorderSide(
+                    child: Text(
+                      AppLocalizations.of(context)!.aboutScreenText,
+                      style: CaboTheme.secondaryTextStyle.copyWith(
                         color: CaboTheme.primaryColor,
-                        width: 2.0,
+                        fontFamily: 'Archivo Black',
+                        fontWeight: FontWeight.w800,
+                        shadows: [
+                          Shadow(
+                            // topRight
+                            offset: const Offset(1.5, 1.5),
+                            color: Colors.black.withAlpha(200),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48.0,
+                      vertical: 6,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.aboutScreenTextAreaDescription,
+                      style: CaboTheme.secondaryTextStyle.copyWith(
+                        color: CaboTheme.primaryColor,
+                        fontSize: 16,
+                        shadows: [
+                          Shadow(
+                            // topRight
+                            offset: const Offset(1.5, 1.5),
+                            color: Colors.black.withAlpha(200),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: CaboTheme.primaryColor,
+                      backgroundColor: CaboTheme.secondaryColor,
+                      textStyle: CaboTheme.secondaryTextStyle.copyWith(
+                        color: CaboTheme.primaryColor,
+                        fontSize: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        side: const BorderSide(
+                          color: CaboTheme.primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                    onPressed: () => app<RatingService>().openStoreListing(),
+                    child: Text(
+                      AppLocalizations.of(context)!.aboutScreenRatingButton,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    color: CaboTheme.secondaryBackgroundColor.withAlpha(150),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AutoSizeText(
+                            'Fehlt noch was? - Gib mir Feedback',
+                            style: CaboTheme.primaryTextStyle.copyWith(
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _feedbackController,
+                            decoration: InputDecoration(
+                              labelText: 'Deine Nachricht',
+                              labelStyle: CaboTheme.secondaryTextStyle.copyWith(
+                                fontSize: 16,
+                                color: CaboTheme.primaryColor,
+                              ),
+                              hintText: 'Was können wir verbessern?',
+                              hintStyle: CaboTheme.secondaryTextStyle.copyWith(
+                                fontSize: 14,
+                                color: CaboTheme.primaryColor.withAlpha(150),
+                              ),
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: CaboTheme.primaryColor,
+                                ),
+                              ),
+                            ),
+                            style: CaboTheme.secondaryTextStyle.copyWith(
+                              fontSize: 16,
+                              color: CaboTheme.primaryColor,
+                            ),
+                            maxLines: 3,
+                            textCapitalization: TextCapitalization.sentences,
+                          ),
+                          const SizedBox(height: 16),
+                          if (_imageFile != null) ...[
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.file(
+                                File(_imageFile!.path),
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          OutlinedButton.icon(
+                            onPressed: _pickImage,
+                            icon: const Icon(Icons.attach_file),
+                            label: Text(
+                              _imageFile == null
+                                  ? 'Bild anhängen'
+                                  : 'Bild ändern',
+                              style: CaboTheme.secondaryTextStyle.copyWith(
+                                fontSize: 16,
+                                color: CaboTheme.primaryColor,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: CaboTheme.primaryColor,
+                              backgroundColor: CaboTheme.secondaryColor,
+                              textStyle: CaboTheme.secondaryTextStyle.copyWith(
+                                color: CaboTheme.primaryColor,
+                                fontSize: 16,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                side: const BorderSide(
+                                  color: CaboTheme.primaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            onPressed: _isLoading ? null : _submitFeedback,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 3,
+                                    ),
+                                  )
+                                : const Text('Feedback senden'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  onPressed: () => app<RatingService>().openStoreListing(),
-                  child: Text(
-                    AppLocalizations.of(context)!.aboutScreenRatingButton,
+
+                  Text(
+                    '© Andre Salzmann ${DateTime.now().year}',
+                    style: CaboTheme.primaryTextStyle.copyWith(fontSize: 15),
                   ),
-                ),
-                const Spacer(),
-                Text(
-                  '© Andre Salzmann ${DateTime.now().year}',
-                  style: CaboTheme.primaryTextStyle.copyWith(fontSize: 15),
-                ),
-                const SizedBox(height: 15),
-              ],
+                  const SizedBox(height: 15),
+                ],
+              ),
             ),
           ),
         ),
