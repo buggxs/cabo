@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
-import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -135,12 +135,12 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          AppLocalizations.of(context)!.aboutScreenTitle,
-          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
+          context.l10n.aboutScreenTitle,
+          style: context.textTheme.headlineLarge,
         ),
       ),
       body: Container(
@@ -157,29 +157,6 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 48.0,
-                      vertical: 6,
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.aboutScreenText,
-                      style: CaboTheme.secondaryTextStyle.copyWith(
-                        color: CaboTheme.primaryColor,
-                        fontFamily: 'Archivo Black',
-                        fontWeight: FontWeight.w800,
-                        shadows: [
-                          Shadow(
-                            // topRight
-                            offset: const Offset(1.5, 1.5),
-                            color: Colors.black.withAlpha(200),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                   const SizedBox(height: 50),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -187,10 +164,8 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                       vertical: 6,
                     ),
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.aboutScreenTextAreaDescription,
-                      style: CaboTheme.secondaryTextStyle.copyWith(
+                      context.l10n.aboutScreenTextAreaDescription,
+                      style: context.textTheme.bodyMedium?.copyWith(
                         color: CaboTheme.primaryColor,
                         fontSize: 16,
                         shadows: [
@@ -221,9 +196,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                       ),
                     ),
                     onPressed: () => app<RatingService>().openStoreListing(),
-                    child: Text(
-                      AppLocalizations.of(context)!.aboutScreenRatingButton,
-                    ),
+                    child: Text(context.l10n.aboutScreenRatingButton),
                   ),
                   const SizedBox(height: 50),
                   Card(
@@ -238,33 +211,33 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           AutoSizeText(
-                            'Fehlt noch was? - Gib mir Feedback',
-                            style: CaboTheme.primaryTextStyle.copyWith(
-                              fontSize: 20,
-                            ),
+                            context.l10n.aboutScreenFeedbackTitle,
+                            style: context.textTheme.titleLarge,
                           ),
                           const SizedBox(height: 16),
                           TextField(
                             controller: _feedbackController,
                             decoration: InputDecoration(
-                              labelText: 'Deine Nachricht',
-                              labelStyle: CaboTheme.secondaryTextStyle.copyWith(
-                                fontSize: 16,
-                                color: CaboTheme.primaryColor,
-                              ),
-                              hintText: 'Was können wir verbessern?',
-                              hintStyle: CaboTheme.secondaryTextStyle.copyWith(
-                                fontSize: 14,
+                              labelText: context.l10n.aboutScreenFeedbackLabel,
+                              labelStyle: context.textTheme.bodyMedium
+                                  ?.copyWith(color: CaboTheme.primaryColor),
+                              hintText: context.l10n.aboutScreenFeedbackHint,
+                              hintStyle: context.textTheme.bodySmall?.copyWith(
                                 color: CaboTheme.primaryColor.withAlpha(150),
                               ),
-                              border: const OutlineInputBorder(
+                              enabledBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: CaboTheme.primaryColor,
                                 ),
                               ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: CaboTheme.primaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
                             ),
-                            style: CaboTheme.secondaryTextStyle.copyWith(
-                              fontSize: 16,
+                            style: context.textTheme.bodyMedium?.copyWith(
                               color: CaboTheme.primaryColor,
                             ),
                             maxLines: 3,
@@ -285,34 +258,27 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                           ],
                           OutlinedButton.icon(
                             onPressed: _pickImage,
-                            icon: const Icon(Icons.attach_file),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: CaboTheme.primaryColor,
+                              side: const BorderSide(
+                                color: CaboTheme.primaryColor,
+                              ),
+                            ),
+                            icon: const Icon(
+                              Icons.attach_file,
+                              color: CaboTheme.primaryColor,
+                            ),
                             label: Text(
                               _imageFile == null
-                                  ? 'Bild anhängen'
-                                  : 'Bild ändern',
-                              style: CaboTheme.secondaryTextStyle.copyWith(
-                                fontSize: 16,
+                                  ? context.l10n.aboutScreenFeedbackAddImage
+                                  : context.l10n.aboutScreenFeedbackChangeImage,
+                              style: context.textTheme.bodyMedium?.copyWith(
                                 color: CaboTheme.primaryColor,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 4),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: CaboTheme.primaryColor,
-                              backgroundColor: CaboTheme.secondaryColor,
-                              textStyle: CaboTheme.secondaryTextStyle.copyWith(
-                                color: CaboTheme.primaryColor,
-                                fontSize: 16,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                side: const BorderSide(
-                                  color: CaboTheme.primaryColor,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
                             onPressed: _isLoading ? null : _submitFeedback,
                             child: _isLoading
                                 ? const SizedBox(
@@ -323,7 +289,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                                       strokeWidth: 3,
                                     ),
                                   )
-                                : const Text('Feedback senden'),
+                                : Text(context.l10n.aboutScreenFeedbackButton),
                           ),
                         ],
                       ),

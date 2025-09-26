@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/game_history/cubit/game_history_cubit.dart';
 import 'package:cabo/components/game_history/widget/animated_total_points_banner.dart';
 import 'package:cabo/components/game_history/widget/game_card.dart';
@@ -105,8 +106,12 @@ class GameHistoryScreenContent extends StatelessWidget {
   }) {
     // Parse gameTime string
     final gameTimeParts = gameTime.split('\n');
-    final days = gameTimeParts.isNotEmpty ? gameTimeParts[0] : '0 Days';
-    final hours = gameTimeParts.length > 1 ? gameTimeParts[1] : '0 Hours';
+    final days = gameTimeParts.isNotEmpty
+        ? gameTimeParts[0]
+        : '0 ${context.l10n.historyScreenDays}';
+    final hours = gameTimeParts.length > 1
+        ? gameTimeParts[1]
+        : '0 ${context.l10n.historyScreenHours}';
 
     return Row(
       crossAxisAlignment:

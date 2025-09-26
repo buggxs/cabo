@@ -174,6 +174,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyScreenHours => 'Hours';
 
   @override
+  String get historyScreenDays => 'Day/s';
+
+  @override
   String get historyScreenMinutes => 'Minutes';
 
   @override
@@ -248,6 +251,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutScreenRatingButton => 'Rate';
+
+  @override
+  String get aboutScreenFeedbackTitle => 'Something missing? - Let me know!';
+
+  @override
+  String get aboutScreenFeedbackLabel => 'Your Message';
+
+  @override
+  String get aboutScreenFeedbackHint => 'What could we improve?';
+
+  @override
+  String get aboutScreenFeedbackButton => 'Send feedback';
+
+  @override
+  String get aboutScreenFeedbackAddImage => 'Attach image';
+
+  @override
+  String get aboutScreenFeedbackChangeImage => 'Change image';
 
   @override
   String get rateAppTitle => 'Rate This App';

@@ -5,6 +5,7 @@ import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_amount.dart';
 import 'package:cabo/components/main_menu/widgets/choose_player_name.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_screen_list.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,29 +53,34 @@ class MainMenuScreenContent extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          actions: [
-            BlocBuilder<ApplicationCubit, ApplicationState>(
-              builder: (context, state) {
-                if (state is ApplicationAuthenticated) {
-                  return IconButton(
-                    onPressed: () {
-                      context.read<ApplicationCubit>().signOut();
+          actions: kDebugMode
+              ? [
+                  BlocBuilder<ApplicationCubit, ApplicationState>(
+                    builder: (context, state) {
+                      if (state is ApplicationAuthenticated) {
+                        return IconButton(
+                          onPressed: () {
+                            context.read<ApplicationCubit>().signOut();
+                          },
+                          icon: const Icon(
+                            Icons.logout,
+                            color: CaboTheme.primaryColor,
+                          ),
+                        );
+                      }
+                      return IconButton(
+                        onPressed: () {
+                          context.read<ApplicationCubit>().signInAnonymously();
+                        },
+                        icon: const Icon(
+                          Icons.login,
+                          color: CaboTheme.primaryColor,
+                        ),
+                      );
                     },
-                    icon: const Icon(
-                      Icons.logout,
-                      color: CaboTheme.primaryColor,
-                    ),
-                  );
-                }
-                return IconButton(
-                  onPressed: () {
-                    context.read<ApplicationCubit>().signInAnonymously();
-                  },
-                  icon: const Icon(Icons.login, color: CaboTheme.primaryColor),
-                );
-              },
-            ),
-          ],
+                  ),
+                ]
+              : null,
         ),
         body: Container(
           decoration: const BoxDecoration(
