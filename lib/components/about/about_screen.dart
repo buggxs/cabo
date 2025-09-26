@@ -104,17 +104,21 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
         _imageFile = null;
       });
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vielen Dank für dein Feedback!'),
+        SnackBar(
+          // ignore: use_build_context_synchronously
+          content: Text(context.l10n.aboutScreenFeedbackSuccess),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
       // Fehlerbehandlung
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Fehler beim Senden: ${e.toString()}'),
+          // ignore: use_build_context_synchronously
+          content: Text(context.l10n.aboutScreenFeedbackError),
           backgroundColor: Colors.red,
         ),
       );

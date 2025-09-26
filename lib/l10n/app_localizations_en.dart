@@ -271,6 +271,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutScreenFeedbackChangeImage => 'Change image';
 
   @override
+  String get aboutScreenFeedbackSuccess => 'Thanks for sharing your feedback!';
+
+  @override
+  String get aboutScreenFeedbackError => 'Error sending feedback.';
+
+  @override
   String get rateAppTitle => 'Rate This App';
 
   @override

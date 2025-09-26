@@ -274,6 +274,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get aboutScreenFeedbackChangeImage => 'Bild ändern';
 
   @override
+  String get aboutScreenFeedbackSuccess => 'Vielen Dank für dein Feedback!';
+
+  @override
+  String get aboutScreenFeedbackError => 'Fehler beim Senden.';
+
+  @override
   String get rateAppTitle => 'Bewerte diese App';
 
   @override

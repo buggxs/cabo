@@ -602,6 +602,18 @@ abstract class AppLocalizations {
   /// **'Change image'**
   String get aboutScreenFeedbackChangeImage;
 
+  /// No description provided for @aboutScreenFeedbackSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for sharing your feedback!'**
+  String get aboutScreenFeedbackSuccess;
+
+  /// No description provided for @aboutScreenFeedbackError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error sending feedback.'**
+  String get aboutScreenFeedbackError;
+
   /// No description provided for @rateAppTitle.
   ///
   /// In en, this message translates to:

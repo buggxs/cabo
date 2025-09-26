@@ -83,6 +83,8 @@
   "aboutScreenFeedbackButton": "Feedback abschicken",
   "aboutScreenFeedbackAddImage": "Bild anhängen",
   "aboutScreenFeedbackChangeImage": "Bild ändern",
+  "aboutScreenFeedbackSuccess": "Vielen Dank für dein Feedback!",
+  "aboutScreenFeedbackError": "Fehler beim Senden.",
   "rateAppTitle": "Bewerte diese App",
   "rateAppDescription": "Wie würdest du deine Erfahrung mit Cabo Board bewerten?",
   "feedbackLabel": "Dein Feedback (Optional)",
