@@ -9,6 +9,8 @@
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher"
             android:networkSecurityConfig="@xml/network_security_config">
+
+        <property android:name="android.supported.PAGE_SIZES" android:value="16384" />
         <activity
                 android:name=".MainActivity"
                 android:exported="true"
