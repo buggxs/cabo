@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Cabo Board',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: CaboTheme.primaryColor.toMaterialColor),
+        theme: CaboTheme.themeData,
         navigatorKey: app<NavigationService>().navigatorKey,
         localizationsDelegates: const [
           AppLocalizations.delegate,

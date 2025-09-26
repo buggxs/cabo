@@ -60,6 +60,66 @@ class CaboTheme {
       color: color,
     ),
   ];
+
+  static ThemeData get themeData {
+    return ThemeData(
+      useMaterial3: true,
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: secondaryColor,
+      fontFamily: 'Archivo',
+      colorScheme: const ColorScheme(
+        brightness: Brightness.dark,
+        primary: primaryColor,
+        onPrimary: secondaryColor, // Text auf primären Buttons
+        secondary: tertiaryColor,
+        onSecondary: primaryColor,
+        error: failureRed,
+        onError: primaryColor,
+        surface: secondaryBackgroundColor,
+        onSurface: primaryColor,
+      ),
+      textTheme: TextTheme(
+        displayLarge: primaryTextStyle,
+        headlineLarge: primaryTextStyle,
+        headlineMedium: primaryTextStyle.copyWith(fontSize: 20),
+        titleLarge: primaryTextStyle.copyWith(
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+        ),
+        bodyLarge: secondaryTextStyle,
+        bodyMedium: secondaryTextStyle.copyWith(fontSize: 16),
+        bodySmall: secondaryTextStyle.copyWith(fontSize: 14),
+        labelLarge: primaryTextStyle,
+      ).apply(bodyColor: primaryColor, displayColor: primaryColor),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: primaryTextStyle.copyWith(fontSize: 38),
+        iconTheme: const IconThemeData(color: primaryColor),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: primaryColor,
+          backgroundColor: secondaryColor,
+          textStyle: secondaryTextStyle.copyWith(fontSize: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            side: const BorderSide(color: primaryColor, width: 2.0),
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primaryColor,
+          side: const BorderSide(color: primaryColor),
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: primaryColor),
+      ),
+    );
+  }
 }
 
 extension ColorToMaterialConverter on Color {

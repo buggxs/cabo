@@ -422,6 +422,12 @@ abstract class AppLocalizations {
   /// **'Hours'**
   String get historyScreenHours;
 
+  /// No description provided for @historyScreenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Day/s'**
+  String get historyScreenDays;
+
   /// No description provided for @historyScreenMinutes.
   ///
   /// In en, this message translates to:
@@ -559,6 +565,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rate'**
   String get aboutScreenRatingButton;
+
+  /// No description provided for @aboutScreenFeedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something missing? - Let me know!'**
+  String get aboutScreenFeedbackTitle;
+
+  /// No description provided for @aboutScreenFeedbackLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Message'**
+  String get aboutScreenFeedbackLabel;
+
+  /// No description provided for @aboutScreenFeedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What could we improve?'**
+  String get aboutScreenFeedbackHint;
+
+  /// No description provided for @aboutScreenFeedbackButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get aboutScreenFeedbackButton;
+
+  /// No description provided for @aboutScreenFeedbackAddImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image'**
+  String get aboutScreenFeedbackAddImage;
+
+  /// No description provided for @aboutScreenFeedbackChangeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change image'**
+  String get aboutScreenFeedbackChangeImage;
+
+  /// No description provided for @aboutScreenFeedbackSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for sharing your feedback!'**
+  String get aboutScreenFeedbackSuccess;
+
+  /// No description provided for @aboutScreenFeedbackError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error sending feedback.'**
+  String get aboutScreenFeedbackError;
 
   /// No description provided for @rateAppTitle.
   ///

@@ -178,6 +178,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get historyScreenHours => 'Stunde/n';
 
   @override
+  String get historyScreenDays => 'Tag/e';
+
+  @override
   String get historyScreenMinutes => 'Minuten';
 
   @override
@@ -251,6 +254,30 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get aboutScreenRatingButton => 'Bewerten';
+
+  @override
+  String get aboutScreenFeedbackTitle => 'Fehlt noch was? - Gib mir Feedback';
+
+  @override
+  String get aboutScreenFeedbackLabel => 'Deine Nachricht';
+
+  @override
+  String get aboutScreenFeedbackHint => 'Was können wir verbessern?';
+
+  @override
+  String get aboutScreenFeedbackButton => 'Feedback abschicken';
+
+  @override
+  String get aboutScreenFeedbackAddImage => 'Bild anhängen';
+
+  @override
+  String get aboutScreenFeedbackChangeImage => 'Bild ändern';
+
+  @override
+  String get aboutScreenFeedbackSuccess => 'Vielen Dank für dein Feedback!';
+
+  @override
+  String get aboutScreenFeedbackError => 'Fehler beim Senden.';
 
   @override
   String get rateAppTitle => 'Bewerte diese App';
