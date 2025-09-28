@@ -58,7 +58,6 @@ class PublicGameService with LoggerMixin {
         return gameToSave;
       } else {
         String publicId;
-        DocumentSnapshot<Map<String, dynamic>> existingDoc;
 
         publicId = _generateReadableId();
 
