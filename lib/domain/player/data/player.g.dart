@@ -21,5 +21,5 @@ Map<String, dynamic> _$PlayerToJson(Player instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'place': instance.place,
-  'rounds': instance.rounds,
+  'rounds': instance.rounds.map((round) => round.toJson()).toList(),
 };

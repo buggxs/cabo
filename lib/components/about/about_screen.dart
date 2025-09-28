@@ -75,27 +75,28 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
     });
 
     try {
-      String? imageUrl;
+      String? imagePath; // Wir speichern jetzt den Pfad, nicht die URL
 
       // 1. Bild hochladen, falls eines ausgewählt wurde
       if (_imageFile != null) {
-        final fileName = DateTime.now().toIso8601String();
+        final fileName = '${DateTime.now().toIso8601String()}.jpg';
         final ref = FirebaseStorage.instance
             .ref()
             .child('feedback_images')
-            .child('$fileName.jpg');
+            .child(fileName);
 
         await ref.putFile(File(_imageFile!.path));
-        imageUrl = await ref.getDownloadURL();
+
+        // KORREKTUR: Wir holen nicht mehr die Download-URL, sondern den Pfad der Datei.
+        imagePath = ref.fullPath;
       }
 
-      // 2. Feedback in Firestore speichern
+      // 2. Feedback in Firestore speichern (mit 'imagePath' statt 'imageUrl')
       await FirebaseFirestore.instance.collection('feedback').add({
         'text': _feedbackController.text,
-        'imageUrl':
-            imageUrl, // wird null sein, wenn kein Bild hochgeladen wurde
+        'imagePath':
+            imagePath, // wird null sein, wenn kein Bild hochgeladen wurde
         'timestamp': FieldValue.serverTimestamp(),
-        // Optional: Hier könntest du auch User-ID, App-Version etc. mitsenden
       });
 
       // 3. UI zurücksetzen und Erfolgsmeldung zeigen
@@ -104,20 +105,17 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
         _imageFile = null;
       });
 
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          // ignore: use_build_context_synchronously
           content: Text(context.l10n.aboutScreenFeedbackSuccess),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
-      // Fehlerbehandlung
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          // ignore: use_build_context_synchronously
           content: Text(context.l10n.aboutScreenFeedbackError),
           backgroundColor: Colors.red,
         ),

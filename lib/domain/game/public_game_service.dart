@@ -42,37 +42,46 @@ class PublicGameService with LoggerMixin {
     final User? user = _auth.currentUser;
 
     if (user == null) {
-      log.warning('User is not logged in. Cannot save game.');
+      logger.warning('User is not logged in. Cannot save game.');
       throw Exception('Um ein Spiel zu speichern, musst du angemeldet sein.');
     }
 
     // A public game must have an owner.
     Game gameToSave = game.copyWith(ownerId: user.uid);
+    try {
+      if (gameToSave.publicId != null) {
+        logger.info('Updating game with publicId: ${gameToSave.publicId}');
+        await _firestore
+            .collection('games')
+            .doc(gameToSave.publicId)
+            .set(gameToSave.toJson());
+        return gameToSave;
+      } else {
+        String publicId;
+        DocumentSnapshot<Map<String, dynamic>> existingDoc;
 
-    if (gameToSave.publicId != null) {
-      log.info('Updating game with publicId: ${gameToSave.publicId}');
-      await _firestore
-          .collection('games')
-          .doc(gameToSave.publicId)
-          .set(gameToSave.toJson());
-      return gameToSave;
-    } else {
-      String publicId;
-      DocumentSnapshot<Map<String, dynamic>> existingDoc;
-
-      do {
         publicId = _generateReadableId();
-        existingDoc = await _firestore.collection('games').doc(publicId).get();
-      } while (existingDoc.exists);
 
-      final gameWithPublicId = gameToSave.copyWith(publicId: publicId);
+        final gameWithPublicId = gameToSave.copyWith(publicId: publicId);
 
-      await _firestore
-          .collection('games')
-          .doc(publicId)
-          .set(gameWithPublicId.toJson());
-      log.info('Game saved successfully with id: $publicId');
-      return gameWithPublicId;
+        await _firestore
+            .collection('games')
+            .doc(publicId)
+            .set(gameWithPublicId.toJson());
+        logger.info('Game saved successfully with id: $publicId');
+        return gameWithPublicId;
+      }
+    } on FirebaseException catch (e) {
+      if (e.code == 'unauthenticated') {
+        logger.warning(
+          'Unauthenticated error received. Forcing user sign out.',
+        );
+        await _auth.signOut();
+        throw Exception(
+          'Deine Anmeldung ist abgelaufen. Bitte melde dich erneut an.',
+        );
+      }
+      rethrow;
     }
   }
 

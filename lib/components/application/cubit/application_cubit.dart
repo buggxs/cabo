@@ -32,7 +32,11 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     try {
       await FirebaseAuth.instance.signInAnonymously();
     } on FirebaseAuthException catch (e) {
-      log.severe('Error signing in anonymously: ${e.message}', e, e.stackTrace);
+      logger.severe(
+        'Error signing in anonymously: ${e.message}',
+        e,
+        e.stackTrace,
+      );
     }
   }
 
@@ -56,17 +60,27 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
         idToken: googleAuth.idToken,
       );
 
-      if (FirebaseAuth.instance.currentUser != null) {
-        FirebaseAuth.instance.currentUser!.linkWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      final user = userCredential.user;
+
+      if (user != null) {
+        logger.info('Successfully signed in with Google: ${user.displayName}');
       } else {
-        await FirebaseAuth.instance.signInWithCredential(credential);
+        logger.warning('Google sign in resulted in a null user.');
       }
     } on FirebaseAuthException catch (e) {
       // Fehlerbehandlung für Firebase-spezifische Fehler
-      log.severe('Error during Google sign-in: ${e.message}', e);
-    } catch (e) {
+      logger.severe(
+        'Error during Google sign-in: ${e.message}',
+        e,
+        e.stackTrace,
+      );
+    } catch (e, stackTrace) {
       // Allgemeine Fehlerbehandlung (z.B. Netzwerkprobleme)
-      log.severe('An unexpected error occurred: $e');
+      // This is where your PlatformException is caught
+      logger.severe('An unexpected error occurred: $e', e, stackTrace);
     }
   }
 
@@ -120,15 +134,15 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
             );
           }
         } on FirebaseAuthException catch (e) {
-          log.severe('Error during registration: ${e.message}', e);
+          logger.severe('Error during registration: ${e.message}', e);
           rethrow;
         }
       } else {
-        log.severe('Error during sign in: ${e.message}', e);
+        logger.severe('Error during sign in: ${e.message}', e);
         rethrow;
       }
     } catch (e) {
-      log.severe('An unexpected error occurred: $e');
+      logger.severe('An unexpected error occurred: $e');
       rethrow;
     }
   }

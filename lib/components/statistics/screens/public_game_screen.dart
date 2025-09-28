@@ -1,5 +1,6 @@
 import 'package:cabo/common/presentation/screens/cabo_default_view.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/statistics/widgets/auth_form.dart';
 import 'package:cabo/components/statistics/widgets/loading_spinner_section.dart';
@@ -7,6 +8,7 @@ import 'package:cabo/components/statistics/widgets/publish_game_section.dart';
 import 'package:cabo/components/statistics/widgets/qr_code_section.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/l10n/app_localizations.dart';
+import 'package:cabo/misc/utils/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +29,7 @@ class PublicGameScreen extends StatefulWidget {
   State<PublicGameScreen> createState() => _PublicGameScreenState();
 }
 
-class _PublicGameScreenState extends State<PublicGameScreen> {
+class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
   String? _publicGameId;
   bool _isPreparing = false;
   bool _isPublishing = false;
@@ -110,7 +112,26 @@ class _PublicGameScreenState extends State<PublicGameScreen> {
       _isPublishing = true;
     });
 
-    final Game? publicGame = await widget.publishGame();
+    final Game? publicGame;
+    try {
+      publicGame = await widget.publishGame();
+    } catch (e) {
+      setState(() {
+        _isPublishing = false;
+      });
+      if (e is FirebaseException) {
+        logger.severe('Firebase error: ${e.message}', e);
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.publishDialogFailedToPublish),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
 
     if (publicGame?.publicId != null && mounted) {
       setState(() {

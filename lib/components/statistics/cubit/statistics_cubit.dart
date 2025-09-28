@@ -104,15 +104,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       game: state.game!,
     );
 
-    if (publicGame.publicId == null) {
-      publicGame = await app<PublicGameService>().saveOrUpdateGame(
-        game: publicGame,
-      );
-    }
-
     emit(state.copyWith(game: publicGame));
-
-    app<PublicGameService>().saveOrUpdateGame(game: publicGame);
 
     _subscribePublicGame();
 
@@ -126,7 +118,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         .listen((snapshot) {
           if (snapshot.exists) {
             final Game gameData = Game.fromJson(snapshot.data()!);
-            log.info('Game was updated');
+            logger.info('Game was updated');
 
             if (state.game == gameData) {
               return;
@@ -138,6 +130,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
                 players: gameData.players,
               ),
             );
+
+            if (gameData.isGameFinished &&
+                FirebaseAuth.instance.currentUser?.uid != gameData.ownerId) {
+              _finishGame(gameData.players);
+            }
           }
         });
   }

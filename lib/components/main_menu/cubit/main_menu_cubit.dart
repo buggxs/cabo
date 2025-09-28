@@ -29,7 +29,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   }
 
   void pushToScreen(BuildContext context, String? route) {
-    log.info('History screen');
+    logger.info('History screen');
     Navigator.of(context).pushNamed(route ?? GameHistoryScreen.route);
   }
 

@@ -20,7 +20,7 @@ class NavigationService {
     bool? shouldUseSpecialRules,
     Game? game,
   }) {
-    Navigator.of(navigatorKey.currentContext!).pushNamed(
+    Navigator.of(navigatorKey.currentContext!).popAndPushNamed(
       StatisticsScreen.route,
       arguments: {
         'players': players,

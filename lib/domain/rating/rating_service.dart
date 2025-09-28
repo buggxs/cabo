@@ -24,7 +24,7 @@ class RatingService with LoggerMixin {
     gameCount++;
 
     await prefs.setInt(_gameCountKey, gameCount);
-    log.info('Game count increased to: $gameCount');
+    logger.info('Game count increased to: $gameCount');
 
     if (gameCount < _gamesUntilRating) {
       return;
@@ -33,21 +33,21 @@ class RatingService with LoggerMixin {
     if (await _shouldShowPrompt()) {
       // Check if we can use the native in-app review flow
       if (await _inAppReview.isAvailable()) {
-        log.info('Using native in-app review flow');
+        logger.info('Using native in-app review flow');
 
         // Try the native review flow first
         try {
           await _inAppReview.requestReview();
           await setHasRated(true);
         } catch (e) {
-          log.warning(
+          logger.warning(
             'Native review flow failed: $e - Falling back to custom dialog',
           );
           await RatingDialog.show();
         }
       } else {
         // If the native review flow is not available, show our custom dialog
-        log.info('Native review not available, showing custom dialog');
+        logger.info('Native review not available, showing custom dialog');
         await RatingDialog.show();
       }
 
@@ -85,7 +85,7 @@ class RatingService with LoggerMixin {
 
       return daysElapsed >= _minDaysBetweenPrompts;
     } catch (e) {
-      log.warning('Error parsing last prompt date: $e');
+      logger.warning('Error parsing last prompt date: $e');
       return true;
     }
   }
@@ -100,18 +100,18 @@ class RatingService with LoggerMixin {
     try {
       await _inAppReview.openStoreListing();
     } catch (e) {
-      log.warning('Error opening store listing: $e');
+      logger.warning('Error opening store listing: $e');
     }
   }
 
   // Handle rating submission
   Future<void> submitRating(int rating, String? feedback) async {
-    log.info('User submitted rating: $rating, feedback: $feedback');
+    logger.info('User submitted rating: $rating, feedback: $feedback');
 
     try {
       await _requestStoreReview();
     } catch (e) {
-      log.warning('Error handling rating submission: $e');
+      logger.warning('Error handling rating submission: $e');
     }
 
     // Mark that the user has rated the app
@@ -125,17 +125,17 @@ class RatingService with LoggerMixin {
       final available = await _inAppReview.isAvailable();
 
       if (available) {
-        log.info('Requesting app store review');
+        logger.info('Requesting app store review');
         await _inAppReview.requestReview();
       } else {
-        log.info(
+        logger.info(
           'App store review not available, opening store listing instead',
         );
         // If in-app review is not available, open the store listing
         await _inAppReview.openStoreListing();
       }
     } catch (e) {
-      log.warning('Error requesting app store review: $e');
+      logger.warning('Error requesting app store review: $e');
     }
   }
 }

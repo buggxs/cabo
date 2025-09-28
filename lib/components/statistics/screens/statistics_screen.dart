@@ -2,6 +2,8 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
+import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -72,7 +74,7 @@ class StatisticsScreenContent extends StatelessWidget {
           if (didPop) {
             return;
           }
-          _onPopScreen(cubit, context);
+          await _onPopScreen(cubit, context);
         },
         child: const StatisticsScreenContentBody(),
       ),
@@ -86,6 +88,27 @@ class StatisticsScreenContent extends StatelessWidget {
           await app<StatisticsDialogService>().showEndGame(cubit.state.game) ??
           false;
     });
+
+    Player? winner = cubit.state.game?.players.firstWhere(
+      (player) => player.place == 1,
+    );
+
+    if (winner != null) {
+      await app<NavigationService>().showAppDialog(
+        dialog: (BuildContext context) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+            side: const BorderSide(
+              style: BorderStyle.solid,
+              color: CaboTheme.tertiaryColor,
+              width: 2,
+            ),
+          ),
+          backgroundColor: CaboTheme.secondaryColor,
+          child: WinnerDialog(winner: winner),
+        ),
+      );
+    }
 
     if (shouldPop) {
       cubit.onPopScreen();

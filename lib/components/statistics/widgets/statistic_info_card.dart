@@ -45,7 +45,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
     _stopwatch.start();
     // Create a timer that runs a callback every second to update UI
     _timer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
-      log.info('Game duration: $_elapsedTimeString');
+      logger.info('Game duration: $_elapsedTimeString');
       if (mounted) {
         // Check if widget is still mounted
         setState(() {
