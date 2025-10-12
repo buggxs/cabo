@@ -233,6 +233,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Regel: \"Exakt 100\" - Trifft ein Spieler die Gesammtpunktzahl, wird sein Punktestand auf 50 Punkte reduziert. Liegt er darüber, ist das Spiel beendet. Du kannst den Wert beliebig anpassen, indem du die Gesammtpunktzahl bearbeitest.';
 
   @override
+  String get developerModeToggled => 'Entwicklermodus konfiguriert';
+
+  @override
   String get aboutScreenTitle => 'Info';
 
   @override

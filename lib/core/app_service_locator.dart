@@ -1,4 +1,5 @@
 import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
@@ -25,5 +26,8 @@ void setup() {
     ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())
     ..registerSingleton<LocalGameRepository>(LocalGameRepository())
     ..registerLazySingleton<LocalRuleSetRepository>(LocalRuleSetRepository.new)
+    ..registerLazySingleton<LocalApplicationRepository>(
+      LocalApplicationRepository.new,
+    )
     ..registerLazySingleton<RatingService>(RatingService.new);
 }

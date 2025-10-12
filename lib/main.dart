@@ -4,6 +4,7 @@ import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/core/app_navigator/app_navigator.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/firebase_options.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,7 +41,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ApplicationCubit>(
-      create: (_) => ApplicationCubit(),
+      create: (_) =>
+          ApplicationCubit(repository: app<LocalApplicationRepository>())
+            ..init(),
       child: MaterialApp(
         title: 'Cabo Board',
         debugShowCheckedModeBanner: false,

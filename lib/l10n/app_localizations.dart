@@ -524,6 +524,12 @@ abstract class AppLocalizations {
   /// **'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.'**
   String get ruleScreenExactly100Hint;
 
+  /// No description provided for @developerModeToggled.
+  ///
+  /// In en, this message translates to:
+  /// **'Developermode toggled'**
+  String get developerModeToggled;
+
   /// No description provided for @aboutScreenTitle.
   ///
   /// In en, this message translates to:

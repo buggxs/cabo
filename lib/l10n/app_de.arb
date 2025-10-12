@@ -70,6 +70,7 @@
   "ruleScreenKamikazeHint": "Regel: \"Kamikaze\" - Beendet ein Spieler eine Runde mit diesem Wert, dann bekommen alle anderen Spieler 50 Punkte und der Kamikaze Spieler erhält 0 Punkte. Hier kannst du einstellen, bei welchem Wert \"Kamikaze\" inkraft treten soll.",
   "ruleScreenRoundWinnerHint": "Regel: \"Punktzahl\" - Der Spieler, der die Runde gewinnt, erhält 0 Punkte. Wird diese Regel deaktiviert, erhält der Rundengewinner die Punktzahl, mit der er/sie gewonnen hat.",
   "ruleScreenExactly100Hint": "Regel: \"Exakt 100\" - Trifft ein Spieler die Gesammtpunktzahl, wird sein Punktestand auf 50 Punkte reduziert. Liegt er darüber, ist das Spiel beendet. Du kannst den Wert beliebig anpassen, indem du die Gesammtpunktzahl bearbeitest.",
+  "developerModeToggled": "Entwicklermodus konfiguriert",
   "aboutScreenTitle": "Info",
   "aboutScreenSendButton": "Abschicken",
   "aboutScreenSuccess": "Danke! Dein Feedback wurde abgeschickt.",
