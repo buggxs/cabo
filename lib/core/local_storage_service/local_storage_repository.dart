@@ -47,5 +47,5 @@ abstract class LocalStorageRepository<T> {
   }
 
   /// Cast generic to Object
-  T castMapToObject(Map<String, dynamic> object);
+  T castMapToObject(dynamic object);
 }

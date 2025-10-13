@@ -1,7 +1,9 @@
 import 'package:cabo/common/presentation/widgets/cabo_switch.dart';
 import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
+import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
 import 'package:cabo/components/rule_set/widgets/rule_set_info.dart';
@@ -53,10 +55,7 @@ class RuleSetScreenContent extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          AppLocalizations.of(context)!.ruleScreenTitle,
-          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
-        ),
+        title: const TapableTitle(),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -243,6 +242,41 @@ class RuleSetScreenContent extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TapableTitle extends StatefulWidget {
+  const TapableTitle({Key? key}) : super(key: key);
+
+  @override
+  TapableTitleState createState() => TapableTitleState();
+}
+
+class TapableTitleState extends State<TapableTitle> {
+  int _tapCount = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _tapCount++;
+        });
+        if (_tapCount == 9) {
+          context.read<ApplicationCubit>().toggleDeveloperMode();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.developerModeToggled),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        }
+      },
+      child: Text(
+        AppLocalizations.of(context)!.ruleScreenTitle,
+        style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,19 +10,28 @@ import 'package:google_sign_in/google_sign_in.dart';
 part 'application_state.dart';
 
 class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
-  ApplicationCubit() : super(ApplicationInitial()) {
+  ApplicationCubit({required this.repository})
+    : super(const ApplicationInitial()) {
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) {
       if (user == null) {
-        emit(ApplicationUnauthenticated());
+        emit(ApplicationUnauthenticated(isDeveloper: state.isDeveloper));
       } else {
-        emit(ApplicationAuthenticated(user));
+        emit(
+          ApplicationAuthenticated(user: user, isDeveloper: state.isDeveloper),
+        );
       }
     });
   }
 
   late final StreamSubscription<User?> _authSubscription;
+  final LocalApplicationRepository repository;
+
+  void init() async {
+    final isDeveloperMode = await repository.getCurrent() ?? false;
+    emit(state.copyWith(isDeveloper: isDeveloperMode));
+  }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -147,9 +157,19 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     }
   }
 
+  void saveIsDeveloperMode(bool isDeveloperMode) {
+    repository.saveCurrent(isDeveloperMode);
+    emit(state.copyWith(isDeveloper: isDeveloperMode));
+  }
+
   @override
   Future<void> close() {
     _authSubscription.cancel();
     return super.close();
+  }
+
+  void toggleDeveloperMode() {
+    final bool newMode = !state.isDeveloper;
+    saveIsDeveloperMode(newMode);
   }
 }

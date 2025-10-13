@@ -213,7 +213,7 @@ class MockLocalGameRepository extends _i1.Mock
           as String);
 
   @override
-  _i5.Game castMapToObject(Map<String, dynamic>? object) =>
+  _i5.Game castMapToObject(dynamic object) =>
       (super.noSuchMethod(
             Invocation.method(#castMapToObject, [object]),
             returnValue: _FakeGame_3(
@@ -285,7 +285,7 @@ class MockLocalRuleSetRepository extends _i1.Mock
           as String);
 
   @override
-  _i3.RuleSet castMapToObject(Map<String, dynamic>? object) =>
+  _i3.RuleSet castMapToObject(dynamic object) =>
       (super.noSuchMethod(
             Invocation.method(#castMapToObject, [object]),
             returnValue: _FakeRuleSet_1(

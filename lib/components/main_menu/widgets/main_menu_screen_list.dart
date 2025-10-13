@@ -16,6 +16,9 @@ class MainMenuScreenList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
+    final bool isDeveloper = context.select<ApplicationCubit, bool>(
+      (cubit) => cubit.state.isDeveloper,
+    );
     return SafeArea(
       child: Builder(
         builder: (context) {
@@ -41,20 +44,23 @@ class MainMenuScreenList extends StatelessWidget {
                               )!.menuEntryTrackStats,
                               onTap: () => cubit.showChoosePlayerAmountScreen(),
                             ),
-                            const SizedBox(height: 8),
-                            MenuButton(
-                              text: AppLocalizations.of(
-                                context,
-                              )!.menuEntryJoinGame,
-                              onTap: () {
-                                if (FirebaseAuth.instance.currentUser == null) {
-                                  context
-                                      .read<ApplicationCubit>()
-                                      .signInAnonymously();
-                                }
-                                cubit.showJoinGameDialog(context);
-                              },
-                            ),
+                            if (isDeveloper) ...[
+                              const SizedBox(height: 8),
+                              MenuButton(
+                                text: AppLocalizations.of(
+                                  context,
+                                )!.menuEntryJoinGame,
+                                onTap: () {
+                                  if (FirebaseAuth.instance.currentUser ==
+                                      null) {
+                                    context
+                                        .read<ApplicationCubit>()
+                                        .signInAnonymously();
+                                  }
+                                  cubit.showJoinGameDialog(context);
+                                },
+                              ),
+                            ],
                             const SizedBox(height: 8),
                             Row(
                               children: [

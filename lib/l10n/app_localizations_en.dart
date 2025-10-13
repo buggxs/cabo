@@ -230,6 +230,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.';
 
   @override
+  String get developerModeToggled => 'Developermode toggled';
+
+  @override
   String get aboutScreenTitle => 'About';
 
   @override

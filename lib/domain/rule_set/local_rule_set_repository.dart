@@ -3,7 +3,7 @@ import 'package:cabo/domain/rule_set/data/rule_set.dart';
 
 class LocalRuleSetRepository extends LocalStorageRepository<RuleSet> {
   @override
-  RuleSet castMapToObject(Map<String, dynamic> object) {
+  RuleSet castMapToObject(dynamic object) {
     return RuleSet.fromJson(object);
   }
 
