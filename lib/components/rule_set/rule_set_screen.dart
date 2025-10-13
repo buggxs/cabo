@@ -264,15 +264,15 @@ class TapableTitleState extends State<TapableTitle> {
         setState(() {
           _tapCount++;
         });
-        if (_tapCount >= 9) {
+        if (_tapCount == 9) {
           context.read<ApplicationCubit>().toggleDeveloperMode();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.developerModeToggled),
+              duration: const Duration(seconds: 1),
+            ),
+          );
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.developerModeToggled),
-            duration: const Duration(seconds: 1),
-          ),
-        );
       },
       child: Text(
         AppLocalizations.of(context)!.ruleScreenTitle,

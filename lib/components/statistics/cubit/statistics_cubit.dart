@@ -342,7 +342,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
       if (forceFinish) {
         String? uid = FirebaseAuth.instance.currentUser?.uid;
-        if (uid == game.ownerId) {
+        if (uid == game.ownerId || !game.isPublic) {
           game = game.copyWith(finishedAt: finishedGame);
         }
       } else {
