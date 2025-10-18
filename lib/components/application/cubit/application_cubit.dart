@@ -24,13 +24,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       }
     });
 
-    unawaited(
-      signIn.initialize().then((_) {
-        signIn.authenticationEvents
-            .listen(_handleAuthenticationEvent)
-            .onError(_handleAuthenticationError);
-      }),
-    );
+    unawaited(signIn.initialize());
   }
 
   late final StreamSubscription<User?> _authSubscription;
@@ -190,21 +184,5 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   void toggleDeveloperMode() {
     final bool newMode = !state.isDeveloper;
     saveIsDeveloperMode(newMode);
-  }
-
-  Future<void> _handleAuthenticationEvent(
-    GoogleSignInAuthenticationEvent event,
-  ) async {
-    // #docregion CheckAuthorization
-    final GoogleSignInAccount? user = // ...
-        // #enddocregion CheckAuthorization
-        switch (event) {
-          GoogleSignInAuthenticationEventSignIn() => event.user,
-          GoogleSignInAuthenticationEventSignOut() => null,
-        };
-  }
-
-  Future<void> _handleAuthenticationError(Object e) async {
-    print('error occurred: $e');
   }
 }
