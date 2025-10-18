@@ -7,10 +7,10 @@ class AnimatedTotalPointsBanner extends StatefulWidget {
   final Color backgroundColor;
 
   const AnimatedTotalPointsBanner({
-    Key? key,
+    super.key,
     required this.totalCollectedPoints,
     required this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api

@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QrCodeSection extends StatelessWidget {
-  const QrCodeSection({required this.gameId, required this.ownerId, Key? key})
-    : super(key: key);
+  const QrCodeSection({required this.gameId, required this.ownerId, super.key});
 
   final String gameId;
   final String? ownerId;

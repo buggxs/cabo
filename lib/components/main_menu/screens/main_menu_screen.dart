@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainMenuScreen extends StatelessWidget {
-  const MainMenuScreen({Key? key}) : super(key: key);
+  const MainMenuScreen({super.key});
 
   static const String route = 'main_menu_screen';
 
@@ -24,7 +24,7 @@ class MainMenuScreen extends StatelessWidget {
 }
 
 class MainMenuScreenContent extends StatelessWidget {
-  const MainMenuScreenContent({Key? key}) : super(key: key);
+  const MainMenuScreenContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class MainMenuScreenContent extends StatelessWidget {
                       }
                       return IconButton(
                         onPressed: () {
-                          context.read<ApplicationCubit>().signInAnonymously();
+                          context.read<ApplicationCubit>().signInWithGoogle();
                         },
                         icon: const Icon(
                           Icons.login,

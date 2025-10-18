@@ -154,7 +154,7 @@ class StatisticsDialogService {
                         ),
                       ),
                     )
-                    .toList(),
+                    ,
                 Row(
                   children: [
                     Expanded(

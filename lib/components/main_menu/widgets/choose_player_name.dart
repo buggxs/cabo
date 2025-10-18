@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChoosePlayerNameScreen extends StatelessWidget {
-  const ChoosePlayerNameScreen({Key? key}) : super(key: key);
+  const ChoosePlayerNameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

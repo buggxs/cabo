@@ -14,8 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({Key? key, required this.players, this.game})
-    : super(key: key);
+  const StatisticsScreen({super.key, required this.players, this.game});
 
   static const String route = 'statistics_screen';
   final List<Player> players;
@@ -31,7 +30,7 @@ class StatisticsScreen extends StatelessWidget {
 }
 
 class StatisticsScreenContent extends StatelessWidget {
-  const StatisticsScreenContent({Key? key}) : super(key: key);
+  const StatisticsScreenContent({super.key});
 
   @override
   Widget build(BuildContext context) {

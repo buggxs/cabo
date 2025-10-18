@@ -108,7 +108,7 @@ class StatisticsScreenContentBody extends StatelessWidget {
                   isLastColumn: player == players.last,
                 ),
               )
-              .toList(),
+              ,
         ],
       );
 

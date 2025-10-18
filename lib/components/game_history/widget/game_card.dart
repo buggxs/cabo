@@ -27,7 +27,7 @@ Color lightenColor(Color color, [double amount = 0.1]) {
 }
 
 class GameCard extends StatelessWidget {
-  const GameCard({Key? key, required this.game}) : super(key: key);
+  const GameCard({super.key, required this.game});
 
   final Game game;
 
@@ -154,7 +154,7 @@ class GameCard extends StatelessWidget {
                                   ),
                                 ),
                               )
-                              .toList(),
+                              ,
                       ],
                     ),
                   ],
