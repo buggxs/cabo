@@ -248,7 +248,7 @@ class RuleSetScreenContent extends StatelessWidget {
 }
 
 class TapableTitle extends StatefulWidget {
-  const TapableTitle({Key? key}) : super(key: key);
+  const TapableTitle({super.key});
 
   @override
   TapableTitleState createState() => TapableTitleState();

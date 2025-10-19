@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 
 class TitleCell extends StatelessWidget {
   const TitleCell({
-    Key? key,
+    super.key,
     this.titleStyle,
     required this.player,
     this.isLastColumn = false,
-  }) : super(key: key);
+  });
 
   final TextStyle? titleStyle;
   final Player player;

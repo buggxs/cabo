@@ -7,8 +7,8 @@ class PublishGameSection extends StatelessWidget {
   const PublishGameSection({
     required this.onPublish,
     this.isPublishing = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final bool isPublishing;
   final void Function()? onPublish;

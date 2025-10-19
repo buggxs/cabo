@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GameHistoryScreen extends StatelessWidget {
-  const GameHistoryScreen({Key? key}) : super(key: key);
+  const GameHistoryScreen({super.key});
 
   static const String route = 'game_history_screen';
 
@@ -25,7 +25,7 @@ class GameHistoryScreen extends StatelessWidget {
 }
 
 class GameHistoryScreenContent extends StatelessWidget {
-  const GameHistoryScreenContent({Key? key}) : super(key: key);
+  const GameHistoryScreenContent({super.key});
 
   @override
   Widget build(BuildContext context) {

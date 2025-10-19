@@ -23,10 +23,13 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
         );
       }
     });
+
+    unawaited(signIn.initialize());
   }
 
   late final StreamSubscription<User?> _authSubscription;
   final LocalApplicationRepository repository;
+  final GoogleSignIn signIn = GoogleSignIn.instance;
 
   void init() async {
     final isDeveloperMode = await repository.getCurrent() ?? false;
@@ -52,21 +55,26 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
 
   Future<void> signInWithGoogle() async {
     try {
-      // 1. Starte den Google-Anmeldevorgang auf dem Gerät
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      const List<String> scopes = <String>[
+        'https://www.googleapis.com/auth/userinfo.email',
+      ];
 
-      // Wenn der Benutzer den Vorgang abbricht, ist googleUser null
-      if (googleUser == null) {
-        return;
-      }
+      // 1. Starte den Google-Anmeldevorgang auf dem Gerät
+      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
+          .authenticate(scopeHint: scopes);
 
       // 2. Hole die Authentifizierungsdetails (Tokens) vom Google-Konto
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+      // Get authorization for Firebase scopes if needed
+      final GoogleSignInAuthorizationClient authClient =
+          signIn.authorizationClient;
+      final GoogleSignInClientAuthorization? authorization = await authClient
+          .authorizationForScopes(scopes);
 
       // 3. Erstelle ein Firebase-Credential mit den Tokens
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: authorization!.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -92,6 +100,11 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       // This is where your PlatformException is caught
       logger.severe('An unexpected error occurred: $e', e, stackTrace);
     }
+  }
+
+  GoogleSignInAuthentication getAuthTokens(GoogleSignInAccount account) {
+    // authentication is now synchronous
+    return account.authentication;
   }
 
   Future<String?> signInWithEmailAndPassword(

@@ -10,7 +10,7 @@ import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class RatingDialog extends StatefulWidget {
-  const RatingDialog({Key? key, this.onSubmit}) : super(key: key);
+  const RatingDialog({super.key, this.onSubmit});
 
   final void Function(int rating, String? feedback)? onSubmit;
 

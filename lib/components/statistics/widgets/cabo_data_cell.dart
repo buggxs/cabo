@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class CaboDataCell extends StatelessWidget {
-  const CaboDataCell({Key? key, required this.round, this.isLastColumn = false})
-    : super(key: key);
+  const CaboDataCell({
+    super.key,
+    required this.round,
+    this.isLastColumn = false,
+  });
 
   final Round round;
   final bool isLastColumn;

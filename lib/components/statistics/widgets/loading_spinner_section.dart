@@ -2,7 +2,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
 class LoadingSpinnerSection extends StatelessWidget {
-  const LoadingSpinnerSection({this.loadingText, Key? key}) : super(key: key);
+  const LoadingSpinnerSection({this.loadingText, super.key});
 
   final String? loadingText;
 

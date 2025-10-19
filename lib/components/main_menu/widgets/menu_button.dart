@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class MenuButton extends StatelessWidget {
   const MenuButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onTap,
     this.onDoubleTap,
     this.padding,
     this.innerPadding,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   final String text;
   final void Function()? onTap;
@@ -74,13 +74,13 @@ class MenuButton extends StatelessWidget {
 
 class MenuFormButton extends StatelessWidget {
   const MenuFormButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onTap,
     this.padding,
     this.innerPadding,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   final String text;
   final void Function()? onTap;

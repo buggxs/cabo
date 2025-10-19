@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CaboRoundButton extends StatelessWidget {
   const CaboRoundButton({
-    Key? key,
+    super.key,
     required this.changePlayerAmount,
     this.icon = const Icon(Icons.add, color: Colors.green, size: 40),
-  }) : super(key: key);
+  });
 
   final void Function() changePlayerAmount;
   final Icon icon;

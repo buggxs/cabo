@@ -21,8 +21,7 @@ class ApplicationInitial extends ApplicationState {
 }
 
 class ApplicationUnauthenticated extends ApplicationState {
-  const ApplicationUnauthenticated({bool isDeveloper = false})
-    : super(isDeveloper: isDeveloper);
+  const ApplicationUnauthenticated({super.isDeveloper});
 
   @override
   ApplicationUnauthenticated copyWith({bool? isDeveloper}) {

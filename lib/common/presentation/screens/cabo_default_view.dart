@@ -6,8 +6,8 @@ class CaboDefaultView extends StatelessWidget {
     required this.child,
     this.useOverlay = false,
     this.appBar,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
   final bool useOverlay;

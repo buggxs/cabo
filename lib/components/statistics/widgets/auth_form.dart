@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 enum AuthFormType { none, login, register }
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  const AuthForm({super.key});
 
   @override
   State<AuthForm> createState() => _AuthFormState();

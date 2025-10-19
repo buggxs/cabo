@@ -27,7 +27,7 @@ Color lightenColor(Color color, [double amount = 0.1]) {
 }
 
 class GameCard extends StatelessWidget {
-  const GameCard({Key? key, required this.game}) : super(key: key);
+  const GameCard({super.key, required this.game});
 
   final Game game;
 
@@ -140,21 +140,18 @@ class GameCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (isWinningStreak)
-                          ...game
-                              .getGameStreaks()
-                              .map(
-                                (GameStreak streak) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 3.0,
-                                  ),
-                                  child: Tooltip(
-                                    message: streak.message,
-                                    triggerMode: TooltipTriggerMode.tap,
-                                    child: streak.icon,
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                          ...game.getGameStreaks().map(
+                            (GameStreak streak) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 3.0,
+                              ),
+                              child: Tooltip(
+                                message: streak.message,
+                                triggerMode: TooltipTriggerMode.tap,
+                                child: streak.icon,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ],
