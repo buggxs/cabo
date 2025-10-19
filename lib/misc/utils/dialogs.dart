@@ -102,59 +102,54 @@ class StatisticsDialogService {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                ...?players
-                    ?.map(
-                      (Player player) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AutoSizeText(
-                              player.name,
-                              style: CaboTheme.primaryTextStyle.copyWith(
-                                fontWeight: FontWeight.w900,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(
-                              width: 150,
-                              child: TextField(
-                                focusNode: focusNodes[player.name],
-                                keyboardType: TextInputType.number,
-                                onChanged: (String points) {
-                                  playerPointsMap[player.name] = int.tryParse(
-                                    points,
-                                  );
-                                },
-                                minLines: 1,
-                                style: CaboTheme.numberTextStyle.copyWith(
-                                  color: CaboTheme.primaryColor,
-                                  fontSize: 20,
-                                ),
-                                decoration: dialogPointInputStyle.copyWith(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                    horizontal: 8,
-                                  ),
-                                  labelText: AppLocalizations.of(
-                                    context,
-                                  )!.dialogPointsLabel,
-                                  labelStyle: CaboTheme.secondaryTextStyle
-                                      .copyWith(
-                                        color: CaboTheme.primaryColor.withAlpha(
-                                          100,
-                                        ),
-                                        fontFamily: 'Aclonica',
-                                        fontSize: 16,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ],
+                ...?players?.map(
+                  (Player player) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AutoSizeText(
+                          player.name,
+                          style: CaboTheme.primaryTextStyle.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    )
-                    ,
+                        SizedBox(
+                          width: 150,
+                          child: TextField(
+                            focusNode: focusNodes[player.name],
+                            keyboardType: TextInputType.number,
+                            onChanged: (String points) {
+                              playerPointsMap[player.name] = int.tryParse(
+                                points,
+                              );
+                            },
+                            minLines: 1,
+                            style: CaboTheme.numberTextStyle.copyWith(
+                              color: CaboTheme.primaryColor,
+                              fontSize: 20,
+                            ),
+                            decoration: dialogPointInputStyle.copyWith(
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 8,
+                              ),
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.dialogPointsLabel,
+                              labelStyle: CaboTheme.secondaryTextStyle.copyWith(
+                                color: CaboTheme.primaryColor.withAlpha(100),
+                                fontFamily: 'Aclonica',
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(

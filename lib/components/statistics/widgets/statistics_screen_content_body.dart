@@ -101,14 +101,12 @@ class StatisticsScreenContentBody extends StatelessWidget {
       Widget roundRow = Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          ...players
-              .map(
-                (Player player) => CaboDataCell(
-                  round: player.rounds[i],
-                  isLastColumn: player == players.last,
-                ),
-              )
-              ,
+          ...players.map(
+            (Player player) => CaboDataCell(
+              round: player.rounds[i],
+              isLastColumn: player == players.last,
+            ),
+          ),
         ],
       );
 
