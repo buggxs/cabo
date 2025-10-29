@@ -1,0 +1,32 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    // Formatiert deinen Code beim Speichern.
+    "editor.formatOnSave": true,
+    // Führt beim Speichern automatische Korrekturen aus (z.B. const-Keywords hinzufügen).
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always",
+        "source.organizeImports": "always"
+    },
+    // Definiert die empfohlene Zeilenlänge (80 Zeichen).
+    "[dart]": {
+        "editor.rulers": [
+            80
+        ],
+        // Zeigt farbige Einrückungshilfen an.
+        "editor.guides.bracketPairs": true,
+        "editor.unicodeHighlight.nonBasicASCII": false
+    },
+    // Zeigt eine visuelle Führungslinie für Flutter-Widgets an.
+    "dart.previewFlutterUiGuides": true,
+    // Definiert die bevorzugte Zeilenlänge für den Dart-Formatter.
+    "dart.lineLength": 80,
+    // Öffnet automatisch DevTools, wenn du deine App startest. Du kannst hier auch einen bestimmten Tab festlegen.
+    "dart.openDevTools": "flutter",
+    // Schaltet das automatische Hot Reload beim Speichern an.
+    "dart.flutterHotReloadOnSave": "all",
+    "files.autoSave": "onFocusChange",
+    "git.autofetch": true,
+    "workbench.colorTheme": "One Dark Pro",
+    "editor.defaultFormatter": "Dart-Code.flutter",
+    "dart.sdkPath": ".fvm/flutter_sdk"
+}
