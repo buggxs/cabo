@@ -47,5 +47,11 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>CFBundleTypeRole</key>
+    	<string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.buggxs.cabo</string>
+        </array>
 	</dict>
 </plist>
