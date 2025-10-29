@@ -41,6 +41,7 @@ dependencies:
   pretty_qr_code: ^3.4.0
   image_picker: ^1.2.0
   firebase_storage: ^13.0.3
+  app_links: ^6.4.1
 
 dev_dependencies:
   flutter_test:
