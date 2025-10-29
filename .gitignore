@@ -29,7 +29,7 @@ api-keys.prod.json
 .classpath
 .project
 .settings/
-.vscode/*
+.vscode/** 
 
 # Flutter repo-specific
 /bin/cache/
