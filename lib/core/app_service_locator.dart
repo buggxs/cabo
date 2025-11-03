@@ -32,6 +32,8 @@ void setup() {
     )
     ..registerLazySingleton<RatingService>(RatingService.new)
     ..registerLazySingleton<ApplicationCubit>(
-      () => ApplicationCubit(repository: app<LocalApplicationRepository>()),
+      () =>
+          ApplicationCubit(repository: app<LocalApplicationRepository>())
+            ..init(),
     );
 }

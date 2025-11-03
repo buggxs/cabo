@@ -6,7 +6,6 @@ import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'application_state.dart';
 
@@ -98,109 +97,6 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
 
   GoogleSignInAuthentication getAuthTokens(GoogleSignInAccount account) {
     return account.authentication;
-  }
-
-  Future<String?> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'Password oder Email falsch.';
-      }
-      if (e.code == 'wrong-password') {
-        return 'Password oder Email falsch.';
-      }
-    }
-    return null;
-  }
-
-  Future<void> signInWithEmailLink(String email) async {
-    final actionCodeSettings = ActionCodeSettings(
-      url: 'https://www.buggxs.com/cabo-verify-email?email=$email',
-      handleCodeInApp: true,
-      androidPackageName: 'com.buggxs.cabo',
-      androidInstallApp: true,
-      androidMinimumVersion: '24',
-    );
-
-    try {
-      await FirebaseAuth.instance.sendSignInLinkToEmail(
-        email: email,
-        actionCodeSettings: actionCodeSettings,
-      );
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('emailForSignIn', email);
-    } on FirebaseAuthException catch (e) {
-      logger.severe('Error sending email link: ${e.message}', e, e.stackTrace);
-    }
-  }
-
-  Future<void> handleEmailLinkSignIn(String emailLink) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final email = prefs.getString('emailForSignIn');
-
-      if (email != null) {
-        if (FirebaseAuth.instance.isSignInWithEmailLink(emailLink)) {
-          await FirebaseAuth.instance.signInWithEmailLink(
-            email: email,
-            emailLink: emailLink,
-          );
-          await prefs.remove('emailForSignIn');
-        }
-      }
-    } on FirebaseAuthException catch (e) {
-      logger.severe(
-        'Error handling email link sign-in: ${e.message}',
-        e,
-        e.stackTrace,
-      );
-    }
-  }
-
-  Future<void> registerWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        try {
-          final currentUser = FirebaseAuth.instance.currentUser;
-          if (currentUser != null && currentUser.isAnonymous) {
-            final credential = EmailAuthProvider.credential(
-              email: email,
-              password: password,
-            );
-            await currentUser.linkWithCredential(credential);
-          } else {
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-          }
-        } on FirebaseAuthException catch (e) {
-          logger.severe('Error during registration: ${e.message}', e);
-          rethrow;
-        }
-      } else {
-        logger.severe('Error during sign in: ${e.message}', e);
-        rethrow;
-      }
-    } catch (e) {
-      logger.severe('An unexpected error occurred: $e');
-      rethrow;
-    }
   }
 
   void saveIsDeveloperMode(bool isDeveloperMode) {
