@@ -10,6 +10,7 @@ import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,19 +60,17 @@ class StatisticsScreenContent extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
           onPressed: () => _onPopScreen(cubit, context),
         ),
-        actions: isDeveloper
-            ? [
-                IconButton(
-                  icon: Icon(
-                    Icons.public,
-                    color: (cubit.state.game?.isPublic ?? false)
-                        ? CaboTheme.primaryColor
-                        : CaboTheme.failureLightRed,
-                  ),
-                  onPressed: () => cubit.showPublicGameDialog(context),
-                ),
-              ]
-            : null,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.public,
+              color: (cubit.state.game?.isPublic ?? false)
+                  ? CaboTheme.primaryColor
+                  : CaboTheme.failureLightRed,
+            ),
+            onPressed: () => cubit.showPublicGameDialog(context),
+          ),
+        ],
       ),
       body: PopScope(
         canPop: false,
@@ -94,11 +93,11 @@ class StatisticsScreenContent extends StatelessWidget {
           false;
     });
 
-    Player? winner = cubit.state.game?.players.firstWhere(
+    Player? winner = cubit.state.game?.players.firstWhereOrNull(
       (player) => player.place == 1,
     );
 
-    if (winner != null) {
+    if (shouldPop && winner != null) {
       await app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) => Dialog(
           shape: RoundedRectangleBorder(

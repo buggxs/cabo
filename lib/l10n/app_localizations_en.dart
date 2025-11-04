@@ -57,6 +57,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finishCurrentGame => 'Do you really want to finish the game?';
 
   @override
+  String get finishCurrentGamePublic =>
+      'Do you really want to finish the game? The game will be finished for all players.';
+
+  @override
   String get finishGameDialogButton => 'Yes, finish!';
 
   @override

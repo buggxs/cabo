@@ -200,7 +200,9 @@ class StatisticsDialogService {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 AutoSizeText(
-                  AppLocalizations.of(context)!.finishCurrentGame,
+                  uid == game?.ownerId
+                      ? AppLocalizations.of(context)!.finishCurrentGamePublic
+                      : AppLocalizations.of(context)!.finishCurrentGame,
                   style: CaboTheme.primaryTextStyle.copyWith(
                     color: CaboTheme.primaryGreenColor,
                     fontFamily: 'Archivo Black',

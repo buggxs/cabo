@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Do you really want to finish the game?'**
   String get finishCurrentGame;
 
+  /// No description provided for @finishCurrentGamePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to finish the game? The game will be finished for all players.'**
+  String get finishCurrentGamePublic;
+
   /// No description provided for @finishGameDialogButton.
   ///
   /// In en, this message translates to:
