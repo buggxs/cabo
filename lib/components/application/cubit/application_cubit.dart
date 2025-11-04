@@ -59,20 +59,16 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
         'https://www.googleapis.com/auth/userinfo.email',
       ];
 
-      // 1. Starte den Google-Anmeldevorgang auf dem Gerät
       final GoogleSignInAccount googleUser = await GoogleSignIn.instance
           .authenticate(scopeHint: scopes);
 
-      // 2. Hole die Authentifizierungsdetails (Tokens) vom Google-Konto
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      // Get authorization for Firebase scopes if needed
       final GoogleSignInAuthorizationClient authClient =
           signIn.authorizationClient;
       final GoogleSignInClientAuthorization? authorization = await authClient
           .authorizationForScopes(scopes);
 
-      // 3. Erstelle ein Firebase-Credential mit den Tokens
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: authorization!.accessToken,
         idToken: googleAuth.idToken,
@@ -89,85 +85,18 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
         logger.warning('Google sign in resulted in a null user.');
       }
     } on FirebaseAuthException catch (e) {
-      // Fehlerbehandlung für Firebase-spezifische Fehler
       logger.severe(
         'Error during Google sign-in: ${e.message}',
         e,
         e.stackTrace,
       );
     } catch (e, stackTrace) {
-      // Allgemeine Fehlerbehandlung (z.B. Netzwerkprobleme)
-      // This is where your PlatformException is caught
       logger.severe('An unexpected error occurred: $e', e, stackTrace);
     }
   }
 
   GoogleSignInAuthentication getAuthTokens(GoogleSignInAccount account) {
-    // authentication is now synchronous
     return account.authentication;
-  }
-
-  Future<String?> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'Password oder Email falsch.';
-      }
-      if (e.code == 'wrong-password') {
-        return 'Password oder Email falsch.';
-      }
-    }
-    return null;
-  }
-
-  Future<void> registerWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      // First, try to sign in the user.
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      // If the user is not found, create a new account.
-      if (e.code == 'user-not-found') {
-        try {
-          final currentUser = FirebaseAuth.instance.currentUser;
-          // If an anonymous user is signed in, link the account.
-          if (currentUser != null && currentUser.isAnonymous) {
-            final credential = EmailAuthProvider.credential(
-              email: email,
-              password: password,
-            );
-            await currentUser.linkWithCredential(credential);
-          } else {
-            // Otherwise, create a completely new user.
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-          }
-        } on FirebaseAuthException catch (e) {
-          logger.severe('Error during registration: ${e.message}', e);
-          rethrow;
-        }
-      } else {
-        logger.severe('Error during sign in: ${e.message}', e);
-        rethrow;
-      }
-    } catch (e) {
-      logger.severe('An unexpected error occurred: $e');
-      rethrow;
-    }
   }
 
   void saveIsDeveloperMode(bool isDeveloperMode) {
