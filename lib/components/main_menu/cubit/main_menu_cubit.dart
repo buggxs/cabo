@@ -72,6 +72,11 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     if (state is ChoosePlayerAmount) {
       ChoosePlayerAmount updatedState = (state as ChoosePlayerAmount);
       int playerAmount = updatedState.playerAmount + 1;
+
+      if (playerAmount > 10) {
+        return;
+      }
+
       emit(updatedState.copyWith(playerAmount: playerAmount));
     }
   }
@@ -80,6 +85,11 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     if (state is ChoosePlayerAmount) {
       ChoosePlayerAmount updatedState = (state as ChoosePlayerAmount);
       int playerAmount = updatedState.playerAmount - 1;
+
+      if (playerAmount < 0) {
+        return;
+      }
+
       emit(updatedState.copyWith(playerAmount: playerAmount));
     }
   }

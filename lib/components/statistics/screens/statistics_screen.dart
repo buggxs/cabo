@@ -1,5 +1,4 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
@@ -35,9 +34,6 @@ class StatisticsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StatisticsCubit cubit = context.watch<StatisticsCubit>();
-    final bool isDeveloper = context.select<ApplicationCubit, bool>(
-      (cubit) => cubit.state.isDeveloper,
-    );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -59,19 +55,17 @@ class StatisticsScreenContent extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
           onPressed: () => _onPopScreen(cubit, context),
         ),
-        actions: isDeveloper
-            ? [
-                IconButton(
-                  icon: Icon(
-                    Icons.public,
-                    color: (cubit.state.game?.isPublic ?? false)
-                        ? CaboTheme.primaryColor
-                        : CaboTheme.failureLightRed,
-                  ),
-                  onPressed: () => cubit.showPublicGameDialog(context),
-                ),
-              ]
-            : null,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.public,
+              color: (cubit.state.game?.isPublic ?? false)
+                  ? CaboTheme.primaryColor
+                  : CaboTheme.failureLightRed,
+            ),
+            onPressed: () => cubit.showPublicGameDialog(context),
+          ),
+        ],
       ),
       body: PopScope(
         canPop: false,
@@ -94,11 +88,11 @@ class StatisticsScreenContent extends StatelessWidget {
           false;
     });
 
-    Player? winner = cubit.state.game?.players.firstWhere(
-      (player) => player.place == 1,
-    );
+    if (shouldPop && (cubit.state.game?.players.isNotEmpty ?? false)) {
+      Player? winner = cubit.state.game!.players.firstWhere(
+        (player) => player.place == 1,
+      );
 
-    if (winner != null) {
       await app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) => Dialog(
           shape: RoundedRectangleBorder(

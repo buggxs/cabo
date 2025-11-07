@@ -57,6 +57,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get finishCurrentGame => 'Möchtest du das Spiel wirklich beenden?';
 
   @override
+  String get finishCurrentGamePublic =>
+      'Möchtest du das Spiel wirklich beenden? Das Spiel wird für alle Teilnehmer beendet.';
+
+  @override
   String get finishGameDialogButton => 'Ja, beenden!';
 
   @override
