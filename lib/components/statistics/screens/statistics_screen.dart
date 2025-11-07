@@ -88,11 +88,11 @@ class StatisticsScreenContent extends StatelessWidget {
           false;
     });
 
-    if (shouldPop && (cubit.state.game?.players.isNotEmpty ?? false)) {
-      Player? winner = cubit.state.game!.players.firstWhere(
-        (player) => player.place == 1,
-      );
+    Player? winner = cubit.state.game?.players
+        .where((player) => player.place == 1)
+        .firstOrNull;
 
+    if (shouldPop && winner != null) {
       await app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) => Dialog(
           shape: RoundedRectangleBorder(
