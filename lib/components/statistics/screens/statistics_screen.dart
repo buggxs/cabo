@@ -1,5 +1,4 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
@@ -10,7 +9,6 @@ import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,9 +34,6 @@ class StatisticsScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StatisticsCubit cubit = context.watch<StatisticsCubit>();
-    final bool isDeveloper = context.select<ApplicationCubit, bool>(
-      (cubit) => cubit.state.isDeveloper,
-    );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -93,11 +88,11 @@ class StatisticsScreenContent extends StatelessWidget {
           false;
     });
 
-    Player? winner = cubit.state.game?.players.firstWhereOrNull(
-      (player) => player.place == 1,
-    );
+    if (shouldPop && (cubit.state.game?.players.isNotEmpty ?? false)) {
+      Player? winner = cubit.state.game!.players.firstWhere(
+        (player) => player.place == 1,
+      );
 
-    if (shouldPop && winner != null) {
       await app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) => Dialog(
           shape: RoundedRectangleBorder(
