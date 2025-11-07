@@ -47,21 +47,23 @@ class PublicGameService with LoggerMixin {
     }
 
     // A public game must have an owner.
-    Game gameToSave = game.copyWith(ownerId: user.uid);
     try {
-      if (gameToSave.publicId != null) {
-        logger.info('Updating game with publicId: ${gameToSave.publicId}');
+      if (game.publicId != null) {
+        logger.info('Updating game with publicId: ${game.publicId}');
         await _firestore
             .collection('games')
-            .doc(gameToSave.publicId)
-            .set(gameToSave.toJson());
-        return gameToSave;
+            .doc(game.publicId)
+            .set(game.toJson());
+        return game;
       } else {
         String publicId;
 
         publicId = _generateReadableId();
 
-        final gameWithPublicId = gameToSave.copyWith(publicId: publicId);
+        final gameWithPublicId = game.copyWith(
+          publicId: publicId,
+          ownerId: user.uid,
+        );
 
         await _firestore
             .collection('games')
