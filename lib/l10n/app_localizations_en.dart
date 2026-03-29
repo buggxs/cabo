@@ -124,6 +124,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authScreenSignInWithGoogle => 'Log in with Google';
 
   @override
+  String get authScreenSignInFailed => 'Sign in failed. Please try again.';
+
+  @override
   String get authScreenSignInWithEmail => 'Log in/register with e-mail';
 
   @override

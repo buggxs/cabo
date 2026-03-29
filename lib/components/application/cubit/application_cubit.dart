@@ -53,7 +53,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     }
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     try {
       const List<String> scopes = <String>[
         'https://www.googleapis.com/auth/userinfo.email',
@@ -69,29 +69,35 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       final GoogleSignInClientAuthorization? authorization = await authClient
           .authorizationForScopes(scopes);
 
+      if (authorization == null) {
+        logger.warning('Google sign-in: authorization for scopes returned null.');
+        return false;
+      }
+
       final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: authorization!.accessToken,
+        accessToken: authorization.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-      final user = userCredential.user;
-
-      if (user != null) {
-        logger.info('Successfully signed in with Google: ${user.displayName}');
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null && currentUser.isAnonymous) {
+        await currentUser.linkWithCredential(credential);
       } else {
-        logger.warning('Google sign in resulted in a null user.');
+        await FirebaseAuth.instance.signInWithCredential(credential);
       }
+
+      logger.info('Successfully signed in with Google: ${googleUser.email}');
+      return true;
     } on FirebaseAuthException catch (e) {
       logger.severe(
         'Error during Google sign-in: ${e.message}',
         e,
         e.stackTrace,
       );
+      return false;
     } catch (e, stackTrace) {
       logger.severe('An unexpected error occurred: $e', e, stackTrace);
+      return false;
     }
   }
 

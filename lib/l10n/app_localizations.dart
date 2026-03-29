@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Log in with Google'**
   String get authScreenSignInWithGoogle;
 
+  /// No description provided for @authScreenSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in failed. Please try again.'**
+  String get authScreenSignInFailed;
+
   /// No description provided for @authScreenSignInWithEmail.
   ///
   /// In en, this message translates to:
