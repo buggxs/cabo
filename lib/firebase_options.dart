@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
         'https://cabo-9be98-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'cabo-9be98.firebasestorage.app',
     androidClientId:
-        '787934087365-eong57bv1h7q611iotli2bvvlpfvjslp.apps.googleusercontent.com',
+        '787934087365-0ut66kkkq868amsl9jjv9titaq8udhsg.apps.googleusercontent.com',
     iosClientId:
         '787934087365-o3pood9aonln9jkij0fs9puq76fukinu.apps.googleusercontent.com',
     iosBundleId: 'com.buggxs.cabo',

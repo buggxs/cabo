@@ -43,6 +43,17 @@ You are also welcome to participate in the further development of the app.
 **Hinweis:**  
 Momentan ist die App nur für **Android** im Play Store supported.
 
+## Firebase Setup & SHA-1 Fingerprint
+
+Damit Firebase (z.B. Google Sign-In, Crashlytics) lokales Debugging zulässt, musst du deinen lokalen Debug SHA-1 Fingerprint in deinem Firebase-Projekt hinterlegen.
+
+Den Fingerprint kannst du dir mit folgendem command im Terminal anzeigen lassen:
+```sh
+cd android
+./gradlew signingReport
+```
+Suche in der Ausgabe nach `Variant: debug` und kopiere den `SHA1` Schlüssel, um ihn in der Google Cloud Console unter deinen Android-App-Einstellungen als Fingerabdruck hinzuzufügen.
+
 <p float="left">
   <img src="https://github.com/user-attachments/assets/6d750656-e5ba-427e-8def-59c817348847" width="200" />
   <img src="https://github.com/user-attachments/assets/f09791ba-ec12-4d24-8b64-4203f0551506" width="200" />
