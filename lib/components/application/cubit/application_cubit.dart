@@ -70,7 +70,9 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
           .authorizationForScopes(scopes);
 
       if (authorization == null) {
-        logger.warning('Google sign-in: authorization for scopes returned null.');
+        logger.warning(
+          'Google sign-in: authorization for scopes returned null.',
+        );
         return false;
       }
 
