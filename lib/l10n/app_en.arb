@@ -36,6 +36,7 @@
   "publishDialogFailedToPublish": "Game could not be published.",
   "authScreenSignInToPublish": "Sign up to publish your game.",
   "authScreenSignInWithGoogle": "Log in with Google",
+  "authScreenSignInFailed": "Sign in failed. Please try again.",
   "authScreenSignInWithEmail": "Log in/register with e-mail",
   "authScreenEmail": "E-Mail",
   "authScreenPassword": "Password",

@@ -16,6 +16,25 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final AuthFormType _authFormType = AuthFormType.none;
+  bool _isLoading = false;
+
+  Future<void> _handleSignIn(BuildContext context) async {
+    final cubit = context.read<ApplicationCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final errorMessage = AppLocalizations.of(context)!.authScreenSignInFailed;
+    setState(() => _isLoading = true);
+    final success = await cubit.signInWithGoogle();
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+    if (!success) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +52,14 @@ class _AuthFormState extends State<AuthForm> {
             ),
           ),
           if (_authFormType == AuthFormType.none) ...[
-            MenuButton(
-              text: AppLocalizations.of(context)!.authScreenSignInWithGoogle,
-              onTap: () {
-                context.read<ApplicationCubit>().signInWithGoogle();
-              },
-              textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
-            ),
+            if (_isLoading)
+              const CircularProgressIndicator()
+            else
+              MenuButton(
+                text: AppLocalizations.of(context)!.authScreenSignInWithGoogle,
+                onTap: () => _handleSignIn(context),
+                textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
+              ),
           ],
         ],
       ),
