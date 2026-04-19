@@ -124,6 +124,13 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               return;
             }
 
+            // Owner ist Source of Truth – ein älterer Remote-Snapshot darf
+            // lokale Runden nicht überschreiben.
+            final String? currentUid = FirebaseAuth.instance.currentUser?.uid;
+            if (currentUid != null && currentUid == gameData.ownerId) {
+              return;
+            }
+
             emit(
               state.copyWith(
                 game: gameData.copyWith(publicId: snapshot.id),
@@ -131,8 +138,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
               ),
             );
 
-            if (gameData.isGameFinished &&
-                FirebaseAuth.instance.currentUser?.uid != gameData.ownerId) {
+            if (gameData.isGameFinished && currentUid != gameData.ownerId) {
               _finishGame(gameData.players);
             }
           }
@@ -352,7 +358,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       app<GameService>().saveToGameHistory(game);
     }
     if (state.game?.isPublic ?? false) {
-      app<PublicGameService>().saveOrUpdateGame(game: game);
+      try {
+        await app<PublicGameService>().saveOrUpdateGame(game: game);
+      } catch (e, stackTrace) {
+        logger.severe('Failed to sync public game to Firestore', e, stackTrace);
+      }
     }
 
     await app<GameService>().saveLastPlayedGame(game);
