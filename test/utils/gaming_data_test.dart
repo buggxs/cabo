@@ -66,6 +66,31 @@ void main() {
       expect(calculatePlayedRounds(games), 0);
     });
 
+    test('should skip games with no players instead of throwing', () {
+      const games = <Game>[
+        Game(
+          id: 1,
+          startedAt: '2023-01-01',
+          finishedAt: '2023-01-02',
+          players: [],
+          ruleSetId: 1,
+          ruleSet: RuleSet(),
+        ),
+        Game(
+          id: 2,
+          startedAt: '2023-01-03',
+          finishedAt: '2023-01-04',
+          players: [
+            Player(id: 1, name: 'Alice', rounds: [Round(round: 1)]),
+          ],
+          ruleSetId: 1,
+          ruleSet: RuleSet(),
+        ),
+      ];
+
+      expect(calculatePlayedRounds(games), 1);
+    });
+
     test('should handle multiple games and mixed player data', () {
       const games = <Game>[
         Game(

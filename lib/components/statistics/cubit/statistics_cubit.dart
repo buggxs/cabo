@@ -132,7 +132,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
             );
 
             if (gameData.isGameFinished &&
-                FirebaseAuth.instance.currentUser?.uid != gameData.ownerId) {
+                FirebaseAuth.instance.currentUser?.uid != gameData.ownerId &&
+                gameData.players.isNotEmpty) {
               _finishGame(gameData.players);
             }
           }
@@ -283,9 +284,14 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   void _finishGame(List<Player> players) {
-    Player winner = players.firstWhere((player) => player.place == 1);
+    final Player? winner = players
+        .where((player) => player.place == 1)
+        .firstOrNull;
+    if (winner == null) {
+      logger.warning('_finishGame called without a winner candidate');
+      return;
+    }
 
-    // Show the winner dialog
     _showWinnerDialog(
       winner: winner,
       onConfirm: () {
@@ -384,10 +390,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Player closingPlayer,
   ) {
     return playerPointsmap.entries
-            .firstWhere(
+            .where(
               (MapEntry<String, int?> entry) => entry.key == closingPlayer.name,
             )
-            .value ??
+            .firstOrNull
+            ?.value ??
         0;
   }
 
