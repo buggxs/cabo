@@ -8,6 +8,7 @@ int calculatePlayedRounds(List<Game> games) {
   int totalRounds = 0;
 
   for (Game game in games) {
+    if (game.players.isEmpty) continue;
     totalRounds += game.players.first.rounds.length;
   }
 
