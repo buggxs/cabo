@@ -58,7 +58,9 @@ class StatisticsScreenContentBody extends StatelessWidget {
                       children: [
                         StatisticInfoCard(
                           title: AppLocalizations.of(context)!.statsCardRound,
-                          content: state.players.first.rounds.length.toString(),
+                          content:
+                              (state.players.firstOrNull?.rounds.length ?? 0)
+                                  .toString(),
                         ),
                         StatisticInfoCard(
                           title: AppLocalizations.of(context)!.statsCardTime,
