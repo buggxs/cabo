@@ -26,11 +26,17 @@ import 'package:intl/intl.dart';
 part 'statistics_state.dart';
 
 class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
-  StatisticsCubit({required List<Player> players, Game? game})
-    : super(StatisticsState(players: players)) {
+  StatisticsCubit({
+    required List<Player> players,
+    Game? game,
+    FirebaseAuth? auth,
+  }) : _authOverride = auth,
+       super(StatisticsState(players: players)) {
     loadGame(game: game);
   }
 
+  final FirebaseAuth? _authOverride;
+  FirebaseAuth get _auth => _authOverride ?? FirebaseAuth.instance;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
 
   void loadGame({Game? game}) {
@@ -43,8 +49,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _startGame(game, startingDateTime);
     }
 
-    if ((game?.isPublic ?? false) &&
-        FirebaseAuth.instance.currentUser != null) {
+    if ((game?.isPublic ?? false) && _auth.currentUser != null) {
       _subscribePublicGame();
     }
   }
@@ -76,8 +81,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     _closeOfflineRound(index);
   }
 
-  /// Will force a game to finish.
-  /// It will set the finishedAt of [Game] to the current time
+  /// Will force a game to finish for the owner (or a local game).
+  /// For public games, non-owners simply leave locally — no Firestore write
+  /// happens; the game stays live for the remaining players.
   void onPopScreen() {
     if (state.game?.isGameFinished ?? false) {
       return;
@@ -116,33 +122,32 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     _gameSubscription = app<PublicGameService>()
         .subscribeToGame(state.game!.publicId!)
         .listen((snapshot) {
-          if (snapshot.exists) {
-            final Game gameData = Game.fromJson(snapshot.data()!);
-            logger.info('Game was updated');
+          if (!snapshot.exists) {
+            return;
+          }
 
-            if (state.game == gameData) {
-              return;
-            }
+          // Eigene lokale Writes nicht als Remote-Update verarbeiten —
+          // sonst doppelter emit / UI-Flackern.
+          if (snapshot.metadata.hasPendingWrites) {
+            return;
+          }
 
-            // Owner ist Source of Truth – ein älterer Remote-Snapshot darf
-            // lokale Runden nicht überschreiben.
-            final String? currentUid = FirebaseAuth.instance.currentUser?.uid;
-            if (currentUid != null && currentUid == gameData.ownerId) {
-              return;
-            }
+          final Game gameData = Game.fromJson(snapshot.data()!);
+          logger.info('Game was updated');
 
-            emit(
-              state.copyWith(
-                game: gameData.copyWith(publicId: snapshot.id),
-                players: gameData.players,
-              ),
-            );
+          if (state.game == gameData) {
+            return;
+          }
 
-            if (gameData.isGameFinished &&
-                FirebaseAuth.instance.currentUser?.uid != gameData.ownerId &&
-                gameData.players.isNotEmpty) {
-              _finishGame(gameData.players);
-            }
+          emit(
+            state.copyWith(
+              game: gameData.copyWith(publicId: snapshot.id),
+              players: gameData.players,
+            ),
+          );
+
+          if (gameData.isGameFinished && gameData.players.isNotEmpty) {
+            _finishGame(gameData.players);
           }
         });
   }
@@ -349,22 +354,24 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   void _saveGame(Game game, {bool forceFinish = false}) async {
-    if (game.isGameFinished || forceFinish) {
-      DateTime finishedAt = DateTime.now();
-      String finishedGame = DateFormat('dd-MM-yyyy HH:mm').format(finishedAt);
-
-      if (forceFinish) {
-        String? uid = FirebaseAuth.instance.currentUser?.uid;
-        if (uid == game.ownerId || !game.isPublic) {
-          game = game.copyWith(finishedAt: finishedGame);
-        }
-      } else {
-        game = game.copyWith(finishedAt: finishedGame);
+    // Non-Owner darf im Public Game das Spiel nicht vorzeitig für alle beenden.
+    // In diesem Fall verlässt der Spieler nur lokal — kein Firestore-/History-Write.
+    if (forceFinish && game.isPublic) {
+      final String? uid = _auth.currentUser?.uid;
+      if (uid != game.ownerId) {
+        return;
       }
-
-      app<GameService>().saveToGameHistory(game);
     }
-    if (state.game?.isPublic ?? false) {
+
+    if (game.isGameFinished || forceFinish) {
+      final String finishedGame = DateFormat(
+        'dd-MM-yyyy HH:mm',
+      ).format(DateTime.now());
+      game = game.copyWith(finishedAt: finishedGame);
+      await app<GameService>().saveToGameHistory(game);
+    }
+
+    if (game.isPublic) {
       try {
         await app<PublicGameService>().saveOrUpdateGame(game: game);
       } catch (e, stackTrace) {

@@ -3,20 +3,23 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i8;
+import 'dart:async' as _i9;
 
-import 'package:cabo/core/app_navigator/navigation_service.dart' as _i11;
+import 'package:cabo/core/app_navigator/navigation_service.dart' as _i12;
 import 'package:cabo/domain/game/game.dart' as _i5;
-import 'package:cabo/domain/game/game_service.dart' as _i13;
+import 'package:cabo/domain/game/game_service.dart' as _i14;
 import 'package:cabo/domain/game/local_game_repository.dart' as _i6;
-import 'package:cabo/domain/player/data/player.dart' as _i10;
+import 'package:cabo/domain/game/public_game_service.dart' as _i15;
+import 'package:cabo/domain/player/data/player.dart' as _i11;
 import 'package:cabo/domain/rule_set/data/rule_set.dart' as _i3;
 import 'package:cabo/domain/rule_set/local_rule_set_repository.dart' as _i2;
-import 'package:cabo/domain/rule_set/rules_service.dart' as _i7;
-import 'package:cabo/misc/utils/dialogs.dart' as _i9;
+import 'package:cabo/domain/rule_set/rules_service.dart' as _i8;
+import 'package:cabo/misc/utils/dialogs.dart' as _i10;
+import 'package:cloud_firestore/cloud_firestore.dart' as _i16;
 import 'package:flutter/material.dart' as _i4;
+import 'package:logging/logging.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:mockito/src/dummies.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -61,10 +64,15 @@ class _FakeLocalGameRepository_4 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
+class _FakeLogger_5 extends _i1.SmartFake implements _i7.Logger {
+  _FakeLogger_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [LocalRuleService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocalRuleService extends _i1.Mock implements _i7.LocalRuleService {
+class MockLocalRuleService extends _i1.Mock implements _i8.LocalRuleService {
   @override
   _i2.LocalRuleSetRepository get repository =>
       (super.noSuchMethod(
@@ -81,76 +89,76 @@ class MockLocalRuleService extends _i1.Mock implements _i7.LocalRuleService {
           as _i2.LocalRuleSetRepository);
 
   @override
-  _i8.Future<_i3.RuleSet> loadRuleSet() =>
+  _i9.Future<_i3.RuleSet> loadRuleSet() =>
       (super.noSuchMethod(
             Invocation.method(#loadRuleSet, []),
-            returnValue: _i8.Future<_i3.RuleSet>.value(
+            returnValue: _i9.Future<_i3.RuleSet>.value(
               _FakeRuleSet_1(this, Invocation.method(#loadRuleSet, [])),
             ),
-            returnValueForMissingStub: _i8.Future<_i3.RuleSet>.value(
+            returnValueForMissingStub: _i9.Future<_i3.RuleSet>.value(
               _FakeRuleSet_1(this, Invocation.method(#loadRuleSet, [])),
             ),
           )
-          as _i8.Future<_i3.RuleSet>);
+          as _i9.Future<_i3.RuleSet>);
 
   @override
-  _i8.Future<_i3.RuleSet?> saveRuleSet(_i3.RuleSet? ruleSet) =>
+  _i9.Future<_i3.RuleSet?> saveRuleSet(_i3.RuleSet? ruleSet) =>
       (super.noSuchMethod(
             Invocation.method(#saveRuleSet, [ruleSet]),
-            returnValue: _i8.Future<_i3.RuleSet?>.value(),
-            returnValueForMissingStub: _i8.Future<_i3.RuleSet?>.value(),
+            returnValue: _i9.Future<_i3.RuleSet?>.value(),
+            returnValueForMissingStub: _i9.Future<_i3.RuleSet?>.value(),
           )
-          as _i8.Future<_i3.RuleSet?>);
+          as _i9.Future<_i3.RuleSet?>);
 }
 
 /// A class which mocks [StatisticsDialogService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockStatisticsDialogService extends _i1.Mock
-    implements _i9.StatisticsDialogService {
+    implements _i10.StatisticsDialogService {
   @override
-  _i8.Future<Map<String, int?>?> showPointDialog(List<_i10.Player>? players) =>
+  _i9.Future<Map<String, int?>?> showPointDialog(List<_i11.Player>? players) =>
       (super.noSuchMethod(
             Invocation.method(#showPointDialog, [players]),
-            returnValue: _i8.Future<Map<String, int?>?>.value(),
-            returnValueForMissingStub: _i8.Future<Map<String, int?>?>.value(),
+            returnValue: _i9.Future<Map<String, int?>?>.value(),
+            returnValueForMissingStub: _i9.Future<Map<String, int?>?>.value(),
           )
-          as _i8.Future<Map<String, int?>?>);
+          as _i9.Future<Map<String, int?>?>);
 
   @override
-  _i8.Future<bool?> showEndGame(_i5.Game? game) =>
+  _i9.Future<bool?> showEndGame(_i5.Game? game) =>
       (super.noSuchMethod(
             Invocation.method(#showEndGame, [game]),
-            returnValue: _i8.Future<bool?>.value(),
-            returnValueForMissingStub: _i8.Future<bool?>.value(),
+            returnValue: _i9.Future<bool?>.value(),
+            returnValueForMissingStub: _i9.Future<bool?>.value(),
           )
-          as _i8.Future<bool?>);
+          as _i9.Future<bool?>);
 
   @override
-  _i8.Future<_i10.Player?> showRoundCloserDialog({
-    List<_i10.Player>? players,
+  _i9.Future<_i11.Player?> showRoundCloserDialog({
+    List<_i11.Player>? players,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#showRoundCloserDialog, [], {#players: players}),
-            returnValue: _i8.Future<_i10.Player?>.value(),
-            returnValueForMissingStub: _i8.Future<_i10.Player?>.value(),
+            returnValue: _i9.Future<_i11.Player?>.value(),
+            returnValueForMissingStub: _i9.Future<_i11.Player?>.value(),
           )
-          as _i8.Future<_i10.Player?>);
+          as _i9.Future<_i11.Player?>);
 
   @override
-  _i8.Future<bool?> loadNotFinishedGame() =>
+  _i9.Future<bool?> loadNotFinishedGame() =>
       (super.noSuchMethod(
             Invocation.method(#loadNotFinishedGame, []),
-            returnValue: _i8.Future<bool?>.value(),
-            returnValueForMissingStub: _i8.Future<bool?>.value(),
+            returnValue: _i9.Future<bool?>.value(),
+            returnValueForMissingStub: _i9.Future<bool?>.value(),
           )
-          as _i8.Future<bool?>);
+          as _i9.Future<bool?>);
 }
 
 /// A class which mocks [NavigationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNavigationService extends _i1.Mock implements _i11.NavigationService {
+class MockNavigationService extends _i1.Mock implements _i12.NavigationService {
   @override
   _i4.GlobalKey<_i4.NavigatorState> get navigatorKey =>
       (super.noSuchMethod(
@@ -167,19 +175,19 @@ class MockNavigationService extends _i1.Mock implements _i11.NavigationService {
           as _i4.GlobalKey<_i4.NavigatorState>);
 
   @override
-  _i8.Future<T?> showAppDialog<T>({
+  _i9.Future<T?> showAppDialog<T>({
     required _i4.Dialog Function(_i4.BuildContext)? dialog,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#showAppDialog, [], {#dialog: dialog}),
-            returnValue: _i8.Future<T?>.value(),
-            returnValueForMissingStub: _i8.Future<T?>.value(),
+            returnValue: _i9.Future<T?>.value(),
+            returnValueForMissingStub: _i9.Future<T?>.value(),
           )
-          as _i8.Future<T?>);
+          as _i9.Future<T?>);
 
   @override
   void pushToStatsScreen({
-    required List<_i10.Player>? players,
+    required List<_i11.Player>? players,
     bool? shouldUseSpecialRules,
     _i5.Game? game,
   }) => super.noSuchMethod(
@@ -201,11 +209,11 @@ class MockLocalGameRepository extends _i1.Mock
   String get storageKey =>
       (super.noSuchMethod(
             Invocation.getter(#storageKey),
-            returnValue: _i12.dummyValue<String>(
+            returnValue: _i13.dummyValue<String>(
               this,
               Invocation.getter(#storageKey),
             ),
-            returnValueForMissingStub: _i12.dummyValue<String>(
+            returnValueForMissingStub: _i13.dummyValue<String>(
               this,
               Invocation.getter(#storageKey),
             ),
@@ -228,40 +236,40 @@ class MockLocalGameRepository extends _i1.Mock
           as _i5.Game);
 
   @override
-  _i8.Future<List<_i5.Game>?> getAll() =>
+  _i9.Future<List<_i5.Game>?> getAll() =>
       (super.noSuchMethod(
             Invocation.method(#getAll, []),
-            returnValue: _i8.Future<List<_i5.Game>?>.value(),
-            returnValueForMissingStub: _i8.Future<List<_i5.Game>?>.value(),
+            returnValue: _i9.Future<List<_i5.Game>?>.value(),
+            returnValueForMissingStub: _i9.Future<List<_i5.Game>?>.value(),
           )
-          as _i8.Future<List<_i5.Game>?>);
+          as _i9.Future<List<_i5.Game>?>);
 
   @override
-  _i8.Future<void> saveAll(List<_i5.Game>? objectList) =>
+  _i9.Future<void> saveAll(List<_i5.Game>? objectList) =>
       (super.noSuchMethod(
             Invocation.method(#saveAll, [objectList]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i5.Game?> saveCurrent(_i5.Game? object) =>
+  _i9.Future<_i5.Game?> saveCurrent(_i5.Game? object) =>
       (super.noSuchMethod(
             Invocation.method(#saveCurrent, [object]),
-            returnValue: _i8.Future<_i5.Game?>.value(),
-            returnValueForMissingStub: _i8.Future<_i5.Game?>.value(),
+            returnValue: _i9.Future<_i5.Game?>.value(),
+            returnValueForMissingStub: _i9.Future<_i5.Game?>.value(),
           )
-          as _i8.Future<_i5.Game?>);
+          as _i9.Future<_i5.Game?>);
 
   @override
-  _i8.Future<_i5.Game?> getCurrent() =>
+  _i9.Future<_i5.Game?> getCurrent() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrent, []),
-            returnValue: _i8.Future<_i5.Game?>.value(),
-            returnValueForMissingStub: _i8.Future<_i5.Game?>.value(),
+            returnValue: _i9.Future<_i5.Game?>.value(),
+            returnValueForMissingStub: _i9.Future<_i5.Game?>.value(),
           )
-          as _i8.Future<_i5.Game?>);
+          as _i9.Future<_i5.Game?>);
 }
 
 /// A class which mocks [LocalRuleSetRepository].
@@ -273,11 +281,11 @@ class MockLocalRuleSetRepository extends _i1.Mock
   String get storageKey =>
       (super.noSuchMethod(
             Invocation.getter(#storageKey),
-            returnValue: _i12.dummyValue<String>(
+            returnValue: _i13.dummyValue<String>(
               this,
               Invocation.getter(#storageKey),
             ),
-            returnValueForMissingStub: _i12.dummyValue<String>(
+            returnValueForMissingStub: _i13.dummyValue<String>(
               this,
               Invocation.getter(#storageKey),
             ),
@@ -300,46 +308,46 @@ class MockLocalRuleSetRepository extends _i1.Mock
           as _i3.RuleSet);
 
   @override
-  _i8.Future<List<_i3.RuleSet>?> getAll() =>
+  _i9.Future<List<_i3.RuleSet>?> getAll() =>
       (super.noSuchMethod(
             Invocation.method(#getAll, []),
-            returnValue: _i8.Future<List<_i3.RuleSet>?>.value(),
-            returnValueForMissingStub: _i8.Future<List<_i3.RuleSet>?>.value(),
+            returnValue: _i9.Future<List<_i3.RuleSet>?>.value(),
+            returnValueForMissingStub: _i9.Future<List<_i3.RuleSet>?>.value(),
           )
-          as _i8.Future<List<_i3.RuleSet>?>);
+          as _i9.Future<List<_i3.RuleSet>?>);
 
   @override
-  _i8.Future<void> saveAll(List<_i3.RuleSet>? objectList) =>
+  _i9.Future<void> saveAll(List<_i3.RuleSet>? objectList) =>
       (super.noSuchMethod(
             Invocation.method(#saveAll, [objectList]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i3.RuleSet?> saveCurrent(_i3.RuleSet? object) =>
+  _i9.Future<_i3.RuleSet?> saveCurrent(_i3.RuleSet? object) =>
       (super.noSuchMethod(
             Invocation.method(#saveCurrent, [object]),
-            returnValue: _i8.Future<_i3.RuleSet?>.value(),
-            returnValueForMissingStub: _i8.Future<_i3.RuleSet?>.value(),
+            returnValue: _i9.Future<_i3.RuleSet?>.value(),
+            returnValueForMissingStub: _i9.Future<_i3.RuleSet?>.value(),
           )
-          as _i8.Future<_i3.RuleSet?>);
+          as _i9.Future<_i3.RuleSet?>);
 
   @override
-  _i8.Future<_i3.RuleSet?> getCurrent() =>
+  _i9.Future<_i3.RuleSet?> getCurrent() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrent, []),
-            returnValue: _i8.Future<_i3.RuleSet?>.value(),
-            returnValueForMissingStub: _i8.Future<_i3.RuleSet?>.value(),
+            returnValue: _i9.Future<_i3.RuleSet?>.value(),
+            returnValueForMissingStub: _i9.Future<_i3.RuleSet?>.value(),
           )
-          as _i8.Future<_i3.RuleSet?>);
+          as _i9.Future<_i3.RuleSet?>);
 }
 
 /// A class which mocks [LocalGameService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocalGameService extends _i1.Mock implements _i13.LocalGameService {
+class MockLocalGameService extends _i1.Mock implements _i14.LocalGameService {
   @override
   _i6.LocalGameRepository get localGameRepository =>
       (super.noSuchMethod(
@@ -356,47 +364,109 @@ class MockLocalGameService extends _i1.Mock implements _i13.LocalGameService {
           as _i6.LocalGameRepository);
 
   @override
-  _i8.Future<List<_i5.Game>?> getGames() =>
+  _i9.Future<List<_i5.Game>?> getGames() =>
       (super.noSuchMethod(
             Invocation.method(#getGames, []),
-            returnValue: _i8.Future<List<_i5.Game>?>.value(),
-            returnValueForMissingStub: _i8.Future<List<_i5.Game>?>.value(),
+            returnValue: _i9.Future<List<_i5.Game>?>.value(),
+            returnValueForMissingStub: _i9.Future<List<_i5.Game>?>.value(),
           )
-          as _i8.Future<List<_i5.Game>?>);
+          as _i9.Future<List<_i5.Game>?>);
 
   @override
-  _i8.Future<void> saveGames(List<_i5.Game>? games) =>
+  _i9.Future<void> saveGames(List<_i5.Game>? games) =>
       (super.noSuchMethod(
             Invocation.method(#saveGames, [games]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i5.Game?> saveLastPlayedGame(_i5.Game? game) =>
+  _i9.Future<_i5.Game?> saveLastPlayedGame(_i5.Game? game) =>
       (super.noSuchMethod(
             Invocation.method(#saveLastPlayedGame, [game]),
-            returnValue: _i8.Future<_i5.Game?>.value(),
-            returnValueForMissingStub: _i8.Future<_i5.Game?>.value(),
+            returnValue: _i9.Future<_i5.Game?>.value(),
+            returnValueForMissingStub: _i9.Future<_i5.Game?>.value(),
           )
-          as _i8.Future<_i5.Game?>);
+          as _i9.Future<_i5.Game?>);
 
   @override
-  _i8.Future<void> saveToGameHistory(_i5.Game? game) =>
+  _i9.Future<void> saveToGameHistory(_i5.Game? game) =>
       (super.noSuchMethod(
             Invocation.method(#saveToGameHistory, [game]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i5.Game?> getLastPlayedGame() =>
+  _i9.Future<_i5.Game?> getLastPlayedGame() =>
       (super.noSuchMethod(
             Invocation.method(#getLastPlayedGame, []),
-            returnValue: _i8.Future<_i5.Game?>.value(),
-            returnValueForMissingStub: _i8.Future<_i5.Game?>.value(),
+            returnValue: _i9.Future<_i5.Game?>.value(),
+            returnValueForMissingStub: _i9.Future<_i5.Game?>.value(),
           )
-          as _i8.Future<_i5.Game?>);
+          as _i9.Future<_i5.Game?>);
+}
+
+/// A class which mocks [PublicGameService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPublicGameService extends _i1.Mock implements _i15.PublicGameService {
+  @override
+  _i7.Logger get logger =>
+      (super.noSuchMethod(
+            Invocation.getter(#logger),
+            returnValue: _FakeLogger_5(this, Invocation.getter(#logger)),
+            returnValueForMissingStub: _FakeLogger_5(
+              this,
+              Invocation.getter(#logger),
+            ),
+          )
+          as _i7.Logger);
+
+  @override
+  _i9.Future<_i5.Game> saveOrUpdateGame({required _i5.Game? game}) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveOrUpdateGame, [], {#game: game}),
+            returnValue: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(
+                this,
+                Invocation.method(#saveOrUpdateGame, [], {#game: game}),
+              ),
+            ),
+            returnValueForMissingStub: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(
+                this,
+                Invocation.method(#saveOrUpdateGame, [], {#game: game}),
+              ),
+            ),
+          )
+          as _i9.Future<_i5.Game>);
+
+  @override
+  _i9.Future<_i5.Game> getPublicGame(String? publicId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getPublicGame, [publicId]),
+            returnValue: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(this, Invocation.method(#getPublicGame, [publicId])),
+            ),
+            returnValueForMissingStub: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(this, Invocation.method(#getPublicGame, [publicId])),
+            ),
+          )
+          as _i9.Future<_i5.Game>);
+
+  @override
+  _i9.Stream<_i16.DocumentSnapshot<Map<String, dynamic>>> subscribeToGame(
+    String? publicId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#subscribeToGame, [publicId]),
+            returnValue:
+                _i9.Stream<_i16.DocumentSnapshot<Map<String, dynamic>>>.empty(),
+            returnValueForMissingStub:
+                _i9.Stream<_i16.DocumentSnapshot<Map<String, dynamic>>>.empty(),
+          )
+          as _i9.Stream<_i16.DocumentSnapshot<Map<String, dynamic>>>);
 }
