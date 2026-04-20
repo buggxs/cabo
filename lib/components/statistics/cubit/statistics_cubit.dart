@@ -141,7 +141,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
             if (gameData.isGameFinished &&
                 FirebaseAuth.instance.currentUser?.uid != gameData.ownerId &&
                 gameData.players.isNotEmpty) {
-
               _finishGame(gameData.players);
             }
           }
