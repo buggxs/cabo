@@ -25,7 +25,7 @@ Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
   'publicId': instance.publicId,
   'startedAt': instance.startedAt,
   'finishedAt': instance.finishedAt,
-  'players': instance.players.map((instance) => instance.toJson()).toList(),
+  'players': instance.players,
   'ruleSetId': instance.ruleSetId,
-  'ruleSet': instance.ruleSet.toJson(),
+  'ruleSet': instance.ruleSet,
 };

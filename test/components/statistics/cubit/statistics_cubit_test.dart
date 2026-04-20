@@ -5,12 +5,14 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
+import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/local_rule_set_repository.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +28,7 @@ import 'statistics_cubit_test.mocks.dart';
   MockSpec<LocalGameRepository>(),
   MockSpec<LocalRuleSetRepository>(),
   MockSpec<LocalGameService>(),
+  MockSpec<PublicGameService>(),
 ])
 void main() {
   List<Player> playerList = [
@@ -484,12 +487,15 @@ void main() {
   late StatisticsDialogService dialogService;
   late NavigationService navigationService;
   late LocalGameRepository localGameRepository;
-  late LocalGameService localGameService;
+  late MockLocalGameService localGameService;
   late LocalRuleSetRepository localRuleSetRepository;
+  late MockPublicGameService publicGameService;
   late GetIt app = GetIt.instance;
 
   setUpAll(() {
     setup();
+
+    provideDummy<Game>(const Game(players: <Player>[], ruleSet: RuleSet()));
 
     ruleService = MockLocalRuleService();
     dialogService = MockStatisticsDialogService();
@@ -497,6 +503,7 @@ void main() {
     localGameRepository = MockLocalGameRepository();
     localGameService = MockLocalGameService();
     localRuleSetRepository = MockLocalRuleSetRepository();
+    publicGameService = MockPublicGameService();
 
     app.registerSingleton<RuleService>(ruleService);
     app.registerSingleton<StatisticsDialogService>(dialogService);
@@ -504,6 +511,7 @@ void main() {
     app.registerSingleton<LocalGameRepository>(localGameRepository);
     app.registerSingleton<GameService>(localGameService);
     app.registerSingleton<LocalRuleSetRepository>(localRuleSetRepository);
+    app.registerSingleton<PublicGameService>(publicGameService);
   });
 
   tearDownAll(() => app.reset());
@@ -797,6 +805,202 @@ void main() {
       verify: (cubit) {
         expect(cubit.state.game?.players[1].name, 'Maike');
         expect(cubit.state.game?.players[1].totalPoints, 50);
+      },
+    );
+  });
+
+  group('Test finishedAt behavior', () {
+    // Public-Game / Non-Owner-Pfade rufen FirebaseAuth.instance direkt auf
+    // und sind ohne firebase_auth_mocks nicht isoliert testbar. Die folgenden
+    // Szenarien decken die lokalen Pfade und das reguläre Spielende ab.
+
+    const RuleSet smallRuleSet = RuleSet(totalGamePoints: 5);
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'onPopScreen sets finishedAt for a local game',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        clearInteractions(localGameService);
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.onPopScreen();
+      },
+      verify: (_) {
+        final List<dynamic> captured = verify(
+          localGameService.saveToGameHistory(captureAny),
+        ).captured;
+        expect(captured, hasLength(1));
+        final Game saved = captured.single as Game;
+        expect(saved.finishedAt, isNotNull);
+        expect(saved.isGameFinished, isTrue);
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'onPopScreen is a no-op when the game is already finished',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        clearInteractions(localGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: expectedGame.copyWith(finishedAt: '01-01-2026 12:00'),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.onPopScreen();
+      },
+      verify: (_) {
+        verifyNever(localGameService.saveToGameHistory(any));
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'closeRound sets finishedAt when a player exceeds totalGamePoints',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(smallRuleSet));
+        when(
+          dialogService.showRoundCloserDialog(players: anyNamed('players')),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        clearInteractions(localGameService);
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.closeRound();
+      },
+      verify: (_) {
+        final List<dynamic> captured = verify(
+          localGameService.saveToGameHistory(captureAny),
+        ).captured;
+        expect(captured, isNotEmpty);
+        final Game saved = captured.last as Game;
+        expect(saved.finishedAt, isNotNull);
+        expect(saved.isGameFinished, isTrue);
+        expect(
+          saved.players.any(
+            (p) => p.totalPoints > smallRuleSet.totalGamePoints,
+          ),
+          isTrue,
+        );
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'closeRound does not set finishedAt while below totalGamePoints',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        when(
+          dialogService.showRoundCloserDialog(players: anyNamed('players')),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        clearInteractions(localGameService);
+      },
+      build: () => StatisticsCubit(players: playerList),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.closeRound();
+      },
+      verify: (_) {
+        verifyNever(localGameService.saveToGameHistory(any));
+      },
+    );
+  });
+
+  group('Test finishedAt behavior for public games', () {
+    const String ownerUid = 'owner-uid';
+    const String otherUid = 'other-uid';
+
+    final Game publicGame = expectedGame.copyWith(
+      publicId: 'cabo-test-abc',
+      ownerId: ownerUid,
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Owner forceFinish sets finishedAt and syncs to Firestore',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        when(
+          publicGameService.saveOrUpdateGame(game: anyNamed('game')),
+        ).thenAnswer(
+          (invocation) async =>
+              invocation.namedArguments[const Symbol('game')] as Game,
+        );
+        clearInteractions(localGameService);
+        clearInteractions(publicGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: publicGame,
+        auth: MockFirebaseAuth(
+          signedIn: true,
+          mockUser: MockUser(uid: ownerUid),
+        ),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.onPopScreen();
+        await Future.delayed(const Duration(milliseconds: 50));
+      },
+      verify: (_) {
+        final List<dynamic> captured = verify(
+          localGameService.saveToGameHistory(captureAny),
+        ).captured;
+        expect(captured, hasLength(1));
+        final Game saved = captured.single as Game;
+        expect(saved.finishedAt, isNotNull);
+
+        final List<dynamic> synced = verify(
+          publicGameService.saveOrUpdateGame(game: captureAnyNamed('game')),
+        ).captured;
+        expect(synced, isNotEmpty);
+        expect((synced.last as Game).finishedAt, isNotNull);
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Non-Owner forceFinish is a no-op (no finishedAt, no Firestore write)',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        clearInteractions(localGameService);
+        clearInteractions(publicGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: publicGame,
+        auth: MockFirebaseAuth(
+          signedIn: true,
+          mockUser: MockUser(uid: otherUid),
+        ),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.onPopScreen();
+        await Future.delayed(const Duration(milliseconds: 50));
+      },
+      verify: (cubit) {
+        verifyNever(localGameService.saveToGameHistory(any));
+        verifyNever(publicGameService.saveOrUpdateGame(game: anyNamed('game')));
+        expect(cubit.state.game?.finishedAt, isNull);
       },
     );
   });

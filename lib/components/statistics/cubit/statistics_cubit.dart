@@ -26,11 +26,17 @@ import 'package:intl/intl.dart';
 part 'statistics_state.dart';
 
 class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
-  StatisticsCubit({required List<Player> players, Game? game})
-    : super(StatisticsState(players: players)) {
+  StatisticsCubit({
+    required List<Player> players,
+    Game? game,
+    FirebaseAuth? auth,
+  }) : _authOverride = auth,
+       super(StatisticsState(players: players)) {
     loadGame(game: game);
   }
 
+  final FirebaseAuth? _authOverride;
+  FirebaseAuth get _auth => _authOverride ?? FirebaseAuth.instance;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
 
   void loadGame({Game? game}) {
@@ -43,8 +49,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       _startGame(game, startingDateTime);
     }
 
-    if ((game?.isPublic ?? false) &&
-        FirebaseAuth.instance.currentUser != null) {
+    if ((game?.isPublic ?? false) && _auth.currentUser != null) {
       _subscribePublicGame();
     }
   }
@@ -352,7 +357,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     // Non-Owner darf im Public Game das Spiel nicht vorzeitig für alle beenden.
     // In diesem Fall verlässt der Spieler nur lokal — kein Firestore-/History-Write.
     if (forceFinish && game.isPublic) {
-      final String? uid = FirebaseAuth.instance.currentUser?.uid;
+      final String? uid = _auth.currentUser?.uid;
       if (uid != game.ownerId) {
         return;
       }
