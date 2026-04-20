@@ -16,6 +16,7 @@
   "statsCardTime": "Spielzeit",
   "finishCurrentGame": "Möchtest du das Spiel wirklich beenden?",
   "finishCurrentGamePublic": "Möchtest du das Spiel wirklich beenden? Das Spiel wird für alle Teilnehmer beendet.",
+  "leaveCurrentGame": "Möchtest du das Spiel wirklich verlassen? Die anderen Spieler spielen weiter.",
   "finishGameDialogButton": "Ja, beenden!",
   "leaveGameDialogButton": "Spiel verlassen.",
   "continueGameDialogButton": "Nein, weiter spielen.",

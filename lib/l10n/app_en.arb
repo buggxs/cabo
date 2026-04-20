@@ -16,6 +16,7 @@
   "statsCardTime": "Play time",
   "finishCurrentGame": "Do you really want to finish the game?",
   "finishCurrentGamePublic": "Do you really want to finish the game? The game will be finished for all players.",
+  "leaveCurrentGame": "Do you really want to leave the game? The other players will keep playing.",
   "finishGameDialogButton": "Yes, finish!",
   "leaveGameDialogButton": "Leave game.",
   "continueGameDialogButton": "No, keep playing.",
