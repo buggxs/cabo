@@ -278,9 +278,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                AppLocalizations.of(
-                  context,
-                )!.joinGameScreenGameAlreadyFinished,
+                AppLocalizations.of(context)!.joinGameScreenGameAlreadyFinished,
               ),
               backgroundColor: Colors.redAccent,
             ),
