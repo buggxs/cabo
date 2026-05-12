@@ -187,6 +187,26 @@ class AppLocalizationsDe extends AppLocalizations {
       'Spiel konnte nicht gefunden werden.';
 
   @override
+  String get joinGameScreenGameAlreadyFinished =>
+      'Dieses Spiel ist bereits beendet und kann nicht mehr betreten werden.';
+
+  @override
+  String get joinGameScreenScanQrCode => 'QR-Code scannen';
+
+  @override
+  String get joinGameScreenEnterIdInstead => 'Stattdessen ID eingeben';
+
+  @override
+  String get joinGameScreenGameIdLabel => 'Game-ID (z. B. cabo-123-xyz)';
+
+  @override
+  String get joinGameScreenSearchButton => 'Suchen';
+
+  @override
+  String get joinGameScreenEnterIdToJoin =>
+      'Gib die Spiel-ID ein, um einem Spiel beizutreten.';
+
+  @override
   String get historyScreenHours => 'Stunde/n';
 
   @override

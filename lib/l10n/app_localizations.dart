@@ -434,6 +434,42 @@ abstract class AppLocalizations {
   /// **'Game could not be found.'**
   String get joinGameScreenGameNotFound;
 
+  /// No description provided for @joinGameScreenGameAlreadyFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'This game has already finished and can no longer be joined.'**
+  String get joinGameScreenGameAlreadyFinished;
+
+  /// No description provided for @joinGameScreenScanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code'**
+  String get joinGameScreenScanQrCode;
+
+  /// No description provided for @joinGameScreenEnterIdInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter ID instead'**
+  String get joinGameScreenEnterIdInstead;
+
+  /// No description provided for @joinGameScreenGameIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game ID (e.g. cabo-123-xyz)'**
+  String get joinGameScreenGameIdLabel;
+
+  /// No description provided for @joinGameScreenSearchButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get joinGameScreenSearchButton;
+
+  /// No description provided for @joinGameScreenEnterIdToJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the game ID to join a game.'**
+  String get joinGameScreenEnterIdToJoin;
+
   /// No description provided for @historyScreenHours.
   ///
   /// In en, this message translates to:
