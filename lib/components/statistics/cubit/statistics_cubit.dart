@@ -84,12 +84,12 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   /// Will force a game to finish for the owner (or a local game).
   /// For public games, non-owners simply leave locally — no Firestore write
   /// happens; the game stays live for the remaining players.
-  void onPopScreen() {
+  Future<void> onPopScreen() async {
     if (state.game?.isGameFinished ?? false) {
       return;
     }
 
-    _saveGame(state.game!, forceFinish: true);
+    await _saveGame(state.game!, forceFinish: true);
   }
 
   void showPublicGameDialog(BuildContext context) {
@@ -109,6 +109,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
       game: state.game!,
     );
+
+    // publicId/ownerId sofort lokal persistieren, sonst geht die Subscription
+    // beim App-Restart verloren, falls bis dahin keine Runde geschlossen wurde.
+    await app<GameService>().saveLastPlayedGame(publicGame);
 
     emit(state.copyWith(game: publicGame));
 
@@ -353,7 +357,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     return false;
   }
 
-  void _saveGame(Game game, {bool forceFinish = false}) async {
+  Future<void> _saveGame(Game game, {bool forceFinish = false}) async {
     // Non-Owner darf im Public Game das Spiel nicht vorzeitig für alle beenden.
     // In diesem Fall verlässt der Spieler nur lokal — kein Firestore-/History-Write.
     if (forceFinish && game.isPublic) {
@@ -368,6 +372,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         'dd-MM-yyyy HH:mm',
       ).format(DateTime.now());
       game = game.copyWith(finishedAt: finishedGame);
+      // State sofort aktualisieren, damit isGameFinished true ist und der
+      // WinnerDialog im Screen anschließend angezeigt werden kann.
+      emit(state.copyWith(game: game));
       await app<GameService>().saveToGameHistory(game);
     }
 
@@ -400,7 +407,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         lowest = element;
       }
     }
-    return lowest!.value ?? 0;
+    return lowest?.value ?? 0;
   }
 
   int _getPointsOfClosingPlayer(

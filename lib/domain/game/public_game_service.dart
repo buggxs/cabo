@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,11 +51,18 @@ class PublicGameService with LoggerMixin {
     try {
       if (game.publicId != null) {
         logger.info('Updating game with publicId: ${game.publicId}');
-        await _firestore
-            .collection('games')
-            .doc(game.publicId)
-            .set(game.toJson());
-        return game;
+        final docRef = _firestore.collection('games').doc(game.publicId);
+        // Transaktional mergen, damit konkurrente Writes von Mitspielern
+        // sich nicht gegenseitig überschreiben.
+        final Game merged = await _firestore.runTransaction<Game>((tx) async {
+          final snapshot = await tx.get(docRef);
+          final Game effective = snapshot.exists
+              ? _mergePlayers(Game.fromJson(snapshot.data()!), game)
+              : game;
+          tx.set(docRef, effective.toJson());
+          return effective;
+        });
+        return merged;
       } else {
         String publicId;
 
@@ -63,6 +71,7 @@ class PublicGameService with LoggerMixin {
         final gameWithPublicId = game.copyWith(
           publicId: publicId,
           ownerId: user.uid,
+          playerUids: <String>[user.uid],
         );
 
         await _firestore
@@ -84,6 +93,76 @@ class PublicGameService with LoggerMixin {
       }
       rethrow;
     }
+  }
+
+  /// Fügt die UID des angemeldeten Users (ggf. anonym) zu `playerUids` hinzu.
+  Future<Game> joinGame(String publicId) async {
+    User? user = _auth.currentUser;
+    user ??= (await _auth.signInAnonymously()).user;
+
+    if (user == null) {
+      throw Exception('Anmeldung fehlgeschlagen.');
+    }
+
+    final String uid = user.uid;
+    final docRef = _firestore.collection('games').doc(publicId);
+
+    return _firestore.runTransaction<Game>((tx) async {
+      final snapshot = await tx.get(docRef);
+      if (!snapshot.exists) {
+        throw Exception('Spiel mit ID $publicId existiert nicht.');
+      }
+      final Game current = Game.fromJson(snapshot.data()!);
+      if (current.playerUids.contains(uid)) {
+        return current;
+      }
+      final Game updated = current.copyWith(
+        playerUids: <String>[...current.playerUids, uid],
+      );
+      tx.set(docRef, updated.toJson());
+      return updated;
+    });
+  }
+
+  /// Mergt Runden pro Spieler (Player mit längerer Rundenliste gewinnt),
+  /// damit konkurrente Writes sich nicht gegenseitig überschreiben.
+  Game _mergePlayers(Game remote, Game local) {
+    final Map<String, Player> localByName = <String, Player>{
+      for (final Player p in local.players) p.name: p,
+    };
+    final Map<String, Player> remoteByName = <String, Player>{
+      for (final Player p in remote.players) p.name: p,
+    };
+    final Set<String> allNames = <String>{
+      ...localByName.keys,
+      ...remoteByName.keys,
+    };
+
+    final List<Player> merged = <Player>[];
+    for (final String name in allNames) {
+      final Player? lp = localByName[name];
+      final Player? rp = remoteByName[name];
+      if (lp == null) {
+        merged.add(rp!);
+      } else if (rp == null) {
+        merged.add(lp);
+      } else {
+        merged.add(lp.rounds.length >= rp.rounds.length ? lp : rp);
+      }
+    }
+    merged.sort((Player a, Player b) => a.totalPoints.compareTo(b.totalPoints));
+    for (int i = 0; i < merged.length; i++) {
+      merged[i] = merged[i].copyWith(place: i + 1);
+    }
+    final List<String> mergedUids = <String>{
+      ...remote.playerUids,
+      ...local.playerUids,
+    }.toList();
+    return local.copyWith(
+      players: merged,
+      playerUids: mergedUids,
+      finishedAt: local.finishedAt ?? remote.finishedAt,
+    );
   }
 
   Future<Game> getPublicGame(String publicId) async {

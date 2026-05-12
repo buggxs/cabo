@@ -119,9 +119,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
       setState(() {
         _isPublishing = false;
       });
-      if (e is FirebaseException) {
-        logger.severe('Firebase error: ${e.message}', e);
-      }
+      logger.severe('Failed to publish game', e);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

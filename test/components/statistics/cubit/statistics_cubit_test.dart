@@ -1004,4 +1004,90 @@ void main() {
       },
     );
   });
+
+  group('Public game multi-player sync', () {
+    const String ownerUid = 'owner-uid';
+    const String otherUid = 'other-uid';
+
+    final Game publicGame = expectedGame.copyWith(
+      publicId: 'cabo-test-abc',
+      ownerId: ownerUid,
+      playerUids: const <String>[ownerUid],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'loadGame with public game subscribes to Firestore stream',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        when(
+          publicGameService.subscribeToGame(any),
+        ).thenAnswer((_) => const Stream.empty());
+        clearInteractions(publicGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: publicGame,
+        auth: MockFirebaseAuth(
+          signedIn: true,
+          mockUser: MockUser(uid: ownerUid),
+        ),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+      },
+      verify: (_) {
+        verify(publicGameService.subscribeToGame('cabo-test-abc')).called(1);
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Non-Owner closeRound syncs to Firestore (no owner gate)',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        when(
+          publicGameService.subscribeToGame(any),
+        ).thenAnswer((_) => const Stream.empty());
+        when(
+          publicGameService.saveOrUpdateGame(game: anyNamed('game')),
+        ).thenAnswer(
+          (invocation) async =>
+              invocation.namedArguments[const Symbol('game')] as Game,
+        );
+        when(
+          dialogService.showRoundCloserDialog(players: anyNamed('players')),
+        ).thenAnswer((_) => Future.value(playerList[0]));
+        when(
+          dialogService.showPointDialog(any),
+        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        clearInteractions(publicGameService);
+        clearInteractions(localGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: publicGame,
+        auth: MockFirebaseAuth(
+          signedIn: true,
+          mockUser: MockUser(uid: otherUid),
+        ),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.closeRound();
+        await Future.delayed(const Duration(milliseconds: 50));
+      },
+      verify: (_) {
+        final List<dynamic> synced = verify(
+          publicGameService.saveOrUpdateGame(game: captureAnyNamed('game')),
+        ).captured;
+        expect(synced, isNotEmpty);
+        final Game last = synced.last as Game;
+        expect(last.publicId, 'cabo-test-abc');
+        expect(last.players.first.rounds, isNotEmpty);
+      },
+    );
+  });
 }

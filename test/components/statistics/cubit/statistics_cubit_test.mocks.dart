@@ -445,6 +445,19 @@ class MockPublicGameService extends _i1.Mock implements _i15.PublicGameService {
           as _i9.Future<_i5.Game>);
 
   @override
+  _i9.Future<_i5.Game> joinGame(String? publicId) =>
+      (super.noSuchMethod(
+            Invocation.method(#joinGame, [publicId]),
+            returnValue: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(this, Invocation.method(#joinGame, [publicId])),
+            ),
+            returnValueForMissingStub: _i9.Future<_i5.Game>.value(
+              _FakeGame_3(this, Invocation.method(#joinGame, [publicId])),
+            ),
+          )
+          as _i9.Future<_i5.Game>);
+
+  @override
   _i9.Future<_i5.Game> getPublicGame(String? publicId) =>
       (super.noSuchMethod(
             Invocation.method(#getPublicGame, [publicId]),

@@ -257,9 +257,11 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     });
 
     try {
-      final Game publicGame = await app<PublicGameService>().getPublicGame(
-        qrCode,
-      );
+      Game publicGame = await app<PublicGameService>().getPublicGame(qrCode);
+      // joinGame registriert die UID des Mitspielers (ggf. via Anonymous-Auth)
+      // im Firestore-Dokument — Voraussetzung für die Security Rules und
+      // dafür, dass Punkte-Updates akzeptiert werden.
+      publicGame = await app<PublicGameService>().joinGame(qrCode);
 
       if (mounted) {
         setState(() {
