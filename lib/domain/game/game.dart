@@ -24,6 +24,7 @@ class Game extends Equatable {
     this.ruleSetId,
     required this.players,
     required this.ruleSet,
+    this.playerUids = const <String>[],
   });
 
   final int? id;
@@ -34,6 +35,7 @@ class Game extends Equatable {
   final List<Player> players;
   final int? ruleSetId;
   final RuleSet ruleSet;
+  final List<String> playerUids;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
@@ -48,6 +50,7 @@ class Game extends Equatable {
     List<Player>? players,
     int? ruleSetId,
     RuleSet? ruleSet,
+    List<String>? playerUids,
   }) {
     return Game(
       id: id ?? this.id,
@@ -58,6 +61,7 @@ class Game extends Equatable {
       players: players ?? this.players,
       ruleSetId: ruleSetId ?? this.ruleSetId,
       ruleSet: ruleSet ?? this.ruleSet,
+      playerUids: playerUids ?? this.playerUids,
     );
   }
 
@@ -166,5 +170,6 @@ class Game extends Equatable {
     players,
     ruleSet,
     ruleSetId,
+    playerUids,
   ];
 }

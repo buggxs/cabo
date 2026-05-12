@@ -200,6 +200,12 @@ abstract class AppLocalizations {
   /// **'Do you really want to finish the game? The game will be finished for all players.'**
   String get finishCurrentGamePublic;
 
+  /// No description provided for @leaveCurrentGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to leave the game? The other players will keep playing.'**
+  String get leaveCurrentGame;
+
   /// No description provided for @finishGameDialogButton.
   ///
   /// In en, this message translates to:
@@ -427,6 +433,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Game could not be found.'**
   String get joinGameScreenGameNotFound;
+
+  /// No description provided for @joinGameScreenGameAlreadyFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'This game has already finished and can no longer be joined.'**
+  String get joinGameScreenGameAlreadyFinished;
+
+  /// No description provided for @joinGameScreenScanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code'**
+  String get joinGameScreenScanQrCode;
+
+  /// No description provided for @joinGameScreenEnterIdInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter ID instead'**
+  String get joinGameScreenEnterIdInstead;
+
+  /// No description provided for @joinGameScreenGameIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game ID (e.g. cabo-123-xyz)'**
+  String get joinGameScreenGameIdLabel;
+
+  /// No description provided for @joinGameScreenSearchButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get joinGameScreenSearchButton;
+
+  /// No description provided for @joinGameScreenEnterIdToJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the game ID to join a game.'**
+  String get joinGameScreenEnterIdToJoin;
 
   /// No description provided for @historyScreenHours.
   ///

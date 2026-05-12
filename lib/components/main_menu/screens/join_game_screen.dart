@@ -23,7 +23,10 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   String? _scannedQrCode;
   String? _loadingStatusText;
   bool _showManualInput = false;
-  final TextEditingController _idController = TextEditingController();
+  static const String _idPrefix = 'cabo-';
+  final TextEditingController _idController = TextEditingController(
+    text: _idPrefix,
+  )..selection = const TextSelection.collapsed(offset: _idPrefix.length);
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +81,10 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
                   },
                   child: Text(
                     _showManualInput
-                        ? 'QR-Code scannen'
-                        : 'Stattdessen ID eingeben',
+                        ? AppLocalizations.of(context)!.joinGameScreenScanQrCode
+                        : AppLocalizations.of(
+                            context,
+                          )!.joinGameScreenEnterIdInstead,
                     style: const TextStyle(
                       color: CaboTheme.primaryColor,
                       decoration: TextDecoration.underline,
@@ -118,12 +123,16 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         children: [
           CaboTextFormField(
             controller: _idController,
-            labelText: 'Game ID (z.B. cabo-123-xyz)',
+            labelText: AppLocalizations.of(context)!.joinGameScreenGameIdLabel,
+            keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 20),
           MenuButton(
-            text: 'Suchen',
-            onTap: () => _retrieveQrCodeData(_idController.text),
+            text: AppLocalizations.of(context)!.joinGameScreenSearchButton,
+            onTap: () {
+              FocusScope.of(context).unfocus();
+              _retrieveQrCodeData(_idController.text);
+            },
           ),
         ],
       ),
@@ -161,7 +170,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     return Center(
       child: Text(
         _showManualInput
-            ? 'Gebe die Spiele-ID ein, um einem Spiel beizutreten.'
+            ? AppLocalizations.of(context)!.joinGameScreenEnterIdToJoin
             : AppLocalizations.of(context)!.joinGameScreenScanToJoin,
         textAlign: TextAlign.center,
         style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
@@ -257,9 +266,31 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     });
 
     try {
-      final Game publicGame = await app<PublicGameService>().getPublicGame(
-        qrCode,
-      );
+      Game publicGame = await app<PublicGameService>().getPublicGame(qrCode);
+
+      if (publicGame.isGameFinished) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _scannedQrCode = null;
+            _loadingStatusText = null;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.joinGameScreenGameAlreadyFinished,
+              ),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+        return;
+      }
+
+      // joinGame registriert die UID des Mitspielers (ggf. via Anonymous-Auth)
+      // im Firestore-Dokument — Voraussetzung für die Security Rules und
+      // dafür, dass Punkte-Updates akzeptiert werden.
+      publicGame = await app<PublicGameService>().joinGame(qrCode);
 
       if (mounted) {
         setState(() {

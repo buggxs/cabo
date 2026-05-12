@@ -88,11 +88,20 @@ class StatisticsScreenContent extends StatelessWidget {
           false;
     });
 
-    Player? winner = cubit.state.game?.players
+    if (!shouldPop) {
+      return false;
+    }
+
+    // Owner setzt hier finishedAt + synct zu Firestore → Mitspieler bekommen
+    // den Dialog via Listener. Non-Owner verlässt nur lokal.
+    await cubit.onPopScreen();
+
+    final Player? winner = cubit.state.game?.players
         .where((player) => player.place == 1)
         .firstOrNull;
+    final bool gameFinished = cubit.state.game?.isGameFinished ?? false;
 
-    if (shouldPop && winner != null) {
+    if (winner != null && gameFinished) {
       await app<NavigationService>().showAppDialog(
         dialog: (BuildContext context) => Dialog(
           shape: RoundedRectangleBorder(
@@ -109,15 +118,11 @@ class StatisticsScreenContent extends StatelessWidget {
       );
     }
 
-    if (shouldPop) {
-      cubit.onPopScreen();
-
-      if (context.mounted) {
-        Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
-      }
-
-      app<RatingService>().trackGameCompletion();
+    if (context.mounted) {
+      Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
     }
+
+    app<RatingService>().trackGameCompletion();
 
     return false;
   }

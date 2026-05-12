@@ -61,6 +61,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Do you really want to finish the game? The game will be finished for all players.';
 
   @override
+  String get leaveCurrentGame =>
+      'Do you really want to leave the game? The other players will keep playing.';
+
+  @override
   String get finishGameDialogButton => 'Yes, finish!';
 
   @override
@@ -176,6 +180,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinGameScreenGameNotFound => 'Game could not be found.';
+
+  @override
+  String get joinGameScreenGameAlreadyFinished =>
+      'This game has already finished and can no longer be joined.';
+
+  @override
+  String get joinGameScreenScanQrCode => 'Scan QR code';
+
+  @override
+  String get joinGameScreenEnterIdInstead => 'Enter ID instead';
+
+  @override
+  String get joinGameScreenGameIdLabel => 'Game ID (e.g. cabo-123-xyz)';
+
+  @override
+  String get joinGameScreenSearchButton => 'Search';
+
+  @override
+  String get joinGameScreenEnterIdToJoin => 'Enter the game ID to join a game.';
 
   @override
   String get historyScreenHours => 'Hours';

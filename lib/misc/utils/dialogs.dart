@@ -191,6 +191,23 @@ class StatisticsDialogService {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) {
         final String? uid = FirebaseAuth.instance.currentUser?.uid;
+        final bool isPublic = game?.isPublic ?? false;
+        final bool isOwner = isPublic && uid == game?.ownerId;
+        final bool isNonOwnerPublic = isPublic && !isOwner;
+
+        final String title;
+        final String confirmLabel;
+        if (isNonOwnerPublic) {
+          title = AppLocalizations.of(context)!.leaveCurrentGame;
+          confirmLabel = AppLocalizations.of(context)!.leaveGameDialogButton;
+        } else if (isOwner) {
+          title = AppLocalizations.of(context)!.finishCurrentGamePublic;
+          confirmLabel = AppLocalizations.of(context)!.finishGameDialogButton;
+        } else {
+          title = AppLocalizations.of(context)!.finishCurrentGame;
+          confirmLabel = AppLocalizations.of(context)!.finishGameDialogButton;
+        }
+
         return Dialog(
           shape: dialogBorderShape,
           backgroundColor: secondaryColor,
@@ -200,9 +217,7 @@ class StatisticsDialogService {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 AutoSizeText(
-                  uid == game?.ownerId
-                      ? AppLocalizations.of(context)!.finishCurrentGamePublic
-                      : AppLocalizations.of(context)!.finishCurrentGame,
+                  title,
                   style: CaboTheme.primaryTextStyle.copyWith(
                     color: CaboTheme.primaryGreenColor,
                     fontFamily: 'Archivo Black',
@@ -221,13 +236,7 @@ class StatisticsDialogService {
                         },
                         style: primaryButtonStyle,
                         child: Text(
-                          uid == game?.ownerId
-                              ? AppLocalizations.of(
-                                  context,
-                                )!.finishGameDialogButton
-                              : AppLocalizations.of(
-                                  context,
-                                )!.leaveGameDialogButton,
+                          confirmLabel,
                           style: CaboTheme.primaryTextStyle.copyWith(
                             fontWeight: FontWeight.w700,
                             overflow: TextOverflow.ellipsis,
