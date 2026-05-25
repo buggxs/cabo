@@ -30,6 +30,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'Über die App';
 
   @override
+  String get mainMenuSubtitle =>
+      'Dein digitaler Punkteblock für das echte Kartenspiel.';
+
+  @override
+  String get mainMenuStartBoardDescription =>
+      'Erstelle ein Punkteboard für dein Spiel mit Freunden vor Ort.';
+
+  @override
+  String get mainMenuJoinBoardDescription =>
+      'Tritt einem bestehenden Spiel bei, um Punkte mit anderen Spielern zu synchronisieren.';
+
+  @override
   String get playerAmountDialogTitle => 'Spieler Anzahl';
 
   @override

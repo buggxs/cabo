@@ -28,14 +28,6 @@ class MainMenuScreenContent extends StatelessWidget {
     MainMenuCubit cubit = context.watch<MainMenuCubit>();
     MainMenuState state = cubit.state;
 
-    Widget child = const MainMenuScreenList();
-
-    if (state is ChoosePlayerAmount) {
-      child = ChoosePlayerAmountScreen();
-    } else if (state is ChoosePlayerNames) {
-      child = ChoosePlayerNameScreen();
-    }
-
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) {
@@ -44,11 +36,26 @@ class MainMenuScreenContent extends StatelessWidget {
         cubit.onWillPop();
       },
       canPop: state is MainMenu,
-      child: CaboScaffold(
-        withDarkOverlay:
-            state is ChoosePlayerAmount || state is ChoosePlayerNames,
-        child: child,
-      ),
+      child: _buildBody(state),
     );
+  }
+
+  Widget _buildBody(MainMenuState state) {
+    // Sub-Screens des Start-Flows behalten vorerst den bisherigen Look.
+    if (state is ChoosePlayerAmount) {
+      return CaboScaffold(
+        withDarkOverlay: true,
+        child: ChoosePlayerAmountScreen(),
+      );
+    }
+    if (state is ChoosePlayerNames) {
+      return CaboScaffold(
+        withDarkOverlay: true,
+        child: ChoosePlayerNameScreen(),
+      );
+    }
+
+    // Neu gestaltete Landing-Page (helles Material-3-Design).
+    return const Scaffold(body: MainMenuScreenList());
   }
 }

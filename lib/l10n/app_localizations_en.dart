@@ -30,6 +30,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'About';
 
   @override
+  String get mainMenuSubtitle =>
+      'Your digital scorepad for the physical card game.';
+
+  @override
+  String get mainMenuStartBoardDescription =>
+      'Create a scoreboard for your game with friends in person.';
+
+  @override
+  String get mainMenuJoinBoardDescription =>
+      'Join an existing game to sync points with other players.';
+
+  @override
   String get playerAmountDialogTitle => 'Player Amount';
 
   @override

@@ -140,6 +140,24 @@ abstract class AppLocalizations {
   /// **'About'**
   String get menuEntryGameAboutScreen;
 
+  /// No description provided for @mainMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your digital scorepad for the physical card game.'**
+  String get mainMenuSubtitle;
+
+  /// No description provided for @mainMenuStartBoardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a scoreboard for your game with friends in person.'**
+  String get mainMenuStartBoardDescription;
+
+  /// No description provided for @mainMenuJoinBoardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Join an existing game to sync points with other players.'**
+  String get mainMenuJoinBoardDescription;
+
   /// No description provided for @playerAmountDialogTitle.
   ///
   /// In en, this message translates to:
