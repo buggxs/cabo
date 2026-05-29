@@ -182,6 +182,42 @@ abstract class AppLocalizations {
   /// **'Player Names'**
   String get playerNames;
 
+  /// No description provided for @choosePlayersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Players'**
+  String get choosePlayersTitle;
+
+  /// No description provided for @choosePlayersHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who\'s playing today?'**
+  String get choosePlayersHeroTitle;
+
+  /// No description provided for @recentPlayerGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent groups'**
+  String get recentPlayerGroups;
+
+  /// No description provided for @addPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another player'**
+  String get addPlayer;
+
+  /// No description provided for @playerLabelPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Player'**
+  String get playerLabelPrefix;
+
+  /// No description provided for @playerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name...'**
+  String get playerNameHint;
+
   /// No description provided for @start.
   ///
   /// In en, this message translates to:

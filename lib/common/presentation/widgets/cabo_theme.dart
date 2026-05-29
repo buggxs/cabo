@@ -43,6 +43,7 @@ class CaboTheme {
 
   static const Color m3Tertiary = Color(0xFF735C00);
   static const Color onTertiary = Color(0xFFFFFFFF);
+  static const Color tertiaryFixed = Color(0xFFFFE088);
 
   static const Color m3Error = Color(0xFFBA1A1A);
   static const Color onM3Error = Color(0xFFFFFFFF);

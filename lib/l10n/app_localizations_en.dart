@@ -54,6 +54,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerNames => 'Player Names';
 
   @override
+  String get choosePlayersTitle => 'Players';
+
+  @override
+  String get choosePlayersHeroTitle => 'Who\'s playing today?';
+
+  @override
+  String get recentPlayerGroups => 'Recent groups';
+
+  @override
+  String get addPlayer => 'Add another player';
+
+  @override
+  String get playerLabelPrefix => 'Player';
+
+  @override
+  String get playerNameHint => 'Enter name...';
+
+  @override
   String get start => 'Start';
 
   @override

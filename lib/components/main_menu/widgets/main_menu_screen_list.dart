@@ -42,7 +42,7 @@ class MainMenuScreenList extends StatelessWidget {
                     foregroundColor: CaboTheme.onPrimaryContainer,
                     accentColor: CaboTheme.m3Primary,
                     decorationAsset: 'assets/images/background_button_icon.svg',
-                    onTap: () => cubit.showChoosePlayerAmountScreen(),
+                    onTap: () => cubit.showChoosePlayerScreen(),
                   ),
                   const SizedBox(height: 16),
                   MainMenuActionCard(
