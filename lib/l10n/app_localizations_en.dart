@@ -341,6 +341,34 @@ class AppLocalizationsEn extends AppLocalizations {
       'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.';
 
   @override
+  String get ruleScreenScoreSection => 'Score Limits';
+
+  @override
+  String get ruleScreenMechanicsSection => 'Game Mechanics';
+
+  @override
+  String get ruleScreenTotalPointsDescription =>
+      'The game ends as soon as a player reaches this score.';
+
+  @override
+  String get ruleScreenKamikazeDescription =>
+      'Special rule: If a player reaches exactly this score at the end, something special happens.';
+
+  @override
+  String get ruleScreenZeroPointsDescription => 'Rewards winning a round.';
+
+  @override
+  String get ruleScreenPrecisionLandingDescription =>
+      'A chance for a comeback.';
+
+  @override
+  String get ruleScreenPointsSuffix => 'pts';
+
+  @override
+  String get ruleScreenInfoCard =>
+      'These rules apply to all active players in this round. Changes during a game can lead to unexpected score calculations.';
+
+  @override
   String get developerModeToggled => 'Developermode toggled';
 
   @override

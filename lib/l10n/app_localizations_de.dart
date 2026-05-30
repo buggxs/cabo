@@ -346,6 +346,35 @@ class AppLocalizationsDe extends AppLocalizations {
       'Regel: \"Exakt 100\" - Trifft ein Spieler die Gesammtpunktzahl, wird sein Punktestand auf 50 Punkte reduziert. Liegt er darüber, ist das Spiel beendet. Du kannst den Wert beliebig anpassen, indem du die Gesammtpunktzahl bearbeitest.';
 
   @override
+  String get ruleScreenScoreSection => 'Punkte-Limits';
+
+  @override
+  String get ruleScreenMechanicsSection => 'Spielmechanik';
+
+  @override
+  String get ruleScreenTotalPointsDescription =>
+      'Spiel endet, sobald ein Spieler diese Punktzahl erreicht.';
+
+  @override
+  String get ruleScreenKamikazeDescription =>
+      'Spezialregel: Wenn ein Spieler exakt diese Punktzahl am Ende erreicht, passiert etwas Besonderes.';
+
+  @override
+  String get ruleScreenZeroPointsDescription =>
+      'Belohnt den Sieg in einer Runde.';
+
+  @override
+  String get ruleScreenPrecisionLandingDescription =>
+      'Eine Chance auf ein Comeback.';
+
+  @override
+  String get ruleScreenPointsSuffix => 'Pkt.';
+
+  @override
+  String get ruleScreenInfoCard =>
+      'Diese Regeln gelten für alle aktiven Spieler in dieser Runde. Änderungen während eines Spiels können zu unerwarteten Punkteberechnungen führen.';
+
+  @override
   String get developerModeToggled => 'Entwicklermodus konfiguriert';
 
   @override

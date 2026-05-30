@@ -728,6 +728,54 @@ abstract class AppLocalizations {
   /// **'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.'**
   String get ruleScreenExactly100Hint;
 
+  /// No description provided for @ruleScreenScoreSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Score Limits'**
+  String get ruleScreenScoreSection;
+
+  /// No description provided for @ruleScreenMechanicsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Mechanics'**
+  String get ruleScreenMechanicsSection;
+
+  /// No description provided for @ruleScreenTotalPointsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The game ends as soon as a player reaches this score.'**
+  String get ruleScreenTotalPointsDescription;
+
+  /// No description provided for @ruleScreenKamikazeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Special rule: If a player reaches exactly this score at the end, something special happens.'**
+  String get ruleScreenKamikazeDescription;
+
+  /// No description provided for @ruleScreenZeroPointsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards winning a round.'**
+  String get ruleScreenZeroPointsDescription;
+
+  /// No description provided for @ruleScreenPrecisionLandingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A chance for a comeback.'**
+  String get ruleScreenPrecisionLandingDescription;
+
+  /// No description provided for @ruleScreenPointsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get ruleScreenPointsSuffix;
+
+  /// No description provided for @ruleScreenInfoCard.
+  ///
+  /// In en, this message translates to:
+  /// **'These rules apply to all active players in this round. Changes during a game can lead to unexpected score calculations.'**
+  String get ruleScreenInfoCard;
+
   /// No description provided for @developerModeToggled.
   ///
   /// In en, this message translates to:
