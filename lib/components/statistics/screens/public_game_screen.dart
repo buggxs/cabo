@@ -1,4 +1,3 @@
-import 'package:cabo/common/presentation/screens/cabo_default_view.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
@@ -56,26 +55,31 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
       child = buildAuthenticatedView(context);
     }
 
-    return CaboDefaultView(
+    return Scaffold(
+      backgroundColor: CaboTheme.background,
       appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: CaboTheme.background,
         leading: IconButton(
-          icon: const Icon(
-            Icons.close,
-            size: 24,
-            color: CaboTheme.primaryColor,
-          ),
+          icon: const Icon(Icons.close, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         title: Text(
           AppLocalizations.of(context)!.publishDialogTitle,
-          style: CaboTheme.primaryTextStyle,
+          style: CaboTheme.headlineMediumStyle.copyWith(
+            color: CaboTheme.m3Primary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-      useOverlay: true,
-      child: child,
+      body: SafeArea(
+        top: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 448),
+            child: child,
+          ),
+        ),
+      ),
     );
   }
 

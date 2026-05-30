@@ -1,4 +1,5 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class QrCodeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final QrCode qrCode = QrCode.fromData(
       data: gameId,
       errorCorrectLevel: QrErrorCorrectLevel.H,
@@ -19,53 +21,60 @@ class QrCodeSection extends StatelessWidget {
     final QrImage qrImage = QrImage(qrCode);
     final String? userId = FirebaseAuth.instance.currentUser?.uid;
 
-    return Column(
+    return SingleChildScrollView(
       key: const ValueKey<String>('qr-code-view'),
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        const Icon(
-          Icons.check_circle_outline_rounded,
-          color: Colors.greenAccent,
-          size: 100,
-        ),
-        const SizedBox(height: 20),
-        Text(
-          userId != ownerId
-              ? AppLocalizations.of(context)!.publishDialogJoinedGame
-              : AppLocalizations.of(context)!.publishDialogGamePublished,
-          textAlign: TextAlign.center,
-          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 26),
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            AppLocalizations.of(context)!.publishDialogFriendsCanJoin,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Icon(
+            Icons.check_circle_rounded,
+            color: CaboTheme.m3Secondary,
+            size: 72,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            userId != ownerId
+                ? l10n.publishDialogJoinedGame
+                : l10n.publishDialogGamePublished,
             textAlign: TextAlign.center,
-            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 22),
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: CaboTheme.onSurface,
+            ),
           ),
-        ),
-        const SizedBox(height: 30),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.0),
+          const SizedBox(height: 8),
+          Text(
+            l10n.publishDialogFriendsCanJoin,
+            textAlign: TextAlign.center,
+            style: CaboTheme.bodyLargeStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+            ),
           ),
-          width: 200,
-          height: 200,
-          child: PrettyQrView(qrImage: qrImage),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          gameId,
-          style: CaboTheme.secondaryTextStyle.copyWith(
-            fontSize: 20,
-            color: CaboTheme.primaryColor,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 24),
+          PublishStage(
+            backgroundColor: CaboTheme.surfaceContainerLowest,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: PrettyQrView(qrImage: qrImage),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: CaboTheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              gameId,
+              style: CaboTheme.labelLargeStyle.copyWith(
+                color: CaboTheme.m3Primary,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

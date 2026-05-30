@@ -1,5 +1,6 @@
+import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/components/main_menu/widgets/menu_button.dart';
+import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -15,25 +16,41 @@ class PublishGameSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    return SingleChildScrollView(
       key: const ValueKey<String>('publish-button-view'),
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            AppLocalizations.of(context)!.publishDialogReadyToPublish,
-            textAlign: TextAlign.center,
-            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 26),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const PublishStage(
+            child: Icon(
+              Icons.public_rounded,
+              size: 72,
+              color: CaboTheme.m3Primary,
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        MenuButton(
-          text: AppLocalizations.of(context)!.publishDialogPublish,
-          onTap: isPublishing ? null : onPublish,
-          textStyle: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
-        ),
-      ],
+          const SizedBox(height: 32),
+          Text(
+            l10n.publishDialogReadyToPublish,
+            textAlign: TextAlign.center,
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: CaboTheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 32),
+          CaboPrimaryButton(
+            label: l10n.publishDialogPublish,
+            onPressed: isPublishing ? null : onPublish,
+            leading: const Icon(
+              Icons.cloud_upload_rounded,
+              size: 24,
+              color: CaboTheme.onPrimaryContainer,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

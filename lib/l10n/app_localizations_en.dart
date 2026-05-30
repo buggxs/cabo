@@ -90,7 +90,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsNavRules => 'Rules';
 
   @override
-  String get statsNavOnline => 'Online';
+  String get statsNavOnline => 'Public';
+
+  @override
+  String get statsNavShare => 'Share game';
 
   @override
   String get finishCurrentGame => 'Do you really want to finish the game?';
@@ -181,7 +184,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get publishDialogFailedToPublish => 'Game could not be published.';
 
   @override
+  String get authScreenSignInHeadline => 'Ready for your next adventure?';
+
+  @override
   String get authScreenSignInToPublish => 'Sign up to publish your game.';
+
+  @override
+  String get authScreenSignInPrivacyHint =>
+      'Safe and fast. We never share your private data.';
 
   @override
   String get authScreenSignInWithGoogle => 'Log in with Google';

@@ -1,4 +1,5 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:flutter/material.dart';
 
 class LoadingSpinnerSection extends StatelessWidget {
@@ -8,20 +9,27 @@ class LoadingSpinnerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Padding(
       key: const ValueKey<String>('loading-view'),
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        const CircularProgressIndicator(color: CaboTheme.primaryColor),
-        const SizedBox(height: 20),
-        if (loadingText != null) ...[
-          Text(
-            loadingText!,
-            textAlign: TextAlign.center,
-            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 22),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const PublishStage(
+            child: CircularProgressIndicator(color: CaboTheme.m3Primary),
           ),
+          if (loadingText != null) ...<Widget>[
+            const SizedBox(height: 32),
+            Text(
+              loadingText!,
+              textAlign: TextAlign.center,
+              style: CaboTheme.bodyLargeStyle.copyWith(
+                color: CaboTheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

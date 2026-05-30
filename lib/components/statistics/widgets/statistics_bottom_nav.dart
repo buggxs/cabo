@@ -46,10 +46,9 @@ class StatisticsBottomNav extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(
-                icon: Icons.close,
+                icon: Icons.logout,
                 label: context.l10n.statsNavEndGame,
                 onTap: onEndGame,
-                highlighted: true,
               ),
               _NavItem(
                 icon: Icons.menu_book,
@@ -58,7 +57,9 @@ class StatisticsBottomNav extends StatelessWidget {
               ),
               _NavItem(
                 icon: Icons.public,
-                label: context.l10n.statsNavOnline,
+                label: isOnline
+                    ? context.l10n.statsNavOnline
+                    : context.l10n.statsNavShare,
                 onTap: onOnline,
                 foregroundColor: isOnline
                     ? CaboTheme.m3Secondary
@@ -77,7 +78,6 @@ class _NavItem extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.highlighted = false,
     this.foregroundColor,
   });
 
@@ -85,39 +85,28 @@ class _NavItem extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  /// Hebt den Eintrag mit gefülltem Container hervor (z. B. "Spiel beenden").
-  final bool highlighted;
   final Color? foregroundColor;
 
   @override
   Widget build(BuildContext context) {
-    final Color color = highlighted
-        ? CaboTheme.onPrimaryContainer
-        : (foregroundColor ?? CaboTheme.onSurfaceVariant);
-
-    final Widget content = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 24, color: color),
-        const SizedBox(height: 2),
-        Text(label, style: CaboTheme.labelSmallStyle.copyWith(color: color)),
-      ],
-    );
+    final Color color = foregroundColor ?? CaboTheme.onSurfaceVariant;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-      child: Container(
-        padding: highlighted
-            ? const EdgeInsets.symmetric(horizontal: 20, vertical: 6)
-            : const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: highlighted
-            ? const BoxDecoration(
-                color: CaboTheme.primaryContainer,
-                borderRadius: BorderRadius.all(Radius.circular(999)),
-              )
-            : null,
-        child: content,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 24, color: color),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: CaboTheme.labelSmallStyle.copyWith(color: color),
+            ),
+          ],
+        ),
       ),
     );
   }

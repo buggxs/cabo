@@ -257,8 +257,14 @@ abstract class AppLocalizations {
   /// No description provided for @statsNavOnline.
   ///
   /// In en, this message translates to:
-  /// **'Online'**
+  /// **'Public'**
   String get statsNavOnline;
+
+  /// No description provided for @statsNavShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share game'**
+  String get statsNavShare;
 
   /// No description provided for @finishCurrentGame.
   ///
@@ -422,11 +428,23 @@ abstract class AppLocalizations {
   /// **'Game could not be published.'**
   String get publishDialogFailedToPublish;
 
+  /// No description provided for @authScreenSignInHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for your next adventure?'**
+  String get authScreenSignInHeadline;
+
   /// No description provided for @authScreenSignInToPublish.
   ///
   /// In en, this message translates to:
   /// **'Sign up to publish your game.'**
   String get authScreenSignInToPublish;
+
+  /// No description provided for @authScreenSignInPrivacyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe and fast. We never share your private data.'**
+  String get authScreenSignInPrivacyHint;
 
   /// No description provided for @authScreenSignInWithGoogle.
   ///
