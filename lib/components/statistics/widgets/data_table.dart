@@ -45,7 +45,7 @@ class _CaboDataTableState extends State<CaboDataTable>
               // Sticky header
               Material(
                 elevation: _vertical.hasClients && _vertical.offset > 0 ? 2 : 0,
-                color: CaboTheme.secondaryBackgroundColor,
+                color: CaboTheme.surfaceContainerHigh,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: widget.titleCells,

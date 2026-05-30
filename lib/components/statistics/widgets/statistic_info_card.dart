@@ -77,48 +77,50 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(12.0),
-        color: CaboTheme.secondaryBackgroundColor,
-        shadowColor: Colors.black,
-        elevation: 5.0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-          child: Column(
-            children: [
-              if (widget.title != null)
-                Text(
+    final TextStyle valueStyle = CaboTheme.displayLargeStyle.copyWith(
+      fontSize: 32,
+      height: 1.0,
+      color: CaboTheme.m3Primary,
+    );
+
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: CaboTheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+          border: Border.all(color: CaboTheme.surfaceVariant),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+              blurRadius: 12,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            if (widget.title != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Text(
                   widget.title!,
-                  style: CaboTheme.primaryTextStyle.copyWith(
-                    height: 0,
-                    fontFamily: 'Archivo Black',
-                    color: CaboTheme.fourthColor,
-                    fontWeight: FontWeight.w800,
+                  style: CaboTheme.labelLargeStyle.copyWith(
+                    color: CaboTheme.onSurfaceVariant,
                   ),
                 ),
-              if (!widget.shouldBeTimer)
-                Text(
-                  widget.content ?? 'Empty',
-                  style: CaboTheme.numberTextStyle.copyWith(
-                    height: 0,
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                ),
-              if (widget.shouldBeTimer)
-                AutoSizeText(
-                  _elapsedTimeString,
-                  softWrap: true,
-                  style: CaboTheme.numberTextStyle.copyWith(
-                    height: 0,
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                ),
-            ],
-          ),
+              ),
+            if (!widget.shouldBeTimer)
+              Text(widget.content ?? 'Empty', style: valueStyle),
+            if (widget.shouldBeTimer)
+              AutoSizeText(
+                _elapsedTimeString,
+                softWrap: true,
+                maxLines: 1,
+                style: valueStyle,
+              ),
+          ],
         ),
       ),
     );

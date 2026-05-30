@@ -1,6 +1,9 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
+import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
+import 'package:cabo/components/statistics/widgets/statistics_bottom_nav.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
 import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
@@ -37,35 +40,36 @@ class StatisticsScreenContent extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
+      backgroundColor: CaboTheme.background,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromRGBO(32, 45, 18, 0.9),
+        backgroundColor: CaboTheme.primaryContainer,
         onPressed: () => cubit.closeRound(),
         elevation: 4.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100),
-          side: const BorderSide(color: CaboTheme.primaryColor),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Icons.add,
+          size: 28,
+          color: CaboTheme.onPrimaryContainer,
         ),
-        child: const Icon(Icons.add, size: 28, color: CaboTheme.primaryColor),
       ),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.primaryColor),
-          onPressed: () => _onPopScreen(cubit, context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.public,
-              color: (cubit.state.game?.isPublic ?? false)
-                  ? CaboTheme.primaryColor
-                  : CaboTheme.failureLightRed,
-            ),
-            onPressed: () => cubit.showPublicGameDialog(context),
+        backgroundColor: CaboTheme.background,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Text(
+          '${context.l10n.gameName} ${context.l10n.gameSubTitle}',
+          style: CaboTheme.headlineMediumStyle.copyWith(
+            color: CaboTheme.m3Primary,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
+      ),
+      bottomNavigationBar: StatisticsBottomNav(
+        isOnline: cubit.state.game?.isPublic ?? false,
+        onEndGame: () => _onPopScreen(cubit, context),
+        onRules: () => Navigator.of(context).pushNamed(RuleSetScreen.route),
+        onOnline: () => cubit.showPublicGameDialog(context),
       ),
       body: PopScope(
         canPop: false,

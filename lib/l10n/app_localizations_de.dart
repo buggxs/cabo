@@ -84,6 +84,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statsCardTime => 'Spielzeit';
 
   @override
+  String get statsNavEndGame => 'Spiel beenden';
+
+  @override
+  String get statsNavRules => 'Regeln';
+
+  @override
+  String get statsNavOnline => 'Online';
+
+  @override
   String get finishCurrentGame => 'Möchtest du das Spiel wirklich beenden?';
 
   @override

@@ -242,6 +242,24 @@ abstract class AppLocalizations {
   /// **'Play time'**
   String get statsCardTime;
 
+  /// No description provided for @statsNavEndGame.
+  ///
+  /// In en, this message translates to:
+  /// **'End Game'**
+  String get statsNavEndGame;
+
+  /// No description provided for @statsNavRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get statsNavRules;
+
+  /// No description provided for @statsNavOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get statsNavOnline;
+
   /// No description provided for @finishCurrentGame.
   ///
   /// In en, this message translates to:
