@@ -135,6 +135,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPointsDialogTitle => 'Enter points';
 
   @override
+  String get dialogRoundFinishedTitle => 'Round finished!';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String get dialogEnterPoints => 'Enter points';
+
+  @override
+  String dialogPointsRoundFinished(int round) {
+    return 'Round $round finished';
+  }
+
+  @override
+  String get dialogKeypadNext => 'Next';
+
+  @override
+  String get dialogKeypadDone => 'Done';
+
+  @override
   String get publishDialogTitle => 'Publish Game';
 
   @override

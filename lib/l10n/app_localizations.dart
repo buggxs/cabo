@@ -338,6 +338,42 @@ abstract class AppLocalizations {
   /// **'Enter points'**
   String get enterPointsDialogTitle;
 
+  /// No description provided for @dialogRoundFinishedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Round finished!'**
+  String get dialogRoundFinishedTitle;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// No description provided for @dialogEnterPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter points'**
+  String get dialogEnterPoints;
+
+  /// No description provided for @dialogPointsRoundFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Round {round} finished'**
+  String dialogPointsRoundFinished(int round);
+
+  /// No description provided for @dialogKeypadNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get dialogKeypadNext;
+
+  /// No description provided for @dialogKeypadDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dialogKeypadDone;
+
   /// No description provided for @publishDialogTitle.
   ///
   /// In en, this message translates to:

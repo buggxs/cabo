@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/components/statistics/widgets/points_entry_sheet.dart';
+import 'package:cabo/components/statistics/widgets/round_closer_sheet.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -76,114 +78,10 @@ const InputDecoration dialogPointInputStyle = InputDecoration(
 
 class StatisticsDialogService {
   Future<Map<String, int?>?> showPointDialog(List<Player>? players) {
-    Map<String, int?> playerPointsMap = {};
-    final Map<String, FocusNode> focusNodes = {};
+    final List<Player> playerList = players ?? const <Player>[];
 
-    // Create focus nodes for each player
-    players?.forEach((player) {
-      focusNodes[player.name] = FocusNode();
-    });
-
-    return app<NavigationService>().showAppDialog<Map<String, int?>>(
-      dialog: (BuildContext context) => Dialog(
-        shape: dialogBorderShape,
-        backgroundColor: secondaryColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  AppLocalizations.of(context)!.enterPointsDialogTitle,
-                  style: CaboTheme.primaryTextStyle.copyWith(
-                    color: CaboTheme.primaryGreenColor,
-                    fontFamily: 'Archivo Black',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                ...?players?.map(
-                  (Player player) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AutoSizeText(
-                          player.name,
-                          style: CaboTheme.primaryTextStyle.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(
-                          width: 150,
-                          child: TextField(
-                            focusNode: focusNodes[player.name],
-                            keyboardType: TextInputType.number,
-                            onChanged: (String points) {
-                              playerPointsMap[player.name] = int.tryParse(
-                                points,
-                              );
-                            },
-                            minLines: 1,
-                            style: CaboTheme.numberTextStyle.copyWith(
-                              color: CaboTheme.primaryColor,
-                              fontSize: 20,
-                            ),
-                            decoration: dialogPointInputStyle.copyWith(
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 8,
-                              ),
-                              labelText: AppLocalizations.of(
-                                context,
-                              )!.dialogPointsLabel,
-                              labelStyle: CaboTheme.secondaryTextStyle.copyWith(
-                                color: CaboTheme.primaryColor.withAlpha(100),
-                                fontFamily: 'Aclonica',
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // Unfocus and dispose before popping
-                            for (var node in focusNodes.values) {
-                              if (node.hasFocus) {
-                                node.unfocus();
-                              }
-                              node.dispose();
-                            }
-                            Navigator.of(context).pop(playerPointsMap);
-                          },
-                          style: primaryButtonStyle,
-                          child: Text(
-                            AppLocalizations.of(context)!.enterDialogButton,
-                            style: CaboTheme.primaryTextStyle.copyWith(
-                              fontWeight: FontWeight.w900,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return app<NavigationService>().showAppModalBottomSheet<Map<String, int?>>(
+      builder: (BuildContext context) => PointsEntrySheet(players: playerList),
     );
   }
 
@@ -277,64 +175,10 @@ class StatisticsDialogService {
   }
 
   Future<Player?> showRoundCloserDialog({List<Player>? players}) {
-    return app<NavigationService>().showAppDialog(
-      dialog: (BuildContext context) {
-        List<Widget> buttons =
-            players
-                ?.map(
-                  (Player player) => Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: primaryButtonStyle,
-                          onPressed: () {
-                            Navigator.of(context).pop(player);
-                          },
-                          child: AutoSizeText(
-                            player.name,
-                            style: CaboTheme.primaryTextStyle.copyWith(
-                              fontWeight: FontWeight.w900,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-                .toList() ??
-            <OutlinedButton>[];
-        return Dialog(
-          shape: dialogBorderShape,
-          backgroundColor: secondaryColor,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                AutoSizeText(
-                  maxLines: 2,
-                  AppLocalizations.of(context)!.dialogTextRoundFinishedBy,
-                  style: CaboTheme.primaryTextStyle.copyWith(
-                    color: CaboTheme.primaryGreenColor,
-                    fontFamily: 'Archivo Black',
-                    fontWeight: FontWeight.w900,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-                if (buttons.isNotEmpty)
-                  ...buttons.map(
-                    (Widget button) => Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: button,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+    final List<Player> playerList = players ?? const <Player>[];
+
+    return app<NavigationService>().showAppModalBottomSheet<Player>(
+      builder: (BuildContext context) => RoundCloserSheet(players: playerList),
     );
   }
 

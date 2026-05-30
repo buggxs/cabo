@@ -15,6 +15,17 @@ class NavigationService {
     );
   }
 
+  /// Zeigt ein modales Bottom-Sheet (neues helles Design) über dem globalen
+  /// Navigator. Das Sheet darf die volle Höhe nutzen ([isScrollControlled]).
+  Future<T?> showAppModalBottomSheet<T>({required WidgetBuilder builder}) {
+    return showModalBottomSheet<T>(
+      context: navigatorKey.currentContext!,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: builder,
+    );
+  }
+
   void pushToStatsScreen({
     required List<Player> players,
     bool? shouldUseSpecialRules,

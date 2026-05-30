@@ -135,6 +135,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enterPointsDialogTitle => 'Enter points';
 
   @override
+  String get dialogRoundFinishedTitle => 'Runde beendet!';
+
+  @override
+  String get dialogCancel => 'Abbrechen';
+
+  @override
+  String get dialogEnterPoints => 'Punkte eintragen';
+
+  @override
+  String dialogPointsRoundFinished(int round) {
+    return 'Runde $round beendet';
+  }
+
+  @override
+  String get dialogKeypadNext => 'Weiter';
+
+  @override
+  String get dialogKeypadDone => 'Fertig';
+
+  @override
   String get publishDialogTitle => 'Spiel veröffentlichen';
 
   @override

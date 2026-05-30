@@ -39,6 +39,19 @@
   "notLoadGameDialogButton": "No, do not load.",
   "enterDialogButton": "Save",
   "enterPointsDialogTitle": "Enter points",
+  "dialogRoundFinishedTitle": "Round finished!",
+  "dialogCancel": "Cancel",
+  "dialogEnterPoints": "Enter points",
+  "dialogPointsRoundFinished": "Round {round} finished",
+  "@dialogPointsRoundFinished": {
+    "placeholders": {
+      "round": {
+        "type": "int"
+      }
+    }
+  },
+  "dialogKeypadNext": "Next",
+  "dialogKeypadDone": "Done",
   "publishDialogTitle": "Publish Game",
   "publishDialogReadyToPublish": "Your game is ready to be published.",
   "publishDialogLoading": "Your game will be published...",
