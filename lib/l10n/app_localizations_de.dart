@@ -276,6 +276,18 @@ class AppLocalizationsDe extends AppLocalizations {
       'Gib die Spiel-ID ein, um einem Spiel beizutreten.';
 
   @override
+  String get joinGameScreenOrDivider => 'oder';
+
+  @override
+  String get joinGameScreenManualLabel => 'Spiel-ID';
+
+  @override
+  String get joinGameScreenSearchGameButton => 'Spiel suchen';
+
+  @override
+  String get joinGameScreenJoinButton => 'Spiel beitreten';
+
+  @override
   String get historyScreenHours => 'Stunde/n';
 
   @override

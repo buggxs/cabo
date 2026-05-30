@@ -1,8 +1,6 @@
-import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
+import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
-import 'package:cabo/components/main_menu/widgets/menu_button.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -22,130 +20,161 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   bool _isLoading = false;
   String? _scannedQrCode;
   String? _loadingStatusText;
-  bool _showManualInput = false;
   static const String _idPrefix = 'cabo-';
   final TextEditingController _idController = TextEditingController(
     text: _idPrefix,
   )..selection = const TextSelection.collapsed(offset: _idPrefix.length);
 
   @override
+  void dispose() {
+    _idController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
+      backgroundColor: CaboTheme.background,
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: CaboTheme.background,
         elevation: 0,
-        backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.close,
-            size: 24,
-            color: CaboTheme.primaryColor,
-          ),
+          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          AppLocalizations.of(context)!.menuEntryJoinGame,
-          style: CaboTheme.primaryTextStyle.copyWith(fontSize: 38),
-        ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/cabo-main-menu-background.png'),
-            fit: BoxFit.cover,
+          l10n.menuEntryJoinGame,
+          style: CaboTheme.headlineMediumStyle.copyWith(
+            color: CaboTheme.m3Primary,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        constraints: const BoxConstraints.expand(),
-        child: DarkScreenOverlay(
-          darken: 0.70,
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: _showManualInput
-                      ? _buildManualInput()
-                      : CaboScannerWindow(
-                          onDetectPublicId: _retrieveQrCodeData,
-                        ),
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _showManualInput = !_showManualInput;
-                    });
-                  },
-                  child: Text(
-                    _showManualInput
-                        ? AppLocalizations.of(context)!.joinGameScreenScanQrCode
-                        : AppLocalizations.of(
-                            context,
-                          )!.joinGameScreenEnterIdInstead,
-                    style: const TextStyle(
-                      color: CaboTheme.primaryColor,
-                      decoration: TextDecoration.underline,
-                      decorationColor: CaboTheme.primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildGameInfo(),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: MenuButton(
-                    text: AppLocalizations.of(context)!.loadGameDialogButton,
-                    onTap: (_publicGame != null && !_isLoading)
-                        ? () => app<NavigationService>().pushToStatsScreen(
-                            players: _publicGame!.players,
-                            game: _publicGame,
-                          )
-                        : null,
-                  ),
-                ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 576),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              children: <Widget>[
+                _buildScannerSection(l10n),
+                const SizedBox(height: 24),
+                _buildOrDivider(l10n),
+                const SizedBox(height: 24),
+                _buildManualInput(l10n),
+                const SizedBox(height: 24),
+                _buildGameInfo(l10n),
               ],
             ),
           ),
         ),
       ),
+      bottomNavigationBar: _buildJoinButton(l10n),
     );
   }
 
-  Widget _buildManualInput() {
-    return Padding(
-      key: const ValueKey('manual-input'),
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Column(
-        children: [
-          CaboTextFormField(
-            controller: _idController,
-            labelText: AppLocalizations.of(context)!.joinGameScreenGameIdLabel,
-            keyboardType: TextInputType.text,
+  Widget _buildScannerSection(AppLocalizations l10n) {
+    return Column(
+      children: <Widget>[
+        Center(child: CaboScannerWindow(onDetectPublicId: _retrieveQrCodeData)),
+        const SizedBox(height: 16),
+        Text(
+          l10n.joinGameScreenScanToJoin,
+          textAlign: TextAlign.center,
+          style: CaboTheme.bodyMediumStyle.copyWith(
+            color: CaboTheme.onSurfaceVariant,
           ),
-          const SizedBox(height: 20),
-          MenuButton(
-            text: AppLocalizations.of(context)!.joinGameScreenSearchButton,
-            onTap: () {
-              FocusScope.of(context).unfocus();
-              _retrieveQrCodeData(_idController.text);
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildGameInfo() {
+  Widget _buildOrDivider(AppLocalizations l10n) {
+    return Row(
+      children: <Widget>[
+        const Expanded(child: Divider(color: CaboTheme.outlineVariant)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            l10n.joinGameScreenOrDivider,
+            style: CaboTheme.labelLargeStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        const Expanded(child: Divider(color: CaboTheme.outlineVariant)),
+      ],
+    );
+  }
+
+  Widget _buildManualInput(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 4),
+          child: Text(
+            l10n.joinGameScreenManualLabel,
+            style: CaboTheme.labelLargeStyle.copyWith(
+              color: CaboTheme.m3Primary,
+            ),
+          ),
+        ),
+        TextField(
+          controller: _idController,
+          autocorrect: false,
+          enableSuggestions: false,
+          cursorColor: CaboTheme.m3Primary,
+          style: CaboTheme.bodyLargeStyle.copyWith(color: CaboTheme.onSurface),
+          decoration: InputDecoration(
+            hintText: l10n.joinGameScreenGameIdLabel,
+            hintStyle: CaboTheme.bodyMediumStyle.copyWith(
+              color: CaboTheme.outlineVariant,
+            ),
+            filled: true,
+            fillColor: CaboTheme.surfaceContainer,
+            suffixIcon: const Icon(Icons.edit, color: CaboTheme.outline),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+              borderSide: const BorderSide(
+                color: CaboTheme.m3Primary,
+                width: 2,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 4),
+          child: Text(
+            l10n.joinGameScreenEnterIdToJoin,
+            style: CaboTheme.labelSmallStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGameInfo(AppLocalizations l10n) {
     if (_isLoading) {
       return Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(color: CaboTheme.primaryColor),
+          children: <Widget>[
+            const CircularProgressIndicator(color: CaboTheme.m3Primary),
             const SizedBox(height: 20),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -155,7 +184,9 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
                 _loadingStatusText ?? '',
                 key: ValueKey<String>(_loadingStatusText ?? ''),
                 textAlign: TextAlign.center,
-                style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
+                style: CaboTheme.bodyLargeStyle.copyWith(
+                  color: CaboTheme.onSurface,
+                ),
               ),
             ),
           ],
@@ -164,75 +195,103 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     }
 
     if (_publicGame != null) {
-      return _buildGameDetails(_publicGame!);
+      return _buildGameDetails(l10n, _publicGame!);
     }
 
-    return Center(
-      child: Text(
-        _showManualInput
-            ? AppLocalizations.of(context)!.joinGameScreenEnterIdToJoin
-            : AppLocalizations.of(context)!.joinGameScreenScanToJoin,
-        textAlign: TextAlign.center,
-        style: CaboTheme.primaryTextStyle.copyWith(fontSize: 18),
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildGameDetails(AppLocalizations l10n, Game game) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: CaboTheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+        border: Border.all(color: CaboTheme.outlineVariant),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Color(0x143D3A35),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            l10n.joinGameScreenGameFound,
+            textAlign: TextAlign.center,
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: CaboTheme.m3Primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${l10n.joinGameScreenGameRounds}: ${game.players.firstOrNull?.rounds.length ?? 0}',
+            textAlign: TextAlign.center,
+            style: CaboTheme.bodyLargeStyle.copyWith(
+              color: CaboTheme.m3Secondary,
+            ),
+          ),
+          const Divider(
+            color: CaboTheme.outlineVariant,
+            thickness: 1,
+            height: 30,
+          ),
+          ...game.players.map(
+            (player) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                player.name,
+                style: CaboTheme.bodyLargeStyle.copyWith(
+                  color: CaboTheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              trailing: Text(
+                '${player.totalPoints} ${l10n.joinGameScreenGamePoints}',
+                style: CaboTheme.bodyLargeStyle.copyWith(
+                  color: CaboTheme.m3Secondary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildGameDetails(Game game) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: CaboTheme.secondaryColor.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: CaboTheme.tertiaryColor, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.joinGameScreenGameFound,
-            textAlign: TextAlign.center,
-            style: CaboTheme.primaryTextStyle.copyWith(fontSize: 24),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${AppLocalizations.of(context)!.joinGameScreenGameRounds}: ${game.players.firstOrNull?.rounds.length ?? 0}',
-            textAlign: TextAlign.center,
-            style: CaboTheme.secondaryTextStyle.copyWith(
-              fontSize: 18,
-              color: CaboTheme.primaryGreenColor,
-            ),
-          ),
-          const Divider(
-            color: CaboTheme.tertiaryColor,
-            thickness: 1,
-            height: 30,
-          ),
-          SingleChildScrollView(
-            child: Column(
-              children: game.players
-                  .map(
-                    (player) => ListTile(
-                      title: Text(
-                        player.name,
-                        style: CaboTheme.primaryTextStyle.copyWith(
-                          fontSize: 20,
-                        ),
-                      ),
-                      trailing: Text(
-                        '${player.totalPoints} ${AppLocalizations.of(context)!.joinGameScreenGamePoints}',
-                        style: CaboTheme.secondaryTextStyle.copyWith(
-                          fontSize: 20,
-                          color: CaboTheme.primaryGreenColor,
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ],
+  Widget _buildJoinButton(AppLocalizations l10n) {
+    final VoidCallback? onPressed;
+    if (_isLoading) {
+      onPressed = null;
+    } else if (_publicGame != null) {
+      onPressed = () => app<NavigationService>().pushToStatsScreen(
+        players: _publicGame!.players,
+        game: _publicGame,
+      );
+    } else {
+      onPressed = () {
+        FocusScope.of(context).unfocus();
+        _retrieveQrCodeData(_idController.text);
+      };
+    }
+
+    final String label = _publicGame != null
+        ? l10n.joinGameScreenJoinButton
+        : l10n.joinGameScreenSearchGameButton;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+        child: CaboPrimaryButton(
+          label: label,
+          leading: const Icon(Icons.login, color: CaboTheme.onPrimaryContainer),
+          onPressed: onPressed,
+        ),
       ),
     );
   }
@@ -280,7 +339,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
               content: Text(
                 AppLocalizations.of(context)!.joinGameScreenGameAlreadyFinished,
               ),
-              backgroundColor: Colors.redAccent,
+              backgroundColor: CaboTheme.m3Error,
             ),
           );
         }
@@ -311,7 +370,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             content: Text(
               AppLocalizations.of(context)!.joinGameScreenGameNotFound,
             ),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: CaboTheme.m3Error,
           ),
         );
       }

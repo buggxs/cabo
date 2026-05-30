@@ -11,8 +11,10 @@ class CaboScannerWindow extends StatefulWidget {
   State<CaboScannerWindow> createState() => _CaboScannerWindowState();
 }
 
-class _CaboScannerWindowState extends State<CaboScannerWindow> {
+class _CaboScannerWindowState extends State<CaboScannerWindow>
+    with SingleTickerProviderStateMixin {
   late final MobileScannerController controller;
+  late final AnimationController _scanLineController;
 
   @override
   void initState() {
@@ -21,34 +23,129 @@ class _CaboScannerWindowState extends State<CaboScannerWindow> {
       detectionTimeoutMs: 1000,
       returnImage: true,
     );
+    _scanLineController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2500),
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
+    _scanLineController.dispose();
     controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 250,
-        width: 250,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: CaboTheme.primaryColor, width: 2),
+    return Container(
+      height: 280,
+      width: 280,
+      decoration: BoxDecoration(
+        color: CaboTheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+        border: Border.all(color: CaboTheme.outlineVariant),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Color(0x143D3A35),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            MobileScanner(
+              controller: controller,
+              onDetect: (capture) {
+                final List<Barcode> barcodes = capture.barcodes;
+                for (final barcode in barcodes) {
+                  debugPrint('Barcode found! ${barcode.rawValue}');
+                  widget.onDetectPublicId(barcode.rawValue);
+                }
+              },
+            ),
+            _buildScannerOverlay(),
+          ],
         ),
-        child: MobileScanner(
-          controller: controller,
-          onDetect: (capture) {
-            final List<Barcode> barcodes = capture.barcodes;
-            for (final barcode in barcodes) {
-              debugPrint('Barcode found! ${barcode.rawValue}');
-              widget.onDetectPublicId(barcode.rawValue);
-            }
-          },
+      ),
+    );
+  }
+
+  Widget _buildScannerOverlay() {
+    return Center(
+      child: SizedBox(
+        width: 200,
+        height: 200,
+        child: Stack(
+          children: <Widget>[
+            // Eck-Akzente
+            _corner(top: true, left: true),
+            _corner(top: true, left: false),
+            _corner(top: false, left: true),
+            _corner(top: false, left: false),
+            // Animierte Scan-Linie
+            AnimatedBuilder(
+              animation: _scanLineController,
+              builder: (BuildContext context, Widget? child) {
+                return Align(
+                  alignment: Alignment(0, _scanLineController.value * 2 - 1),
+                  child: child,
+                );
+              },
+              child: Container(
+                height: 3,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: <Color>[
+                      Color(0x00F28C38),
+                      CaboTheme.primaryContainer,
+                      Color(0x00F28C38),
+                    ],
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: CaboTheme.primaryContainer.withValues(alpha: 0.8),
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _corner({required bool top, required bool left}) {
+    const BorderSide side = BorderSide(
+      color: CaboTheme.primaryContainer,
+      width: 4,
+    );
+    return Align(
+      alignment: Alignment(left ? -1 : 1, top ? -1 : 1),
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          border: Border(
+            top: top ? side : BorderSide.none,
+            bottom: top ? BorderSide.none : side,
+            left: left ? side : BorderSide.none,
+            right: left ? BorderSide.none : side,
+          ),
+          borderRadius: BorderRadius.only(
+            topLeft: top && left ? const Radius.circular(12) : Radius.zero,
+            topRight: top && !left ? const Radius.circular(12) : Radius.zero,
+            bottomLeft: !top && left ? const Radius.circular(12) : Radius.zero,
+            bottomRight: !top && !left
+                ? const Radius.circular(12)
+                : Radius.zero,
+          ),
         ),
       ),
     );

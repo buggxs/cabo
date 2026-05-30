@@ -270,6 +270,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinGameScreenEnterIdToJoin => 'Enter the game ID to join a game.';
 
   @override
+  String get joinGameScreenOrDivider => 'or';
+
+  @override
+  String get joinGameScreenManualLabel => 'Game ID';
+
+  @override
+  String get joinGameScreenSearchGameButton => 'Search game';
+
+  @override
+  String get joinGameScreenJoinButton => 'Join game';
+
+  @override
   String get historyScreenHours => 'Hours';
 
   @override

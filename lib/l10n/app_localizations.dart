@@ -596,6 +596,30 @@ abstract class AppLocalizations {
   /// **'Enter the game ID to join a game.'**
   String get joinGameScreenEnterIdToJoin;
 
+  /// No description provided for @joinGameScreenOrDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get joinGameScreenOrDivider;
+
+  /// No description provided for @joinGameScreenManualLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game ID'**
+  String get joinGameScreenManualLabel;
+
+  /// No description provided for @joinGameScreenSearchGameButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search game'**
+  String get joinGameScreenSearchGameButton;
+
+  /// No description provided for @joinGameScreenJoinButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Join game'**
+  String get joinGameScreenJoinButton;
+
   /// No description provided for @historyScreenHours.
   ///
   /// In en, this message translates to:
