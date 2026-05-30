@@ -6,7 +6,6 @@ import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/domain/player_group/data/player_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ChoosePlayersScreen extends StatefulWidget {
   const ChoosePlayersScreen({super.key});
@@ -73,9 +72,11 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
           ),
         );
       if (_controllers.length < ChoosePlayersScreen.minPlayers) {
-        for (int i = _controllers.length;
-            i < ChoosePlayersScreen.minPlayers;
-            i++) {
+        for (
+          int i = _controllers.length;
+          i < ChoosePlayersScreen.minPlayers;
+          i++
+        ) {
           _controllers.add(TextEditingController());
         }
       }
@@ -83,8 +84,9 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   }
 
   void _start(MainMenuCubit cubit) {
-    final List<String> names =
-        _controllers.map((TextEditingController c) => c.text).toList();
+    final List<String> names = _controllers
+        .map((TextEditingController c) => c.text)
+        .toList();
     cubit.startGame(names);
   }
 
@@ -143,14 +145,16 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(
-              'assets/images/hero_background.png',
-              fit: BoxFit.cover,
-            ),
-            Positioned.fill(
-              child: SvgPicture.asset(
-                'assets/images/hero_gradient_overlay.svg',
-                fit: BoxFit.fill,
+            Image.asset('assets/images/hero_background.png', fit: BoxFit.cover),
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: <Color>[Color(0x66000000), Color(0x00000000)],
+                  ),
+                ),
               ),
             ),
             Align(
@@ -198,9 +202,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                       ),
                       backgroundColor: CaboTheme.surfaceContainerLow,
                       shape: StadiumBorder(
-                        side: const BorderSide(
-                          color: CaboTheme.outlineVariant,
-                        ),
+                        side: const BorderSide(color: CaboTheme.outlineVariant),
                       ),
                       onPressed: () => _applyGroup(group),
                     ),
@@ -312,13 +314,15 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                               vertical: 12,
                             ),
                             border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(CaboTheme.cardRadius),
+                              borderRadius: BorderRadius.circular(
+                                CaboTheme.cardRadius,
+                              ),
                               borderSide: BorderSide.none,
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(CaboTheme.cardRadius),
+                              borderRadius: BorderRadius.circular(
+                                CaboTheme.cardRadius,
+                              ),
                               borderSide: const BorderSide(
                                 color: CaboTheme.m3Primary,
                                 width: 2,
@@ -340,8 +344,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   }
 
   Widget _buildAddPlayerButton(BuildContext context) {
-    final bool enabled =
-        _controllers.length < ChoosePlayersScreen.maxPlayers;
+    final bool enabled = _controllers.length < ChoosePlayersScreen.maxPlayers;
     return Opacity(
       opacity: enabled ? 1 : 0.5,
       child: InkWell(
