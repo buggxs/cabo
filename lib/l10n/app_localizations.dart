@@ -980,6 +980,132 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get okButton;
 
+  /// No description provided for @endGameRankingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranking'**
+  String get endGameRankingTitle;
+
+  /// No description provided for @endGameBackToMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to menu'**
+  String get endGameBackToMenu;
+
+  /// No description provided for @endGameDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game duration'**
+  String get endGameDurationLabel;
+
+  /// No description provided for @endGameDurationUnitMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get endGameDurationUnitMinutes;
+
+  /// No description provided for @endGameDurationUnitHours.
+  ///
+  /// In en, this message translates to:
+  /// **'h'**
+  String get endGameDurationUnitHours;
+
+  /// No description provided for @endGameRoundsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rounds'**
+  String get endGameRoundsLabel;
+
+  /// No description provided for @endGameRoundsUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get endGameRoundsUnit;
+
+  /// No description provided for @endGameDetailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed stats'**
+  String get endGameDetailedTitle;
+
+  /// No description provided for @endGameStatTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get endGameStatTotal;
+
+  /// No description provided for @endGameStatCaboZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabo-0'**
+  String get endGameStatCaboZero;
+
+  /// No description provided for @endGameStatPenalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Penalty'**
+  String get endGameStatPenalty;
+
+  /// No description provided for @endGameStatAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg / Rd'**
+  String get endGameStatAverage;
+
+  /// No description provided for @endGamePointsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get endGamePointsShort;
+
+  /// No description provided for @endGameHighlightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Game highlights'**
+  String get endGameHighlightsTitle;
+
+  /// No description provided for @endGameHighlightBestRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Best round (low score)'**
+  String get endGameHighlightBestRound;
+
+  /// No description provided for @endGameHighlightTotalSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'total'**
+  String get endGameHighlightTotalSuffix;
+
+  /// No description provided for @endGameRoundLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Round'**
+  String get endGameRoundLabel;
+
+  /// No description provided for @endGameHighlightLongestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest win streak'**
+  String get endGameHighlightLongestStreak;
+
+  /// No description provided for @endGameHighlightStreakSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'rounds in a row'**
+  String get endGameHighlightStreakSuffix;
+
+  /// No description provided for @endGameStreakWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Win streak'**
+  String get endGameStreakWinTitle;
+
+  /// No description provided for @endGameStreakDurationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Long game'**
+  String get endGameStreakDurationTitle;
+
   /// No description provided for @streakTitle.
   ///
   /// In en, this message translates to:

@@ -483,6 +483,69 @@ class AppLocalizationsDe extends AppLocalizations {
   String get okButton => 'OK';
 
   @override
+  String get endGameRankingTitle => 'Rangliste';
+
+  @override
+  String get endGameBackToMenu => 'Zurück zum Menü';
+
+  @override
+  String get endGameDurationLabel => 'Spieldauer';
+
+  @override
+  String get endGameDurationUnitMinutes => 'Min';
+
+  @override
+  String get endGameDurationUnitHours => 'Std';
+
+  @override
+  String get endGameRoundsLabel => 'Runden';
+
+  @override
+  String get endGameRoundsUnit => 'Gesamt';
+
+  @override
+  String get endGameDetailedTitle => 'Detaillierte Werte';
+
+  @override
+  String get endGameStatTotal => 'Gesamt';
+
+  @override
+  String get endGameStatCaboZero => 'Cabo-0';
+
+  @override
+  String get endGameStatPenalty => 'Straf-Pkt';
+
+  @override
+  String get endGameStatAverage => 'Ø / Rd';
+
+  @override
+  String get endGamePointsShort => 'Pkt';
+
+  @override
+  String get endGameHighlightsTitle => 'Spiel-Highlights';
+
+  @override
+  String get endGameHighlightBestRound => 'Beste Runde (Low Score)';
+
+  @override
+  String get endGameHighlightTotalSuffix => 'gesamt';
+
+  @override
+  String get endGameRoundLabel => 'Runde';
+
+  @override
+  String get endGameHighlightLongestStreak => 'Längste Siegesserie';
+
+  @override
+  String get endGameHighlightStreakSuffix => 'Runden in Folge';
+
+  @override
+  String get endGameStreakWinTitle => 'Siegesserie';
+
+  @override
+  String get endGameStreakDurationTitle => 'Lange Partie';
+
+  @override
   String get streakTitle => 'Streaks';
 
   @override

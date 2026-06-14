@@ -1,3 +1,4 @@
+import 'package:cabo/components/statistics/screens/end_game_screen.dart';
 import 'package:cabo/components/statistics/screens/statistics_screen.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -23,6 +24,15 @@ class NavigationService {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: builder,
+    );
+  }
+
+  /// Ersetzt den aktiven Stats-Screen durch den [EndGameScreen]. Wird vom Cubit
+  /// (ohne BuildContext) genutzt, sobald ein Spiel beendet ist.
+  void pushToEndGameScreen({required Game game}) {
+    Navigator.of(navigatorKey.currentContext!).pushReplacementNamed(
+      EndGameScreen.route,
+      arguments: <String, dynamic>{'game': game},
     );
   }
 

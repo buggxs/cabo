@@ -476,6 +476,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get okButton => 'OK';
 
   @override
+  String get endGameRankingTitle => 'Ranking';
+
+  @override
+  String get endGameBackToMenu => 'Back to menu';
+
+  @override
+  String get endGameDurationLabel => 'Game duration';
+
+  @override
+  String get endGameDurationUnitMinutes => 'min';
+
+  @override
+  String get endGameDurationUnitHours => 'h';
+
+  @override
+  String get endGameRoundsLabel => 'Rounds';
+
+  @override
+  String get endGameRoundsUnit => 'Total';
+
+  @override
+  String get endGameDetailedTitle => 'Detailed stats';
+
+  @override
+  String get endGameStatTotal => 'Total';
+
+  @override
+  String get endGameStatCaboZero => 'Cabo-0';
+
+  @override
+  String get endGameStatPenalty => 'Penalty';
+
+  @override
+  String get endGameStatAverage => 'Avg / Rd';
+
+  @override
+  String get endGamePointsShort => 'pts';
+
+  @override
+  String get endGameHighlightsTitle => 'Game highlights';
+
+  @override
+  String get endGameHighlightBestRound => 'Best round (low score)';
+
+  @override
+  String get endGameHighlightTotalSuffix => 'total';
+
+  @override
+  String get endGameRoundLabel => 'Round';
+
+  @override
+  String get endGameHighlightLongestStreak => 'Longest win streak';
+
+  @override
+  String get endGameHighlightStreakSuffix => 'rounds in a row';
+
+  @override
+  String get endGameStreakWinTitle => 'Win streak';
+
+  @override
+  String get endGameStreakDurationTitle => 'Long game';
+
+  @override
   String get streakTitle => 'Streaks';
 
   @override

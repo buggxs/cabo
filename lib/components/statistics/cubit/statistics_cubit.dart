@@ -1,17 +1,13 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/components/statistics/screens/public_game_screen.dart';
-import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
@@ -308,16 +304,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       return;
     }
 
-    _showWinnerDialog(
-      winner: winner,
-      onConfirm: () {
-        app<NavigationService>().navigatorKey.currentState?.popAndPushNamed(
-          MainMenuScreen.route,
-        );
-
-        app<RatingService>().trackGameCompletion();
-      },
-    );
+    app<NavigationService>().pushToEndGameScreen(game: state.game!);
   }
 
   bool _hasWonRound(
@@ -373,7 +360,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       ).format(DateTime.now());
       game = game.copyWith(finishedAt: finishedGame);
       // State sofort aktualisieren, damit isGameFinished true ist und der
-      // WinnerDialog im Screen anschließend angezeigt werden kann.
+      // EndGameScreen anschließend angezeigt werden kann.
       emit(state.copyWith(game: game));
       await app<GameService>().saveToGameHistory(game);
     }
@@ -435,21 +422,4 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     );
   }
 
-  // Shows the winner dialog with animation
-  void _showWinnerDialog({required Player winner, void Function()? onConfirm}) {
-    app<NavigationService>().showAppDialog(
-      dialog: (BuildContext context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: const BorderSide(
-            style: BorderStyle.solid,
-            color: CaboTheme.tertiaryColor,
-            width: 2,
-          ),
-        ),
-        backgroundColor: CaboTheme.secondaryColor,
-        child: WinnerDialog(winner: winner, onConfirm: onConfirm),
-      ),
-    );
-  }
 }

@@ -5,7 +5,6 @@ import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/statistics_bottom_nav.dart';
 import 'package:cabo/components/statistics/widgets/statistics_screen_content_body.dart';
-import 'package:cabo/components/statistics/widgets/winner_dialog.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -105,21 +104,12 @@ class StatisticsScreenContent extends StatelessWidget {
         .firstOrNull;
     final bool gameFinished = cubit.state.game?.isGameFinished ?? false;
 
+    // Spiel beendet → EndGameScreen übernimmt Rangliste, Menü-Routing und
+    // trackGameCompletion. Sonst (z. B. Non-Owner verlässt Public Game nur
+    // lokal) direkt zurück ins Hauptmenü.
     if (winner != null && gameFinished) {
-      await app<NavigationService>().showAppDialog(
-        dialog: (BuildContext context) => Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-            side: const BorderSide(
-              style: BorderStyle.solid,
-              color: CaboTheme.tertiaryColor,
-              width: 2,
-            ),
-          ),
-          backgroundColor: CaboTheme.secondaryColor,
-          child: WinnerDialog(winner: winner),
-        ),
-      );
+      app<NavigationService>().pushToEndGameScreen(game: cubit.state.game!);
+      return false;
     }
 
     if (context.mounted) {

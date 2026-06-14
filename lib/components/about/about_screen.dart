@@ -5,10 +5,12 @@ import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
+import 'package:cabo/components/about/widgets/debug_test_section.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -183,6 +185,10 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                     color: CaboTheme.onSurfaceVariant,
                   ),
                 ),
+                if (kDebugMode) ...<Widget>[
+                  const SizedBox(height: 24),
+                  const DebugTestSection(),
+                ],
               ],
             ),
           ),
