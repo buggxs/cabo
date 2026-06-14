@@ -785,7 +785,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'About'**
+  /// **'About the app'**
   String get aboutScreenTitle;
 
   /// No description provided for @aboutScreenSendButton.
@@ -827,7 +827,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutScreenFeedbackTitle.
   ///
   /// In en, this message translates to:
-  /// **'Something missing? - Let me know!'**
+  /// **'Something missing?'**
   String get aboutScreenFeedbackTitle;
 
   /// No description provided for @aboutScreenFeedbackLabel.
@@ -871,6 +871,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error sending feedback.'**
   String get aboutScreenFeedbackError;
+
+  /// No description provided for @aboutScreenRatingHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you like the app?'**
+  String get aboutScreenRatingHeadline;
+
+  /// No description provided for @aboutScreenRatingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'I would be thrilled about a review in the store! It helps Cabo Board to grow.'**
+  String get aboutScreenRatingDescription;
+
+  /// No description provided for @aboutScreenFeedbackSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let me know!'**
+  String get aboutScreenFeedbackSubtitle;
+
+  /// No description provided for @aboutScreenEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get aboutScreenEmailLabel;
+
+  /// No description provided for @aboutScreenEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email address'**
+  String get aboutScreenEmailHint;
+
+  /// No description provided for @aboutScreenEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get aboutScreenEmailInvalid;
+
+  /// No description provided for @aboutScreenFeedbackRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a message.'**
+  String get aboutScreenFeedbackRequired;
+
+  /// No description provided for @aboutScreenFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!'**
+  String get aboutScreenFunFact;
 
   /// No description provided for @rateAppTitle.
   ///

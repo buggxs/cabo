@@ -372,7 +372,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get developerModeToggled => 'Developermode toggled';
 
   @override
-  String get aboutScreenTitle => 'About';
+  String get aboutScreenTitle => 'About the app';
 
   @override
   String get aboutScreenSendButton => 'Send';
@@ -395,7 +395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutScreenRatingButton => 'Rate';
 
   @override
-  String get aboutScreenFeedbackTitle => 'Something missing? - Let me know!';
+  String get aboutScreenFeedbackTitle => 'Something missing?';
 
   @override
   String get aboutScreenFeedbackLabel => 'Your Message';
@@ -417,6 +417,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutScreenFeedbackError => 'Error sending feedback.';
+
+  @override
+  String get aboutScreenRatingHeadline => 'Do you like the app?';
+
+  @override
+  String get aboutScreenRatingDescription =>
+      'I would be thrilled about a review in the store! It helps Cabo Board to grow.';
+
+  @override
+  String get aboutScreenFeedbackSubtitle => 'Let me know!';
+
+  @override
+  String get aboutScreenEmailLabel => 'Email (optional)';
+
+  @override
+  String get aboutScreenEmailHint => 'Your email address';
+
+  @override
+  String get aboutScreenEmailInvalid => 'Please enter a valid email address.';
+
+  @override
+  String get aboutScreenFeedbackRequired => 'Please enter a message.';
+
+  @override
+  String get aboutScreenFunFact =>
+      'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!';
 
   @override
   String get rateAppTitle => 'Rate This App';

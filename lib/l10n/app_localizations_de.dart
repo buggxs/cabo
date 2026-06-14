@@ -378,7 +378,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get developerModeToggled => 'Entwicklermodus konfiguriert';
 
   @override
-  String get aboutScreenTitle => 'Info';
+  String get aboutScreenTitle => 'Über die App';
 
   @override
   String get aboutScreenSendButton => 'Abschicken';
@@ -401,7 +401,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get aboutScreenRatingButton => 'Bewerten';
 
   @override
-  String get aboutScreenFeedbackTitle => 'Fehlt noch was? - Gib mir Feedback';
+  String get aboutScreenFeedbackTitle => 'Etwas vergessen?';
 
   @override
   String get aboutScreenFeedbackLabel => 'Deine Nachricht';
@@ -423,6 +423,33 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get aboutScreenFeedbackError => 'Fehler beim Senden.';
+
+  @override
+  String get aboutScreenRatingHeadline => 'Gefällt dir die App?';
+
+  @override
+  String get aboutScreenRatingDescription =>
+      'Ich würde mich riesig über eine Bewertung im Store freuen! Das hilft Cabo Board zu wachsen.';
+
+  @override
+  String get aboutScreenFeedbackSubtitle => 'Lass es mich wissen!';
+
+  @override
+  String get aboutScreenEmailLabel => 'E-Mail (optional)';
+
+  @override
+  String get aboutScreenEmailHint => 'Deine E-Mail Adresse';
+
+  @override
+  String get aboutScreenEmailInvalid =>
+      'Bitte gib eine gültige E-Mail Adresse ein.';
+
+  @override
+  String get aboutScreenFeedbackRequired => 'Bitte gib eine Nachricht ein.';
+
+  @override
+  String get aboutScreenFunFact =>
+      'Wusstest du schon? Das Wort \"Cabo\" bedeutet auf Spanisch \"Ende\" – genau das, was man ruft, wenn man gewinnen will!';
 
   @override
   String get rateAppTitle => 'Bewerte diese App';

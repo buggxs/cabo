@@ -34,6 +34,7 @@ class CaboTheme {
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color primaryContainer = Color(0xFFF28C38);
   static const Color onPrimaryContainer = Color(0xFF602E00);
+  static const Color primaryFixedDim = Color(0xFFFFB783);
 
   static const Color m3Secondary = Color(0xFF216B48);
   static const Color onSecondary = Color(0xFFFFFFFF);
