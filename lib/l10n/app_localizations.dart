@@ -662,6 +662,36 @@ abstract class AppLocalizations {
   /// **'Total amount of collected Points'**
   String get historyScreenTotalPointsTitle;
 
+  /// No description provided for @historyScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Game History'**
+  String get historyScreenTitle;
+
+  /// No description provided for @historyScreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your adventures at the kitchen table'**
+  String get historyScreenSubtitle;
+
+  /// No description provided for @historyScreenStreaksActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks active'**
+  String get historyScreenStreaksActive;
+
+  /// No description provided for @historyScreenDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'d'**
+  String get historyScreenDaysShort;
+
+  /// No description provided for @historyScreenHoursShort.
+  ///
+  /// In en, this message translates to:
+  /// **'hrs'**
+  String get historyScreenHoursShort;
+
   /// No description provided for @ruleScreenTitle.
   ///
   /// In en, this message translates to:

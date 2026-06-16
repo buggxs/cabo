@@ -304,6 +304,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Total amount of collected Points';
 
   @override
+  String get historyScreenTitle => 'Game History';
+
+  @override
+  String get historyScreenSubtitle => 'Your adventures at the kitchen table';
+
+  @override
+  String get historyScreenStreaksActive => 'Streaks active';
+
+  @override
+  String get historyScreenDaysShort => 'd';
+
+  @override
+  String get historyScreenHoursShort => 'hrs';
+
+  @override
   String get ruleScreenTitle => 'Rules';
 
   @override

@@ -1,26 +1,25 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cabo/l10n/app_localizations.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:flutter/material.dart';
 
+/// Grünes Hero-Banner im neuen Material-3-Design, das die über alle Spiele
+/// gesammelten Punkte animiert hochzählt (vgl. Design).
 class AnimatedTotalPointsBanner extends StatefulWidget {
-  final int totalCollectedPoints;
-  final Color backgroundColor;
-
   const AnimatedTotalPointsBanner({
     super.key,
     required this.totalCollectedPoints,
-    required this.backgroundColor,
   });
 
+  final int totalCollectedPoints;
+
   @override
-  // ignore: library_private_types_in_public_api
-  _AnimatedTotalPointsBannerState createState() =>
+  State<AnimatedTotalPointsBanner> createState() =>
       _AnimatedTotalPointsBannerState();
 }
 
 class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late final AnimationController _controller;
   late Animation<int> _animation;
 
   @override
@@ -31,15 +30,10 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
       vsync: this,
     );
 
-    final CurvedAnimation curvedAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-
     _animation = IntTween(
       begin: 0,
       end: widget.totalCollectedPoints,
-    ).animate(curvedAnimation);
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
   }
@@ -48,15 +42,10 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
   void didUpdateWidget(covariant AnimatedTotalPointsBanner oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.totalCollectedPoints != oldWidget.totalCollectedPoints) {
-      final CurvedAnimation curvedAnimation = CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeIn,
-      );
       _animation = IntTween(
         begin: 0,
         end: widget.totalCollectedPoints,
-      ).animate(curvedAnimation);
-
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
       _controller
         ..reset()
         ..forward();
@@ -71,74 +60,63 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
 
   @override
   Widget build(BuildContext context) {
-    Widget buildStatCard({
-      required String icon,
-      required Widget valueWidget,
-      required String label,
-      required Color backgroundColor,
-      EdgeInsets padding = const EdgeInsets.all(8.0),
-      EdgeInsetsGeometry? margin,
-    }) {
-      return Card(
-        color: backgroundColor,
-        elevation: 5.0,
-        margin: margin ?? EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: CaboTheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
         ),
-        child: Padding(
-          padding: padding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AutoSizeText(
-                icon,
-                maxLines: 1,
-                style: const TextStyle(fontSize: 20.0, color: Colors.white),
+        child: Stack(
+          children: <Widget>[
+            // Großer, transparenter Deko-Stern oben rechts.
+            Positioned(
+              top: -24,
+              right: -16,
+              child: Icon(
+                Icons.star_rounded,
+                size: 140,
+                color: CaboTheme.m3Secondary.withValues(alpha: 0.12),
               ),
-              const SizedBox(height: 4),
-              valueWidget,
-              const SizedBox(height: 4),
-              AutoSizeText(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                minFontSize: 10,
-                style: TextStyle(fontSize: 13.0, color: Colors.grey[300]),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: buildStatCard(
-            icon: '⭐',
-            valueWidget: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Text(
-                  '${_animation.value}',
-                  style: const TextStyle(
-                    fontSize: 34.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                );
-              },
             ),
-            label: AppLocalizations.of(context)!.historyScreenTotalPointsTitle,
-            backgroundColor: widget.backgroundColor,
-            margin: const EdgeInsets.only(top: 4, left: 4, right: 4, bottom: 0),
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
-          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+              child: Column(
+                children: <Widget>[
+                  Icon(
+                    Icons.star_rounded,
+                    size: 28,
+                    color: CaboTheme.onSecondaryFixedVariant,
+                  ),
+                  const SizedBox(height: 4),
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (BuildContext context, Widget? child) {
+                      return Text(
+                        '${_animation.value}',
+                        style: CaboTheme.displayLargeStyle.copyWith(
+                          color: CaboTheme.onSecondaryFixedVariant,
+                          fontSize: 52,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    context.l10n.historyScreenTotalPointsTitle.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: CaboTheme.labelLargeStyle.copyWith(
+                      color: CaboTheme.m3Secondary,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
