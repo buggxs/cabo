@@ -11,72 +11,6 @@ import 'package:cabo/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-const Color primaryColor = CaboTheme.primaryColor;
-const Color secondaryColor = CaboTheme.secondaryColor;
-const Color dialogBorderColor = Color.fromRGBO(81, 120, 30, 1);
-
-const TextStyle title = TextStyle(
-  fontFamily: 'Archivo',
-  fontSize: 24,
-  fontWeight: FontWeight.w500,
-  color: Color.fromRGBO(142, 215, 46, 1.0),
-);
-
-const TextStyle primaryButtonTextStyle = TextStyle(
-  fontFamily: 'Archivo',
-  fontSize: 24,
-  fontWeight: FontWeight.bold,
-  color: Color.fromRGBO(185, 206, 1, 1.0),
-);
-
-const TextStyle secondaryButtonTextStyle = TextStyle(
-  fontFamily: 'Archivo',
-  fontSize: 20,
-  fontWeight: FontWeight.bold,
-  color: Color.fromRGBO(80, 119, 30, 1.0),
-);
-
-final ButtonStyle primaryButtonStyle = OutlinedButton.styleFrom(
-  foregroundColor: primaryColor,
-  side: const BorderSide(color: primaryColor, width: 2.0),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-);
-
-final RoundedRectangleBorder dialogBorderShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(5),
-  side: const BorderSide(
-    style: BorderStyle.solid,
-    color: dialogBorderColor,
-    width: 2,
-  ),
-);
-
-const InputDecoration inputDecoration = InputDecoration(
-  border: InputBorder.none,
-);
-
-final ButtonStyle dialogButtonStyle = OutlinedButton.styleFrom(
-  foregroundColor: Colors.black,
-  side: const BorderSide(color: Colors.black),
-);
-
-const InputDecoration dialogPointInputStyle = InputDecoration(
-  isDense: true,
-  border: OutlineInputBorder(
-    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: CaboTheme.tertiaryColor, width: 2),
-    gapPadding: 0,
-  ),
-  contentPadding: EdgeInsets.all(8.0),
-  filled: true,
-  fillColor: CaboTheme.secondaryColor,
-);
-
 class StatisticsDialogService {
   Future<Map<String, int?>?> showPointDialog(List<Player>? players) {
     final List<Player> playerList = players ?? const <Player>[];
@@ -89,6 +23,7 @@ class StatisticsDialogService {
   Future<bool?> showEndGame(Game? game) {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) {
+        final AppLocalizations l10n = AppLocalizations.of(context)!;
         final String? uid = FirebaseAuth.instance.currentUser?.uid;
         final bool isPublic = game?.isPublic ?? false;
         final bool isOwner = isPublic && uid == game?.ownerId;
@@ -96,76 +31,89 @@ class StatisticsDialogService {
 
         final String title;
         final String confirmLabel;
+        final IconData icon;
         if (isNonOwnerPublic) {
-          title = AppLocalizations.of(context)!.leaveCurrentGame;
-          confirmLabel = AppLocalizations.of(context)!.leaveGameDialogButton;
+          title = l10n.leaveCurrentGame;
+          confirmLabel = l10n.leaveGameDialogButton;
+          icon = Icons.logout_rounded;
         } else if (isOwner) {
-          title = AppLocalizations.of(context)!.finishCurrentGamePublic;
-          confirmLabel = AppLocalizations.of(context)!.finishGameDialogButton;
+          title = l10n.finishCurrentGamePublic;
+          confirmLabel = l10n.finishGameDialogButton;
+          icon = Icons.flag_rounded;
         } else {
-          title = AppLocalizations.of(context)!.finishCurrentGame;
-          confirmLabel = AppLocalizations.of(context)!.finishGameDialogButton;
+          title = l10n.finishCurrentGame;
+          confirmLabel = l10n.finishGameDialogButton;
+          icon = Icons.flag_rounded;
         }
 
         return Dialog(
-          shape: dialogBorderShape,
-          backgroundColor: secondaryColor,
+          backgroundColor: CaboTheme.surfaceContainerLowest,
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 32,
+            vertical: 24,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: const BoxDecoration(
+                    color: CaboTheme.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    icon,
+                    size: 32,
+                    color: CaboTheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 AutoSizeText(
                   title,
-                  style: CaboTheme.primaryTextStyle.copyWith(
-                    color: CaboTheme.primaryGreenColor,
-                    fontFamily: 'Archivo Black',
-                    fontWeight: FontWeight.w900,
+                  style: CaboTheme.headlineMediumStyle.copyWith(
+                    color: CaboTheme.onSurface,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        style: primaryButtonStyle,
-                        child: Text(
-                          confirmLabel,
-                          style: CaboTheme.primaryTextStyle.copyWith(
-                            fontWeight: FontWeight.w700,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 28),
+                SizedBox(
+                  width: double.infinity,
+                  child: CaboPrimaryButton(
+                    label: confirmLabel,
+                    onPressed: () => Navigator.of(context).pop(true),
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        style: primaryButtonStyle,
-                        child: AutoSizeText(
-                          AppLocalizations.of(
-                            context,
-                          )!.continueGameDialogButton,
-                          style: CaboTheme.secondaryTextStyle.copyWith(
-                            overflow: TextOverflow.ellipsis,
-                            color: CaboTheme.tertiaryColor,
-                          ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: TextButton.styleFrom(
+                      foregroundColor: CaboTheme.onSurfaceVariant,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          CaboTheme.cardRadius,
                         ),
                       ),
                     ),
-                  ],
+                    child: Text(
+                      l10n.continueGameDialogButton,
+                      style: CaboTheme.labelLargeStyle.copyWith(
+                        color: CaboTheme.onSurfaceVariant,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
