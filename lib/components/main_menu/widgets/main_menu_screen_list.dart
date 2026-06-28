@@ -25,10 +25,7 @@ class MainMenuScreenList extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 576),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 32,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -78,8 +75,7 @@ class MainMenuScreenList extends StatelessWidget {
                   MainMenuUtilityTile(
                     icon: Icons.info_outline,
                     label: context.l10n.menuEntryGameAboutScreen,
-                    onTap: () =>
-                        cubit.pushToScreen(context, AboutScreen.route),
+                    onTap: () => cubit.pushToScreen(context, AboutScreen.route),
                   ),
                 ],
               ),

@@ -27,7 +27,6 @@ class GameHistoryScreen extends StatelessWidget {
 class GameHistoryScreenContent extends StatelessWidget {
   const GameHistoryScreenContent({super.key});
 
-  /// Standard-Schatten der neuen Karten (rgba(61,58,53,0.08)).
   static const List<BoxShadow> _cardShadow = <BoxShadow>[
     BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
   ];
@@ -188,8 +187,6 @@ class GameHistoryScreenContent extends StatelessWidget {
     );
   }
 
-  /// Gruppiert die (bereits chronologisch absteigend sortierten) Spiele nach
-  /// ihrem Startdatum und rendert je Tag einen Datums-Header mit den Karten.
   List<Widget> _buildGroupedGames(BuildContext context, List<Game> games) {
     final Map<String, List<Game>> grouped = <String, List<Game>>{};
     for (final Game game in games) {

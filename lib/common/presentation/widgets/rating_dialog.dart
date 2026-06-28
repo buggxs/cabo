@@ -21,9 +21,7 @@ class RatingDialog extends StatefulWidget {
       dialog: (BuildContext context) => Dialog(
         backgroundColor: CaboTheme.surfaceContainerLowest,
         insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         child: RatingDialog(onSubmit: onSubmit),
       ),
     );
@@ -97,8 +95,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 color: CaboTheme.onSurface,
               ),
               decoration: InputDecoration(
-                labelText:
-                    l10n?.feedbackLabel ?? 'Your Feedback (Optional)',
+                labelText: l10n?.feedbackLabel ?? 'Your Feedback (Optional)',
                 labelStyle: CaboTheme.bodyMediumStyle.copyWith(
                   color: CaboTheme.onSurfaceVariant,
                 ),
@@ -107,15 +104,11 @@ class _RatingDialogState extends State<RatingDialog> {
                 contentPadding: const EdgeInsets.all(12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: const BorderSide(
-                    color: CaboTheme.outlineVariant,
-                  ),
+                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: const BorderSide(
-                    color: CaboTheme.outlineVariant,
-                  ),
+                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),

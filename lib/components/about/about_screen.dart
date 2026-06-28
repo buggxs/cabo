@@ -125,7 +125,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.aboutScreenFeedbackSuccess),
-          backgroundColor: Colors.green,
+          backgroundColor: CaboTheme.m3Secondary,
         ),
       );
     } catch (e) {
@@ -133,7 +133,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.aboutScreenFeedbackError),
-          backgroundColor: Colors.red,
+          backgroundColor: CaboTheme.m3Error,
         ),
       );
     } finally {

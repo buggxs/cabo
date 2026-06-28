@@ -421,5 +421,4 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
           (element.value ?? 0) < pointsOfClosingPlayer,
     );
   }
-
 }

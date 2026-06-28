@@ -128,7 +128,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(context.l10n.publishDialogFailedToPublish),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: CaboTheme.m3Error,
           ),
         );
       }
@@ -159,7 +159,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
             content: Text(
               AppLocalizations.of(context)!.publishDialogFailedToPublish,
             ),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: CaboTheme.m3Error,
           ),
         );
       }
