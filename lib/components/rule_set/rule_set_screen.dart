@@ -22,25 +22,66 @@ class RuleSetScreen extends StatelessWidget {
   }
 }
 
-class RuleSetScreenContent extends StatelessWidget {
+class RuleSetScreenContent extends StatefulWidget {
   const RuleSetScreenContent({super.key});
 
-  static const route = 'rule_set_screen';
+  @override
+  State<RuleSetScreenContent> createState() => _RuleSetScreenContentState();
+}
+
+class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController _totalGamePointsController;
+  late final TextEditingController _kamikazePointsController;
+
+  @override
+  void initState() {
+    super.initState();
+    final RuleSet ruleSet = context.read<RuleSetCubit>().state.ruleSet;
+    _totalGamePointsController = TextEditingController(
+      text: ruleSet.totalGamePoints.toString(),
+    );
+    _kamikazePointsController = TextEditingController(
+      text: ruleSet.kamikazePoints.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _totalGamePointsController.dispose();
+    _kamikazePointsController.dispose();
+    super.dispose();
+  }
+
+  void _syncControllers(RuleSet ruleSet) {
+    _totalGamePointsController.text = ruleSet.totalGamePoints.toString();
+    _kamikazePointsController.text = ruleSet.kamikazePoints.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final RuleSetCubit cubit = context.watch<RuleSetCubit>();
     final RuleSet ruleSet = cubit.state.ruleSet;
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    // Controller werden bei jedem Re-Build mit den State-Werten befüllt, damit
-    // ein Reset (der den State neu emittiert) die Felder aktualisiert.
-    final TextEditingController totalGamePointsController =
-        TextEditingController(text: ruleSet.totalGamePoints.toString());
-    final TextEditingController kamikazePointsController =
-        TextEditingController(text: ruleSet.kamikazePoints.toString());
+    return BlocListener<RuleSetCubit, RuleSetState>(
+      // Only sync the text fields when the persisted point values change
+      // (initial load or reset), so unsaved input survives toggle rebuilds.
+      listenWhen: (RuleSetState previous, RuleSetState current) =>
+          previous.ruleSet.totalGamePoints != current.ruleSet.totalGamePoints ||
+          previous.ruleSet.kamikazePoints != current.ruleSet.kamikazePoints,
+      listener: (BuildContext context, RuleSetState state) =>
+          _syncControllers(state.ruleSet),
+      child: _buildScaffold(context, l10n, cubit, ruleSet),
+    );
+  }
 
+  Widget _buildScaffold(
+    BuildContext context,
+    AppLocalizations l10n,
+    RuleSetCubit cubit,
+    RuleSet ruleSet,
+  ) {
     return Scaffold(
       backgroundColor: CaboTheme.background,
       resizeToAvoidBottomInset: false,
@@ -60,7 +101,7 @@ class RuleSetScreenContent extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 576),
             child: Form(
-              key: formKey,
+              key: _formKey,
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 children: <Widget>[
@@ -70,14 +111,14 @@ class RuleSetScreenContent extends StatelessWidget {
                     title: l10n.ruleScreenTotalGamePointsLabel,
                     description: l10n.ruleScreenTotalPointsDescription,
                     suffix: l10n.ruleScreenPointsSuffix,
-                    controller: totalGamePointsController,
+                    controller: _totalGamePointsController,
                   ),
                   const SizedBox(height: 16),
                   _buildNumberCard(
                     title: l10n.ruleScreenKamikazePointsLabel,
                     description: l10n.ruleScreenKamikazeDescription,
                     suffix: l10n.ruleScreenPointsSuffix,
-                    controller: kamikazePointsController,
+                    controller: _kamikazePointsController,
                   ),
                   const SizedBox(height: 24),
                   _buildSectionHeader(l10n.ruleScreenMechanicsSection),
@@ -120,14 +161,14 @@ class RuleSetScreenContent extends StatelessWidget {
                   color: CaboTheme.onPrimaryContainer,
                 ),
                 onPressed: () {
-                  if (formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     cubit.saveRuleSet(
                       ruleSet.copyWith(
                         totalGamePoints: int.tryParse(
-                          totalGamePointsController.text,
+                          _totalGamePointsController.text,
                         ),
                         kamikazePoints: int.tryParse(
-                          kamikazePointsController.text,
+                          _kamikazePointsController.text,
                         ),
                       ),
                     );

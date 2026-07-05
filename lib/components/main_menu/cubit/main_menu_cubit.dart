@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/screens/join_game_screen.dart';
+import 'package:cabo/components/main_menu/widgets/choose_players.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -82,6 +83,12 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     final List<Player> players = cleanedNames
         .map((String name) => Player(name: name))
         .toList();
+
+    // Guard against starting a game without enough players; the UI disables
+    // the start button, this protects any programmatic caller.
+    if (players.length < ChoosePlayersScreen.minPlayers) {
+      return;
+    }
 
     bool? shouldUseSpecialRules;
     if (state is ChoosePlayers) {

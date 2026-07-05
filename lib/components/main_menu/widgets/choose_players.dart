@@ -83,6 +83,15 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     });
   }
 
+  bool get _hasEnoughPlayers =>
+      _controllers
+          .where(
+            (TextEditingController controller) =>
+                controller.text.trim().isNotEmpty,
+          )
+          .length >=
+      ChoosePlayersScreen.minPlayers;
+
   void _start(MainMenuCubit cubit) {
     final List<String> names = _controllers
         .map((TextEditingController c) => c.text)
@@ -294,6 +303,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                         const SizedBox(height: 4),
                         TextField(
                           controller: _controllers[i],
+                          onChanged: (_) => setState(() {}),
                           autocorrect: false,
                           enableSuggestions: false,
                           textCapitalization: TextCapitalization.words,
@@ -373,6 +383,10 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   }
 
   Widget _buildStartButton(BuildContext context, MainMenuCubit cubit) {
+    final bool canStart = _hasEnoughPlayers;
+    final Color contentColor = canStart
+        ? CaboTheme.onPrimaryContainer
+        : CaboTheme.onPrimaryContainer.withValues(alpha: 0.4);
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       color: CaboTheme.background,
@@ -384,20 +398,23 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: CaboTheme.primaryContainer,
               foregroundColor: CaboTheme.onPrimaryContainer,
+              disabledBackgroundColor: CaboTheme.primaryContainer.withValues(
+                alpha: 0.4,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
               ),
             ),
-            onPressed: () => _start(cubit),
+            onPressed: canStart ? () => _start(cubit) : null,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.play_arrow),
+                Icon(Icons.play_arrow, color: contentColor),
                 const SizedBox(width: 8),
                 Text(
                   context.l10n.start,
                   style: CaboTheme.headlineMediumStyle.copyWith(
-                    color: CaboTheme.onPrimaryContainer,
+                    color: contentColor,
                   ),
                 ),
               ],
