@@ -3,20 +3,13 @@ import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
-/// Bottom-Sheet zur Auswahl des Spielers, der die Runde geschlossen hat
-/// (siehe design/round-finished.html). Liefert den ausgewählten [Player]
-/// via `Navigator.pop`, oder `null` bei Abbruch/Wegwischen.
-class RoundCloserSheet extends StatefulWidget {
+/// Bottom sheet to pick the player who closed the round
+/// (see design/round-finished.html). Tapping a player immediately returns
+/// the selected [Player] via `Navigator.pop`; cancel/dismiss returns `null`.
+class RoundCloserSheet extends StatelessWidget {
   const RoundCloserSheet({super.key, required this.players});
 
   final List<Player> players;
-
-  @override
-  State<RoundCloserSheet> createState() => _RoundCloserSheetState();
-}
-
-class _RoundCloserSheetState extends State<RoundCloserSheet> {
-  Player? _selected;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +32,6 @@ class _RoundCloserSheetState extends State<RoundCloserSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag-Handle
               Container(
                 width: 48,
                 height: 6,
@@ -70,13 +62,12 @@ class _RoundCloserSheetState extends State<RoundCloserSheet> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      for (final Player player in widget.players)
+                      for (final Player player in players)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: _PlayerOption(
                             player: player,
-                            selected: _selected == player,
-                            onTap: () => setState(() => _selected = player),
+                            onTap: () => Navigator.of(context).pop(player),
                           ),
                         ),
                     ],
@@ -84,30 +75,11 @@ class _RoundCloserSheetState extends State<RoundCloserSheet> {
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _FooterButton(
-                      label: context.l10n.dialogCancel,
-                      backgroundColor: CaboTheme.surfaceContainerLow,
-                      foregroundColor: CaboTheme.onSurfaceVariant,
-                      onTap: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 2,
-                    child: _FooterButton(
-                      label: context.l10n.dialogEnterPoints,
-                      backgroundColor: CaboTheme.m3Secondary,
-                      foregroundColor: CaboTheme.onSecondary,
-                      shadowColor: CaboTheme.onSecondaryFixedVariant,
-                      onTap: _selected == null
-                          ? null
-                          : () => Navigator.of(context).pop(_selected),
-                    ),
-                  ),
-                ],
+              _FooterButton(
+                label: context.l10n.dialogCancel,
+                backgroundColor: CaboTheme.surfaceContainerLow,
+                foregroundColor: CaboTheme.onSurfaceVariant,
+                onTap: () => Navigator.of(context).pop(),
               ),
             ],
           ),
@@ -118,78 +90,53 @@ class _RoundCloserSheetState extends State<RoundCloserSheet> {
 }
 
 class _PlayerOption extends StatelessWidget {
-  const _PlayerOption({
-    required this.player,
-    required this.selected,
-    required this.onTap,
-  });
+  const _PlayerOption({required this.player, required this.onTap});
 
   final Player player;
-  final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final Color background = selected
-        ? CaboTheme.primaryContainer
-        : CaboTheme.surfaceContainerHigh;
-    final Color foreground = selected
-        ? CaboTheme.onPrimaryContainer
-        : CaboTheme.onSurface;
     final BorderRadius radius = BorderRadius.circular(CaboTheme.cardRadius);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: radius,
-        boxShadow: selected
-            ? const [
-                BoxShadow(
-                  color: CaboTheme.onPrimaryContainer,
-                  offset: Offset(0, 4),
+    return Material(
+      color: CaboTheme.surfaceContainerHigh,
+      borderRadius: radius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            border: Border.all(color: CaboTheme.outlineVariant),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  color: CaboTheme.surfaceVariant,
+                  shape: BoxShape.circle,
                 ),
-              ]
-            : null,
-      ),
-      child: Material(
-        color: background,
-        borderRadius: radius,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: radius,
-              border: selected
-                  ? null
-                  : Border.all(color: CaboTheme.outlineVariant),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? CaboTheme.onPrimaryContainer.withValues(alpha: 0.2)
-                        : CaboTheme.surfaceVariant,
-                    shape: BoxShape.circle,
+                child: const Icon(Icons.person, color: CaboTheme.onSurface),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  player.name,
+                  style: CaboTheme.headlineMediumStyle.copyWith(
+                    color: CaboTheme.onSurface,
                   ),
-                  child: Icon(Icons.person, color: foreground),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    player.name,
-                    style: CaboTheme.headlineMediumStyle.copyWith(
-                      color: foreground,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (selected) Icon(Icons.check_circle, color: foreground),
-              ],
-            ),
+              ),
+              const Icon(
+                Icons.chevron_right,
+                color: CaboTheme.onSurfaceVariant,
+              ),
+            ],
           ),
         ),
       ),
@@ -203,45 +150,28 @@ class _FooterButton extends StatelessWidget {
     required this.backgroundColor,
     required this.foregroundColor,
     required this.onTap,
-    this.shadowColor,
   });
 
   final String label;
   final Color backgroundColor;
   final Color foregroundColor;
-  final Color? shadowColor;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final bool disabled = onTap == null;
-    final BorderRadius radius = BorderRadius.circular(CaboTheme.cardRadius);
-
-    return Opacity(
-      opacity: disabled ? 0.5 : 1.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: radius,
-          boxShadow: (shadowColor != null && !disabled)
-              ? [BoxShadow(color: shadowColor!, offset: const Offset(0, 4))]
-              : null,
-        ),
-        child: Material(
-          color: backgroundColor,
-          borderRadius: radius,
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: Container(
-              height: 52,
-              alignment: Alignment.center,
-              child: Text(
-                label,
-                style: CaboTheme.labelLargeStyle.copyWith(
-                  color: foregroundColor,
-                ),
-              ),
-            ),
+    return Material(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 52,
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: CaboTheme.labelLargeStyle.copyWith(color: foregroundColor),
           ),
         ),
       ),

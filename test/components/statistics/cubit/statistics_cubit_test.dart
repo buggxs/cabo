@@ -633,7 +633,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRulesPenalty));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -659,7 +659,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -685,7 +685,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRulesKamikaze));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -711,7 +711,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapOwnRulesPenalty));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -745,7 +745,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: playerList),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapOwnRules));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -783,7 +783,10 @@ void main() {
           ),
         ).thenAnswer((_) => Future.value(playerListPrecisionLanding[0]));
         when(
-          dialogService.showPointDialog(playerListPrecisionLanding),
+          dialogService.showPointDialog(
+            playerListPrecisionLanding,
+            closer: anyNamed('closer'),
+          ),
         ).thenAnswer(
           (_) => Future.value(pointsMapDefaultRulesPrecisionLanding),
         );
@@ -871,7 +874,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
         clearInteractions(localGameService);
       },
@@ -907,7 +910,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
         clearInteractions(localGameService);
       },
@@ -1061,7 +1064,7 @@ void main() {
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
         ).thenAnswer((_) => Future.value(playerList[0]));
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
         clearInteractions(publicGameService);
         clearInteractions(localGameService);

@@ -838,7 +838,7 @@ void main() {
         ).thenAnswer((_) => Future.value(playerList[0]));
 
         when(
-          dialogService.showPointDialog(playerList),
+          dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapFirstRound));
       },
       build: () => StatisticsCubit(players: playerList),
@@ -864,7 +864,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListFirstRound[1]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapSecondRound));
       },
       seed: () => StatisticsState(
@@ -893,7 +893,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListSecondRound[2]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapThirdRound));
       },
       seed: () => StatisticsState(
@@ -923,7 +923,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListThirdRound[1]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapFourthRound));
       },
       seed: () => StatisticsState(
@@ -952,7 +952,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListFourthRound[2]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapFivthRound));
       },
       seed: () => StatisticsState(
@@ -982,7 +982,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListFivthRound[0]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapSixthRound));
       },
       seed: () => StatisticsState(
@@ -1012,7 +1012,7 @@ void main() {
         ).thenAnswer((_) => Future.value(expectedPlayerListSixthRound[2]));
 
         when(
-          dialogService.showPointDialog(any),
+          dialogService.showPointDialog(any, closer: anyNamed('closer')),
         ).thenAnswer((_) => Future.value(pointsMapSeventhRound));
       },
       seed: () => StatisticsState(

@@ -12,11 +12,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsDialogService {
-  Future<Map<String, int?>?> showPointDialog(List<Player>? players) {
+  Future<Map<String, int?>?> showPointDialog(
+    List<Player>? players, {
+    Player? closer,
+  }) {
     final List<Player> playerList = players ?? const <Player>[];
 
     return app<NavigationService>().showAppModalBottomSheet<Map<String, int?>>(
-      builder: (BuildContext context) => PointsEntrySheet(players: playerList),
+      builder: (BuildContext context) =>
+          PointsEntrySheet(players: playerList, closer: closer),
     );
   }
 

@@ -175,7 +175,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
 
     final Map<String, int?>? playerPointsmap =
-        await app<StatisticsDialogService>().showPointDialog(state.players);
+        await app<StatisticsDialogService>().showPointDialog(
+          state.players,
+          closer: closingPlayer,
+        );
 
     if (playerPointsmap != null) {
       for (int i = 0; i < players.length; i++) {
