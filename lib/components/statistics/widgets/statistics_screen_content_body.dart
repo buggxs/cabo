@@ -1,5 +1,4 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/common/presentation/widgets/dark_screen_overlay.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
@@ -7,7 +6,6 @@ import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,73 +22,62 @@ class StatisticsScreenContentBody extends StatelessWidget {
     List<TitleCell> titleCells = state.players
         .map(
           (Player player) => TitleCell(
-            titleStyle: title.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: CaboTheme.primaryGreenColor,
-            ),
             player: player,
             isLastColumn: player == state.players.last,
           ),
         )
         .toList();
 
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/cabo-main-menu-background.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      constraints: const BoxConstraints.expand(),
-      child: DarkScreenOverlay(
-        darken: 0.20,
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        StatisticInfoCard(
-                          title: AppLocalizations.of(context)!.statsCardRound,
-                          content:
-                              (state.players.firstOrNull?.rounds.length ?? 0)
-                                  .toString(),
-                        ),
-                        StatisticInfoCard(
-                          title: AppLocalizations.of(context)!.statsCardTime,
-                          shouldBeTimer: true,
-                        ),
-                      ],
-                    ),
+                  StatisticInfoCard(
+                    title: AppLocalizations.of(context)!.statsCardRound,
+                    content: (state.players.firstOrNull?.rounds.length ?? 0)
+                        .toString(),
                   ),
-                  Flexible(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      margin: const EdgeInsets.all(12.0),
-                      color: CaboTheme.secondaryBackgroundColor,
-                      shadowColor: Colors.black,
-                      elevation: 5.0,
-                      child: (state.players.isEmpty)
-                          ? const Text('No Players found!')
-                          : CaboDataTable(
-                              titleCells: titleCells,
-                              rounds: _buildRounds(state.players, cubit),
-                              cubit: cubit,
-                            ),
-                    ),
+                  StatisticInfoCard(
+                    title: AppLocalizations.of(context)!.statsCardTime,
+                    shouldBeTimer: true,
                   ),
                 ],
-              );
-            },
-          ),
+              ),
+            ),
+            Flexible(
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: CaboTheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+                  border: Border.all(color: CaboTheme.outlineVariant),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+                      blurRadius: 12,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: (state.players.isEmpty)
+                    ? const Center(child: Text('No Players found!'))
+                    : CaboDataTable(
+                        titleCells: titleCells,
+                        rounds: _buildRounds(state.players, cubit),
+                        cubit: cubit,
+                      ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -120,7 +107,18 @@ class StatisticsScreenContentBody extends StatelessWidget {
           ),
         );
       } else {
-        rounds.add(roundRow);
+        rounds.add(
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: CaboTheme.outlineVariant.withValues(alpha: 0.3),
+                ),
+              ),
+            ),
+            child: roundRow,
+          ),
+        );
       }
     }
     return rounds;

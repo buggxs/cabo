@@ -29,6 +29,10 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 
 Flutter version is managed via FVM; the pinned version is in `.fvmrc`.
 
+## Code style
+
+**Comments:** Write comments in English only, and only where they are truly necessary to explain very complex sections. Prefer self-explanatory code (clear naming, small methods) over comments.
+
 ## Architecture
 
 Flutter app for the Cabo card game — a digital scoreboard with local persistence and optional Firebase cloud sync.

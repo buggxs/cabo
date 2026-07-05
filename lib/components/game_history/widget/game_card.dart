@@ -1,225 +1,182 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-// Helper function to darken a color
-// amount should be between 0.0 and 1.0
-Color darkenColor(Color color, [double amount = 0.1]) {
-  assert(amount >= 0 && amount <= 1);
-  final hsl = HSLColor.fromColor(color);
-  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
-  return hslDark.toColor();
-}
-
-// Helper function to lighten a color
-// amount should be between 0.0 and 1.0
-Color lightenColor(Color color, [double amount = 0.1]) {
-  assert(amount >= 0 && amount <= 1);
-  final hsl = HSLColor.fromColor(color);
-  final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
-  return hslLight.toColor();
-}
-
+/// Spielkarte im neuen Material-3-Design: heller Container mit Streak-Badge,
+/// Spieldauer und je Spieler einer Sub-Karte (Verlierer rot hervorgehoben).
 class GameCard extends StatelessWidget {
   const GameCard({super.key, required this.game});
 
   final Game game;
 
+  /// Standard-Schatten der neuen Karten (rgba(61,58,53,0.08)).
+  static const List<BoxShadow> _cardShadow = <BoxShadow>[
+    BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final List<Player> sortedPlayers = List<Player>.from(game.players)
-      ..sort((a, b) => (a.place ?? 99).compareTo(b.place ?? 99));
+      ..sort((Player a, Player b) => (a.place ?? 99).compareTo(b.place ?? 99));
 
-    final bool isWinningStreak = game.getGameStreaks().isNotEmpty;
+    final int lastPlace = sortedPlayers
+        .map((Player p) => p.place ?? 0)
+        .fold(0, (int a, int b) => a > b ? a : b);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      clipBehavior: Clip.antiAlias, // Ensures content respects border radius
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              // Use the helper function
-              darkenColor(CaboTheme.secondaryBackgroundColor, 0.05),
-              // Use the helper function
-              lightenColor(CaboTheme.secondaryBackgroundColor, 0.05),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(isWinningStreak),
-              const SizedBox(height: 16.0),
-              _buildPlayerList(context, sortedPlayers),
-              const SizedBox(height: 8.0), // Add some space at the bottom
-              _buildFooter(),
-            ],
-          ),
-        ),
+    final List<GameStreakType> streaks = game.getGameStreakTypes();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: CaboTheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+        border: Border.all(color: CaboTheme.outlineVariant),
+        boxShadow: _cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildHeader(context, streaks),
+          const SizedBox(height: 12),
+          for (final Player player in sortedPlayers) ...<Widget>[
+            _buildPlayerRow(
+              context,
+              player,
+              isLoser: (player.place ?? 0) == lastPlace && lastPlace > 1,
+            ),
+            if (player != sortedPlayers.last) const SizedBox(height: 8),
+          ],
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(bool isWinningStreak) {
+  Widget _buildHeader(BuildContext context, List<GameStreakType> streaks) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        if (streaks.isNotEmpty)
+          _buildStreakBadge(context, streaks)
+        else
+          const SizedBox.shrink(),
         Row(
-          children: [
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
             const Icon(
-              Icons.calendar_today_outlined,
-              color: Colors.white70,
-              size: 16,
+              Icons.schedule,
+              size: 14,
+              color: CaboTheme.onSurfaceVariant,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 4),
             Text(
-              DateFormat('dd MMM yyyy').format(
-                DateFormat().parseCaboDateString(game.startedAt!) ??
-                    DateTime.now(),
-              ), // More readable format
-              style: CaboTheme.secondaryTextStyle.copyWith(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+              _compactDuration(),
+              style: CaboTheme.labelSmallStyle.copyWith(
+                color: CaboTheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
-        if (isWinningStreak)
-          Builder(
-            builder: (context) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 4.0,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.white.withValues(
-                      alpha: 0.3,
-                    ), // Subtle border color
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(
-                    12.0,
-                  ), // Rounded corners for the border
-                  color: Colors.black.withValues(
-                    alpha: 0.15,
-                  ), // Slight background tint
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min, // Take minimum space
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.streakTitle, // Label
-                      style: TextStyle(
-                        color: Colors.white..withValues(alpha: 0.7),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ), // Space between label and icon(s)
-                    // Row for icons if multiple streaks/badges exist
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isWinningStreak)
-                          ...game.getGameStreaks().map(
-                            (GameStreak streak) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 3.0,
-                              ),
-                              child: Tooltip(
-                                message: streak.message,
-                                triggerMode: TooltipTriggerMode.tap,
-                                child: streak.icon,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
       ],
     );
   }
 
-  Widget _buildPlayerList(BuildContext context, List<Player> players) {
-    return Column(
-      children: players
-          .map((player) => _buildPlayerRow(context, player))
-          .toList(),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end, // Align duration to the end
-      children: [
-        Icon(
-          Icons.timer_outlined,
-          color: Colors.white.withValues(alpha: 0.6), // More subtle icon color
-          size: 14,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          game.gameDuration,
-          style: CaboTheme.secondaryTextStyle.copyWith(
-            color: Colors.white
-              ..withValues(alpha: 0.8), // More subtle text color
-            fontSize: 12, // Smaller font size
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPlayerRow(BuildContext context, Player player) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+  Widget _buildStreakBadge(BuildContext context, List<GameStreakType> streaks) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: CaboTheme.tertiaryFixed,
+        borderRadius: BorderRadius.circular(999),
+      ),
       child: Row(
-        children: [
-          _buildPlaceIndicator(player.place),
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          for (final GameStreakType type in streaks)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Icon(
+                _streakIcon(type),
+                size: 14,
+                color: CaboTheme.m3Tertiary,
+              ),
+            ),
+          Text(
+            context.l10n.historyScreenStreaksActive,
+            style: CaboTheme.labelSmallStyle.copyWith(
+              color: CaboTheme.m3Tertiary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _streakIcon(GameStreakType type) {
+    switch (type) {
+      case GameStreakType.fiveRoundsWon:
+      case GameStreakType.sevenRoundsWon:
+      case GameStreakType.tenRoundsWon:
+        return Icons.local_fire_department_rounded;
+      case GameStreakType.oneHourGame:
+      case GameStreakType.oneAndHalfHoursGame:
+      case GameStreakType.twoHoursGame:
+        return Icons.timer_outlined;
+    }
+  }
+
+  Widget _buildPlayerRow(
+    BuildContext context,
+    Player player, {
+    required bool isLoser,
+  }) {
+    final int place = player.place ?? 0;
+    final bool isWinner = place == 1;
+
+    final Color background = isLoser
+        ? CaboTheme.errorContainer
+        : CaboTheme.surfaceContainerLowest;
+    final Color nameColor = isLoser
+        ? CaboTheme.onErrorContainer
+        : CaboTheme.onSurface;
+    final Color scoreColor = isLoser
+        ? CaboTheme.m3Error
+        : (isWinner ? CaboTheme.m3Primary : CaboTheme.onSurface);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+      ),
+      child: Row(
+        children: <Widget>[
+          _buildPlaceBadge(place, isLoser: isLoser),
           const SizedBox(width: 12),
           Expanded(
-            child: AutoSizeText(
+            child: Text(
               player.name,
               maxLines: 1,
-              minFontSize: 12,
-              style: CaboTheme.secondaryTextStyle.copyWith(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
+              style: CaboTheme.bodyLargeStyle.copyWith(
+                color: nameColor,
+                fontWeight: isWinner || isLoser
+                    ? FontWeight.bold
+                    : FontWeight.w400,
               ),
             ),
           ),
           const SizedBox(width: 12),
           Text(
             '${player.totalPoints}',
-            style: CaboTheme.numberTextStyle.copyWith(
-              // Use the helper function
-              color: lightenColor(_getPlaceColor(player.place), 0.1),
-              fontSize: 18,
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: scoreColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -228,55 +185,74 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceIndicator(int? place) {
-    final Color color = _getPlaceColor(place);
-    final IconData? icon = _getPlaceIcon(place);
+  Widget _buildPlaceBadge(int place, {required bool isLoser}) {
+    if (isLoser) {
+      return Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: CaboTheme.m3Error.withValues(alpha: 0.15),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.warning_amber_rounded,
+          color: CaboTheme.m3Error,
+          size: 18,
+        ),
+      );
+    }
+
+    if (place == 1) {
+      return Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: CaboTheme.firstPlaceColor,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.emoji_events,
+          color: CaboTheme.onPrimary,
+          size: 18,
+        ),
+      );
+    }
 
     return Container(
       width: 32,
       height: 32,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.8),
+      decoration: const BoxDecoration(
+        color: CaboTheme.surfaceVariant,
         shape: BoxShape.circle,
-        // Use the helper function
-        border: Border.all(color: lightenColor(color, 0.2), width: 1.5),
       ),
       child: Center(
-        child: icon != null
-            ? Icon(icon, color: Colors.white, size: 18)
-            : Text(
-                place?.toString() ?? '-',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
+        child: Text(
+          place > 0 ? '$place' : '-',
+          style: CaboTheme.labelLargeStyle.copyWith(
+            color: CaboTheme.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }
 
-  Color _getPlaceColor(int? place) {
-    switch (place) {
-      case 1:
-        return CaboTheme.firstPlaceColor; // Gold-ish
-      case 2:
-        return CaboTheme.secondPlaceColor; // Silver-ish
-      case 3:
-        return CaboTheme.thirdPlaceColor; // Bronze-ish
-      default:
-        return Colors.blueGrey.shade600;
+  /// Kompakte Spieldauer im Format `HH:MMh` aus `startedAt`/`finishedAt`.
+  String _compactDuration() {
+    final String? startedAt = game.startedAt;
+    final String? finishedAt = game.finishedAt;
+    if (startedAt == null || finishedAt == null) {
+      return '–';
     }
-  }
 
-  IconData? _getPlaceIcon(int? place) {
-    switch (place) {
-      case 1:
-        return Icons.emoji_events; // Trophy icon
-      // case 2: return Icons.military_tech; // Could use different icons
-      // case 3: return Icons.star_border;
-      default:
-        return null; // Show number for other places
+    final DateTime? start = DateFormat().parseCaboDateString(startedAt);
+    final DateTime? end = DateFormat().parseCaboDateString(finishedAt);
+    if (start == null || end == null || end.isBefore(start)) {
+      return '–';
     }
+
+    final Duration duration = end.difference(start);
+    final String hours = duration.inHours.toString().padLeft(2, '0');
+    final String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
+    return '$hours:${minutes}h';
   }
 }

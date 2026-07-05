@@ -29,7 +29,10 @@ int calculateTotalPoints(List<Game> games) {
   return totalPoints;
 }
 
-String calculateTotalPlayTime(List<Game> games) {
+/// Summiert die Spieldauer aller Spiele und liefert sie aufgeteilt in
+/// `(Tage, Stunden)`. Wird vom Game-History-Screen für die lokalisierte
+/// Spielzeit-Karte genutzt.
+(int days, int hours) calculateTotalPlayTimeParts(List<Game> games) {
   Duration totalDuration = Duration.zero;
 
   for (Game game in games) {
@@ -42,8 +45,12 @@ String calculateTotalPlayTime(List<Game> games) {
       }
     }
   }
-  int days = totalDuration.inDays;
-  int hours = totalDuration.inHours % 24;
+
+  return (totalDuration.inDays, totalDuration.inHours % 24);
+}
+
+String calculateTotalPlayTime(List<Game> games) {
+  final (int days, int hours) = calculateTotalPlayTimeParts(games);
 
   String result = '';
   if (days > 0) {

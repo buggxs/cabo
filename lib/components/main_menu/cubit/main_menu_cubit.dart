@@ -1,14 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/screens/join_game_screen.dart';
+import 'package:cabo/components/main_menu/widgets/choose_players.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/domain/player_group/data/player_group.dart';
+import 'package:cabo/domain/player_group/local_player_group_repository.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 part 'main_menu_state.dart';
@@ -61,87 +65,61 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
         }
       }
     }
-    emit(const ChoosePlayerAmount());
+    final List<PlayerGroup> recentGroups =
+        await app<LocalPlayerGroupRepository>().getAll() ?? <PlayerGroup>[];
+    emit(ChoosePlayers(recentGroups: recentGroups));
   }
 
-  void showChoosePlayerAmountScreen() {
+  void showChoosePlayerScreen() {
     checkForPossibleGame();
   }
 
-  void increasePlayerAmount() {
-    if (state is ChoosePlayerAmount) {
-      ChoosePlayerAmount updatedState = (state as ChoosePlayerAmount);
-      int playerAmount = updatedState.playerAmount + 1;
+  Future<void> startGame(List<String> names) async {
+    final List<String> cleanedNames = names
+        .map((String name) => name.trim())
+        .where((String name) => name.isNotEmpty)
+        .toList();
 
-      if (playerAmount > 10) {
-        return;
-      }
+    final List<Player> players = cleanedNames
+        .map((String name) => Player(name: name))
+        .toList();
 
-      emit(updatedState.copyWith(playerAmount: playerAmount));
+    // Guard against starting a game without enough players; the UI disables
+    // the start button, this protects any programmatic caller.
+    if (players.length < ChoosePlayersScreen.minPlayers) {
+      return;
     }
+
+    bool? shouldUseSpecialRules;
+    if (state is ChoosePlayers) {
+      shouldUseSpecialRules = (state as ChoosePlayers).shouldUseSpecialRules;
+    }
+
+    await _saveRecentGroup(cleanedNames);
+
+    _pushToStatsScreen(players, shouldUseSpecialRules: shouldUseSpecialRules);
   }
 
-  void decreasePlayerAmount() {
-    if (state is ChoosePlayerAmount) {
-      ChoosePlayerAmount updatedState = (state as ChoosePlayerAmount);
-      int playerAmount = updatedState.playerAmount - 1;
-
-      if (playerAmount < 0) {
-        return;
-      }
-
-      emit(updatedState.copyWith(playerAmount: playerAmount));
+  Future<void> _saveRecentGroup(List<String> names) async {
+    if (names.isEmpty) {
+      return;
     }
-  }
+    final LocalPlayerGroupRepository repository =
+        app<LocalPlayerGroupRepository>();
+    final List<PlayerGroup> groups =
+        await repository.getAll() ?? <PlayerGroup>[];
 
-  void continueToPlayerNameScreen() {
-    if (state is ChoosePlayerAmount) {
-      emit(
-        ChoosePlayerNames(
-          playerAmount: (state as ChoosePlayerAmount).playerAmount,
-          shouldUseSpecialRules:
-              (state as ChoosePlayerAmount).shouldUseSpecialRules,
-        ),
-      );
-    }
-  }
-
-  void submitPlayerName(String playerName) {
-    if (state is ChoosePlayerNames) {
-      ChoosePlayerNames currentState = state as ChoosePlayerNames;
-      emit(
-        currentState.copyWith(
-          playerNames: [...currentState.playerNames, playerName],
-        ),
-      );
-    }
-  }
-
-  void startGame(GlobalKey<FormState> formKey) {
-    List<Player> players = <Player>[];
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
-      ChoosePlayerNames currentState = state as ChoosePlayerNames;
-      if (currentState.playerNames.isNotEmpty) {
-        players = (state as ChoosePlayerNames).playerNames
-            .map((String name) => Player(name: name))
-            .toList();
-      }
-    }
-    _pushToStatsScreen(
-      players,
-      shouldUseSpecialRules: (state as ChoosePlayerNames).shouldUseSpecialRules,
+    groups.removeWhere(
+      (PlayerGroup group) => listEquals(group.playerNames, names),
     );
+    groups.insert(0, PlayerGroup(playerNames: names));
+
+    await repository.saveAll(groups.take(5).toList());
   }
 
   Future<bool> onWillPop() async {
-    if (state is ChoosePlayerAmount) {
+    if (state is ChoosePlayers) {
       emit(MainMenu());
-      return false;
-    } else if (state is ChoosePlayerNames) {
-      emit(const ChoosePlayerAmount());
-      return false;
-    } else if (state is MainMenu) {
       return false;
     }
     return false;

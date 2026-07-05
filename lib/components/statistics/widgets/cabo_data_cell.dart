@@ -2,7 +2,6 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/failure_chip.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class CaboDataCell extends StatelessWidget {
   const CaboDataCell({
@@ -16,75 +15,59 @@ class CaboDataCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Anzeige rechnet den +5-Aufschlag wieder heraus (er wird als Badge gezeigt).
+    final int displayPoints = round.hasPenaltyPoints
+        ? round.points - 5
+        : round.points;
+
     return Container(
+      height: 40,
       decoration: BoxDecoration(
         border: Border(
           right: isLastColumn
               ? BorderSide.none
-              : const BorderSide(color: Color.fromRGBO(81, 120, 30, 1.0)),
+              : BorderSide(
+                  color: CaboTheme.outlineVariant.withValues(alpha: 0.4),
+                ),
         ),
       ),
       width: CaboTheme.cellWidth,
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                if (round.isWonRound)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: _isHigherPoints(round) ? 40.0 : 20.0,
-                    ),
-                    child: Transform(
-                      transform: Matrix4.rotationZ(-100),
-                      child: const Image(
-                        image: AssetImage('assets/icon/winner_trophy.png'),
-                        width: 20,
-                      ),
-                    ),
-                  ),
-                // Just for display purposes calculated with -5
-                if (!round.hasPenaltyPoints)
-                  Text(
-                    '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
-                    style: CaboTheme.numberTextStyle.copyWith(
-                      shadows: CaboTheme().textStroke(CaboTheme.secondaryColor),
-                    ),
-                  ),
-                if (round.hasPenaltyPoints)
-                  GradientText(
-                    '${round.hasPenaltyPoints ? round.points - 5 : round.points}',
-                    style: CaboTheme.numberTextStyle,
-                    gradientType: GradientType.linear,
-                    gradientDirection: GradientDirection.btt,
-                    colors: const [
-                      CaboTheme.failureRed,
-                      CaboTheme.primaryGreenColor,
-                    ],
-                  ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            if (round.hasPenaltyPoints) const FailureChip(chipContent: '+5'),
-            if (round.hasPrecisionLanding)
-              const Text(
-                ' -50',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color.fromRGBO(130, 192, 54, 1.0),
-                  fontFamily: 'Aclonica',
-                ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (round.isWonRound)
+            const Padding(
+              padding: EdgeInsets.only(right: 4.0),
+              child: Icon(
+                Icons.emoji_events,
+                size: 16,
+                color: CaboTheme.m3Tertiary,
               ),
+            ),
+          Text(
+            '$displayPoints',
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: CaboTheme.onSurface,
+            ),
+          ),
+          if (round.hasPenaltyPoints) ...[
+            const SizedBox(width: 6),
+            const FailureChip(chipContent: '+5'),
           ],
-        ),
+          if (round.hasPrecisionLanding) ...[
+            const SizedBox(width: 6),
+            Text(
+              '-50',
+              style: CaboTheme.labelLargeStyle.copyWith(
+                fontSize: 13,
+                color: CaboTheme.m3Secondary,
+              ),
+            ),
+          ],
+        ],
       ),
     );
-  }
-
-  bool _isHigherPoints(Round round) {
-    return round.points.toString().length == 2;
   }
 }

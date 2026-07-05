@@ -30,6 +30,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'Über die App';
 
   @override
+  String get mainMenuSubtitle =>
+      'Dein digitaler Punkteblock für das echte Kartenspiel.';
+
+  @override
+  String get mainMenuStartBoardDescription =>
+      'Erstelle ein Punkteboard für dein Spiel mit Freunden vor Ort.';
+
+  @override
+  String get mainMenuJoinBoardDescription =>
+      'Tritt einem bestehenden Spiel bei, um Punkte mit anderen Spielern zu synchronisieren.';
+
+  @override
   String get playerAmountDialogTitle => 'Spieler Anzahl';
 
   @override
@@ -42,6 +54,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get playerNames => 'Spieler Namen';
 
   @override
+  String get choosePlayersTitle => 'Spieler';
+
+  @override
+  String get choosePlayersHeroTitle => 'Wer spielt heute?';
+
+  @override
+  String get recentPlayerGroups => 'Letzte Spielergruppen';
+
+  @override
+  String get addPlayer => 'Weiteren Spieler hinzufügen';
+
+  @override
+  String get playerLabelPrefix => 'Spieler';
+
+  @override
+  String get playerNameHint => 'Name eingeben...';
+
+  @override
   String get start => 'Starten';
 
   @override
@@ -52,6 +82,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get statsCardTime => 'Spielzeit';
+
+  @override
+  String get statsNavEndGame => 'Spiel beenden';
+
+  @override
+  String get statsNavRules => 'Regeln';
+
+  @override
+  String get statsNavOnline => 'Öffentlich';
+
+  @override
+  String get statsNavShare => 'Spiel teilen';
 
   @override
   String get finishCurrentGame => 'Möchtest du das Spiel wirklich beenden?';
@@ -96,6 +138,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enterPointsDialogTitle => 'Enter points';
 
   @override
+  String get dialogRoundFinishedTitle => 'Runde beendet!';
+
+  @override
+  String get dialogCancel => 'Abbrechen';
+
+  @override
+  String get dialogEnterPoints => 'Punkte eintragen';
+
+  @override
+  String dialogPointsRoundFinished(int round) {
+    return 'Runde $round beendet';
+  }
+
+  @override
+  String get dialogKeypadNext => 'Weiter';
+
+  @override
+  String get dialogKeypadDone => 'Fertig';
+
+  @override
   String get publishDialogTitle => 'Spiel veröffentlichen';
 
   @override
@@ -123,8 +185,15 @@ class AppLocalizationsDe extends AppLocalizations {
       'Spiel konnte nicht veröffentlicht werden.';
 
   @override
+  String get authScreenSignInHeadline => 'Bereit für dein nächstes Abenteuer?';
+
+  @override
   String get authScreenSignInToPublish =>
       'Melde dich an, um dein Spiel zu veröffentlichen.';
+
+  @override
+  String get authScreenSignInPrivacyHint =>
+      'Sicher und schnell. Wir teilen niemals deine privaten Daten.';
 
   @override
   String get authScreenSignInWithGoogle => 'Mit Google anmelden';
@@ -207,6 +276,18 @@ class AppLocalizationsDe extends AppLocalizations {
       'Gib die Spiel-ID ein, um einem Spiel beizutreten.';
 
   @override
+  String get joinGameScreenOrDivider => 'oder';
+
+  @override
+  String get joinGameScreenManualLabel => 'Spiel-ID';
+
+  @override
+  String get joinGameScreenSearchGameButton => 'Spiel suchen';
+
+  @override
+  String get joinGameScreenJoinButton => 'Spiel beitreten';
+
+  @override
   String get historyScreenHours => 'Stunde/n';
 
   @override
@@ -226,6 +307,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyScreenTotalPointsTitle => 'Gesammelte Punkte';
+
+  @override
+  String get historyScreenTitle => 'Spielverlauf';
+
+  @override
+  String get historyScreenSubtitle => 'Deine Abenteuer am Küchentisch';
+
+  @override
+  String get historyScreenStreaksActive => 'Streaks aktiv';
+
+  @override
+  String get historyScreenDaysShort => 'Tag/e';
+
+  @override
+  String get historyScreenHoursShort => 'Std';
 
   @override
   String get ruleScreenTitle => 'Regeln';
@@ -265,10 +361,39 @@ class AppLocalizationsDe extends AppLocalizations {
       'Regel: \"Exakt 100\" - Trifft ein Spieler die Gesammtpunktzahl, wird sein Punktestand auf 50 Punkte reduziert. Liegt er darüber, ist das Spiel beendet. Du kannst den Wert beliebig anpassen, indem du die Gesammtpunktzahl bearbeitest.';
 
   @override
+  String get ruleScreenScoreSection => 'Punkte-Limits';
+
+  @override
+  String get ruleScreenMechanicsSection => 'Spielmechanik';
+
+  @override
+  String get ruleScreenTotalPointsDescription =>
+      'Spiel endet, sobald ein Spieler diese Punktzahl erreicht.';
+
+  @override
+  String get ruleScreenKamikazeDescription =>
+      'Spezialregel: Wenn ein Spieler exakt diese Punktzahl am Ende erreicht, passiert etwas Besonderes.';
+
+  @override
+  String get ruleScreenZeroPointsDescription =>
+      'Belohnt den Sieg in einer Runde.';
+
+  @override
+  String get ruleScreenPrecisionLandingDescription =>
+      'Eine Chance auf ein Comeback.';
+
+  @override
+  String get ruleScreenPointsSuffix => 'Pkt.';
+
+  @override
+  String get ruleScreenInfoCard =>
+      'Diese Regeln gelten für alle aktiven Spieler in dieser Runde. Änderungen während eines Spiels können zu unerwarteten Punkteberechnungen führen.';
+
+  @override
   String get developerModeToggled => 'Entwicklermodus konfiguriert';
 
   @override
-  String get aboutScreenTitle => 'Info';
+  String get aboutScreenTitle => 'Über die App';
 
   @override
   String get aboutScreenSendButton => 'Abschicken';
@@ -291,7 +416,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get aboutScreenRatingButton => 'Bewerten';
 
   @override
-  String get aboutScreenFeedbackTitle => 'Fehlt noch was? - Gib mir Feedback';
+  String get aboutScreenFeedbackTitle => 'Etwas vergessen?';
 
   @override
   String get aboutScreenFeedbackLabel => 'Deine Nachricht';
@@ -313,6 +438,33 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get aboutScreenFeedbackError => 'Fehler beim Senden.';
+
+  @override
+  String get aboutScreenRatingHeadline => 'Gefällt dir die App?';
+
+  @override
+  String get aboutScreenRatingDescription =>
+      'Ich würde mich riesig über eine Bewertung im Store freuen! Das hilft Cabo Board zu wachsen.';
+
+  @override
+  String get aboutScreenFeedbackSubtitle => 'Lass es mich wissen!';
+
+  @override
+  String get aboutScreenEmailLabel => 'E-Mail (optional)';
+
+  @override
+  String get aboutScreenEmailHint => 'Deine E-Mail Adresse';
+
+  @override
+  String get aboutScreenEmailInvalid =>
+      'Bitte gib eine gültige E-Mail Adresse ein.';
+
+  @override
+  String get aboutScreenFeedbackRequired => 'Bitte gib eine Nachricht ein.';
+
+  @override
+  String get aboutScreenFunFact =>
+      'Wusstest du schon? Das Wort \"Cabo\" bedeutet auf Spanisch \"Ende\" – genau das, was man ruft, wenn man gewinnen will!';
 
   @override
   String get rateAppTitle => 'Bewerte diese App';
@@ -344,6 +496,69 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get okButton => 'OK';
+
+  @override
+  String get endGameRankingTitle => 'Rangliste';
+
+  @override
+  String get endGameBackToMenu => 'Zurück zum Menü';
+
+  @override
+  String get endGameDurationLabel => 'Spieldauer';
+
+  @override
+  String get endGameDurationUnitMinutes => 'Min';
+
+  @override
+  String get endGameDurationUnitHours => 'Std';
+
+  @override
+  String get endGameRoundsLabel => 'Runden';
+
+  @override
+  String get endGameRoundsUnit => 'Gesamt';
+
+  @override
+  String get endGameDetailedTitle => 'Detaillierte Werte';
+
+  @override
+  String get endGameStatTotal => 'Gesamt';
+
+  @override
+  String get endGameStatCaboZero => 'Cabo-0';
+
+  @override
+  String get endGameStatPenalty => 'Straf-Pkt';
+
+  @override
+  String get endGameStatAverage => 'Ø / Rd';
+
+  @override
+  String get endGamePointsShort => 'Pkt';
+
+  @override
+  String get endGameHighlightsTitle => 'Spiel-Highlights';
+
+  @override
+  String get endGameHighlightBestRound => 'Beste Runde (Low Score)';
+
+  @override
+  String get endGameHighlightTotalSuffix => 'gesamt';
+
+  @override
+  String get endGameRoundLabel => 'Runde';
+
+  @override
+  String get endGameHighlightLongestStreak => 'Längste Siegesserie';
+
+  @override
+  String get endGameHighlightStreakSuffix => 'Runden in Folge';
+
+  @override
+  String get endGameStreakWinTitle => 'Siegesserie';
+
+  @override
+  String get endGameStreakDurationTitle => 'Lange Partie';
 
   @override
   String get streakTitle => 'Streaks';

@@ -140,6 +140,24 @@ abstract class AppLocalizations {
   /// **'About'**
   String get menuEntryGameAboutScreen;
 
+  /// No description provided for @mainMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your digital scorepad for the physical card game.'**
+  String get mainMenuSubtitle;
+
+  /// No description provided for @mainMenuStartBoardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a scoreboard for your game with friends in person.'**
+  String get mainMenuStartBoardDescription;
+
+  /// No description provided for @mainMenuJoinBoardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Join an existing game to sync points with other players.'**
+  String get mainMenuJoinBoardDescription;
+
   /// No description provided for @playerAmountDialogTitle.
   ///
   /// In en, this message translates to:
@@ -164,6 +182,42 @@ abstract class AppLocalizations {
   /// **'Player Names'**
   String get playerNames;
 
+  /// No description provided for @choosePlayersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Players'**
+  String get choosePlayersTitle;
+
+  /// No description provided for @choosePlayersHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who\'s playing today?'**
+  String get choosePlayersHeroTitle;
+
+  /// No description provided for @recentPlayerGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent groups'**
+  String get recentPlayerGroups;
+
+  /// No description provided for @addPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another player'**
+  String get addPlayer;
+
+  /// No description provided for @playerLabelPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Player'**
+  String get playerLabelPrefix;
+
+  /// No description provided for @playerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name...'**
+  String get playerNameHint;
+
   /// No description provided for @start.
   ///
   /// In en, this message translates to:
@@ -187,6 +241,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Play time'**
   String get statsCardTime;
+
+  /// No description provided for @statsNavEndGame.
+  ///
+  /// In en, this message translates to:
+  /// **'End Game'**
+  String get statsNavEndGame;
+
+  /// No description provided for @statsNavRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get statsNavRules;
+
+  /// No description provided for @statsNavOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get statsNavOnline;
+
+  /// No description provided for @statsNavShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share game'**
+  String get statsNavShare;
 
   /// No description provided for @finishCurrentGame.
   ///
@@ -266,6 +344,42 @@ abstract class AppLocalizations {
   /// **'Enter points'**
   String get enterPointsDialogTitle;
 
+  /// No description provided for @dialogRoundFinishedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Round finished!'**
+  String get dialogRoundFinishedTitle;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// No description provided for @dialogEnterPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter points'**
+  String get dialogEnterPoints;
+
+  /// No description provided for @dialogPointsRoundFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Round {round} finished'**
+  String dialogPointsRoundFinished(int round);
+
+  /// No description provided for @dialogKeypadNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get dialogKeypadNext;
+
+  /// No description provided for @dialogKeypadDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dialogKeypadDone;
+
   /// No description provided for @publishDialogTitle.
   ///
   /// In en, this message translates to:
@@ -314,11 +428,23 @@ abstract class AppLocalizations {
   /// **'Game could not be published.'**
   String get publishDialogFailedToPublish;
 
+  /// No description provided for @authScreenSignInHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for your next adventure?'**
+  String get authScreenSignInHeadline;
+
   /// No description provided for @authScreenSignInToPublish.
   ///
   /// In en, this message translates to:
   /// **'Sign up to publish your game.'**
   String get authScreenSignInToPublish;
+
+  /// No description provided for @authScreenSignInPrivacyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe and fast. We never share your private data.'**
+  String get authScreenSignInPrivacyHint;
 
   /// No description provided for @authScreenSignInWithGoogle.
   ///
@@ -470,6 +596,30 @@ abstract class AppLocalizations {
   /// **'Enter the game ID to join a game.'**
   String get joinGameScreenEnterIdToJoin;
 
+  /// No description provided for @joinGameScreenOrDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get joinGameScreenOrDivider;
+
+  /// No description provided for @joinGameScreenManualLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game ID'**
+  String get joinGameScreenManualLabel;
+
+  /// No description provided for @joinGameScreenSearchGameButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search game'**
+  String get joinGameScreenSearchGameButton;
+
+  /// No description provided for @joinGameScreenJoinButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Join game'**
+  String get joinGameScreenJoinButton;
+
   /// No description provided for @historyScreenHours.
   ///
   /// In en, this message translates to:
@@ -511,6 +661,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total amount of collected Points'**
   String get historyScreenTotalPointsTitle;
+
+  /// No description provided for @historyScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Game History'**
+  String get historyScreenTitle;
+
+  /// No description provided for @historyScreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your adventures at the kitchen table'**
+  String get historyScreenSubtitle;
+
+  /// No description provided for @historyScreenStreaksActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks active'**
+  String get historyScreenStreaksActive;
+
+  /// No description provided for @historyScreenDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'d'**
+  String get historyScreenDaysShort;
+
+  /// No description provided for @historyScreenHoursShort.
+  ///
+  /// In en, this message translates to:
+  /// **'hrs'**
+  String get historyScreenHoursShort;
 
   /// No description provided for @ruleScreenTitle.
   ///
@@ -578,6 +758,54 @@ abstract class AppLocalizations {
   /// **'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.'**
   String get ruleScreenExactly100Hint;
 
+  /// No description provided for @ruleScreenScoreSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Score Limits'**
+  String get ruleScreenScoreSection;
+
+  /// No description provided for @ruleScreenMechanicsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Mechanics'**
+  String get ruleScreenMechanicsSection;
+
+  /// No description provided for @ruleScreenTotalPointsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The game ends as soon as a player reaches this score.'**
+  String get ruleScreenTotalPointsDescription;
+
+  /// No description provided for @ruleScreenKamikazeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Special rule: If a player reaches exactly this score at the end, something special happens.'**
+  String get ruleScreenKamikazeDescription;
+
+  /// No description provided for @ruleScreenZeroPointsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards winning a round.'**
+  String get ruleScreenZeroPointsDescription;
+
+  /// No description provided for @ruleScreenPrecisionLandingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A chance for a comeback.'**
+  String get ruleScreenPrecisionLandingDescription;
+
+  /// No description provided for @ruleScreenPointsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get ruleScreenPointsSuffix;
+
+  /// No description provided for @ruleScreenInfoCard.
+  ///
+  /// In en, this message translates to:
+  /// **'These rules apply to all active players in this round. Changes during a game can lead to unexpected score calculations.'**
+  String get ruleScreenInfoCard;
+
   /// No description provided for @developerModeToggled.
   ///
   /// In en, this message translates to:
@@ -587,7 +815,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'About'**
+  /// **'About the app'**
   String get aboutScreenTitle;
 
   /// No description provided for @aboutScreenSendButton.
@@ -629,7 +857,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutScreenFeedbackTitle.
   ///
   /// In en, this message translates to:
-  /// **'Something missing? - Let me know!'**
+  /// **'Something missing?'**
   String get aboutScreenFeedbackTitle;
 
   /// No description provided for @aboutScreenFeedbackLabel.
@@ -673,6 +901,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error sending feedback.'**
   String get aboutScreenFeedbackError;
+
+  /// No description provided for @aboutScreenRatingHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you like the app?'**
+  String get aboutScreenRatingHeadline;
+
+  /// No description provided for @aboutScreenRatingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'I would be thrilled about a review in the store! It helps Cabo Board to grow.'**
+  String get aboutScreenRatingDescription;
+
+  /// No description provided for @aboutScreenFeedbackSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let me know!'**
+  String get aboutScreenFeedbackSubtitle;
+
+  /// No description provided for @aboutScreenEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get aboutScreenEmailLabel;
+
+  /// No description provided for @aboutScreenEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email address'**
+  String get aboutScreenEmailHint;
+
+  /// No description provided for @aboutScreenEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get aboutScreenEmailInvalid;
+
+  /// No description provided for @aboutScreenFeedbackRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a message.'**
+  String get aboutScreenFeedbackRequired;
+
+  /// No description provided for @aboutScreenFunFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!'**
+  String get aboutScreenFunFact;
 
   /// No description provided for @rateAppTitle.
   ///
@@ -733,6 +1009,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get okButton;
+
+  /// No description provided for @endGameRankingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranking'**
+  String get endGameRankingTitle;
+
+  /// No description provided for @endGameBackToMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to menu'**
+  String get endGameBackToMenu;
+
+  /// No description provided for @endGameDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Game duration'**
+  String get endGameDurationLabel;
+
+  /// No description provided for @endGameDurationUnitMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get endGameDurationUnitMinutes;
+
+  /// No description provided for @endGameDurationUnitHours.
+  ///
+  /// In en, this message translates to:
+  /// **'h'**
+  String get endGameDurationUnitHours;
+
+  /// No description provided for @endGameRoundsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rounds'**
+  String get endGameRoundsLabel;
+
+  /// No description provided for @endGameRoundsUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get endGameRoundsUnit;
+
+  /// No description provided for @endGameDetailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed stats'**
+  String get endGameDetailedTitle;
+
+  /// No description provided for @endGameStatTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get endGameStatTotal;
+
+  /// No description provided for @endGameStatCaboZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabo-0'**
+  String get endGameStatCaboZero;
+
+  /// No description provided for @endGameStatPenalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Penalty'**
+  String get endGameStatPenalty;
+
+  /// No description provided for @endGameStatAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg / Rd'**
+  String get endGameStatAverage;
+
+  /// No description provided for @endGamePointsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get endGamePointsShort;
+
+  /// No description provided for @endGameHighlightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Game highlights'**
+  String get endGameHighlightsTitle;
+
+  /// No description provided for @endGameHighlightBestRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Best round (low score)'**
+  String get endGameHighlightBestRound;
+
+  /// No description provided for @endGameHighlightTotalSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'total'**
+  String get endGameHighlightTotalSuffix;
+
+  /// No description provided for @endGameRoundLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Round'**
+  String get endGameRoundLabel;
+
+  /// No description provided for @endGameHighlightLongestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest win streak'**
+  String get endGameHighlightLongestStreak;
+
+  /// No description provided for @endGameHighlightStreakSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'rounds in a row'**
+  String get endGameHighlightStreakSuffix;
+
+  /// No description provided for @endGameStreakWinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Win streak'**
+  String get endGameStreakWinTitle;
+
+  /// No description provided for @endGameStreakDurationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Long game'**
+  String get endGameStreakDurationTitle;
 
   /// No description provided for @streakTitle.
   ///

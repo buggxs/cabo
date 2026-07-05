@@ -9,44 +9,15 @@ class MainMenu extends MainMenuState {
   List<Object> get props => [];
 }
 
-class ChoosePlayerAmount extends MainMenuState {
-  const ChoosePlayerAmount({this.playerAmount = 3, this.shouldUseSpecialRules});
-
-  final int playerAmount;
-  final bool? shouldUseSpecialRules;
-
-  ChoosePlayerAmount copyWith({int? playerAmount}) {
-    return ChoosePlayerAmount(playerAmount: playerAmount ?? this.playerAmount);
-  }
-
-  @override
-  List<Object?> get props => [playerAmount];
-}
-
-class ChoosePlayerNames extends MainMenuState {
-  const ChoosePlayerNames({
-    required this.playerAmount,
-    this.playerNames = const <String>[],
+class ChoosePlayers extends MainMenuState {
+  const ChoosePlayers({
+    this.recentGroups = const <PlayerGroup>[],
     this.shouldUseSpecialRules,
   });
 
-  final int playerAmount;
-  final List<String> playerNames;
+  final List<PlayerGroup> recentGroups;
   final bool? shouldUseSpecialRules;
 
-  ChoosePlayerNames copyWith({
-    int? playerAmount,
-    List<String>? playerNames,
-    bool? shouldUseSpecialRules,
-  }) {
-    return ChoosePlayerNames(
-      playerAmount: playerAmount ?? this.playerAmount,
-      playerNames: playerNames ?? this.playerNames,
-      shouldUseSpecialRules:
-          shouldUseSpecialRules ?? this.shouldUseSpecialRules,
-    );
-  }
-
   @override
-  List<Object?> get props => [playerAmount, playerNames];
+  List<Object?> get props => [recentGroups, shouldUseSpecialRules];
 }

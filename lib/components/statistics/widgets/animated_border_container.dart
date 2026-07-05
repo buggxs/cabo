@@ -46,11 +46,22 @@ class _AnimatedBorderContainerState extends State<AnimatedBorderContainer>
         builder: (context, child) {
           return Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                color: CaboTheme.primaryColor.withValues(
-                  alpha: _animation.value,
+              color: CaboTheme.primaryContainer.withValues(
+                alpha: _animation.value * 0.18,
+              ),
+              border: Border(
+                top: BorderSide(
+                  color: CaboTheme.primaryContainer.withValues(
+                    alpha: _animation.value,
+                  ),
+                  width: 2,
                 ),
-                width: 1,
+                bottom: BorderSide(
+                  color: CaboTheme.primaryContainer.withValues(
+                    alpha: _animation.value,
+                  ),
+                  width: 2,
+                ),
               ),
             ),
             child: child,

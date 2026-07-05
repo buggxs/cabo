@@ -30,6 +30,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'About';
 
   @override
+  String get mainMenuSubtitle =>
+      'Your digital scorepad for the physical card game.';
+
+  @override
+  String get mainMenuStartBoardDescription =>
+      'Create a scoreboard for your game with friends in person.';
+
+  @override
+  String get mainMenuJoinBoardDescription =>
+      'Join an existing game to sync points with other players.';
+
+  @override
   String get playerAmountDialogTitle => 'Player Amount';
 
   @override
@@ -42,6 +54,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerNames => 'Player Names';
 
   @override
+  String get choosePlayersTitle => 'Players';
+
+  @override
+  String get choosePlayersHeroTitle => 'Who\'s playing today?';
+
+  @override
+  String get recentPlayerGroups => 'Recent groups';
+
+  @override
+  String get addPlayer => 'Add another player';
+
+  @override
+  String get playerLabelPrefix => 'Player';
+
+  @override
+  String get playerNameHint => 'Enter name...';
+
+  @override
   String get start => 'Start';
 
   @override
@@ -52,6 +82,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsCardTime => 'Play time';
+
+  @override
+  String get statsNavEndGame => 'End Game';
+
+  @override
+  String get statsNavRules => 'Rules';
+
+  @override
+  String get statsNavOnline => 'Public';
+
+  @override
+  String get statsNavShare => 'Share game';
 
   @override
   String get finishCurrentGame => 'Do you really want to finish the game?';
@@ -96,6 +138,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPointsDialogTitle => 'Enter points';
 
   @override
+  String get dialogRoundFinishedTitle => 'Round finished!';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String get dialogEnterPoints => 'Enter points';
+
+  @override
+  String dialogPointsRoundFinished(int round) {
+    return 'Round $round finished';
+  }
+
+  @override
+  String get dialogKeypadNext => 'Next';
+
+  @override
+  String get dialogKeypadDone => 'Done';
+
+  @override
   String get publishDialogTitle => 'Publish Game';
 
   @override
@@ -122,7 +184,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get publishDialogFailedToPublish => 'Game could not be published.';
 
   @override
+  String get authScreenSignInHeadline => 'Ready for your next adventure?';
+
+  @override
   String get authScreenSignInToPublish => 'Sign up to publish your game.';
+
+  @override
+  String get authScreenSignInPrivacyHint =>
+      'Safe and fast. We never share your private data.';
 
   @override
   String get authScreenSignInWithGoogle => 'Log in with Google';
@@ -201,6 +270,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinGameScreenEnterIdToJoin => 'Enter the game ID to join a game.';
 
   @override
+  String get joinGameScreenOrDivider => 'or';
+
+  @override
+  String get joinGameScreenManualLabel => 'Game ID';
+
+  @override
+  String get joinGameScreenSearchGameButton => 'Search game';
+
+  @override
+  String get joinGameScreenJoinButton => 'Join game';
+
+  @override
   String get historyScreenHours => 'Hours';
 
   @override
@@ -221,6 +302,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get historyScreenTotalPointsTitle =>
       'Total amount of collected Points';
+
+  @override
+  String get historyScreenTitle => 'Game History';
+
+  @override
+  String get historyScreenSubtitle => 'Your adventures at the kitchen table';
+
+  @override
+  String get historyScreenStreaksActive => 'Streaks active';
+
+  @override
+  String get historyScreenDaysShort => 'd';
+
+  @override
+  String get historyScreenHoursShort => 'hrs';
 
   @override
   String get ruleScreenTitle => 'Rules';
@@ -260,10 +356,38 @@ class AppLocalizationsEn extends AppLocalizations {
       'Rule: “Exactly 100” - If a player hits the total number of points, their score is reduced to 50 points. If it is higher, the game is over. You can adjust the value at which this rule comes into effect by editing the total score.';
 
   @override
+  String get ruleScreenScoreSection => 'Score Limits';
+
+  @override
+  String get ruleScreenMechanicsSection => 'Game Mechanics';
+
+  @override
+  String get ruleScreenTotalPointsDescription =>
+      'The game ends as soon as a player reaches this score.';
+
+  @override
+  String get ruleScreenKamikazeDescription =>
+      'Special rule: If a player reaches exactly this score at the end, something special happens.';
+
+  @override
+  String get ruleScreenZeroPointsDescription => 'Rewards winning a round.';
+
+  @override
+  String get ruleScreenPrecisionLandingDescription =>
+      'A chance for a comeback.';
+
+  @override
+  String get ruleScreenPointsSuffix => 'pts';
+
+  @override
+  String get ruleScreenInfoCard =>
+      'These rules apply to all active players in this round. Changes during a game can lead to unexpected score calculations.';
+
+  @override
   String get developerModeToggled => 'Developermode toggled';
 
   @override
-  String get aboutScreenTitle => 'About';
+  String get aboutScreenTitle => 'About the app';
 
   @override
   String get aboutScreenSendButton => 'Send';
@@ -286,7 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutScreenRatingButton => 'Rate';
 
   @override
-  String get aboutScreenFeedbackTitle => 'Something missing? - Let me know!';
+  String get aboutScreenFeedbackTitle => 'Something missing?';
 
   @override
   String get aboutScreenFeedbackLabel => 'Your Message';
@@ -308,6 +432,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutScreenFeedbackError => 'Error sending feedback.';
+
+  @override
+  String get aboutScreenRatingHeadline => 'Do you like the app?';
+
+  @override
+  String get aboutScreenRatingDescription =>
+      'I would be thrilled about a review in the store! It helps Cabo Board to grow.';
+
+  @override
+  String get aboutScreenFeedbackSubtitle => 'Let me know!';
+
+  @override
+  String get aboutScreenEmailLabel => 'Email (optional)';
+
+  @override
+  String get aboutScreenEmailHint => 'Your email address';
+
+  @override
+  String get aboutScreenEmailInvalid => 'Please enter a valid email address.';
+
+  @override
+  String get aboutScreenFeedbackRequired => 'Please enter a message.';
+
+  @override
+  String get aboutScreenFunFact =>
+      'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!';
 
   @override
   String get rateAppTitle => 'Rate This App';
@@ -339,6 +489,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get okButton => 'OK';
+
+  @override
+  String get endGameRankingTitle => 'Ranking';
+
+  @override
+  String get endGameBackToMenu => 'Back to menu';
+
+  @override
+  String get endGameDurationLabel => 'Game duration';
+
+  @override
+  String get endGameDurationUnitMinutes => 'min';
+
+  @override
+  String get endGameDurationUnitHours => 'h';
+
+  @override
+  String get endGameRoundsLabel => 'Rounds';
+
+  @override
+  String get endGameRoundsUnit => 'Total';
+
+  @override
+  String get endGameDetailedTitle => 'Detailed stats';
+
+  @override
+  String get endGameStatTotal => 'Total';
+
+  @override
+  String get endGameStatCaboZero => 'Cabo-0';
+
+  @override
+  String get endGameStatPenalty => 'Penalty';
+
+  @override
+  String get endGameStatAverage => 'Avg / Rd';
+
+  @override
+  String get endGamePointsShort => 'pts';
+
+  @override
+  String get endGameHighlightsTitle => 'Game highlights';
+
+  @override
+  String get endGameHighlightBestRound => 'Best round (low score)';
+
+  @override
+  String get endGameHighlightTotalSuffix => 'total';
+
+  @override
+  String get endGameRoundLabel => 'Round';
+
+  @override
+  String get endGameHighlightLongestStreak => 'Longest win streak';
+
+  @override
+  String get endGameHighlightStreakSuffix => 'rounds in a row';
+
+  @override
+  String get endGameStreakWinTitle => 'Win streak';
+
+  @override
+  String get endGameStreakDurationTitle => 'Long game';
 
   @override
   String get streakTitle => 'Streaks';

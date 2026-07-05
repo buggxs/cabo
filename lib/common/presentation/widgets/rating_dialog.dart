@@ -2,7 +2,7 @@
 // This file contains the rating dialog that appears after playing 3 games
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
+import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
@@ -19,15 +19,9 @@ class RatingDialog extends StatefulWidget {
   }) async {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: const BorderSide(
-            style: BorderStyle.solid,
-            color: CaboTheme.tertiaryColor,
-            width: 2,
-          ),
-        ),
-        backgroundColor: CaboTheme.secondaryColor,
+        backgroundColor: CaboTheme.surfaceContainerLowest,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         child: RatingDialog(onSubmit: onSubmit),
       ),
     );
@@ -49,100 +43,118 @@ class _RatingDialogState extends State<RatingDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations? l10n = AppLocalizations.of(context);
+
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: const BoxDecoration(
+                color: CaboTheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: const Icon(
+                Icons.star_rounded,
+                size: 32,
+                color: CaboTheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
-              AppLocalizations.of(context)?.rateAppTitle ?? 'Rate This App',
-              style: CaboTheme.primaryTextStyle.copyWith(
-                fontSize: 28,
-                color: CaboTheme.primaryGreenColor,
-                fontFamily: 'Archivo Black',
-                fontWeight: FontWeight.w900,
+              l10n?.rateAppTitle ?? 'Rate This App',
+              style: CaboTheme.headlineMediumStyle.copyWith(
+                color: CaboTheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             AutoSizeText(
-              AppLocalizations.of(context)?.rateAppDescription ??
+              l10n?.rateAppDescription ??
                   'How would you rate your experience with Cabo Board?',
-              style: CaboTheme.secondaryTextStyle.copyWith(
-                color: CaboTheme.primaryColor,
-                fontSize: 16,
+              style: CaboTheme.bodyLargeStyle.copyWith(
+                color: CaboTheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildStarRating(),
-            const SizedBox(height: 16),
-            CaboTextField(
-              labelText:
-                  AppLocalizations.of(context)?.feedbackLabel ??
-                  'Your Feedback (Optional)',
-              maxLines: 4,
+            const SizedBox(height: 20),
+            TextField(
+              controller: _feedbackController,
               minLines: 2,
-              expand: false,
-              keyboardType: TextInputType.text,
-              onChanged: (value) {
-                // No need to set state, controller handles the value
-              },
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _selectedRating > 0
-                        ? () {
-                            if (widget.onSubmit != null) {
-                              widget.onSubmit!(
-                                _selectedRating,
-                                _feedbackController.text.isNotEmpty
-                                    ? _feedbackController.text
-                                    : null,
-                              );
-                            }
-                            Navigator.of(context).pop();
-                          }
-                        : null,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: CaboTheme.primaryColor,
-                      backgroundColor: CaboTheme.secondaryColor,
-                      side: const BorderSide(
-                        color: CaboTheme.primaryColor,
-                        width: 2.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      disabledForegroundColor: CaboTheme.tertiaryColor
-                          .withValues(alpha: 0.5),
-                      disabledBackgroundColor: CaboTheme.secondaryColor,
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)?.submitRating ?? 'Submit',
-                      style: CaboTheme.primaryTextStyle.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+              maxLines: 4,
+              keyboardType: TextInputType.multiline,
+              style: CaboTheme.bodyMediumStyle.copyWith(
+                color: CaboTheme.onSurface,
+              ),
+              decoration: InputDecoration(
+                labelText: l10n?.feedbackLabel ?? 'Your Feedback (Optional)',
+                labelStyle: CaboTheme.bodyMediumStyle.copyWith(
+                  color: CaboTheme.onSurfaceVariant,
+                ),
+                filled: true,
+                fillColor: CaboTheme.surfaceContainerLow,
+                contentPadding: const EdgeInsets.all(12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+                  borderSide: const BorderSide(
+                    color: CaboTheme.m3Primary,
+                    width: 2,
                   ),
                 ),
-              ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: CaboPrimaryButton(
+                label: l10n?.submitRating ?? 'Submit',
+                onPressed: _selectedRating > 0
+                    ? () {
+                        widget.onSubmit?.call(
+                          _selectedRating,
+                          _feedbackController.text.isNotEmpty
+                              ? _feedbackController.text
+                              : null,
+                        );
+                        Navigator.of(context).pop();
+                      }
+                    : null,
+              ),
             ),
             const SizedBox(height: 8),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                AppLocalizations.of(context)?.maybeLater ?? 'Maybe Later',
-                style: CaboTheme.secondaryTextStyle.copyWith(
-                  color: CaboTheme.tertiaryColor,
-                  fontSize: 16,
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: CaboTheme.onSurfaceVariant,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+                  ),
+                ),
+                child: Text(
+                  l10n?.maybeLater ?? 'Maybe Later',
+                  style: CaboTheme.labelLargeStyle.copyWith(
+                    color: CaboTheme.onSurfaceVariant,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
@@ -167,8 +179,8 @@ class _RatingDialogState extends State<RatingDialog> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Icon(
               starIndex <= _selectedRating ? Icons.star : Icons.star_border,
-              color: CaboTheme.primaryColor,
-              size: 36,
+              color: CaboTheme.m3Tertiary,
+              size: 40,
             ),
           ),
         );

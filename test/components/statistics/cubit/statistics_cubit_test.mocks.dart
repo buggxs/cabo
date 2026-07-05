@@ -117,9 +117,12 @@ class MockLocalRuleService extends _i1.Mock implements _i8.LocalRuleService {
 class MockStatisticsDialogService extends _i1.Mock
     implements _i10.StatisticsDialogService {
   @override
-  _i9.Future<Map<String, int?>?> showPointDialog(List<_i11.Player>? players) =>
+  _i9.Future<Map<String, int?>?> showPointDialog(
+    List<_i11.Player>? players, {
+    _i11.Player? closer,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#showPointDialog, [players]),
+            Invocation.method(#showPointDialog, [players], {#closer: closer}),
             returnValue: _i9.Future<Map<String, int?>?>.value(),
             returnValueForMissingStub: _i9.Future<Map<String, int?>?>.value(),
           )
@@ -184,6 +187,25 @@ class MockNavigationService extends _i1.Mock implements _i12.NavigationService {
             returnValueForMissingStub: _i9.Future<T?>.value(),
           )
           as _i9.Future<T?>);
+
+  @override
+  _i9.Future<T?> showAppModalBottomSheet<T>({
+    required _i4.WidgetBuilder? builder,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#showAppModalBottomSheet, [], {
+              #builder: builder,
+            }),
+            returnValue: _i9.Future<T?>.value(),
+            returnValueForMissingStub: _i9.Future<T?>.value(),
+          )
+          as _i9.Future<T?>);
+
+  @override
+  void pushToEndGameScreen({required _i5.Game? game}) => super.noSuchMethod(
+    Invocation.method(#pushToEndGameScreen, [], {#game: game}),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void pushToStatsScreen({

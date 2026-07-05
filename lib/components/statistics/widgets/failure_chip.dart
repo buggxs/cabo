@@ -9,22 +9,17 @@ class FailureChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      width: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [CaboTheme.failureRed, CaboTheme.failureLightRed],
-        ),
+        borderRadius: BorderRadius.circular(4),
+        color: CaboTheme.primaryContainer,
       ),
-      child: Center(
-        child: Text(
-          chipContent,
-          style: CaboTheme.numberTextStyle.copyWith(
-            height: 0,
-            color: Colors.white,
-            fontSize: 18,
-          ),
+      child: Text(
+        chipContent,
+        style: CaboTheme.labelSmallStyle.copyWith(
+          color: CaboTheme.onPrimaryContainer,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

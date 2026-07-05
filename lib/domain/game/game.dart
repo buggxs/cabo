@@ -105,7 +105,10 @@ class Game extends Equatable {
     return DateFormat('dd-MM-yyyy').format(startedDate);
   }
 
-  List<GameStreak> getGameStreaks() {
+  /// Ermittelt die erreichten Streak-Typen (jeweils nur die höchste Stufe pro
+  /// Kategorie). Wird von [getGameStreaks] für die Anzeige gemappt und vom
+  /// EndGameScreen direkt für die Highlight-Karte genutzt.
+  List<GameStreakType> getGameStreakTypes() {
     List<GameStreakType> streaks = <GameStreakType>[];
 
     if (_hasWonFiveRoundsInARow) {
@@ -120,17 +123,23 @@ class Game extends Equatable {
     }
 
     if (_isLongerThan(const Duration(hours: 1))) {
-      GameStreakType winStreak = GameStreakType.oneHourGame;
+      GameStreakType durationStreak = GameStreakType.oneHourGame;
       if (_isLongerThan(const Duration(hours: 1, minutes: 30))) {
-        winStreak = GameStreakType.oneAndHalfHoursGame;
+        durationStreak = GameStreakType.oneAndHalfHoursGame;
       }
       if (_isLongerThan(const Duration(hours: 2))) {
-        winStreak = GameStreakType.twoHoursGame;
+        durationStreak = GameStreakType.twoHoursGame;
       }
-      streaks.add(winStreak);
+      streaks.add(durationStreak);
     }
 
-    return streaks.map((GameStreakType streak) => streak.streak!).toList();
+    return streaks;
+  }
+
+  List<GameStreak> getGameStreaks() {
+    return getGameStreakTypes()
+        .map((GameStreakType streak) => streak.streak!)
+        .toList();
   }
 
   bool get _hasWonFiveRoundsInARow =>
