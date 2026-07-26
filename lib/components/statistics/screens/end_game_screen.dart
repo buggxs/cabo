@@ -85,7 +85,7 @@ class _EndGameScreenState extends State<EndGameScreen> {
         _returnToMenu();
       },
       child: Scaffold(
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         body: Stack(
           children: <Widget>[
             SafeArea(
@@ -147,7 +147,7 @@ class _EndGameScreenState extends State<EndGameScreen> {
                 numberOfParticles: 20,
                 gravity: 0.05,
                 shouldLoop: false,
-                colors: const <Color>[
+                colors: <Color>[
                   CaboTheme.primaryContainer,
                   CaboTheme.m3Primary,
                   CaboTheme.m3Secondary,
@@ -495,7 +495,7 @@ class _EndGameScreenState extends State<EndGameScreen> {
         children: <Widget>[
           Container(
             padding: const EdgeInsets.only(bottom: 8),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(color: CaboTheme.outlineVariant),
               ),

@@ -21,7 +21,7 @@ class ChoosePlayersScreen extends StatefulWidget {
 class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   final List<TextEditingController> _controllers = <TextEditingController>[];
 
-  static const List<Color> _badgeColors = [
+  static List<Color> get _badgeColors => <Color>[
     CaboTheme.primaryContainer,
     CaboTheme.secondaryContainer,
     CaboTheme.tertiaryFixed,
@@ -105,11 +105,11 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     final ChoosePlayers state = cubit.state as ChoosePlayers;
 
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => cubit.onWillPop(),
         ),
         title: Text(
@@ -211,7 +211,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                       ),
                       backgroundColor: CaboTheme.surfaceContainerLow,
                       shape: StadiumBorder(
-                        side: const BorderSide(color: CaboTheme.outlineVariant),
+                        side: BorderSide(color: CaboTheme.outlineVariant),
                       ),
                       onPressed: () => _applyGroup(group),
                     ),
@@ -277,7 +277,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                             Expanded(
                               child: Text(
                                 '${context.l10n.playerLabelPrefix} ${i + 1}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: 'Rubik',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -289,8 +289,8 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                               GestureDetector(
                                 onTap: () => _removePlayer(i),
                                 behavior: HitTestBehavior.opaque,
-                                child: const Padding(
-                                  padding: EdgeInsets.only(left: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8),
                                   child: Icon(
                                     Icons.close,
                                     size: 20,
@@ -333,7 +333,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                               borderRadius: BorderRadius.circular(
                                 CaboTheme.cardRadius,
                               ),
-                              borderSide: const BorderSide(
+                              borderSide: BorderSide(
                                 color: CaboTheme.m3Primary,
                                 width: 2,
                               ),
@@ -366,7 +366,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.add_circle, color: CaboTheme.outline),
+                Icon(Icons.add_circle, color: CaboTheme.outline),
                 const SizedBox(width: 8),
                 Text(
                   context.l10n.addPlayer,

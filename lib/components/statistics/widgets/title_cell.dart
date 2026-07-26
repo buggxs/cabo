@@ -23,8 +23,8 @@ class TitleCell extends StatelessWidget {
         border: Border(
           right: isLastColumn
               ? BorderSide.none
-              : const BorderSide(color: CaboTheme.outlineVariant),
-          bottom: const BorderSide(color: CaboTheme.outlineVariant),
+              : BorderSide(color: CaboTheme.outlineVariant),
+          bottom: BorderSide(color: CaboTheme.outlineVariant),
         ),
       ),
       width: CaboTheme.cellWidth,
@@ -52,7 +52,7 @@ class TitleCell extends StatelessWidget {
                 ),
                 if (isLeading) ...[
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Icons.style,
                     size: 16,
                     color: CaboTheme.m3Secondary,

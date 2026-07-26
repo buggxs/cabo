@@ -178,5 +178,11 @@
   "streakTenRoundsWon": "Ein Spieler hat 10 Runden infolge gewonnen.",
   "streakOneHourGame": "Spiellänge über 1 Stunde",
   "streakOneAndHalfHourGame": "Spiellänge über 1,5 Stunde",
-  "streakTwoHourGame": "Spiellänge über 2 Stunde"
+  "streakTwoHourGame": "Spiellänge über 2 Stunde",
+  "designSectionTitle": "Design",
+  "designSectionSubtitle": "Wähle das Aussehen der App",
+  "designModern": "Modern",
+  "designClassic": "Klassisch",
+  "designModernDescription": "Das helle, moderne Design.",
+  "designClassicDescription": "Das ursprüngliche dunkelgrüne Design mit Hintergrundbild."
 }

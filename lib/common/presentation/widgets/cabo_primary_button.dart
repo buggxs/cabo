@@ -53,7 +53,7 @@ class _CaboPrimaryButtonState extends State<CaboPrimaryButton> {
             borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
             boxShadow: pressed
                 ? const <BoxShadow>[]
-                : const <BoxShadow>[
+                : <BoxShadow>[
                     BoxShadow(
                       color: CaboTheme.onPrimaryContainer,
                       offset: Offset(0, 4),

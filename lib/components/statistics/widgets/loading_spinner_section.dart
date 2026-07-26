@@ -15,7 +15,7 @@ class LoadingSpinnerSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const PublishStage(
+          PublishStage(
             child: CircularProgressIndicator(color: CaboTheme.m3Primary),
           ),
           if (loadingText != null) ...<Widget>[

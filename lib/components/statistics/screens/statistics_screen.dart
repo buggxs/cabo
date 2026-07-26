@@ -39,13 +39,13 @@ class StatisticsScreenContent extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       floatingActionButton: FloatingActionButton(
         backgroundColor: CaboTheme.primaryContainer,
         onPressed: () => cubit.closeRound(),
         elevation: 4.0,
         shape: const CircleBorder(),
-        child: const Icon(
+        child: Icon(
           Icons.add,
           size: 28,
           color: CaboTheme.onPrimaryContainer,
@@ -53,7 +53,7 @@ class StatisticsScreenContent extends StatelessWidget {
       ),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(

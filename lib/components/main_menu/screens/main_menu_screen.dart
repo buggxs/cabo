@@ -1,3 +1,4 @@
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/choose_players.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_screen_list.dart';
@@ -43,7 +44,10 @@ class MainMenuScreenContent extends StatelessWidget {
       return const ChoosePlayersScreen();
     }
 
-    // Neu gestaltete Landing-Page (helles Material-3-Design).
-    return const Scaffold(body: MainMenuScreenList());
+    // Landing-Page; im klassischen Design mit Hintergrundbild hinterlegt.
+    return Scaffold(
+      backgroundColor: CaboTheme.scaffoldBackground,
+      body: const MainMenuScreenList(),
+    );
   }
 }

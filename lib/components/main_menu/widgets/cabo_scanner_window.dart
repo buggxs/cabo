@@ -99,11 +99,11 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
               child: Container(
                 height: 3,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     colors: <Color>[
-                      Color(0x00F28C38),
+                      const Color(0x00F28C38),
                       CaboTheme.primaryContainer,
-                      Color(0x00F28C38),
+                      const Color(0x00F28C38),
                     ],
                   ),
                   boxShadow: <BoxShadow>[
@@ -122,7 +122,7 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
   }
 
   Widget _corner({required bool top, required bool left}) {
-    const BorderSide side = BorderSide(
+    final BorderSide side = BorderSide(
       color: CaboTheme.primaryContainer,
       width: 4,
     );

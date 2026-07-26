@@ -24,7 +24,7 @@ class PublishGameSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const PublishStage(
+          PublishStage(
             child: Icon(
               Icons.public_rounded,
               size: 72,
@@ -43,7 +43,7 @@ class PublishGameSection extends StatelessWidget {
           CaboPrimaryButton(
             label: l10n.publishDialogPublish,
             onPressed: isPublishing ? null : onPublish,
-            leading: const Icon(
+            leading: Icon(
               Icons.cloud_upload_rounded,
               size: 24,
               color: CaboTheme.onPrimaryContainer,

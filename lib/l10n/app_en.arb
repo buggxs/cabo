@@ -185,5 +185,11 @@
   "streakTenRoundsWon": "A Player had a 10 Round Win Streak.",
   "streakOneHourGame": "Game Time Over 1 Hour",
   "streakOneAndHalfHourGame": "Game Time Over 1 Hour 30 Minutes",
-  "streakTwoHourGame": "Game Time Over 2 Hour"
+  "streakTwoHourGame": "Game Time Over 2 Hour",
+  "designSectionTitle": "Design",
+  "designSectionSubtitle": "Choose how the app looks",
+  "designModern": "Modern",
+  "designClassic": "Classic",
+  "designModernDescription": "The light, modern look.",
+  "designClassicDescription": "The original dark-green look with background image."
 }

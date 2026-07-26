@@ -38,8 +38,8 @@ class CaboDataCell extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (round.isWonRound)
-            const Padding(
-              padding: EdgeInsets.only(right: 4.0),
+            Padding(
+              padding: const EdgeInsets.only(right: 4.0),
               child: Icon(
                 Icons.emoji_events,
                 size: 16,

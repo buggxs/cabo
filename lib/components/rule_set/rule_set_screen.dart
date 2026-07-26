@@ -83,14 +83,14 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
     RuleSet ruleSet,
   ) {
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const TapableTitle(),
@@ -156,7 +156,7 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
             children: <Widget>[
               CaboPrimaryButton(
                 label: l10n.ruleScreenSaveButton,
-                leading: const Icon(
+                leading: Icon(
                   Icons.save,
                   color: CaboTheme.onPrimaryContainer,
                 ),
@@ -292,14 +292,14 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: CaboTheme.primaryContainer,
                   width: 2,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                borderSide: const BorderSide(color: CaboTheme.m3Error),
+                borderSide: BorderSide(color: CaboTheme.m3Error),
               ),
               errorStyle: const TextStyle(height: 0),
             ),
@@ -365,7 +365,7 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Icon(Icons.info_outline, color: CaboTheme.m3Secondary),
+          Icon(Icons.info_outline, color: CaboTheme.m3Secondary),
           const SizedBox(width: 16),
           Expanded(
             child: Text(

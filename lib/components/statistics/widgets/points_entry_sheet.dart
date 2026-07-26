@@ -79,10 +79,10 @@ class _PointsEntrySheetState extends State<PointsEntrySheet> {
     final double maxCardsHeight = MediaQuery.of(context).size.height * 0.32;
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: CaboTheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        boxShadow: const [
           BoxShadow(
             color: Color(0x263D3A35), // rgba(61,58,53,0.15)
             blurRadius: 32,
@@ -184,7 +184,9 @@ class _PlayerEntry extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: active
-              ? const Color(0xFFFDF5EE)
+              ? (CaboTheme.isClassic
+                    ? CaboTheme.background
+                    : const Color(0xFFFDF5EE))
               : CaboTheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
           border: Border.all(
@@ -201,7 +203,7 @@ class _PlayerEntry extends StatelessWidget {
             Row(
               children: [
                 if (isCloser) ...[
-                  const Icon(
+                  Icon(
                     Icons.flag_rounded,
                     size: 14,
                     color: CaboTheme.m3Primary,
@@ -226,7 +228,9 @@ class _PlayerEntry extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0EBE3),
+                color: CaboTheme.isClassic
+                    ? CaboTheme.surfaceContainer
+                    : const Color(0xFFF0EBE3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

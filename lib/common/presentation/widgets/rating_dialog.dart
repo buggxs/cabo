@@ -54,12 +54,12 @@ class _RatingDialogState extends State<RatingDialog> {
             Container(
               width: 64,
               height: 64,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: CaboTheme.primaryContainer,
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: const Icon(
+              child: Icon(
                 Icons.star_rounded,
                 size: 32,
                 color: CaboTheme.onPrimaryContainer,
@@ -104,15 +104,15 @@ class _RatingDialogState extends State<RatingDialog> {
                 contentPadding: const EdgeInsets.all(12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
+                  borderSide: BorderSide(color: CaboTheme.outlineVariant),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: const BorderSide(color: CaboTheme.outlineVariant),
+                  borderSide: BorderSide(color: CaboTheme.outlineVariant),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: const BorderSide(
+                  borderSide: BorderSide(
                     color: CaboTheme.m3Primary,
                     width: 2,
                   ),

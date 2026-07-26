@@ -6,7 +6,9 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/about/widgets/debug_test_section.dart';
+import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -146,14 +148,14 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -173,6 +175,8 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: <Widget>[
                 _buildRatingHero(context),
+                const SizedBox(height: 32),
+                _buildDesignCard(context),
                 const SizedBox(height: 32),
                 _buildFeedbackCard(context),
                 const SizedBox(height: 32),
@@ -228,7 +232,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                     ),
                   ],
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(Icons.star, size: 64, color: CaboTheme.m3Primary),
                 ),
               ),
@@ -263,6 +267,64 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDesignCard(BuildContext context) {
+    final AppDesign design = context.watch<ApplicationCubit>().state.design;
+
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            context.l10n.designSectionTitle,
+            textAlign: TextAlign.center,
+            style: CaboTheme.headlineMediumStyle.copyWith(
+              color: CaboTheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            context.l10n.designSectionSubtitle.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: CaboTheme.labelSmallStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SegmentedButton<AppDesign>(
+            segments: <ButtonSegment<AppDesign>>[
+              ButtonSegment<AppDesign>(
+                value: AppDesign.modern,
+                label: Text(context.l10n.designModern),
+                icon: const Icon(Icons.light_mode_outlined),
+              ),
+              ButtonSegment<AppDesign>(
+                value: AppDesign.classic,
+                label: Text(context.l10n.designClassic),
+                icon: const Icon(Icons.forest_outlined),
+              ),
+            ],
+            selected: <AppDesign>{design},
+            showSelectedIcon: false,
+            onSelectionChanged: (Set<AppDesign> selection) {
+              context.read<ApplicationCubit>().saveDesign(selection.first);
+            },
+          ),
+          const SizedBox(height: 12),
+          Text(
+            design == AppDesign.classic
+                ? context.l10n.designClassicDescription
+                : context.l10n.designModernDescription,
+            textAlign: TextAlign.center,
+            style: CaboTheme.bodyMediumStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -392,7 +454,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                 borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
               ),
             ),
-            icon: const Icon(Icons.attach_file, color: CaboTheme.m3Primary),
+            icon: Icon(Icons.attach_file, color: CaboTheme.m3Primary),
             label: Text(
               _imageFile == null
                   ? context.l10n.aboutScreenFeedbackAddImage
@@ -407,7 +469,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
           CaboPrimaryButton(
             label: context.l10n.aboutScreenFeedbackButton,
             leading: _isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
@@ -427,7 +489,9 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFCEB),
+        color: CaboTheme.isClassic
+            ? CaboTheme.surfaceContainerHigh
+            : const Color(0xFFFFFCEB),
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
@@ -441,7 +505,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Icon(Icons.lightbulb_outline, color: CaboTheme.m3Tertiary),
+          Icon(Icons.lightbulb_outline, color: CaboTheme.m3Tertiary),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
@@ -503,18 +567,18 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        borderSide: const BorderSide(
+        borderSide: BorderSide(
           color: CaboTheme.primaryContainer,
           width: 2,
         ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        borderSide: const BorderSide(color: CaboTheme.m3Error),
+        borderSide: BorderSide(color: CaboTheme.m3Error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        borderSide: const BorderSide(color: CaboTheme.m3Error, width: 2),
+        borderSide: BorderSide(color: CaboTheme.m3Error, width: 2),
       ),
       errorStyle: CaboTheme.labelSmallStyle.copyWith(color: CaboTheme.m3Error),
     );

@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
+import 'package:cabo/domain/application/local_design_repository.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,16 +13,25 @@ import 'package:google_sign_in/google_sign_in.dart';
 part 'application_state.dart';
 
 class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
-  ApplicationCubit({required this.repository})
+  ApplicationCubit({required this.repository, required this.designRepository})
     : super(const ApplicationInitial()) {
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) {
       if (user == null) {
-        emit(ApplicationUnauthenticated(isDeveloper: state.isDeveloper));
+        emit(
+          ApplicationUnauthenticated(
+            isDeveloper: state.isDeveloper,
+            design: state.design,
+          ),
+        );
       } else {
         emit(
-          ApplicationAuthenticated(user: user, isDeveloper: state.isDeveloper),
+          ApplicationAuthenticated(
+            user: user,
+            isDeveloper: state.isDeveloper,
+            design: state.design,
+          ),
         );
       }
     });
@@ -29,11 +41,22 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
 
   late final StreamSubscription<User?> _authSubscription;
   final LocalApplicationRepository repository;
+  final LocalDesignRepository designRepository;
   final GoogleSignIn signIn = GoogleSignIn.instance;
 
   void init() async {
     final isDeveloperMode = await repository.getCurrent() ?? false;
-    emit(state.copyWith(isDeveloper: isDeveloperMode));
+    final AppDesign design = AppDesign.fromName(
+      await designRepository.getCurrent(),
+    );
+    CaboTheme.applyDesign(design);
+    emit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
+  }
+
+  void saveDesign(AppDesign design) {
+    designRepository.saveCurrent(design.name);
+    CaboTheme.applyDesign(design);
+    emit(state.copyWith(design: design));
   }
 
   Future<void> signOut() async {

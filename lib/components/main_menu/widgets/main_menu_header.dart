@@ -14,7 +14,7 @@ class MainMenuHeader extends StatelessWidget {
         SvgPicture.asset(
           'assets/images/cabo_card_icon.svg',
           height: 48,
-          colorFilter: const ColorFilter.mode(
+          colorFilter: ColorFilter.mode(
             CaboTheme.m3Primary,
             BlendMode.srcIn,
           ),

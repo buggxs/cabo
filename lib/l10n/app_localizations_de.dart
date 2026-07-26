@@ -583,4 +583,23 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get streakTwoHourGame => 'Spiellänge über 2 Stunde';
+
+  @override
+  String get designSectionTitle => 'Design';
+
+  @override
+  String get designSectionSubtitle => 'Wähle das Aussehen der App';
+
+  @override
+  String get designModern => 'Modern';
+
+  @override
+  String get designClassic => 'Klassisch';
+
+  @override
+  String get designModernDescription => 'Das helle, moderne Design.';
+
+  @override
+  String get designClassicDescription =>
+      'Das ursprüngliche dunkelgrüne Design mit Hintergrundbild.';
 }
