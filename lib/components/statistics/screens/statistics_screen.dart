@@ -45,11 +45,7 @@ class StatisticsScreenContent extends StatelessWidget {
         onPressed: () => cubit.closeRound(),
         elevation: 4.0,
         shape: const CircleBorder(),
-        child: Icon(
-          Icons.add,
-          size: 28,
-          color: CaboTheme.onPrimaryContainer,
-        ),
+        child: Icon(Icons.add, size: 28, color: CaboTheme.onPrimaryContainer),
       ),
       appBar: AppBar(
         elevation: 0,

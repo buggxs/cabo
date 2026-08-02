@@ -55,6 +55,25 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
 
   bool _isLoading = false;
 
+  int _copyrightTapCount = 0;
+
+  void _handleCopyrightTap() {
+    setState(() {
+      _copyrightTapCount++;
+    });
+    if (_copyrightTapCount < 7) {
+      return;
+    }
+    _copyrightTapCount = 0;
+    context.read<ApplicationCubit>().toggleDeveloperMode();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.developerModeToggled),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _feedbackController.dispose();
@@ -182,11 +201,15 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                 const SizedBox(height: 32),
                 _buildFunFactCard(context),
                 const SizedBox(height: 24),
-                Text(
-                  '© Andre Salzmann ${DateTime.now().year}',
-                  textAlign: TextAlign.center,
-                  style: CaboTheme.labelSmallStyle.copyWith(
-                    color: CaboTheme.onSurfaceVariant,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _handleCopyrightTap,
+                  child: Text(
+                    '© Andre Salzmann ${DateTime.now().year}',
+                    textAlign: TextAlign.center,
+                    style: CaboTheme.labelSmallStyle.copyWith(
+                      color: CaboTheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 if (kDebugMode) ...<Widget>[
@@ -567,10 +590,7 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        borderSide: BorderSide(
-          color: CaboTheme.primaryContainer,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: CaboTheme.primaryContainer, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),

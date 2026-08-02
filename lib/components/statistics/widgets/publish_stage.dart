@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 /// `design/publish-game-screen.html`. Je nach Zustand zeigt er eine
 /// Icon-Illustration, einen Ladespinner oder den QR-Code.
 class PublishStage extends StatelessWidget {
-  const PublishStage({
-    required this.child,
-    this.backgroundColor,
-    super.key,
-  });
+  const PublishStage({required this.child, this.backgroundColor, super.key});
 
   final Widget child;
   final Color? backgroundColor;

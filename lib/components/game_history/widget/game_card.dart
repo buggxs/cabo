@@ -68,11 +68,7 @@ class GameCard extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(
-              Icons.schedule,
-              size: 14,
-              color: CaboTheme.onSurfaceVariant,
-            ),
+            Icon(Icons.schedule, size: 14, color: CaboTheme.onSurfaceVariant),
             const SizedBox(width: 4),
             Text(
               _compactDuration(),
@@ -210,11 +206,7 @@ class GameCard extends StatelessWidget {
           color: CaboTheme.firstPlaceColor,
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          Icons.emoji_events,
-          color: CaboTheme.onPrimary,
-          size: 18,
-        ),
+        child: Icon(Icons.emoji_events, color: CaboTheme.onPrimary, size: 18),
       );
     }
 

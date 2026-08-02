@@ -149,10 +149,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-              borderSide: BorderSide(
-                color: CaboTheme.m3Primary,
-                width: 2,
-              ),
+              borderSide: BorderSide(color: CaboTheme.m3Primary, width: 2),
             ),
           ),
         ),
@@ -235,11 +232,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
               color: CaboTheme.m3Secondary,
             ),
           ),
-          Divider(
-            color: CaboTheme.outlineVariant,
-            thickness: 1,
-            height: 30,
-          ),
+          Divider(color: CaboTheme.outlineVariant, thickness: 1, height: 30),
           ...game.players.map(
             (player) => ListTile(
               contentPadding: EdgeInsets.zero,

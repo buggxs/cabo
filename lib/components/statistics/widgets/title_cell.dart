@@ -52,11 +52,7 @@ class TitleCell extends StatelessWidget {
                 ),
                 if (isLeading) ...[
                   const SizedBox(width: 4),
-                  Icon(
-                    Icons.style,
-                    size: 16,
-                    color: CaboTheme.m3Secondary,
-                  ),
+                  Icon(Icons.style, size: 16, color: CaboTheme.m3Secondary),
                 ],
               ],
             ),

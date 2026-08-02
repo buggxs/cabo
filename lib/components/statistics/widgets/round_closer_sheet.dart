@@ -132,10 +132,7 @@ class _PlayerOption extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(
-                Icons.chevron_right,
-                color: CaboTheme.onSurfaceVariant,
-              ),
+              Icon(Icons.chevron_right, color: CaboTheme.onSurfaceVariant),
             ],
           ),
         ),

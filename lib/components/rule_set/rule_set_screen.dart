@@ -1,7 +1,5 @@
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
-import 'package:cabo/common/presentation/widgets/context_extensions.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/l10n/app_localizations.dart';
@@ -93,7 +91,13 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
           icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const TapableTitle(),
+        title: Text(
+          l10n.ruleScreenTitle,
+          style: CaboTheme.headlineMediumStyle.copyWith(
+            color: CaboTheme.m3Primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: SafeArea(
         top: false,
@@ -156,10 +160,7 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
             children: <Widget>[
               CaboPrimaryButton(
                 label: l10n.ruleScreenSaveButton,
-                leading: Icon(
-                  Icons.save,
-                  color: CaboTheme.onPrimaryContainer,
-                ),
+                leading: Icon(Icons.save, color: CaboTheme.onPrimaryContainer),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     cubit.saveRuleSet(
@@ -378,44 +379,6 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class TapableTitle extends StatefulWidget {
-  const TapableTitle({super.key});
-
-  @override
-  TapableTitleState createState() => TapableTitleState();
-}
-
-class TapableTitleState extends State<TapableTitle> {
-  int _tapCount = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _tapCount++;
-        });
-        if (_tapCount == 9) {
-          context.read<ApplicationCubit>().toggleDeveloperMode();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.developerModeToggled),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        }
-      },
-      child: Text(
-        AppLocalizations.of(context)!.ruleScreenTitle,
-        style: CaboTheme.headlineMediumStyle.copyWith(
-          color: CaboTheme.m3Primary,
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }

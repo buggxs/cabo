@@ -112,10 +112,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-                  borderSide: BorderSide(
-                    color: CaboTheme.m3Primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: CaboTheme.m3Primary, width: 2),
                 ),
               ),
             ),
