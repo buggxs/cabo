@@ -56,11 +56,11 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
     }
 
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.close, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         title: Text(

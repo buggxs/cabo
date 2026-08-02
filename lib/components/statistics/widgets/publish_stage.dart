@@ -7,14 +7,10 @@ import 'package:flutter/material.dart';
 /// `design/publish-game-screen.html`. Je nach Zustand zeigt er eine
 /// Icon-Illustration, einen Ladespinner oder den QR-Code.
 class PublishStage extends StatelessWidget {
-  const PublishStage({
-    required this.child,
-    this.backgroundColor = CaboTheme.surfaceContainerLow,
-    super.key,
-  });
+  const PublishStage({required this.child, this.backgroundColor, super.key});
 
   final Widget child;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +18,7 @@ class PublishStage extends StatelessWidget {
       aspectRatio: 4 / 3,
       child: Container(
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: backgroundColor ?? CaboTheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
           border: Border.all(color: CaboTheme.outlineVariant),
           boxShadow: const <BoxShadow>[

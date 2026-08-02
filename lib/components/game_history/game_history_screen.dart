@@ -42,14 +42,14 @@ class GameHistoryScreenContent extends StatelessWidget {
     final int totalCollectedPoints = calculateTotalPoints(games);
 
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 72,
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
@@ -218,7 +218,7 @@ class GameHistoryScreenContent extends StatelessWidget {
   Widget _buildDateHeader(String dateLabel) {
     return Row(
       children: <Widget>[
-        const Icon(
+        Icon(
           Icons.calendar_today_outlined,
           size: 16,
           color: CaboTheme.onSurfaceVariant,

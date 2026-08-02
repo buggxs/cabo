@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get menuEntryGameAboutScreen;
 
+  /// No description provided for @menuEntrySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get menuEntrySettings;
+
+  /// No description provided for @settingsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsScreenTitle;
+
   /// No description provided for @mainMenuSubtitle.
   ///
   /// In en, this message translates to:
@@ -1177,6 +1189,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Game Time Over 2 Hour'**
   String get streakTwoHourGame;
+
+  /// No description provided for @designSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get designSectionTitle;
+
+  /// No description provided for @designSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how the app looks'**
+  String get designSectionSubtitle;
+
+  /// No description provided for @designModern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get designModern;
+
+  /// No description provided for @designClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get designClassic;
+
+  /// No description provided for @designModernDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The light, modern look.'**
+  String get designModernDescription;
+
+  /// No description provided for @designClassicDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The original dark-green look with background image.'**
+  String get designClassicDescription;
 }
 
 class _AppLocalizationsDelegate

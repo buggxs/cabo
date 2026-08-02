@@ -2,6 +2,7 @@ import 'package:cabo/components/about/about_screen.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
+import 'package:cabo/components/settings/settings_screen.dart';
 import 'package:cabo/components/statistics/screens/end_game_screen.dart';
 import 'package:cabo/components/statistics/screens/statistics_screen.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -44,6 +45,9 @@ class AppNavigator {
 
       case RuleSetScreen.route:
         return MaterialPageRoute(builder: (_) => const RuleSetScreen());
+
+      case SettingsScreen.route:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
 
       default:
         return _errorRoute();

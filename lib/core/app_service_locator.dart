@@ -1,6 +1,7 @@
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
+import 'package:cabo/domain/application/local_design_repository.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
@@ -34,10 +35,12 @@ void setup() {
     ..registerLazySingleton<LocalApplicationRepository>(
       LocalApplicationRepository.new,
     )
+    ..registerLazySingleton<LocalDesignRepository>(LocalDesignRepository.new)
     ..registerLazySingleton<RatingService>(RatingService.new)
     ..registerLazySingleton<ApplicationCubit>(
-      () =>
-          ApplicationCubit(repository: app<LocalApplicationRepository>())
-            ..init(),
+      () => ApplicationCubit(
+        repository: app<LocalApplicationRepository>(),
+        designRepository: app<LocalDesignRepository>(),
+      )..init(),
     );
 }

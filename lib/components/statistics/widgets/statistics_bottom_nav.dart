@@ -24,7 +24,7 @@ class StatisticsBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: CaboTheme.surfaceContainerLow,
         border: Border(top: BorderSide(color: CaboTheme.outlineVariant)),
         borderRadius: BorderRadius.vertical(

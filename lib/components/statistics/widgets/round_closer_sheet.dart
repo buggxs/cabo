@@ -14,10 +14,10 @@ class RoundCloserSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: CaboTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        boxShadow: const [
           BoxShadow(
             color: Color(0x263D3A35), // rgba(61,58,53,0.15)
             blurRadius: 24,
@@ -116,11 +116,11 @@ class _PlayerOption extends StatelessWidget {
               Container(
                 width: 48,
                 height: 48,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: CaboTheme.surfaceVariant,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.person, color: CaboTheme.onSurface),
+                child: Icon(Icons.person, color: CaboTheme.onSurface),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -132,10 +132,7 @@ class _PlayerOption extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: CaboTheme.onSurfaceVariant,
-              ),
+              Icon(Icons.chevron_right, color: CaboTheme.onSurfaceVariant),
             ],
           ),
         ),

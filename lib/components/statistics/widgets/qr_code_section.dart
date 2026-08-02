@@ -27,7 +27,7 @@ class QrCodeSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Icon(
+          Icon(
             Icons.check_circle_rounded,
             color: CaboTheme.m3Secondary,
             size: 72,

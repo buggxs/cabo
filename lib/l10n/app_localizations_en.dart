@@ -30,6 +30,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'About';
 
   @override
+  String get menuEntrySettings => 'Settings';
+
+  @override
+  String get settingsScreenTitle => 'Settings';
+
+  @override
   String get mainMenuSubtitle =>
       'Your digital scorepad for the physical card game.';
 
@@ -573,4 +579,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get streakTwoHourGame => 'Game Time Over 2 Hour';
+
+  @override
+  String get designSectionTitle => 'Design';
+
+  @override
+  String get designSectionSubtitle => 'Choose how the app looks';
+
+  @override
+  String get designModern => 'Modern';
+
+  @override
+  String get designClassic => 'Classic';
+
+  @override
+  String get designModernDescription => 'The light, modern look.';
+
+  @override
+  String get designClassicDescription =>
+      'The original dark-green look with background image.';
 }

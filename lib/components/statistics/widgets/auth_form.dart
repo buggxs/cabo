@@ -49,7 +49,7 @@ class _AuthFormState extends State<AuthForm> {
             child: SvgPicture.asset(
               'assets/images/cabo_card_icon.svg',
               height: 72,
-              colorFilter: const ColorFilter.mode(
+              colorFilter: ColorFilter.mode(
                 CaboTheme.m3Primary,
                 BlendMode.srcIn,
               ),
@@ -73,7 +73,7 @@ class _AuthFormState extends State<AuthForm> {
           ),
           const SizedBox(height: 32),
           if (_isLoading)
-            const CircularProgressIndicator(color: CaboTheme.m3Primary)
+            CircularProgressIndicator(color: CaboTheme.m3Primary)
           else
             CaboPrimaryButton(
               label: l10n.authScreenSignInWithGoogle,

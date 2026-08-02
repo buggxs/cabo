@@ -32,7 +32,7 @@ class DebugTestSection extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(
+              Icon(
                 Icons.bug_report_outlined,
                 color: CaboTheme.m3Error,
                 size: 20,

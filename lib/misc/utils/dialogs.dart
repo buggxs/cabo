@@ -67,7 +67,7 @@ class StatisticsDialogService {
                 Container(
                   width: 64,
                   height: 64,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: CaboTheme.primaryContainer,
                     shape: BoxShape.circle,
                   ),
@@ -157,12 +157,12 @@ class StatisticsDialogService {
                 Container(
                   width: 64,
                   height: 64,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: CaboTheme.primaryContainer,
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: const Icon(
+                  child: Icon(
                     Icons.history_rounded,
                     size: 32,
                     color: CaboTheme.onPrimaryContainer,

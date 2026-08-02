@@ -36,13 +36,13 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: CaboTheme.background,
+      backgroundColor: CaboTheme.scaffoldBackground,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: CaboTheme.background,
+        backgroundColor: CaboTheme.scaffoldBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
+          icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -96,7 +96,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   Widget _buildOrDivider(AppLocalizations l10n) {
     return Row(
       children: <Widget>[
-        const Expanded(child: Divider(color: CaboTheme.outlineVariant)),
+        Expanded(child: Divider(color: CaboTheme.outlineVariant)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
@@ -107,7 +107,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
           ),
         ),
-        const Expanded(child: Divider(color: CaboTheme.outlineVariant)),
+        Expanded(child: Divider(color: CaboTheme.outlineVariant)),
       ],
     );
   }
@@ -138,7 +138,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
             filled: true,
             fillColor: CaboTheme.surfaceContainer,
-            suffixIcon: const Icon(Icons.edit, color: CaboTheme.outline),
+            suffixIcon: Icon(Icons.edit, color: CaboTheme.outline),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -149,10 +149,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-              borderSide: const BorderSide(
-                color: CaboTheme.m3Primary,
-                width: 2,
-              ),
+              borderSide: BorderSide(color: CaboTheme.m3Primary, width: 2),
             ),
           ),
         ),
@@ -174,7 +171,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       return Center(
         child: Column(
           children: <Widget>[
-            const CircularProgressIndicator(color: CaboTheme.m3Primary),
+            CircularProgressIndicator(color: CaboTheme.m3Primary),
             const SizedBox(height: 20),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -235,11 +232,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
               color: CaboTheme.m3Secondary,
             ),
           ),
-          const Divider(
-            color: CaboTheme.outlineVariant,
-            thickness: 1,
-            height: 30,
-          ),
+          Divider(color: CaboTheme.outlineVariant, thickness: 1, height: 30),
           ...game.players.map(
             (player) => ListTile(
               contentPadding: EdgeInsets.zero,
@@ -289,7 +282,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
         child: CaboPrimaryButton(
           label: label,
-          leading: const Icon(Icons.login, color: CaboTheme.onPrimaryContainer),
+          leading: Icon(Icons.login, color: CaboTheme.onPrimaryContainer),
           onPressed: onPressed,
         ),
       ),
