@@ -6,6 +6,8 @@
   "menuEntryJoinGame": "Join Game",
   "menuEntryGameRules": "Game Rules",
   "menuEntryGameAboutScreen": "About",
+  "menuEntrySettings": "Settings",
+  "settingsScreenTitle": "Settings",
   "mainMenuSubtitle": "Your digital scorepad for the physical card game.",
   "mainMenuStartBoardDescription": "Create a scoreboard for your game with friends in person.",
   "mainMenuJoinBoardDescription": "Join an existing game to sync points with other players.",

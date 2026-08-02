@@ -8,7 +8,6 @@ import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/about/widgets/debug_test_section.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/core/app_service_locator.dart';
-import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -195,8 +194,6 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
               children: <Widget>[
                 _buildRatingHero(context),
                 const SizedBox(height: 32),
-                _buildDesignCard(context),
-                const SizedBox(height: 32),
                 _buildFeedbackCard(context),
                 const SizedBox(height: 32),
                 _buildFunFactCard(context),
@@ -290,64 +287,6 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildDesignCard(BuildContext context) {
-    final AppDesign design = context.watch<ApplicationCubit>().state.design;
-
-    return _buildCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            context.l10n.designSectionTitle,
-            textAlign: TextAlign.center,
-            style: CaboTheme.headlineMediumStyle.copyWith(
-              color: CaboTheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            context.l10n.designSectionSubtitle.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: CaboTheme.labelSmallStyle.copyWith(
-              color: CaboTheme.onSurfaceVariant,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 20),
-          SegmentedButton<AppDesign>(
-            segments: <ButtonSegment<AppDesign>>[
-              ButtonSegment<AppDesign>(
-                value: AppDesign.modern,
-                label: Text(context.l10n.designModern),
-                icon: const Icon(Icons.light_mode_outlined),
-              ),
-              ButtonSegment<AppDesign>(
-                value: AppDesign.classic,
-                label: Text(context.l10n.designClassic),
-                icon: const Icon(Icons.forest_outlined),
-              ),
-            ],
-            selected: <AppDesign>{design},
-            showSelectedIcon: false,
-            onSelectionChanged: (Set<AppDesign> selection) {
-              context.read<ApplicationCubit>().saveDesign(selection.first);
-            },
-          ),
-          const SizedBox(height: 12),
-          Text(
-            design == AppDesign.classic
-                ? context.l10n.designClassicDescription
-                : context.l10n.designModernDescription,
-            textAlign: TextAlign.center,
-            style: CaboTheme.bodyMediumStyle.copyWith(
-              color: CaboTheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

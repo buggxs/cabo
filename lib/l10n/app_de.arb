@@ -6,6 +6,8 @@
   "menuEntryJoinGame": "Spiel beitreten",
   "menuEntryGameRules": "Spielregeln",
   "menuEntryGameAboutScreen": "Über die App",
+  "menuEntrySettings": "Einstellungen",
+  "settingsScreenTitle": "Einstellungen",
   "mainMenuSubtitle": "Dein digitaler Punkteblock für das echte Kartenspiel.",
   "mainMenuStartBoardDescription": "Erstelle ein Punkteboard für dein Spiel mit Freunden vor Ort.",
   "mainMenuJoinBoardDescription": "Tritt einem bestehenden Spiel bei, um Punkte mit anderen Spielern zu synchronisieren.",

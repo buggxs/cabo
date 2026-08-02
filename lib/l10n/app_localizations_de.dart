@@ -30,6 +30,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'Über die App';
 
   @override
+  String get menuEntrySettings => 'Einstellungen';
+
+  @override
+  String get settingsScreenTitle => 'Einstellungen';
+
+  @override
   String get mainMenuSubtitle =>
       'Dein digitaler Punkteblock für das echte Kartenspiel.';
 

@@ -8,6 +8,7 @@ import 'package:cabo/components/main_menu/widgets/main_menu_action_card.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_header.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_utility_tile.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
+import 'package:cabo/components/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,10 +73,26 @@ class MainMenuScreenList extends StatelessWidget {
                         cubit.pushToScreen(context, GameHistoryScreen.route),
                   ),
                   const SizedBox(height: 16),
-                  MainMenuUtilityTile(
-                    icon: Icons.info_outline,
-                    label: context.l10n.menuEntryGameAboutScreen,
-                    onTap: () => cubit.pushToScreen(context, AboutScreen.route),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MainMenuUtilityTile(
+                          icon: Icons.info_outline,
+                          label: context.l10n.menuEntryGameAboutScreen,
+                          onTap: () =>
+                              cubit.pushToScreen(context, AboutScreen.route),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: MainMenuUtilityTile(
+                          icon: Icons.settings,
+                          label: context.l10n.menuEntrySettings,
+                          onTap: () =>
+                              cubit.pushToScreen(context, SettingsScreen.route),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

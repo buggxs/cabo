@@ -30,6 +30,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuEntryGameAboutScreen => 'About';
 
   @override
+  String get menuEntrySettings => 'Settings';
+
+  @override
+  String get settingsScreenTitle => 'Settings';
+
+  @override
   String get mainMenuSubtitle =>
       'Your digital scorepad for the physical card game.';
 

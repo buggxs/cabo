@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get menuEntryGameAboutScreen;
 
+  /// No description provided for @menuEntrySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get menuEntrySettings;
+
+  /// No description provided for @settingsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsScreenTitle;
+
   /// No description provided for @mainMenuSubtitle.
   ///
   /// In en, this message translates to:
