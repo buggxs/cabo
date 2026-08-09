@@ -1,5 +1,8 @@
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/domain/announcement/announcement_check_service.dart';
+import 'package:cabo/domain/announcement/announcement_repository.dart';
+import 'package:cabo/domain/announcement/local_announcement_repository.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/application/local_design_repository.dart';
 import 'package:cabo/domain/game/game_service.dart';
@@ -24,6 +27,7 @@ void setup() {
     ..registerFactory<RuleService>(() => LocalRuleService())
     ..registerFactory<GameService>(() => LocalGameService())
     ..registerFactory<PublicGameService>(() => PublicGameService())
+    ..registerFactory<AnnouncementRepository>(() => AnnouncementRepository())
     ..registerFactory<StatisticsDialogService>(() => StatisticsDialogService())
     ..registerSingleton<NavigationService>(NavigationService())
     ..registerSingleton<LocalPlayerRepository>(LocalPlayerRepository())
@@ -36,11 +40,21 @@ void setup() {
       LocalApplicationRepository.new,
     )
     ..registerLazySingleton<LocalDesignRepository>(LocalDesignRepository.new)
+    ..registerLazySingleton<LocalAnnouncementRepository>(
+      LocalAnnouncementRepository.new,
+    )
+    ..registerLazySingleton<AnnouncementCheckService>(
+      () => AnnouncementCheckService(
+        announcementRepository: app<AnnouncementRepository>(),
+        localAnnouncementRepository: app<LocalAnnouncementRepository>(),
+      ),
+    )
     ..registerLazySingleton<RatingService>(RatingService.new)
     ..registerLazySingleton<ApplicationCubit>(
       () => ApplicationCubit(
         repository: app<LocalApplicationRepository>(),
         designRepository: app<LocalDesignRepository>(),
+        announcementCheckService: app<AnnouncementCheckService>(),
       )..init(),
     );
 }

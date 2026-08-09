@@ -10,6 +10,14 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
 class AppNavigator {
+  static const Set<String> announcementRoutes = <String>{
+    MainMenuScreen.route,
+    GameHistoryScreen.route,
+    AboutScreen.route,
+    RuleSetScreen.route,
+    SettingsScreen.route,
+  };
+
   Route<dynamic> generateRoute(RouteSettings settings) {
     final Object? args = settings.arguments;
 

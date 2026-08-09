@@ -138,6 +138,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notLoadGameDialogButton => 'Nein, nicht laden.';
 
   @override
+  String get announcementDialogOkayButton => 'Okay';
+
+  @override
   String get enterDialogButton => 'Eintragen';
 
   @override

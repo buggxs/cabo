@@ -1,10 +1,12 @@
 import 'package:cabo/components/statistics/screens/end_game_screen.dart';
 import 'package:cabo/components/statistics/screens/statistics_screen.dart';
+import 'package:cabo/core/app_navigator/app_navigator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/misc/utils/logger.dart';
 import 'package:flutter/material.dart';
 
-class NavigationService {
+class NavigationService with LoggerMixin {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Future<T?> showAppDialog<T>({
@@ -25,6 +27,19 @@ class NavigationService {
       backgroundColor: Colors.transparent,
       builder: builder,
     );
+  }
+
+  bool pushAnnouncementRoute(String? routeName) {
+    if (routeName == null ||
+        !AppNavigator.announcementRoutes.contains(routeName)) {
+      logger.severe(
+        'Blocked announcement navigation to unknown route: $routeName',
+      );
+      return false;
+    }
+
+    Navigator.of(navigatorKey.currentContext!).pushNamed(routeName);
+    return true;
   }
 
   /// Ersetzt den aktiven Stats-Screen durch den [EndGameScreen]. Wird vom Cubit

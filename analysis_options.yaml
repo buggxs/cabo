@@ -9,6 +9,13 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  # Mockito-generated mock files are build artifacts (never hand-edited) and
+  # can contain redundant ignore comments for classes annotated `@immutable`
+  # in their source package (e.g. cloud_firestore's CollectionReference).
+  exclude:
+    - "**/*.mocks.dart"
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
