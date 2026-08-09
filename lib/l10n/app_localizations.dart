@@ -344,6 +344,12 @@ abstract class AppLocalizations {
   /// **'No, do not load.'**
   String get notLoadGameDialogButton;
 
+  /// No description provided for @announcementDialogOkayButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Okay'**
+  String get announcementDialogOkayButton;
+
   /// No description provided for @enterDialogButton.
   ///
   /// In en, this message translates to:

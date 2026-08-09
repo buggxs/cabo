@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
+import 'package:cabo/domain/announcement/announcement_check_service.dart';
 import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/application/local_design_repository.dart';
@@ -13,8 +14,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 part 'application_state.dart';
 
 class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
-  ApplicationCubit({required this.repository, required this.designRepository})
-    : super(const ApplicationInitial()) {
+  ApplicationCubit({
+    required this.repository,
+    required this.designRepository,
+    required this.announcementCheckService,
+  }) : super(const ApplicationInitial()) {
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) {
@@ -42,6 +46,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   late final StreamSubscription<User?> _authSubscription;
   final LocalApplicationRepository repository;
   final LocalDesignRepository designRepository;
+  final AnnouncementCheckService announcementCheckService;
   final GoogleSignIn signIn = GoogleSignIn.instance;
 
   void init() async {
@@ -51,6 +56,8 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     );
     CaboTheme.applyDesign(design);
     emit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
+
+    unawaited(announcementCheckService.checkAndShowAnnouncement());
   }
 
   void saveDesign(AppDesign design) {

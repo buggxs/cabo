@@ -4,6 +4,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/statistics/screens/end_game_screen.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/announcement/announcement_check_service.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
@@ -60,7 +61,29 @@ class DebugTestSection extends StatelessWidget {
             icon: Icons.history,
             onPressed: () => _fillGameHistory(context),
           ),
+          _DebugButton(
+            label: 'Announcement-Dialog anzeigen',
+            icon: Icons.campaign_outlined,
+            onPressed: () => _showAnnouncement(context),
+          ),
         ],
+      ),
+    );
+  }
+
+  /// Zeigt das aktuell konfigurierte Announcement, unabhängig vom
+  /// Gesehen-Status oder App-Start-Zähler, damit es sich im Debug-Build
+  /// jederzeit ohne Zustandsänderung vorschauen lässt.
+  Future<void> _showAnnouncement(BuildContext context) async {
+    final bool wasShown = await app<AnnouncementCheckService>()
+        .forceShowAnnouncement();
+
+    if (!context.mounted || wasShown) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Es ist aktuell kein Announcement konfiguriert.'),
       ),
     );
   }
