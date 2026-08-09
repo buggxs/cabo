@@ -1,0 +1,28 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /feedback_images/{imageId} {
+
+      // ERZEUGEN: Erlaube das Hochladen.
+      allow create: if request.resource.size < 15 * 1024 * 1024
+                        && request.resource.contentType.matches('image/.*');
+
+      // LESEN: Erlaube Lesezugriff, aber nur über die signierte URL.
+      // Dadurch kann deine Cloud Function die URL abrufen, ohne dass
+      // die Bilder direkt über einen Browser zugänglich sind.
+      allow read;
+
+      // UPDATE, DELETE: Verhindere Änderungen und Löschungen.
+      allow update, delete: if false;
+    }
+
+    match /announcements/{fileName} {
+      // LESEN: Öffentlich, da Announcements ohne Login angezeigt werden.
+      allow read: if true;
+
+      // ERZEUGEN, UPDATE, DELETE: Nur über Firebase Console / Admin-SDK,
+      // nicht über die App.
+      allow create, update, delete: if false;
+    }
+  }
+}
