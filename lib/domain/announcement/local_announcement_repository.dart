@@ -14,7 +14,6 @@ class LocalAnnouncementRepository {
     await prefs.setString(_lastSeenAnnouncementIdKey, id);
   }
 
-  /// Increments the app start counter and returns the new value.
   Future<int> incrementAppStartCount() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int count = (prefs.getInt(_appStartCountKey) ?? 0) + 1;

@@ -19,6 +19,33 @@ class LocalizedText extends Equatable {
   List<Object?> get props => [de, en];
 }
 
+enum AnnouncementActionType { navigate, dismiss }
+
+@JsonSerializable()
+class AnnouncementAction extends Equatable {
+  const AnnouncementAction({
+    required this.type,
+    required this.label,
+    this.route,
+  });
+
+  @JsonKey(
+    defaultValue: AnnouncementActionType.dismiss,
+    unknownEnumValue: AnnouncementActionType.dismiss,
+  )
+  final AnnouncementActionType type;
+  final LocalizedText label;
+  final String? route;
+
+  factory AnnouncementAction.fromJson(Map<String, dynamic> json) =>
+      _$AnnouncementActionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AnnouncementActionToJson(this);
+
+  @override
+  List<Object?> get props => [type, label, route];
+}
+
 @JsonSerializable()
 class Announcement extends Equatable {
   const Announcement({
@@ -33,7 +60,7 @@ class Announcement extends Equatable {
   final LocalizedText title;
   final LocalizedText message;
   final String? imageUrl;
-  final List<dynamic>? actions;
+  final List<AnnouncementAction>? actions;
 
   factory Announcement.fromJson(Map<String, dynamic> json) =>
       _$AnnouncementFromJson(json);

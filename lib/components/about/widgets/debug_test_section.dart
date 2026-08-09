@@ -71,9 +71,6 @@ class DebugTestSection extends StatelessWidget {
     );
   }
 
-  /// Zeigt das aktuell konfigurierte Announcement, unabhängig vom
-  /// Gesehen-Status oder App-Start-Zähler, damit es sich im Debug-Build
-  /// jederzeit ohne Zustandsänderung vorschauen lässt.
   Future<void> _showAnnouncement(BuildContext context) async {
     final bool wasShown = await app<AnnouncementCheckService>()
         .forceShowAnnouncement();

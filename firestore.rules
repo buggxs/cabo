@@ -11,11 +11,8 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
     match /announcements/{announcementId} {
-      // LESEN: Öffentlich, da Announcements ohne Login angezeigt werden.
       allow read: if true;
 
-      // ERZEUGEN, UPDATE, DELETE: Nur über Firebase Console / Admin-SDK,
-      // nicht über die App.
       allow create, update, delete: if false;
     }
 

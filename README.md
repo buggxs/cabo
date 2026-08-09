@@ -54,6 +54,93 @@ cd android
 ```
 Suche in der Ausgabe nach `Variant: debug` und kopiere den `SHA1` Schlüssel, um ihn in der Google Cloud Console unter deinen Android-App-Einstellungen als Fingerabdruck hinzuzufügen.
 
+## Announcements pflegen
+
+Announcements sind Hinweise, die beim App-Start als Dialog erscheinen (z.B. neue Features). Sie werden **nicht** über ein App-Update ausgeliefert, sondern über ein einzelnes Firestore-Dokument gepflegt:
+
+> Collection `announcements` → Dokument `current`
+
+Die App liest dieses Dokument öffentlich (ohne Login). Schreiben ist ausschliesslich über die Firebase Console bzw. das Admin-SDK möglich (siehe `firestore.rules`).
+
+### Vollständiges Beispiel
+
+```json
+{
+  "id": "settings-2026-08",
+  "title": {
+    "de": "Neue Designs",
+    "en": "New designs"
+  },
+  "message": {
+    "de": "Wähle jetzt dein Lieblings-Design in den Einstellungen.",
+    "en": "Pick your favourite design in the settings now."
+  },
+  "imageUrl": "https://firebasestorage.googleapis.com/.../announcements%2Fdesigns.png?alt=media",
+  "actions": [
+    {
+      "type": "navigate",
+      "label": { "de": "Zu den Einstellungen", "en": "To settings" },
+      "route": "settings_screen"
+    },
+    {
+      "type": "dismiss",
+      "label": { "de": "Später", "en": "Later" }
+    }
+  ]
+}
+```
+
+### Felder
+
+| Feld | Pflicht | Beschreibung |
+| --- | --- | --- |
+| `id` | ja | Frei wählbarer String. Die App merkt sich die zuletzt gesehene `id` lokal. **Eine neue `id` bedeutet: der Dialog wird erneut angezeigt.** Wird die `id` beibehalten, sehen bestehende Nutzer den Dialog nicht noch einmal — auch wenn sich Titel oder Text geändert haben. |
+| `title.de` / `title.en` | ja | Überschrift je Sprache. Frei wählbarer Text. |
+| `message.de` / `message.en` | ja | Fliesstext je Sprache. Frei wählbarer Text. |
+| `imageUrl` | nein | Bild-URL für den Dialog-Header. `null` oder weggelassen → es wird stattdessen ein Standard-Icon angezeigt. Bilder liegen im Firebase Storage unter `announcements/` (öffentlich lesbar, siehe `storage.rules`). Lädt das Bild nicht, fällt der Dialog stillschweigend auf das Icon zurück. |
+| `actions` | nein | Array mit Buttons. `null`, weggelassen oder `[]` → es wird der Standard-Button „Okay" angezeigt. |
+
+### Aktionen (`actions`)
+
+Die **erste** Aktion wird als primärer Button gerendert, die **zweite** als Textbutton darunter. **Ab der dritten Aktion wird ignoriert** — es werden also nie mehr als 2 Buttons angezeigt.
+
+| Feld | Pflicht | Beschreibung |
+| --- | --- | --- |
+| `type` | ja | `"navigate"` oder `"dismiss"`. |
+| `label.de` / `label.en` | ja | Buttonbeschriftung je Sprache. Frei wählbarer Text. |
+| `route` | nur bei `navigate` | Zielroute innerhalb der App, siehe Tabelle unten. |
+
+| `type` | Verhalten |
+| --- | --- |
+| `navigate` | Schliesst den Dialog und navigiert zur angegebenen `route`. |
+| `dismiss` | Schliesst nur den Dialog (entspricht dem Standard-Button). `route` wird ignoriert. |
+
+Erlaubte Werte für `route` (Whitelist in `AppNavigator.announcementRoutes`):
+
+| Route | Ziel |
+| --- | --- |
+| `main_menu_screen` | Hauptmenü |
+| `game_history_screen` | Spielverlauf |
+| `about_screen` | Über die App |
+| `rule_set_screen` | Regelwerk |
+| `settings_screen` | Einstellungen |
+
+Screens, die Argumente benötigen (`statistics_screen`, `end_game_screen`), sind bewusst **nicht** ansteuerbar, da sich Route-Argumente nicht über das Dokument übergeben lassen.
+
+### Fehlertoleranz
+
+Das Dokument wird remote gepflegt, deshalb verhält sich die App bei fehlerhaften Werten defensiv statt abzustürzen:
+
+- Unbekannter oder fehlender `type` (z.B. `"open_url"`) → wird wie `dismiss` behandelt.
+- `route` unbekannt oder nicht in der Whitelist → der Dialog schliesst trotzdem, es wird **nicht** navigiert, der Fehler wird geloggt.
+- Firestore nicht erreichbar oder Dokument fehlt → es wird kein Dialog angezeigt.
+
+### Anzeigelogik
+
+- Der Dialog erscheint **nicht beim allerersten App-Start** — neue Nutzer sollen zuerst die App sehen.
+- Danach wird er einmal pro `id` gezeigt und anschliessend lokal als gesehen markiert.
+- Zum Testen lässt sich der Dialog im Debug-Build über den Debug-Bereich im „Über die App"-Screen jederzeit erzwingen, ohne den Gesehen-Status zu verändern.
+
 <p float="left">
   <img src="https://github.com/user-attachments/assets/6d750656-e5ba-427e-8def-59c817348847" width="200" />
   <img src="https://github.com/user-attachments/assets/f09791ba-ec12-4d24-8b64-4203f0551506" width="200" />

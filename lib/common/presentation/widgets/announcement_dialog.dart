@@ -11,6 +11,8 @@ class AnnouncementDialog extends StatelessWidget {
 
   final Announcement announcement;
 
+  static const int _maxActions = 2;
+
   static Future<void> show({required Announcement announcement}) {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) => Dialog(
@@ -56,16 +58,69 @@ class AnnouncementDialog extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
-          SizedBox(
-            width: double.infinity,
-            child: CaboPrimaryButton(
-              label: l10n.announcementDialogOkayButton,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
+          _buildActions(context, l10n, isEnglish),
         ],
       ),
     );
+  }
+
+  Widget _buildActions(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isEnglish,
+  ) {
+    final List<AnnouncementAction> actions =
+        announcement.actions?.take(_maxActions).toList() ??
+        <AnnouncementAction>[];
+
+    if (actions.isEmpty) {
+      return SizedBox(
+        width: double.infinity,
+        child: CaboPrimaryButton(
+          label: l10n.announcementDialogOkayButton,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(
+          width: double.infinity,
+          child: CaboPrimaryButton(
+            label: _label(actions.first, isEnglish),
+            onPressed: () => _onActionPressed(context, actions.first),
+          ),
+        ),
+        if (actions.length > 1) ...<Widget>[
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: () => _onActionPressed(context, actions[1]),
+            child: Text(
+              _label(actions[1], isEnglish),
+              style: CaboTheme.labelLargeStyle.copyWith(
+                color: CaboTheme.onSurfaceVariant,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  String _label(AnnouncementAction action, bool isEnglish) =>
+      isEnglish ? action.label.en : action.label.de;
+
+  void _onActionPressed(BuildContext context, AnnouncementAction action) {
+    Navigator.of(context).pop();
+
+    if (action.type != AnnouncementActionType.navigate) {
+      return;
+    }
+
+    app<NavigationService>().pushAnnouncementRoute(action.route);
   }
 
   Widget _buildHeader() {
@@ -98,9 +153,6 @@ class AnnouncementDialog extends StatelessWidget {
   }
 }
 
-/// Shows the announcement image once it has decoded its first frame,
-/// cross-fading it in while fading the [fallback] icon out completely (so
-/// the icon does not stay visible through transparent parts of the image).
 class _AnnouncementImage extends StatefulWidget {
   const _AnnouncementImage({required this.imageUrl, required this.fallback});
 
