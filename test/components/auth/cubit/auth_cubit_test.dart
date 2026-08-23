@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
@@ -212,6 +214,87 @@ void main() {
       expect(cubit.state.wasVerificationResent, isFalse);
       expect(cubit.state.resendCooldown, 0);
       await cubit.close();
+    });
+  });
+
+  group('AuthCubit closing mid-flight', () {
+    test('checkVerification does not emit after close', () async {
+      final Completer<bool> pending = Completer<bool>();
+      when(
+        applicationCubit.refreshVerificationStatus(),
+      ).thenAnswer((_) => pending.future);
+      final AuthCubit cubit = buildCubit();
+
+      final Future<bool> inFlight = cubit.checkVerification();
+      // The verification succeeding tears down the widget that owns this
+      // cubit, so it closes while the call is still running.
+      await cubit.close();
+      pending.complete(true);
+
+      await expectLater(inFlight, completion(isTrue));
+    });
+
+    test('signIn does not emit after close', () async {
+      final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
+      when(
+        applicationCubit.signInWithEmail(any, any),
+      ).thenAnswer((_) => pending.future);
+      final AuthCubit cubit = buildCubit();
+
+      final Future<bool> inFlight = cubit.signIn(
+        email: 'player@example.com',
+        password: 'sup3rSecret',
+      );
+      await cubit.close();
+      pending.complete(const AuthOutcome.success());
+
+      await expectLater(inFlight, completion(isTrue));
+    });
+
+    test('register does not emit after close', () async {
+      final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
+      when(
+        applicationCubit.registerWithEmail(any, any),
+      ).thenAnswer((_) => pending.future);
+      final AuthCubit cubit = buildCubit();
+
+      final Future<bool> inFlight = cubit.register(
+        email: 'player@example.com',
+        password: 'sup3rSecret',
+        passwordRepeat: 'sup3rSecret',
+      );
+      await cubit.close();
+      pending.complete(const AuthOutcome.success());
+
+      await expectLater(inFlight, completion(isTrue));
+    });
+
+    test('resendVerificationEmail does not emit after close', () async {
+      final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
+      when(
+        applicationCubit.sendVerificationEmail(),
+      ).thenAnswer((_) => pending.future);
+      final AuthCubit cubit = buildCubit();
+
+      final Future<void> inFlight = cubit.resendVerificationEmail();
+      await cubit.close();
+      pending.complete(const AuthOutcome.success());
+
+      await expectLater(inFlight, completes);
+    });
+
+    test('signInWithGoogle does not emit after close', () async {
+      final Completer<bool> pending = Completer<bool>();
+      when(
+        applicationCubit.signInWithGoogle(),
+      ).thenAnswer((_) => pending.future);
+      final AuthCubit cubit = buildCubit();
+
+      final Future<bool> inFlight = cubit.signInWithGoogle();
+      await cubit.close();
+      pending.complete(true);
+
+      await expectLater(inFlight, completion(isTrue));
     });
   });
 

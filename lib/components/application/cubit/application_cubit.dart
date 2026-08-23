@@ -27,14 +27,14 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     // case now that everybody is signed in from the start.
     _authSubscription = authService.userChanges().listen((User? user) {
       if (user == null) {
-        emit(
+        _safeEmit(
           ApplicationUnauthenticated(
             isDeveloper: state.isDeveloper,
             design: state.design,
           ),
         );
       } else {
-        emit(
+        _safeEmit(
           ApplicationAuthenticated(
             user: user,
             isDeveloper: state.isDeveloper,
@@ -55,13 +55,20 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   final AuthService authService;
   final DeepLinkService deepLinkService;
 
+  /// Emits only while the cubit is alive: init() and the user stream can both
+  /// resolve after close().
+  void _safeEmit(ApplicationState next) {
+    if (isClosed) return;
+    emit(next);
+  }
+
   void init() async {
     final isDeveloperMode = await repository.getCurrent() ?? false;
     final AppDesign design = AppDesign.fromName(
       await designRepository.getCurrent(),
     );
     CaboTheme.applyDesign(design);
-    emit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
+    _safeEmit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
 
     // Never awaited: a hanging sign-in must not delay the announcement, and
     // announcements are readable without auth anyway.
@@ -73,7 +80,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   void saveDesign(AppDesign design) {
     designRepository.saveCurrent(design.name);
     CaboTheme.applyDesign(design);
-    emit(state.copyWith(design: design));
+    _safeEmit(state.copyWith(design: design));
   }
 
   Future<void> signOut() async {
@@ -111,7 +118,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
 
   void saveIsDeveloperMode(bool isDeveloperMode) {
     repository.saveCurrent(isDeveloperMode);
-    emit(state.copyWith(isDeveloper: isDeveloperMode));
+    _safeEmit(state.copyWith(isDeveloper: isDeveloperMode));
   }
 
   void toggleDeveloperMode() {
@@ -143,9 +150,9 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   }
 
   @override
-  Future<void> close() {
-    _authSubscription.cancel();
-    _linkSubscription?.cancel();
+  Future<void> close() async {
+    await _authSubscription.cancel();
+    await _linkSubscription?.cancel();
     return super.close();
   }
 }

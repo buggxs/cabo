@@ -17,6 +17,14 @@ class AuthCubit extends Cubit<AuthFormState> {
 
   Timer? _cooldownTimer;
 
+  /// Emits only while the cubit is alive. The widget owning it is torn down
+  /// as soon as the account becomes publishable, which can happen while an
+  /// await is still in flight.
+  void _safeEmit(AuthFormState next) {
+    if (isClosed) return;
+    emit(next);
+  }
+
   void showChooser() => emit(const AuthFormState());
 
   void showSignIn() => emit(state.copyWith(mode: AuthMode.signIn));
@@ -24,9 +32,9 @@ class AuthCubit extends Cubit<AuthFormState> {
   void showRegister() => emit(state.copyWith(mode: AuthMode.register));
 
   Future<bool> signInWithGoogle() async {
-    emit(state.copyWith(isSubmitting: true));
+    _safeEmit(state.copyWith(isSubmitting: true));
     final bool isSuccess = await applicationCubit.signInWithGoogle();
-    emit(
+    _safeEmit(
       state.copyWith(
         isSubmitting: false,
         error: isSuccess ? null : AuthError.unknown,
@@ -39,7 +47,7 @@ class AuthCubit extends Cubit<AuthFormState> {
     if (!_validate(email: email, password: password)) {
       return false;
     }
-    emit(state.copyWith(isSubmitting: true));
+    _safeEmit(state.copyWith(isSubmitting: true));
     final AuthOutcome outcome = await applicationCubit.signInWithEmail(
       email.trim(),
       password,
@@ -57,10 +65,10 @@ class AuthCubit extends Cubit<AuthFormState> {
       return false;
     }
     if (password != passwordRepeat) {
-      emit(state.copyWith(passwordFieldError: AuthError.passwordMismatch));
+      _safeEmit(state.copyWith(passwordFieldError: AuthError.passwordMismatch));
       return false;
     }
-    emit(state.copyWith(isSubmitting: true));
+    _safeEmit(state.copyWith(isSubmitting: true));
     final AuthOutcome outcome = await applicationCubit.registerWithEmail(
       email.trim(),
       password,
@@ -70,7 +78,7 @@ class AuthCubit extends Cubit<AuthFormState> {
         outcome.error == AuthError.credentialAlreadyInUse ||
         outcome.error == AuthError.providerAlreadyLinked;
     if (hasConflict) {
-      emit(
+      _safeEmit(
         state.copyWith(
           isSubmitting: false,
           error: AuthError.emailAlreadyInUse,
@@ -90,9 +98,9 @@ class AuthCubit extends Cubit<AuthFormState> {
     if (!state.canResendVerification) {
       return;
     }
-    emit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
+    _safeEmit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
     final AuthOutcome outcome = await applicationCubit.sendVerificationEmail();
-    emit(
+    _safeEmit(
       state.copyWith(
         isSubmitting: false,
         error: outcome.isSuccess ? null : outcome.error,
@@ -107,28 +115,28 @@ class AuthCubit extends Cubit<AuthFormState> {
   /// Returns true once the address is confirmed. The state update itself comes
   /// from the ApplicationCubit's user stream.
   Future<bool> checkVerification() async {
-    emit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
+    _safeEmit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
     final bool isVerified = await applicationCubit.refreshVerificationStatus();
-    emit(state.copyWith(isSubmitting: false));
+    _safeEmit(state.copyWith(isSubmitting: false));
     return isVerified;
   }
 
   bool _validate({required String email, required String password}) {
     final String trimmedEmail = email.trim();
     if (trimmedEmail.isEmpty || !trimmedEmail.contains('@')) {
-      emit(state.copyWith(emailFieldError: AuthError.invalidEmail));
+      _safeEmit(state.copyWith(emailFieldError: AuthError.invalidEmail));
       return false;
     }
     if (password.length < minPasswordLength) {
-      emit(state.copyWith(passwordFieldError: AuthError.weakPassword));
+      _safeEmit(state.copyWith(passwordFieldError: AuthError.weakPassword));
       return false;
     }
-    emit(state.copyWith());
+    _safeEmit(state.copyWith());
     return true;
   }
 
   void _emitOutcome(AuthOutcome outcome) {
-    emit(
+    _safeEmit(
       state.copyWith(
         isSubmitting: false,
         error: outcome.isSuccess ? null : outcome.error,
@@ -138,15 +146,13 @@ class AuthCubit extends Cubit<AuthFormState> {
 
   void _startCooldown() {
     _cooldownTimer?.cancel();
-    emit(state.copyWith(resendCooldown: resendCooldownSeconds));
+    _safeEmit(state.copyWith(resendCooldown: resendCooldownSeconds));
     _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       final int remaining = state.resendCooldown - 1;
       if (remaining <= 0) {
         timer.cancel();
       }
-      if (!isClosed) {
-        emit(state.copyWith(resendCooldown: remaining < 0 ? 0 : remaining));
-      }
+      _safeEmit(state.copyWith(resendCooldown: remaining < 0 ? 0 : remaining));
     });
   }
 
