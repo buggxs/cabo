@@ -46,6 +46,10 @@ Flutter app for the Cabo card game — a digital scoreboard with local persisten
 - `lib/l10n/` — ARB-based localizations for German and English.
 - `lib/misc/utils/` — small helpers (logger mixin, dialogs, date parsing).
 
+**Firebase backend:** Cloud Functions, `firestore.rules`, `storage.rules` and the feedback
+dashboard live in a separate repository at `~/workspace/web/cabo` and are deployed from there.
+This repository only carries the FlutterFire config.
+
 **Dependency injection:** All services and repositories are registered in `lib/core/app_service_locator.dart` using GetIt. Access them via `getIt<SomeService>()`.
 
 **State management:** Each feature's Cubit lives in `components/<feature>/cubit/`. State classes use Equatable. Use `bloc_test` and `mockito` for tests.
