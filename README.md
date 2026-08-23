@@ -60,7 +60,7 @@ Announcements sind Hinweise, die beim App-Start als Dialog erscheinen (z.B. neue
 
 > Collection `announcements` → Dokument `current`
 
-Die App liest dieses Dokument öffentlich (ohne Login). Schreiben ist ausschliesslich über die Firebase Console bzw. das Admin-SDK möglich (siehe `firestore.rules`).
+Die App liest dieses Dokument öffentlich (ohne Login). Schreiben ist ausschliesslich über die Firebase Console bzw. das Admin-SDK möglich (siehe `firestore.rules` im Backend-Repository).
 
 ### Vollständiges Beispiel
 
@@ -97,7 +97,7 @@ Die App liest dieses Dokument öffentlich (ohne Login). Schreiben ist ausschlies
 | `id` | ja | Frei wählbarer String. Die App merkt sich die zuletzt gesehene `id` lokal. **Eine neue `id` bedeutet: der Dialog wird erneut angezeigt.** Wird die `id` beibehalten, sehen bestehende Nutzer den Dialog nicht noch einmal — auch wenn sich Titel oder Text geändert haben. |
 | `title.de` / `title.en` | ja | Überschrift je Sprache. Frei wählbarer Text. |
 | `message.de` / `message.en` | ja | Fliesstext je Sprache. Frei wählbarer Text. |
-| `imageUrl` | nein | Bild-URL für den Dialog-Header. `null` oder weggelassen → es wird stattdessen ein Standard-Icon angezeigt. Bilder liegen im Firebase Storage unter `announcements/` (öffentlich lesbar, siehe `storage.rules`). Lädt das Bild nicht, fällt der Dialog stillschweigend auf das Icon zurück. |
+| `imageUrl` | nein | Bild-URL für den Dialog-Header. `null` oder weggelassen → es wird stattdessen ein Standard-Icon angezeigt. Bilder liegen im Firebase Storage unter `announcements/` (öffentlich lesbar, siehe `storage.rules` im Backend-Repository). Lädt das Bild nicht, fällt der Dialog stillschweigend auf das Icon zurück. |
 | `actions` | nein | Array mit Buttons. `null`, weggelassen oder `[]` → es wird der Standard-Button „Okay" angezeigt. |
 
 ### Aktionen (`actions`)
