@@ -37,14 +37,17 @@ class PublicGameService with LoggerMixin {
 
   /// Saves a game to Firestore and returns the new document ID.
   ///
-  /// Throws an [Exception] if the user is not logged in, or if an
-  /// anonymous user tries to create a public game.
+  /// Throws an [Exception] if nobody is signed in. Publishing additionally
+  /// requires a confirmed e-mail address, which is enforced by the security
+  /// rules; the UI gates on ApplicationState.canPublishGame beforehand.
+  ///
+  /// Messages here are log-only: every caller shows its own localized text.
   Future<Game> saveOrUpdateGame({required Game game}) async {
     final User? user = _auth.currentUser;
 
     if (user == null) {
       logger.warning('User is not logged in. Cannot save game.');
-      throw Exception('Um ein Spiel zu speichern, musst du angemeldet sein.');
+      throw Exception('Cannot save a game without a signed in user.');
     }
 
     // A public game must have an owner.
@@ -87,9 +90,7 @@ class PublicGameService with LoggerMixin {
           'Unauthenticated error received. Forcing user sign out.',
         );
         await _auth.signOut();
-        throw Exception(
-          'Deine Anmeldung ist abgelaufen. Bitte melde dich erneut an.',
-        );
+        throw Exception('Session expired, signed the user out.');
       }
       rethrow;
     }
@@ -101,7 +102,7 @@ class PublicGameService with LoggerMixin {
     user ??= (await _auth.signInAnonymously()).user;
 
     if (user == null) {
-      throw Exception('Anmeldung fehlgeschlagen.');
+      throw Exception('Could not sign in to join the game.');
     }
 
     final String uid = user.uid;
@@ -110,7 +111,7 @@ class PublicGameService with LoggerMixin {
     return _firestore.runTransaction<Game>((tx) async {
       final snapshot = await tx.get(docRef);
       if (!snapshot.exists) {
-        throw Exception('Spiel mit ID $publicId existiert nicht.');
+        throw Exception('No game exists with id $publicId.');
       }
       final Game current = Game.fromJson(snapshot.data()!);
       if (current.playerUids.contains(uid)) {
