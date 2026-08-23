@@ -1,11 +1,14 @@
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum AuthError {
   /// Client side validation only, never returned by Firebase.
   passwordMismatch,
+  emailRequired,
+  passwordRequired,
   invalidCredentials,
   emailAlreadyInUse,
   credentialAlreadyInUse,
@@ -41,6 +44,8 @@ class AuthService with LoggerMixin {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
 
+  Future<void>? _providerInitialization;
+
   static const String verifiedContinueUrl =
       'https://www.buggxs.com/cabo/verified';
 
@@ -54,7 +59,16 @@ class AuthService with LoggerMixin {
   /// and when the ID token is refreshed.
   Stream<User?> userChanges() => _auth.userChanges();
 
-  Future<void> initializeProviders() => _googleSignIn.initialize();
+  /// Memoized so a sign-in tapped before initialization finished waits for it
+  /// instead of failing.
+  Future<void> initializeProviders() {
+    return _providerInitialization ??= _googleSignIn.initialize().catchError((
+      Object e,
+    ) {
+      logger.severe('Could not initialize sign-in providers', e);
+      _providerInitialization = null;
+    });
+  }
 
   /// Idempotent anonymous bootstrap. Never throws, so local play stays
   /// available when the device is offline.
@@ -76,6 +90,7 @@ class AuthService with LoggerMixin {
 
   Future<AuthOutcome> signInWithGoogle() async {
     try {
+      await initializeProviders();
       final GoogleSignInAccount googleUser = await _googleSignIn.authenticate(
         scopeHint: _googleScopes,
       );
@@ -127,7 +142,7 @@ class AuthService with LoggerMixin {
           password: password,
         );
       }
-      return sendVerificationEmail();
+      return const AuthOutcome.success();
     } on FirebaseAuthException catch (e) {
       logger.warning('Registration failed: ${e.code}');
       return AuthOutcome.failure(_mapError(e));
@@ -188,18 +203,51 @@ class AuthService with LoggerMixin {
     }
   }
 
+  Future<AuthOutcome> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return const AuthOutcome.success();
+    } on FirebaseAuthException catch (e) {
+      logger.warning('Could not send password reset mail: ${e.code}');
+      return AuthOutcome.failure(_mapError(e));
+    }
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }
 
+  /// Links onto the anonymous user so the UID survives. Since everybody is
+  /// signed in anonymously, this is the normal path -- and it fails for anyone
+  /// who already owns this provider account, so fall back to a plain sign-in.
+  /// That drops the anonymous UID, which only holds games created on this
+  /// device before signing in.
   Future<AuthOutcome> _linkOrSignIn(AuthCredential credential) async {
     final User? current = _auth.currentUser;
-    if (current != null && current.isAnonymous) {
+    if (current == null || !current.isAnonymous) {
+      await _auth.signInWithCredential(credential);
+      return const AuthOutcome.success();
+    }
+    try {
       await current.linkWithCredential(credential);
-    } else {
+    } on FirebaseAuthException catch (e) {
+      if (!_isAccountConflict(e.code)) {
+        rethrow;
+      }
+      logger.info('Account already exists (${e.code}), signing in instead.');
       await _auth.signInWithCredential(credential);
     }
     return const AuthOutcome.success();
+  }
+
+  @visibleForTesting
+  Future<AuthOutcome> linkOrSignInForTest(AuthCredential credential) =>
+      _linkOrSignIn(credential);
+
+  bool _isAccountConflict(String code) {
+    return code == 'credential-already-in-use' ||
+        code == 'email-already-in-use' ||
+        code == 'provider-already-linked';
   }
 
   AuthError _mapError(FirebaseAuthException exception) {

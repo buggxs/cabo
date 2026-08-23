@@ -6,6 +6,10 @@ extension AuthErrorL10n on AuthError {
     switch (this) {
       case AuthError.passwordMismatch:
         return l10n.authScreenPasswortMissmatch;
+      case AuthError.emailRequired:
+        return l10n.authScreenEmailRequired;
+      case AuthError.passwordRequired:
+        return l10n.authScreenPasswordRequired;
       case AuthError.invalidCredentials:
         return l10n.authScreenInvalidCredentials;
       case AuthError.emailAlreadyInUse:

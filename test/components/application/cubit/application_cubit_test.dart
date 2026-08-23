@@ -251,6 +251,61 @@ void main() {
     });
   });
 
+  group('ApplicationCubit startup ordering', () {
+    test(
+      'an auth event during init does not reset design or dev mode',
+      () async {
+        // init() emits onto whatever state the user stream produced first, so a
+        // late auth event must carry isDeveloper and design forward.
+        when(repository.getCurrent()).thenAnswer((_) async => true);
+        when(designRepository.getCurrent()).thenAnswer((_) async => 'classic');
+        final ApplicationCubit cubit = buildCubit();
+
+        cubit.init();
+        await Future<void>.delayed(Duration.zero);
+        userController.add(buildUser(isAnonymous: true, email: null));
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.isDeveloper, isTrue);
+        expect(cubit.state.design, AppDesign.fromName('classic'));
+        expect(cubit.state.isSignedIn, isTrue);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'an auth event before init finishes keeps the loaded settings',
+      () async {
+        when(repository.getCurrent()).thenAnswer((_) async => true);
+        when(designRepository.getCurrent()).thenAnswer((_) async => 'classic');
+        final ApplicationCubit cubit = buildCubit();
+
+        userController.add(buildUser(isAnonymous: true, email: null));
+        cubit.init();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.isDeveloper, isTrue);
+        expect(cubit.state.design, AppDesign.fromName('classic'));
+        await cubit.close();
+      },
+    );
+  });
+
+  group('ApplicationCubit.signOut failure', () {
+    test('a failing re-sign-in leaves the app usable', () async {
+      final ApplicationCubit cubit = buildCubit();
+      when(
+        authService.ensureSignedIn(),
+      ).thenAnswer((_) async => const AuthOutcome.failure(AuthError.network));
+
+      await expectLater(cubit.signOut(), completes);
+
+      verify(authService.signOut()).called(1);
+      verify(authService.ensureSignedIn()).called(1);
+      await cubit.close();
+    });
+  });
+
   group('ApplicationCubit.init design', () {
     test('applies the stored design and developer flag', () async {
       when(repository.getCurrent()).thenAnswer((_) async => true);

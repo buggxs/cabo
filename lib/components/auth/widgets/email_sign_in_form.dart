@@ -1,7 +1,9 @@
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
 import 'package:cabo/components/auth/auth_error_l10n.dart';
+import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
+import 'package:cabo/components/auth/widgets/auth_error_message.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,10 +59,28 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           autofillHints: const <String>[AutofillHints.password],
           onSubmitted: (_) => _submit(),
         ),
+        AuthErrorMessage(error: state.error),
+        if (state.hasPasswordResetBeenSent)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              l10n.authScreenPasswordResetSent,
+              textAlign: TextAlign.center,
+              style: CaboTheme.labelSmallStyle.copyWith(
+                color: CaboTheme.m3Primary,
+              ),
+            ),
+          ),
         const SizedBox(height: 20),
         CaboPrimaryButton(
           label: l10n.authScreenSignIn,
           onPressed: state.isSubmitting ? null : _submit,
+        ),
+        TextButton(
+          onPressed: state.isSubmitting
+              ? null
+              : () => cubit.sendPasswordReset(_emailController.text),
+          child: Text(l10n.authScreenForgotPassword),
         ),
         const SizedBox(height: 8),
         TextButton(

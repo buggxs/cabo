@@ -90,6 +90,8 @@ class PublicGameService with LoggerMixin {
           'Unauthenticated error received. Forcing user sign out.',
         );
         await _auth.signOut();
+        // Every user is expected to be signed in, so restore that right away.
+        await _auth.signInAnonymously();
         throw Exception('Session expired, signed the user out.');
       }
       rethrow;

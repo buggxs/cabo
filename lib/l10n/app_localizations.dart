@@ -536,6 +536,24 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get authScreenBack;
 
+  /// No description provided for @authScreenForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get authScreenForgotPassword;
+
+  /// No description provided for @authScreenPasswordResetSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent you a link to reset your password.'**
+  String get authScreenPasswordResetSent;
+
+  /// No description provided for @verifyEmailUseOtherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different address'**
+  String get verifyEmailUseOtherAccount;
+
   /// No description provided for @authScreenEmailAlreadyInUse.
   ///
   /// In en, this message translates to:
@@ -547,12 +565,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log in to use that account. Online games you started on this device will not be linked to it.'**
   String get authScreenLinkConflictHint;
-
-  /// No description provided for @authScreenSignInWithEmailAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue with e-mail'**
-  String get authScreenSignInWithEmailAction;
 
   /// No description provided for @authScreenInvalidCredentials.
   ///

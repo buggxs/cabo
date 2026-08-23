@@ -242,15 +242,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authScreenBack => 'Zurück';
 
   @override
+  String get authScreenForgotPassword => 'Passwort vergessen?';
+
+  @override
+  String get authScreenPasswordResetSent =>
+      'Wir haben dir einen Link zum Zurücksetzen geschickt.';
+
+  @override
+  String get verifyEmailUseOtherAccount => 'Andere Adresse verwenden';
+
+  @override
   String get authScreenEmailAlreadyInUse =>
       'Für diese E-Mail existiert schon ein Konto.';
 
   @override
   String get authScreenLinkConflictHint =>
       'Melde dich an, um dieses Konto zu nutzen. Online-Spiele, die du auf diesem Gerät gestartet hast, bleiben dann nicht damit verknüpft.';
-
-  @override
-  String get authScreenSignInWithEmailAction => 'Weiter mit E-Mail';
 
   @override
   String get authScreenInvalidCredentials => 'E-Mail oder Passwort ist falsch.';

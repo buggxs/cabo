@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +38,7 @@ class _AuthRefreshListenerState extends State<AuthRefreshListener> {
     if (!mounted) return;
     final ApplicationCubit cubit = context.read<ApplicationCubit>();
     if (cubit.state.isAwaitingEmailVerification) {
-      cubit.refreshVerificationStatus();
+      unawaited(cubit.refreshVerificationStatus());
     }
   }
 

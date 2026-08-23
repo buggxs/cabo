@@ -25,22 +25,24 @@ class AuthCubit extends Cubit<AuthFormState> {
     emit(next);
   }
 
-  void showChooser() => emit(const AuthFormState());
+  void showChooser() => _safeEmit(const AuthFormState());
 
-  void showSignIn() => emit(state.copyWith(mode: AuthMode.signIn));
+  void showSignIn() => _safeEmit(state.copyWith(mode: AuthMode.signIn));
 
-  void showRegister() => emit(state.copyWith(mode: AuthMode.register));
+  void showRegister() => _safeEmit(state.copyWith(mode: AuthMode.register));
 
   Future<bool> signInWithGoogle() async {
     _safeEmit(state.copyWith(isSubmitting: true));
-    final bool isSuccess = await applicationCubit.signInWithGoogle();
+    final AuthOutcome outcome = await applicationCubit.signInWithGoogle();
+    // Cancelling the Google sheet is not a failure worth showing.
+    final bool isCancelled = outcome.error == AuthError.cancelled;
     _safeEmit(
       state.copyWith(
         isSubmitting: false,
-        error: isSuccess ? null : AuthError.unknown,
+        error: outcome.isSuccess || isCancelled ? null : outcome.error,
       ),
     );
-    return isSuccess;
+    return outcome.isSuccess;
   }
 
   Future<bool> signIn({required String email, required String password}) async {
@@ -87,10 +89,44 @@ class AuthCubit extends Cubit<AuthFormState> {
       );
       return false;
     }
-    _emitOutcome(outcome);
-    if (outcome.isSuccess) {
+    if (!outcome.isSuccess) {
+      _emitOutcome(outcome);
+      return false;
+    }
+    // The account exists now. A failing mail is reported on its own, so the
+    // notice never claims a mail went out when it did not.
+    final AuthOutcome mailOutcome = await applicationCubit
+        .sendVerificationEmail();
+    _safeEmit(
+      state.copyWith(
+        isSubmitting: false,
+        error: mailOutcome.isSuccess ? null : mailOutcome.error,
+        hasVerificationMailBeenSent: mailOutcome.isSuccess,
+      ),
+    );
+    if (mailOutcome.isSuccess) {
       _startCooldown();
     }
+    return true;
+  }
+
+  Future<bool> sendPasswordReset(String email) async {
+    final String trimmedEmail = email.trim();
+    if (!_isValidEmail(trimmedEmail)) {
+      _safeEmit(state.copyWith(emailFieldError: AuthError.invalidEmail));
+      return false;
+    }
+    _safeEmit(state.copyWith(isSubmitting: true));
+    final AuthOutcome outcome = await applicationCubit.sendPasswordResetEmail(
+      trimmedEmail,
+    );
+    _safeEmit(
+      state.copyWith(
+        isSubmitting: false,
+        error: outcome.isSuccess ? null : outcome.error,
+        hasPasswordResetBeenSent: outcome.isSuccess,
+      ),
+    );
     return outcome.isSuccess;
   }
 
@@ -98,13 +134,15 @@ class AuthCubit extends Cubit<AuthFormState> {
     if (!state.canResendVerification) {
       return;
     }
-    _safeEmit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
+    _safeEmit(
+      state.copyWith(isSubmitting: true, hasVerificationMailBeenSent: false),
+    );
     final AuthOutcome outcome = await applicationCubit.sendVerificationEmail();
     _safeEmit(
       state.copyWith(
         isSubmitting: false,
         error: outcome.isSuccess ? null : outcome.error,
-        wasVerificationResent: outcome.isSuccess,
+        hasVerificationMailBeenSent: outcome.isSuccess,
       ),
     );
     if (outcome.isSuccess) {
@@ -115,7 +153,9 @@ class AuthCubit extends Cubit<AuthFormState> {
   /// Returns true once the address is confirmed. The state update itself comes
   /// from the ApplicationCubit's user stream.
   Future<bool> checkVerification() async {
-    _safeEmit(state.copyWith(isSubmitting: true, wasVerificationResent: false));
+    _safeEmit(
+      state.copyWith(isSubmitting: true, hasVerificationMailBeenSent: false),
+    );
     final bool isVerified = await applicationCubit.refreshVerificationStatus();
     _safeEmit(state.copyWith(isSubmitting: false));
     return isVerified;
@@ -123,8 +163,16 @@ class AuthCubit extends Cubit<AuthFormState> {
 
   bool _validate({required String email, required String password}) {
     final String trimmedEmail = email.trim();
-    if (trimmedEmail.isEmpty || !trimmedEmail.contains('@')) {
+    if (trimmedEmail.isEmpty) {
+      _safeEmit(state.copyWith(emailFieldError: AuthError.emailRequired));
+      return false;
+    }
+    if (!_isValidEmail(trimmedEmail)) {
       _safeEmit(state.copyWith(emailFieldError: AuthError.invalidEmail));
+      return false;
+    }
+    if (password.isEmpty) {
+      _safeEmit(state.copyWith(passwordFieldError: AuthError.passwordRequired));
       return false;
     }
     if (password.length < minPasswordLength) {
@@ -133,6 +181,10 @@ class AuthCubit extends Cubit<AuthFormState> {
     }
     _safeEmit(state.copyWith());
     return true;
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
   }
 
   void _emitOutcome(AuthOutcome outcome) {
@@ -152,7 +204,7 @@ class AuthCubit extends Cubit<AuthFormState> {
       if (remaining <= 0) {
         timer.cancel();
       }
-      _safeEmit(state.copyWith(resendCooldown: remaining < 0 ? 0 : remaining));
+      _safeEmit(state.withCooldown(remaining < 0 ? 0 : remaining));
     });
   }
 

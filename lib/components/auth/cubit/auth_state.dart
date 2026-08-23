@@ -11,7 +11,8 @@ class AuthFormState extends Equatable {
     this.passwordFieldError,
     this.hasEmailConflict = false,
     this.resendCooldown = 0,
-    this.wasVerificationResent = false,
+    this.hasVerificationMailBeenSent = false,
+    this.hasPasswordResetBeenSent = false,
   });
 
   final AuthMode mode;
@@ -24,7 +25,8 @@ class AuthFormState extends Equatable {
   /// signing in instead of registering.
   final bool hasEmailConflict;
   final int resendCooldown;
-  final bool wasVerificationResent;
+  final bool hasVerificationMailBeenSent;
+  final bool hasPasswordResetBeenSent;
 
   bool get canResendVerification => resendCooldown == 0 && !isSubmitting;
 
@@ -36,7 +38,8 @@ class AuthFormState extends Equatable {
     AuthError? passwordFieldError,
     bool? hasEmailConflict,
     int? resendCooldown,
-    bool? wasVerificationResent,
+    bool? hasVerificationMailBeenSent,
+    bool? hasPasswordResetBeenSent,
   }) {
     return AuthFormState(
       mode: mode ?? this.mode,
@@ -46,8 +49,26 @@ class AuthFormState extends Equatable {
       passwordFieldError: passwordFieldError,
       hasEmailConflict: hasEmailConflict ?? this.hasEmailConflict,
       resendCooldown: resendCooldown ?? this.resendCooldown,
-      wasVerificationResent:
-          wasVerificationResent ?? this.wasVerificationResent,
+      hasVerificationMailBeenSent:
+          hasVerificationMailBeenSent ?? this.hasVerificationMailBeenSent,
+      hasPasswordResetBeenSent:
+          hasPasswordResetBeenSent ?? this.hasPasswordResetBeenSent,
+    );
+  }
+
+  /// Only touches the cooldown. copyWith deliberately clears the error fields,
+  /// which would make the one-second ticker wipe a validation message.
+  AuthFormState withCooldown(int seconds) {
+    return AuthFormState(
+      mode: mode,
+      isSubmitting: isSubmitting,
+      error: error,
+      emailFieldError: emailFieldError,
+      passwordFieldError: passwordFieldError,
+      hasEmailConflict: hasEmailConflict,
+      resendCooldown: seconds,
+      hasVerificationMailBeenSent: hasVerificationMailBeenSent,
+      hasPasswordResetBeenSent: hasPasswordResetBeenSent,
     );
   }
 
@@ -60,6 +81,7 @@ class AuthFormState extends Equatable {
     passwordFieldError,
     hasEmailConflict,
     resendCooldown,
-    wasVerificationResent,
+    hasVerificationMailBeenSent,
+    hasPasswordResetBeenSent,
   ];
 }

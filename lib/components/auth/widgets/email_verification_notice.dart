@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
+import 'package:cabo/components/auth/widgets/auth_error_message.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -20,26 +23,17 @@ class EmailVerificationNotice extends StatefulWidget {
 }
 
 class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
-  late final AppLifecycleListener _lifecycleListener;
-
   @override
   void initState() {
     super.initState();
-    _lifecycleListener = AppLifecycleListener(onResume: _refreshStatus);
-    // Also check on mount: the address may have been confirmed while this
-    // screen was closed.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refreshStatus());
-  }
-
-  @override
-  void dispose() {
-    _lifecycleListener.dispose();
-    super.dispose();
-  }
-
-  void _refreshStatus() {
-    if (!mounted) return;
-    context.read<AuthCubit>().checkVerification();
+    // Check on mount: the address may have been confirmed while this screen
+    // was closed. Resume is handled app-wide by AuthRefreshListener, so this
+    // widget deliberately has no lifecycle listener of its own -- two would
+    // mean two forced token refreshes per resume.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(context.read<AuthCubit>().checkVerification());
+    });
   }
 
   Future<void> _checkNow() async {
@@ -109,13 +103,23 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
                   : l10n.verifyEmailResend,
             ),
           ),
-          if (state.wasVerificationResent)
+          AuthErrorMessage(error: state.error),
+          if (state.hasVerificationMailBeenSent)
             Text(
               l10n.verifyEmailResent,
               style: CaboTheme.labelSmallStyle.copyWith(
                 color: CaboTheme.m3Primary,
               ),
             ),
+          const SizedBox(height: 8),
+          // Escape hatch for a mistyped address: without it the only way out
+          // is Settings -> Account -> Sign out.
+          TextButton(
+            onPressed: state.isSubmitting
+                ? null
+                : () => context.read<ApplicationCubit>().signOut(),
+            child: Text(l10n.verifyEmailUseOtherAccount),
+          ),
           const SizedBox(height: 8),
           Opacity(
             opacity: 0.7,

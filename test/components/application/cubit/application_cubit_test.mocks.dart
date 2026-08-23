@@ -245,6 +245,25 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
           as _i7.Future<bool>);
 
   @override
+  _i7.Future<_i3.AuthOutcome> sendPasswordResetEmail(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendPasswordResetEmail, [email]),
+            returnValue: _i7.Future<_i3.AuthOutcome>.value(
+              _FakeAuthOutcome_1(
+                this,
+                Invocation.method(#sendPasswordResetEmail, [email]),
+              ),
+            ),
+            returnValueForMissingStub: _i7.Future<_i3.AuthOutcome>.value(
+              _FakeAuthOutcome_1(
+                this,
+                Invocation.method(#sendPasswordResetEmail, [email]),
+              ),
+            ),
+          )
+          as _i7.Future<_i3.AuthOutcome>);
+
+  @override
   _i7.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -252,6 +271,27 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
             returnValueForMissingStub: _i7.Future<void>.value(),
           )
           as _i7.Future<void>);
+
+  @override
+  _i7.Future<_i3.AuthOutcome> linkOrSignInForTest(
+    _i6.AuthCredential? credential,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#linkOrSignInForTest, [credential]),
+            returnValue: _i7.Future<_i3.AuthOutcome>.value(
+              _FakeAuthOutcome_1(
+                this,
+                Invocation.method(#linkOrSignInForTest, [credential]),
+              ),
+            ),
+            returnValueForMissingStub: _i7.Future<_i3.AuthOutcome>.value(
+              _FakeAuthOutcome_1(
+                this,
+                Invocation.method(#linkOrSignInForTest, [credential]),
+              ),
+            ),
+          )
+          as _i7.Future<_i3.AuthOutcome>);
 }
 
 /// A class which mocks [DeepLinkService].

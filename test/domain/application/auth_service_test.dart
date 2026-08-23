@@ -1,5 +1,6 @@
 import 'package:cabo/domain/application/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_exceptions/mock_exceptions.dart';
@@ -13,6 +14,7 @@ import 'auth_service_test.mocks.dart';
   MockSpec<FirebaseAuth>(as: #MockitoFirebaseAuth),
   MockSpec<User>(as: #MockitoUser),
   MockSpec<UserCredential>(as: #MockitoUserCredential),
+  MockSpec<GoogleSignIn>(),
 ])
 void main() {
   group('AuthService.ensureSignedIn', () {
@@ -72,7 +74,6 @@ void main() {
       when(
         user.linkWithCredential(any),
       ).thenAnswer((_) async => MockitoUserCredential());
-      when(user.sendEmailVerification(any)).thenAnswer((_) async {});
     });
 
     test('links onto the anonymous user and keeps the uid', () async {
@@ -109,8 +110,9 @@ void main() {
         password: 'sup3rSecret',
       );
 
-      // currentUser stays null in this mock, so sending the mail cannot work.
-      expect(outcome.isSuccess, isFalse);
+      // Creating the account is the whole contract now: sending the mail is a
+      // separate step, so a failing mail no longer masks a created account.
+      expect(outcome.isSuccess, isTrue);
       verify(
         auth.createUserWithEmailAndPassword(
           email: anyNamed('email'),
@@ -154,6 +156,78 @@ void main() {
       );
 
       expect(outcome.error, AuthError.weakPassword);
+    });
+  });
+
+  group('AuthService.signInWithGoogle', () {
+    late MockitoFirebaseAuth auth;
+    late MockitoUser anonymous;
+    late MockGoogleSignIn googleSignIn;
+    late AuthService service;
+
+    setUp(() {
+      auth = MockitoFirebaseAuth();
+      anonymous = MockitoUser();
+      googleSignIn = MockGoogleSignIn();
+      service = AuthService(auth: auth, googleSignIn: googleSignIn);
+      when(auth.currentUser).thenReturn(anonymous);
+      when(anonymous.isAnonymous).thenReturn(true);
+    });
+
+    test('falls back to signing in when the account already exists', () async {
+      // Everybody is anonymous now, so linking is the normal path -- and it
+      // fails for anyone who already owns this Google account. Without the
+      // fallback those users could never sign in again.
+      when(
+        anonymous.linkWithCredential(any),
+      ).thenThrow(FirebaseAuthException(code: 'credential-already-in-use'));
+      when(
+        auth.signInWithCredential(any),
+      ).thenAnswer((_) async => MockitoUserCredential());
+
+      final AuthOutcome outcome = await service.linkOrSignInForTest(
+        EmailAuthProvider.credential(
+          email: 'player@example.com',
+          password: 'sup3rSecret',
+        ),
+      );
+
+      expect(outcome.isSuccess, isTrue);
+      verify(auth.signInWithCredential(any)).called(1);
+    });
+
+    test('keeps the uid when linking works', () async {
+      when(
+        anonymous.linkWithCredential(any),
+      ).thenAnswer((_) async => MockitoUserCredential());
+
+      final AuthOutcome outcome = await service.linkOrSignInForTest(
+        EmailAuthProvider.credential(
+          email: 'player@example.com',
+          password: 'sup3rSecret',
+        ),
+      );
+
+      expect(outcome.isSuccess, isTrue);
+      verify(anonymous.linkWithCredential(any)).called(1);
+      verifyNever(auth.signInWithCredential(any));
+    });
+
+    test('rethrows an unrelated failure instead of signing in', () async {
+      when(
+        anonymous.linkWithCredential(any),
+      ).thenThrow(FirebaseAuthException(code: 'network-request-failed'));
+
+      await expectLater(
+        service.linkOrSignInForTest(
+          EmailAuthProvider.credential(
+            email: 'player@example.com',
+            password: 'sup3rSecret',
+          ),
+        ),
+        throwsA(isA<FirebaseAuthException>()),
+      );
+      verifyNever(auth.signInWithCredential(any));
     });
   });
 

@@ -89,13 +89,13 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     await authService.ensureSignedIn();
   }
 
-  Future<void> signInAnonymously() async {
-    await authService.ensureSignedIn();
+  /// Retried lazily: the sign-in at startup can fail while offline.
+  Future<AuthOutcome> ensureSignedIn() {
+    return authService.ensureSignedIn();
   }
 
-  Future<bool> signInWithGoogle() async {
-    final AuthOutcome outcome = await authService.signInWithGoogle();
-    return outcome.isSuccess;
+  Future<AuthOutcome> signInWithGoogle() {
+    return authService.signInWithGoogle();
   }
 
   Future<AuthOutcome> registerWithEmail(String email, String password) {
@@ -108,6 +108,10 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
 
   Future<AuthOutcome> sendVerificationEmail() {
     return authService.sendVerificationEmail();
+  }
+
+  Future<AuthOutcome> sendPasswordResetEmail(String email) {
+    return authService.sendPasswordResetEmail(email);
   }
 
   /// Re-reads the verification status. The resulting state update comes from
@@ -129,6 +133,12 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   Future<void> _initDeepLinks() async {
     // Both paths are needed: getInitialLink covers the cold start, the stream
     // covers links arriving while the app runs. Handling one twice is safe.
+    // Subscribe first: a link arriving while getInitialLink is in flight would
+    // otherwise be dropped. Handling the same link twice is harmless.
+    _linkSubscription = deepLinkService.linkStream.listen(
+      _handleLink,
+      onError: (Object e) => logger.warning('Deep link stream error: $e'),
+    );
     try {
       final Uri? initialLink = await deepLinkService.getInitialLink();
       if (initialLink != null) {
@@ -137,10 +147,6 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     } catch (e, stackTrace) {
       logger.warning('Could not read the initial deep link', e, stackTrace);
     }
-    _linkSubscription = deepLinkService.linkStream.listen(
-      _handleLink,
-      onError: (Object e) => logger.warning('Deep link stream error: $e'),
-    );
   }
 
   void _handleLink(Uri uri) {

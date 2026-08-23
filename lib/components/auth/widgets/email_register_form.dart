@@ -3,6 +3,7 @@ import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/auth/auth_error_l10n.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
+import 'package:cabo/components/auth/widgets/auth_error_message.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,6 +82,7 @@ class _EmailRegisterFormState extends State<EmailRegisterForm> {
             onSignIn: state.isSubmitting ? null : _signInInstead,
           ),
         ],
+        if (!state.hasEmailConflict) AuthErrorMessage(error: state.error),
         const SizedBox(height: 20),
         CaboPrimaryButton(
           label: l10n.authScreenRegister,
