@@ -43,6 +43,7 @@ dependencies:
   image_picker: ^1.2.0
   firebase_storage: ^13.0.3
   firebase_crashlytics: ^5.1.0
+  app_links: ^6.4.1
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +54,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   json_serializable: ^6.11.1
   firebase_auth_mocks: ^0.15.0
+  mock_exceptions: ^0.8.2
 
 flutter_launcher_icons:
   android: true
