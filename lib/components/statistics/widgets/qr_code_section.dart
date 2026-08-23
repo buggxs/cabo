@@ -1,7 +1,8 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
+import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -19,7 +20,7 @@ class QrCodeSection extends StatelessWidget {
       errorCorrectLevel: QrErrorCorrectLevel.H,
     );
     final QrImage qrImage = QrImage(qrCode);
-    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final String? userId = app<AuthService>().currentUser?.uid;
 
     return SingleChildScrollView(
       key: const ValueKey<String>('qr-code-view'),

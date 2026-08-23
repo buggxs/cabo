@@ -1,7 +1,6 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/about/about_screen.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_action_card.dart';
@@ -9,7 +8,6 @@ import 'package:cabo/components/main_menu/widgets/main_menu_header.dart';
 import 'package:cabo/components/main_menu/widgets/main_menu_utility_tile.dart';
 import 'package:cabo/components/rule_set/rule_set_screen.dart';
 import 'package:cabo/components/settings/settings_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,12 +49,7 @@ class MainMenuScreenList extends StatelessWidget {
                     foregroundColor: CaboTheme.onSecondary,
                     titleColor: CaboTheme.secondaryContainer,
                     accentColor: CaboTheme.onSecondaryFixedVariant,
-                    onTap: () {
-                      if (FirebaseAuth.instance.currentUser == null) {
-                        context.read<ApplicationCubit>().signInAnonymously();
-                      }
-                      cubit.showJoinGameDialog(context);
-                    },
+                    onTap: () => cubit.showJoinGameDialog(context),
                   ),
                   const SizedBox(height: 24),
                   MainMenuUtilityTile(

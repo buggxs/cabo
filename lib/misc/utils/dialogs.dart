@@ -4,11 +4,11 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/points_entry_sheet.dart';
 import 'package:cabo/components/statistics/widgets/round_closer_sheet.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsDialogService {
@@ -28,7 +28,7 @@ class StatisticsDialogService {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) {
         final AppLocalizations l10n = AppLocalizations.of(context)!;
-        final String? uid = FirebaseAuth.instance.currentUser?.uid;
+        final String? uid = app<AuthService>().currentUser?.uid;
         final bool isPublic = game?.isPublic ?? false;
         final bool isOwner = isPublic && uid == game?.ownerId;
         final bool isNonOwnerPublic = isPublic && !isOwner;

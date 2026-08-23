@@ -59,6 +59,8 @@ void setup() {
         repository: app<LocalApplicationRepository>(),
         designRepository: app<LocalDesignRepository>(),
         announcementCheckService: app<AnnouncementCheckService>(),
+        authService: app<AuthService>(),
+        deepLinkService: app<DeepLinkService>(),
       )..init(),
     );
 }
