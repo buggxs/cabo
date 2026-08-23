@@ -239,6 +239,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authScreenBack => 'Back';
 
   @override
+  String get authScreenEmailAlreadyInUse =>
+      'An account already exists for this e-mail.';
+
+  @override
+  String get authScreenLinkConflictHint =>
+      'Log in to use that account. Online games you started on this device will not be linked to it.';
+
+  @override
+  String get authScreenSignInWithEmailAction => 'Continue with e-mail';
+
+  @override
+  String get authScreenInvalidCredentials => 'E-mail or password is wrong.';
+
+  @override
+  String get authScreenWeakPassword => 'Please use at least 6 characters.';
+
+  @override
+  String get authScreenInvalidEmail => 'Please enter a valid e-mail address.';
+
+  @override
+  String get authScreenTooManyRequests =>
+      'Too many attempts. Please wait a moment.';
+
+  @override
+  String get authScreenNetworkError => 'No connection. Please try again.';
+
+  @override
+  String get authScreenEmailRequired => 'Please enter your e-mail address.';
+
+  @override
+  String get authScreenPasswordRequired => 'Please enter a password.';
+
+  @override
+  String get verifyEmailTitle => 'Confirm your e-mail';
+
+  @override
+  String verifyEmailDescription(String email) {
+    return 'We sent a confirmation link to $email. Open it, then come back here.';
+  }
+
+  @override
+  String get verifyEmailSpamHint =>
+      'No mail? Please also check your spam folder.';
+
+  @override
+  String get verifyEmailResend => 'Send again';
+
+  @override
+  String verifyEmailResendIn(int seconds) {
+    return 'Send again in ${seconds}s';
+  }
+
+  @override
+  String get verifyEmailResent => 'Mail sent.';
+
+  @override
+  String get verifyEmailCheckNow => 'I have confirmed';
+
+  @override
+  String get verifyEmailStillPending =>
+      'Not confirmed yet. Please open the link in the mail.';
+
+  @override
+  String get accountCardTitle => 'Account';
+
+  @override
+  String get accountCardAnonymous => 'Playing without an account';
+
+  @override
+  String get accountCardAnonymousHint => 'Register to publish games.';
+
+  @override
+  String get accountCardVerified => 'E-mail confirmed';
+
+  @override
+  String get accountCardUnverified => 'E-mail not confirmed yet';
+
+  @override
+  String get accountCardSignOut => 'Sign out';
+
+  @override
   String get joinGameScreenScanToJoin => 'Scan a QR code to join a game.';
 
   @override

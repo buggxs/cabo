@@ -242,6 +242,90 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authScreenBack => 'Zurück';
 
   @override
+  String get authScreenEmailAlreadyInUse =>
+      'Für diese E-Mail existiert schon ein Konto.';
+
+  @override
+  String get authScreenLinkConflictHint =>
+      'Melde dich an, um dieses Konto zu nutzen. Online-Spiele, die du auf diesem Gerät gestartet hast, bleiben dann nicht damit verknüpft.';
+
+  @override
+  String get authScreenSignInWithEmailAction => 'Weiter mit E-Mail';
+
+  @override
+  String get authScreenInvalidCredentials => 'E-Mail oder Passwort ist falsch.';
+
+  @override
+  String get authScreenWeakPassword => 'Bitte nutze mindestens 6 Zeichen.';
+
+  @override
+  String get authScreenInvalidEmail =>
+      'Bitte gib eine gültige E-Mail-Adresse ein.';
+
+  @override
+  String get authScreenTooManyRequests =>
+      'Zu viele Versuche. Bitte warte einen Moment.';
+
+  @override
+  String get authScreenNetworkError =>
+      'Keine Verbindung. Bitte versuche es erneut.';
+
+  @override
+  String get authScreenEmailRequired => 'Bitte gib deine E-Mail-Adresse ein.';
+
+  @override
+  String get authScreenPasswordRequired => 'Bitte gib ein Passwort ein.';
+
+  @override
+  String get verifyEmailTitle => 'Bestätige deine E-Mail';
+
+  @override
+  String verifyEmailDescription(String email) {
+    return 'Wir haben einen Bestätigungslink an $email geschickt. Öffne ihn und komm dann hierher zurück.';
+  }
+
+  @override
+  String get verifyEmailSpamHint =>
+      'Keine Mail? Schau bitte auch im Spam-Ordner.';
+
+  @override
+  String get verifyEmailResend => 'Erneut senden';
+
+  @override
+  String verifyEmailResendIn(int seconds) {
+    return 'Erneut senden in ${seconds}s';
+  }
+
+  @override
+  String get verifyEmailResent => 'Mail verschickt.';
+
+  @override
+  String get verifyEmailCheckNow => 'Ich habe bestätigt';
+
+  @override
+  String get verifyEmailStillPending =>
+      'Noch nicht bestätigt. Bitte öffne den Link in der Mail.';
+
+  @override
+  String get accountCardTitle => 'Konto';
+
+  @override
+  String get accountCardAnonymous => 'Du spielst ohne Konto';
+
+  @override
+  String get accountCardAnonymousHint =>
+      'Registriere dich, um Spiele zu veröffentlichen.';
+
+  @override
+  String get accountCardVerified => 'E-Mail bestätigt';
+
+  @override
+  String get accountCardUnverified => 'E-Mail noch nicht bestätigt';
+
+  @override
+  String get accountCardSignOut => 'Abmelden';
+
+  @override
   String get joinGameScreenScanToJoin =>
       'Scanne einen QR-Code, um einem Spiel beizutreten.';
 

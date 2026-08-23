@@ -1,7 +1,7 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
-import 'package:cabo/components/statistics/widgets/auth_form.dart';
+import 'package:cabo/components/auth/widgets/auth_form.dart';
 import 'package:cabo/components/statistics/widgets/loading_spinner_section.dart';
 import 'package:cabo/components/statistics/widgets/publish_game_section.dart';
 import 'package:cabo/components/statistics/widgets/qr_code_section.dart';

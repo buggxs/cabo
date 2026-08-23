@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum AuthError {
+  /// Client side validation only, never returned by Firebase.
+  passwordMismatch,
   invalidCredentials,
   emailAlreadyInUse,
   credentialAlreadyInUse,

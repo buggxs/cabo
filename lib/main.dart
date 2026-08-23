@@ -1,6 +1,7 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/design_background.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
+import 'package:cabo/components/application/widgets/auth_refresh_listener.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/core/app_navigator/app_navigator.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
@@ -68,8 +69,9 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: const [Locale('de'), Locale('en')],
             onGenerateRoute: _appNavigator.generateRoute,
-            builder: (context, child) =>
-                DesignBackground(child: child ?? const SizedBox.shrink()),
+            builder: (context, child) => AuthRefreshListener(
+              child: DesignBackground(child: child ?? const SizedBox.shrink()),
+            ),
             home: const MainMenuScreen(),
           );
         },

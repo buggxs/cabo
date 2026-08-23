@@ -1,5 +1,6 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
+import 'package:cabo/components/settings/widgets/account_card.dart';
 import 'package:cabo/components/settings/widgets/design_selection_card.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,11 @@ class SettingsScreen extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 576),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-              children: const <Widget>[DesignSelectionCard()],
+              children: const <Widget>[
+                AccountCard(),
+                SizedBox(height: 16),
+                DesignSelectionCard(),
+              ],
             ),
           ),
         ),
