@@ -46,9 +46,6 @@ class AuthService with LoggerMixin {
 
   Future<void>? _providerInitialization;
 
-  static const String verifiedContinueUrl =
-      'https://www.buggxs.com/cabo/verified';
-
   static const List<String> _googleScopes = <String>[
     'https://www.googleapis.com/auth/userinfo.email',
   ];
@@ -176,9 +173,9 @@ class AuthService with LoggerMixin {
       return const AuthOutcome.failure(AuthError.unknown);
     }
     try {
-      await user.sendEmailVerification(
-        ActionCodeSettings(url: verifiedContinueUrl, handleCodeInApp: false),
-      );
+      // No ActionCodeSettings: the project's custom action handler on
+      // www.buggxs.com is already the link target, and it applies the code.
+      await user.sendEmailVerification();
       return const AuthOutcome.success();
     } on FirebaseAuthException catch (e) {
       logger.warning('Could not send verification e-mail: ${e.code}');

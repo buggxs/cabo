@@ -38,14 +38,19 @@
             <meta-data
                     android:name="flutter_deeplinking_enabled"
                     android:value="false"/>
-            <intent-filter android:autoVerify="true">
+            <!-- Deliberately without autoVerify: this URL carries every auth
+                 action, including password resets, and only the web page can
+                 handle those. The page hands over explicitly via an
+                 intent:// link, which targets the package directly and does
+                 not need App Links verification. -->
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:scheme="https"
                     android:host="www.buggxs.com"
-                    android:pathPrefix="/cabo/verified"/>
+                    android:pathPrefix="/cabo/verify"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

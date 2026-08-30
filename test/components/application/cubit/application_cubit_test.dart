@@ -206,7 +206,11 @@ void main() {
       cubit.init();
       await Future<void>.delayed(Duration.zero);
 
-      linkController.add(Uri.parse('https://www.buggxs.com/cabo/verified'));
+      linkController.add(
+        Uri.parse(
+          'https://www.buggxs.com/cabo/verify?mode=verifyEmail&oobCode=abc123',
+        ),
+      );
       await Future<void>.delayed(Duration.zero);
 
       verify(authService.refreshVerificationStatus()).called(1);
@@ -227,7 +231,9 @@ void main() {
 
     test('handles a verification link from a cold start', () async {
       when(deepLinkService.getInitialLink()).thenAnswer(
-        (_) async => Uri.parse('https://www.buggxs.com/cabo/verified'),
+        (_) async => Uri.parse(
+          'https://www.buggxs.com/cabo/verify?mode=verifyEmail&oobCode=abc123',
+        ),
       );
       final ApplicationCubit cubit = buildCubit();
 
