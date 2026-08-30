@@ -1,4 +1,5 @@
 import 'package:cabo/domain/application/auth_service.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -15,6 +16,9 @@ import 'auth_service_test.mocks.dart';
   MockSpec<User>(as: #MockitoUser),
   MockSpec<UserCredential>(as: #MockitoUserCredential),
   MockSpec<GoogleSignIn>(),
+  MockSpec<FirebaseFunctions>(),
+  MockSpec<HttpsCallable>(),
+  MockSpec<HttpsCallableResult<void>>(as: #MockCallableResult),
 ])
 void main() {
   group('AuthService.ensureSignedIn', () {
@@ -245,6 +249,86 @@ void main() {
       );
 
       expect(outcome.error, AuthError.invalidCredentials);
+    });
+  });
+
+  group('AuthService mail functions', () {
+    late MockitoFirebaseAuth auth;
+    late MockitoUser user;
+    late MockFirebaseFunctions functions;
+    late MockHttpsCallable callable;
+    late AuthService service;
+
+    setUp(() {
+      auth = MockitoFirebaseAuth();
+      user = MockitoUser();
+      functions = MockFirebaseFunctions();
+      callable = MockHttpsCallable();
+      service = AuthService(auth: auth, functions: functions);
+      when(auth.currentUser).thenReturn(user);
+      when(functions.httpsCallable(any)).thenReturn(callable);
+    });
+
+    test('sends the verification mail through our own function', () async {
+      // Firebase blocks editing this project's templates, so the mail comes
+      // from a Cloud Function rather than from sendEmailVerification().
+      when(
+        callable.call<void>(any),
+      ).thenAnswer((_) async => MockCallableResult());
+
+      final AuthOutcome outcome = await service.sendVerificationEmail();
+
+      expect(outcome.isSuccess, isTrue);
+      verify(functions.httpsCallable('sendVerificationEmail')).called(1);
+      verifyNever(user.sendEmailVerification(any));
+    });
+
+    test('reports the throttle as tooManyRequests', () async {
+      when(callable.call<void>(any)).thenThrow(
+        FirebaseFunctionsException(
+          code: 'resource-exhausted',
+          message: 'zu schnell',
+        ),
+      );
+
+      final AuthOutcome outcome = await service.sendVerificationEmail();
+
+      expect(outcome.error, AuthError.tooManyRequests);
+    });
+
+    test('reports an offline call as a network error', () async {
+      when(callable.call<void>(any)).thenThrow(
+        FirebaseFunctionsException(code: 'unavailable', message: 'offline'),
+      );
+
+      final AuthOutcome outcome = await service.sendVerificationEmail();
+
+      expect(outcome.error, AuthError.network);
+    });
+
+    test('fails without a signed in user instead of calling out', () async {
+      when(auth.currentUser).thenReturn(null);
+
+      final AuthOutcome outcome = await service.sendVerificationEmail();
+
+      expect(outcome.isSuccess, isFalse);
+      verifyNever(functions.httpsCallable(any));
+    });
+
+    test('passes the address on for a password reset', () async {
+      when(
+        callable.call<void>(any),
+      ).thenAnswer((_) async => MockCallableResult());
+
+      final AuthOutcome outcome = await service.sendPasswordResetEmail(
+        'player@example.com',
+      );
+
+      expect(outcome.isSuccess, isTrue);
+      verify(functions.httpsCallable('sendPasswordResetEmail')).called(1);
+      verify(
+        callable.call<void>(<String, dynamic>{'email': 'player@example.com'}),
+      ).called(1);
     });
   });
 

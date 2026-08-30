@@ -1,6 +1,7 @@
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -37,12 +38,24 @@ class AuthOutcome extends Equatable {
 /// Wraps Firebase Auth so the rest of the app never touches
 /// [FirebaseAuth.instance] directly and stays testable.
 class AuthService with LoggerMixin {
-  AuthService({FirebaseAuth? auth, GoogleSignIn? googleSignIn})
-    : _auth = auth ?? FirebaseAuth.instance,
-      _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  AuthService({
+    FirebaseAuth? auth,
+    GoogleSignIn? googleSignIn,
+    FirebaseFunctions? functions,
+  }) : _auth = auth ?? FirebaseAuth.instance,
+       _googleSignIn = googleSignIn ?? GoogleSignIn.instance,
+       _functionsOverride = functions;
+
+  static const String _functionsRegion = 'europe-west1';
 
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
+  FirebaseFunctions? _functionsOverride;
+
+  // Resolved on first use: building it eagerly would require an initialised
+  // Firebase app in every test that never sends a mail.
+  FirebaseFunctions get _functions => _functionsOverride ??=
+      FirebaseFunctions.instanceFor(region: _functionsRegion);
 
   Future<void>? _providerInitialization;
 
@@ -167,19 +180,49 @@ class AuthService with LoggerMixin {
     }
   }
 
+  /// Sent by our own Cloud Function rather than by Firebase.
+  ///
+  /// Firebase refuses to let this project edit its auth email templates, and
+  /// the default one renders the raw action URL as the link text -- which
+  /// reads as phishing. The function builds the link against our own handler
+  /// and sends a branded mail instead.
   Future<AuthOutcome> sendVerificationEmail() async {
     final User? user = _auth.currentUser;
     if (user == null) {
       return const AuthOutcome.failure(AuthError.unknown);
     }
+    return _callMailFunction('sendVerificationEmail');
+  }
+
+  Future<AuthOutcome> _callMailFunction(
+    String name, [
+    Map<String, dynamic>? payload,
+  ]) async {
     try {
-      // No ActionCodeSettings: the project's custom action handler on
-      // www.buggxs.com is already the link target, and it applies the code.
-      await user.sendEmailVerification();
+      await _functions.httpsCallable(name).call<void>(payload);
       return const AuthOutcome.success();
-    } on FirebaseAuthException catch (e) {
-      logger.warning('Could not send verification e-mail: ${e.code}');
-      return AuthOutcome.failure(_mapError(e));
+    } on FirebaseFunctionsException catch (e) {
+      logger.warning('Mail function $name failed: ${e.code} ${e.message}');
+      return AuthOutcome.failure(_mapFunctionError(e));
+    } catch (e, stackTrace) {
+      logger.severe('Unexpected error calling $name', e, stackTrace);
+      return const AuthOutcome.failure(AuthError.unknown);
+    }
+  }
+
+  AuthError _mapFunctionError(FirebaseFunctionsException exception) {
+    switch (exception.code) {
+      case 'resource-exhausted':
+        return AuthError.tooManyRequests;
+      case 'invalid-argument':
+        return AuthError.invalidEmail;
+      case 'unauthenticated':
+        return AuthError.invalidCredentials;
+      case 'unavailable':
+      case 'deadline-exceeded':
+        return AuthError.network;
+      default:
+        return AuthError.unknown;
     }
   }
 
@@ -200,14 +243,10 @@ class AuthService with LoggerMixin {
     }
   }
 
-  Future<AuthOutcome> sendPasswordResetEmail(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return const AuthOutcome.success();
-    } on FirebaseAuthException catch (e) {
-      logger.warning('Could not send password reset mail: ${e.code}');
-      return AuthOutcome.failure(_mapError(e));
-    }
+  Future<AuthOutcome> sendPasswordResetEmail(String email) {
+    return _callMailFunction('sendPasswordResetEmail', <String, dynamic>{
+      'email': email,
+    });
   }
 
   Future<void> signOut() async {
