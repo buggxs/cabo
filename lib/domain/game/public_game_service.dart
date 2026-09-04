@@ -54,11 +54,17 @@ class PublicGameService with LoggerMixin {
     try {
       if (game.publicId != null) {
         logger.info('Updating game with publicId: ${game.publicId}');
-        final docRef = _firestore.collection('games').doc(game.publicId);
-        // Transaktional mergen, damit konkurrente Writes von Mitspielern
-        // sich nicht gegenseitig überschreiben.
-        final Game merged = await _firestore.runTransaction<Game>((tx) async {
-          final snapshot = await tx.get(docRef);
+        final DocumentReference<Map<String, dynamic>> docRef = _firestore
+            .collection('games')
+            .doc(game.publicId);
+        // Merge inside a transaction so concurrent writes of other players do
+        // not overwrite each other.
+        final Game merged = await _firestore.runTransaction<Game>((
+          Transaction tx,
+        ) async {
+          final DocumentSnapshot<Map<String, dynamic>> snapshot = await tx.get(
+            docRef,
+          );
           final Game effective = snapshot.exists
               ? _mergePlayers(Game.fromJson(snapshot.data()!), game)
               : game;
@@ -98,7 +104,7 @@ class PublicGameService with LoggerMixin {
     }
   }
 
-  /// Fügt die UID des angemeldeten Users (ggf. anonym) zu `playerUids` hinzu.
+  /// Adds the UID of the signed in (possibly anonymous) user to `playerUids`.
   Future<Game> joinGame(String publicId) async {
     User? user = _auth.currentUser;
     user ??= (await _auth.signInAnonymously()).user;
@@ -108,27 +114,30 @@ class PublicGameService with LoggerMixin {
     }
 
     final String uid = user.uid;
-    final docRef = _firestore.collection('games').doc(publicId);
+    final DocumentReference<Map<String, dynamic>> docRef = _firestore
+        .collection('games')
+        .doc(publicId);
+    final DocumentSnapshot<Map<String, dynamic>> snapshot = await docRef.get();
 
-    return _firestore.runTransaction<Game>((tx) async {
-      final snapshot = await tx.get(docRef);
-      if (!snapshot.exists) {
-        throw Exception('No game exists with id $publicId.');
-      }
-      final Game current = Game.fromJson(snapshot.data()!);
-      if (current.playerUids.contains(uid)) {
-        return current;
-      }
-      final Game updated = current.copyWith(
-        playerUids: <String>[...current.playerUids, uid],
-      );
-      tx.set(docRef, updated.toJson());
-      return updated;
+    if (!snapshot.exists) {
+      throw Exception('No game exists with id $publicId.');
+    }
+
+    final Game current = Game.fromJson(snapshot.data()!);
+    if (current.playerUids.contains(uid)) {
+      return current;
+    }
+
+    // arrayUnion is atomic on the server, so no transaction is needed here.
+    await docRef.update(<String, Object>{
+      'playerUids': FieldValue.arrayUnion(<String>[uid]),
     });
+
+    return current.copyWith(playerUids: <String>[...current.playerUids, uid]);
   }
 
-  /// Mergt Runden pro Spieler (Player mit längerer Rundenliste gewinnt),
-  /// damit konkurrente Writes sich nicht gegenseitig überschreiben.
+  /// Merges the rounds per player (the player with the longer round list
+  /// wins) so that concurrent writes do not overwrite each other.
   Game _mergePlayers(Game remote, Game local) {
     final Map<String, Player> localByName = <String, Player>{
       for (final Player p in local.players) p.name: p,
