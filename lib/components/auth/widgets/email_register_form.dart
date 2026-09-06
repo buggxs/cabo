@@ -3,6 +3,7 @@ import 'package:cabo/common/presentation/widgets/cabo_text_field.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/auth/auth_error_l10n.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
+import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/components/auth/widgets/auth_error_message.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,8 @@ class _EmailRegisterFormState extends State<EmailRegisterForm> {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final AuthCubit cubit = context.read<AuthCubit>();
     final AuthFormState state = context.watch<AuthCubit>().state;
+    final bool isMismatch =
+        state.passwordFieldError == AuthError.passwordMismatch;
 
     return Column(
       children: <Widget>[
@@ -63,7 +66,9 @@ class _EmailRegisterFormState extends State<EmailRegisterForm> {
         CaboTextField(
           controller: _passwordController,
           label: l10n.authScreenPassword,
-          errorText: state.passwordFieldError?.message(l10n),
+          errorText: isMismatch
+              ? null
+              : state.passwordFieldError?.message(l10n),
           isObscured: true,
           textInputAction: TextInputAction.next,
           autofillHints: const <String>[AutofillHints.newPassword],
@@ -72,6 +77,10 @@ class _EmailRegisterFormState extends State<EmailRegisterForm> {
         CaboTextField(
           controller: _repeatController,
           label: l10n.authScreenPasswordRepeat,
+          // A mismatch belongs on the field that disagrees, not on the first.
+          errorText: isMismatch
+              ? state.passwordFieldError?.message(l10n)
+              : null,
           isObscured: true,
           textInputAction: TextInputAction.done,
           onSubmitted: (_) => _submit(),

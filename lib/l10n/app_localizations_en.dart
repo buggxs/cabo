@@ -239,6 +239,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authScreenBack => 'Back';
 
   @override
+  String get authScreenShowPassword => 'Show password';
+
+  @override
+  String get authScreenHidePassword => 'Hide password';
+
+  @override
   String get authScreenForgotPassword => 'Forgot your password?';
 
   @override
@@ -260,7 +266,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authScreenInvalidCredentials => 'E-mail or password is wrong.';
 
   @override
-  String get authScreenWeakPassword => 'Please use at least 6 characters.';
+  String get authScreenWeakPassword => 'Please use at least 8 characters.';
 
   @override
   String get authScreenInvalidEmail => 'Please enter a valid e-mail address.';

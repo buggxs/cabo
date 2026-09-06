@@ -536,6 +536,18 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get authScreenBack;
 
+  /// No description provided for @authScreenShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get authScreenShowPassword;
+
+  /// No description provided for @authScreenHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get authScreenHidePassword;
+
   /// No description provided for @authScreenForgotPassword.
   ///
   /// In en, this message translates to:
@@ -575,7 +587,7 @@ abstract class AppLocalizations {
   /// No description provided for @authScreenWeakPassword.
   ///
   /// In en, this message translates to:
-  /// **'Please use at least 6 characters.'**
+  /// **'Please use at least 8 characters.'**
   String get authScreenWeakPassword;
 
   /// No description provided for @authScreenInvalidEmail.

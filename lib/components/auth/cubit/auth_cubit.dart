@@ -13,7 +13,7 @@ class AuthCubit extends Cubit<AuthFormState> {
   final ApplicationCubit applicationCubit;
 
   static const int resendCooldownSeconds = 60;
-  static const int minPasswordLength = 6;
+  static const int minPasswordLength = 8;
 
   Timer? _cooldownTimer;
 
@@ -46,7 +46,9 @@ class AuthCubit extends Cubit<AuthFormState> {
   }
 
   Future<bool> signIn({required String email, required String password}) async {
-    if (!_validate(email: email, password: password)) {
+    // No length rule here: accounts created before the minimum was raised
+    // would otherwise be locked out of their own sign-in form.
+    if (!_validate(email: email, password: password, isNewPassword: false)) {
       return false;
     }
     _safeEmit(state.copyWith(isSubmitting: true));
@@ -63,7 +65,7 @@ class AuthCubit extends Cubit<AuthFormState> {
     required String password,
     required String passwordRepeat,
   }) async {
-    if (!_validate(email: email, password: password)) {
+    if (!_validate(email: email, password: password, isNewPassword: true)) {
       return false;
     }
     if (password != passwordRepeat) {
@@ -161,7 +163,11 @@ class AuthCubit extends Cubit<AuthFormState> {
     return isVerified;
   }
 
-  bool _validate({required String email, required String password}) {
+  bool _validate({
+    required String email,
+    required String password,
+    required bool isNewPassword,
+  }) {
     final String trimmedEmail = email.trim();
     if (trimmedEmail.isEmpty) {
       _safeEmit(state.copyWith(emailFieldError: AuthError.emailRequired));
@@ -175,7 +181,7 @@ class AuthCubit extends Cubit<AuthFormState> {
       _safeEmit(state.copyWith(passwordFieldError: AuthError.passwordRequired));
       return false;
     }
-    if (password.length < minPasswordLength) {
+    if (isNewPassword && password.length < minPasswordLength) {
       _safeEmit(state.copyWith(passwordFieldError: AuthError.weakPassword));
       return false;
     }

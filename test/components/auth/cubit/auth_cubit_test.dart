@@ -82,17 +82,46 @@ void main() {
       await cubit.close();
     });
 
-    test('rejects a short password before calling the service', () async {
+    test('rejects an empty password before calling the service', () async {
       final AuthCubit cubit = buildCubit();
 
       final bool isSuccess = await cubit.signIn(
         email: 'player@example.com',
-        password: '123',
+        password: '',
+      );
+
+      expect(isSuccess, isFalse);
+      expect(cubit.state.passwordFieldError, AuthError.passwordRequired);
+      verifyNever(applicationCubit.signInWithEmail(any, any));
+      await cubit.close();
+    });
+
+    test('lets a short password through when signing in', () async {
+      // Accounts created before the minimum was raised must still be able to
+      // sign in -- Firebase itself allows six characters.
+      final AuthCubit cubit = buildCubit();
+
+      await cubit.signIn(email: 'player@example.com', password: 'sechs1');
+
+      expect(cubit.state.passwordFieldError, isNull);
+      verify(
+        applicationCubit.signInWithEmail('player@example.com', 'sechs1'),
+      ).called(1);
+      await cubit.close();
+    });
+
+    test('rejects a short password when registering', () async {
+      final AuthCubit cubit = buildCubit();
+
+      final bool isSuccess = await cubit.register(
+        email: 'player@example.com',
+        password: 'sieben7',
+        passwordRepeat: 'sieben7',
       );
 
       expect(isSuccess, isFalse);
       expect(cubit.state.passwordFieldError, AuthError.weakPassword);
-      verifyNever(applicationCubit.signInWithEmail(any, any));
+      verifyNever(applicationCubit.registerWithEmail(any, any));
       await cubit.close();
     });
 
