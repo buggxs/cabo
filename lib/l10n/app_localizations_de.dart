@@ -298,8 +298,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get verifyEmailSpamHint =>
-      'Keine Mail? Schau bitte auch im Spam-Ordner.';
+  String get authScreenMailSpamHint =>
+      'Keine Mail bekommen? Schau bitte im Spam-Ordner nach und markiere sie dort als „Kein Spam“ — dann kommt die nächste an.';
 
   @override
   String get verifyEmailResend => 'Erneut senden';

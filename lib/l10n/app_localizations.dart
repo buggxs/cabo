@@ -632,11 +632,11 @@ abstract class AppLocalizations {
   /// **'We sent a confirmation link to {email}. Open it, then come back here.'**
   String verifyEmailDescription(String email);
 
-  /// No description provided for @verifyEmailSpamHint.
+  /// No description provided for @authScreenMailSpamHint.
   ///
   /// In en, this message translates to:
-  /// **'No mail? Please also check your spam folder.'**
-  String get verifyEmailSpamHint;
+  /// **'No mail? Please check your spam folder and mark it as “not spam” — that helps the next one arrive.'**
+  String get authScreenMailSpamHint;
 
   /// No description provided for @verifyEmailResend.
   ///

@@ -5,6 +5,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
 import 'package:cabo/components/auth/widgets/auth_error_message.dart';
+import 'package:cabo/components/auth/widgets/mail_delivery_hint.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -84,6 +85,8 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
               color: CaboTheme.onSurfaceVariant,
             ),
           ),
+          const SizedBox(height: 16),
+          const MailDeliveryHint(),
           const SizedBox(height: 24),
           if (state.isSubmitting)
             CircularProgressIndicator(color: CaboTheme.m3Primary)
@@ -119,17 +122,6 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
                 ? null
                 : () => context.read<ApplicationCubit>().signOut(),
             child: Text(l10n.verifyEmailUseOtherAccount),
-          ),
-          const SizedBox(height: 8),
-          Opacity(
-            opacity: 0.7,
-            child: Text(
-              l10n.verifyEmailSpamHint,
-              textAlign: TextAlign.center,
-              style: CaboTheme.labelSmallStyle.copyWith(
-                color: CaboTheme.onSurfaceVariant,
-              ),
-            ),
           ),
         ],
       ),

@@ -88,7 +88,7 @@
   "authScreenPasswordRequired": "Bitte gib ein Passwort ein.",
   "verifyEmailTitle": "Bestätige deine E-Mail",
   "verifyEmailDescription": "Wir haben einen Bestätigungslink an {email} geschickt. Öffne ihn und komm dann hierher zurück.",
-  "verifyEmailSpamHint": "Keine Mail? Schau bitte auch im Spam-Ordner.",
+  "authScreenMailSpamHint": "Keine Mail bekommen? Schau bitte im Spam-Ordner nach und markiere sie dort als „Kein Spam“ — dann kommt die nächste an.",
   "verifyEmailResend": "Erneut senden",
   "verifyEmailResendIn": "Erneut senden in {seconds}s",
   "verifyEmailResent": "Mail verschickt.",

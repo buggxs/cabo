@@ -84,6 +84,21 @@ void main() {
       expect(find.text('Log in with Google'), findsNothing);
     });
 
+    testWidgets('points at the spam folder while awaiting confirmation', (
+      WidgetTester tester,
+    ) async {
+      // The sending domain is new, so mails do land in spam -- the hint has to
+      // be visible, not a footnote.
+      setState(_FakeAccountState(isEmailVerified: false));
+
+      await pump(tester);
+
+      expect(
+        find.textContaining('spam folder', findRichText: true),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('a failed sign-in shows the reason', (
       WidgetTester tester,
     ) async {
