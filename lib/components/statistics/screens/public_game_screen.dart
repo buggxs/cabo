@@ -1,14 +1,13 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
-import 'package:cabo/components/statistics/widgets/auth_form.dart';
+import 'package:cabo/components/auth/widgets/auth_form.dart';
 import 'package:cabo/components/statistics/widgets/loading_spinner_section.dart';
 import 'package:cabo/components/statistics/widgets/publish_game_section.dart';
 import 'package:cabo/components/statistics/widgets/qr_code_section.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/logger.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,9 +48,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
 
     Widget child = const AuthForm();
 
-    if ((applicationCubit.state is ApplicationAuthenticated &&
-            !(FirebaseAuth.instance.currentUser?.isAnonymous ?? true)) ||
-        _publicGameId != null) {
+    if (applicationCubit.state.canPublishGame || _publicGameId != null) {
       child = buildAuthenticatedView(context);
     }
 

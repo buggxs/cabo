@@ -47,5 +47,23 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<!-- Off on purpose: Flutter would push the link path into
+		     AppNavigator.generateRoute, which falls through to the error
+		     route. app_links handles the link instead. -->
+		<key>FlutterDeepLinkingEnabled</key>
+		<false/>
+		<key>GIDClientID</key>
+		<string>787934087365-o3pood9aonln9jkij0fs9puq76fukinu.apps.googleusercontent.com</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.787934087365-o3pood9aonln9jkij0fs9puq76fukinu</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

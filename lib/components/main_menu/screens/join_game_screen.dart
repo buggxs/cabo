@@ -3,6 +3,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
@@ -318,6 +319,9 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     });
 
     try {
+      // Retry the sign-in: the one at startup may have failed while offline,
+      // and getPublicGame needs auth because the rules require it.
+      await app<AuthService>().ensureSignedIn();
       Game publicGame = await app<PublicGameService>().getPublicGame(qrCode);
 
       if (publicGame.isGameFinished) {

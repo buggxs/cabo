@@ -536,6 +536,174 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get authScreenBack;
 
+  /// No description provided for @authScreenShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get authScreenShowPassword;
+
+  /// No description provided for @authScreenHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get authScreenHidePassword;
+
+  /// No description provided for @authScreenForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get authScreenForgotPassword;
+
+  /// No description provided for @authScreenPasswordResetSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent you a link to reset your password.'**
+  String get authScreenPasswordResetSent;
+
+  /// No description provided for @verifyEmailUseOtherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different address'**
+  String get verifyEmailUseOtherAccount;
+
+  /// No description provided for @authScreenEmailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists for this e-mail.'**
+  String get authScreenEmailAlreadyInUse;
+
+  /// No description provided for @authScreenLinkConflictHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in to use that account. Online games you started on this device will not be linked to it.'**
+  String get authScreenLinkConflictHint;
+
+  /// No description provided for @authScreenInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail or password is wrong.'**
+  String get authScreenInvalidCredentials;
+
+  /// No description provided for @authScreenWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please use at least 8 characters.'**
+  String get authScreenWeakPassword;
+
+  /// No description provided for @authScreenInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid e-mail address.'**
+  String get authScreenInvalidEmail;
+
+  /// No description provided for @authScreenTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment.'**
+  String get authScreenTooManyRequests;
+
+  /// No description provided for @authScreenNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Please try again.'**
+  String get authScreenNetworkError;
+
+  /// No description provided for @authScreenEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your e-mail address.'**
+  String get authScreenEmailRequired;
+
+  /// No description provided for @authScreenPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a password.'**
+  String get authScreenPasswordRequired;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your e-mail'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a confirmation link to {email}. Open it, then come back here.'**
+  String verifyEmailDescription(String email);
+
+  /// No description provided for @authScreenMailSpamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No mail? Please check your spam folder and mark it as “not spam” — that helps the next one arrive.'**
+  String get authScreenMailSpamHint;
+
+  /// No description provided for @verifyEmailResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again'**
+  String get verifyEmailResend;
+
+  /// No description provided for @verifyEmailResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again in {seconds}s'**
+  String verifyEmailResendIn(int seconds);
+
+  /// No description provided for @verifyEmailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Mail sent.'**
+  String get verifyEmailResent;
+
+  /// No description provided for @verifyEmailCheckNow.
+  ///
+  /// In en, this message translates to:
+  /// **'I have confirmed'**
+  String get verifyEmailCheckNow;
+
+  /// No description provided for @verifyEmailStillPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed yet. Please open the link in the mail.'**
+  String get verifyEmailStillPending;
+
+  /// No description provided for @accountCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountCardTitle;
+
+  /// No description provided for @accountCardAnonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing without an account'**
+  String get accountCardAnonymous;
+
+  /// No description provided for @accountCardAnonymousHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Register to publish games.'**
+  String get accountCardAnonymousHint;
+
+  /// No description provided for @accountCardVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail confirmed'**
+  String get accountCardVerified;
+
+  /// No description provided for @accountCardUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail not confirmed yet'**
+  String get accountCardUnverified;
+
+  /// No description provided for @accountCardSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountCardSignOut;
+
   /// No description provided for @joinGameScreenScanToJoin.
   ///
   /// In en, this message translates to:

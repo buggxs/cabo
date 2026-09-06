@@ -79,6 +79,48 @@
   "authScreenPasswortMissmatch": "Passwords do not match.",
   "authScreenStartRegister": "No account yet? Register",
   "authScreenBack": "Back",
+  "authScreenShowPassword": "Show password",
+  "authScreenHidePassword": "Hide password",
+  "authScreenForgotPassword": "Forgot your password?",
+  "authScreenPasswordResetSent": "We sent you a link to reset your password.",
+  "verifyEmailUseOtherAccount": "Use a different address",
+  "authScreenEmailAlreadyInUse": "An account already exists for this e-mail.",
+  "authScreenLinkConflictHint": "Log in to use that account. Online games you started on this device will not be linked to it.",
+  "authScreenInvalidCredentials": "E-mail or password is wrong.",
+  "authScreenWeakPassword": "Please use at least 8 characters.",
+  "authScreenInvalidEmail": "Please enter a valid e-mail address.",
+  "authScreenTooManyRequests": "Too many attempts. Please wait a moment.",
+  "authScreenNetworkError": "No connection. Please try again.",
+  "authScreenEmailRequired": "Please enter your e-mail address.",
+  "authScreenPasswordRequired": "Please enter a password.",
+  "verifyEmailTitle": "Confirm your e-mail",
+  "verifyEmailDescription": "We sent a confirmation link to {email}. Open it, then come back here.",
+  "authScreenMailSpamHint": "No mail? Please check your spam folder and mark it as “not spam” — that helps the next one arrive.",
+  "verifyEmailResend": "Send again",
+  "verifyEmailResendIn": "Send again in {seconds}s",
+  "verifyEmailResent": "Mail sent.",
+  "verifyEmailCheckNow": "I have confirmed",
+  "verifyEmailStillPending": "Not confirmed yet. Please open the link in the mail.",
+  "accountCardTitle": "Account",
+  "accountCardAnonymous": "Playing without an account",
+  "accountCardAnonymousHint": "Register to publish games.",
+  "accountCardVerified": "E-mail confirmed",
+  "accountCardUnverified": "E-mail not confirmed yet",
+  "accountCardSignOut": "Sign out",
+  "@verifyEmailDescription": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@verifyEmailResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "joinGameScreenScanToJoin": "Scan a QR code to join a game.",
   "joinGameScreenGameFound": "Game found!",
   "joinGameScreenGameRounds": "Rounds",

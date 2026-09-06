@@ -4,12 +4,13 @@ import 'package:bloc/bloc.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/domain/announcement/announcement_check_service.dart';
 import 'package:cabo/domain/application/app_design.dart';
+import 'package:cabo/domain/application/auth_service.dart';
+import 'package:cabo/domain/application/deep_link_service.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/application/local_design_repository.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 part 'application_state.dart';
 
@@ -18,19 +19,22 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     required this.repository,
     required this.designRepository,
     required this.announcementCheckService,
+    required this.authService,
+    required this.deepLinkService,
   }) : super(const ApplicationInitial()) {
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((
-      User? user,
-    ) {
+    // userChanges instead of authStateChanges: only the former fires when
+    // credentials are linked onto an anonymous user, which is the normal
+    // case now that everybody is signed in from the start.
+    _authSubscription = authService.userChanges().listen((User? user) {
       if (user == null) {
-        emit(
+        _safeEmit(
           ApplicationUnauthenticated(
             isDeveloper: state.isDeveloper,
             design: state.design,
           ),
         );
       } else {
-        emit(
+        _safeEmit(
           ApplicationAuthenticated(
             user: user,
             isDeveloper: state.isDeveloper,
@@ -40,14 +44,23 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       }
     });
 
-    unawaited(signIn.initialize());
+    unawaited(authService.initializeProviders());
   }
 
   late final StreamSubscription<User?> _authSubscription;
+  StreamSubscription<Uri>? _linkSubscription;
   final LocalApplicationRepository repository;
   final LocalDesignRepository designRepository;
   final AnnouncementCheckService announcementCheckService;
-  final GoogleSignIn signIn = GoogleSignIn.instance;
+  final AuthService authService;
+  final DeepLinkService deepLinkService;
+
+  /// Emits only while the cubit is alive: init() and the user stream can both
+  /// resolve after close().
+  void _safeEmit(ApplicationState next) {
+    if (isClosed) return;
+    emit(next);
+  }
 
   void init() async {
     final isDeveloperMode = await repository.getCurrent() ?? false;
@@ -55,101 +68,97 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       await designRepository.getCurrent(),
     );
     CaboTheme.applyDesign(design);
-    emit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
+    _safeEmit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
 
+    // Never awaited: a hanging sign-in must not delay the announcement, and
+    // announcements are readable without auth anyway.
+    unawaited(authService.ensureSignedIn());
     unawaited(announcementCheckService.checkAndShowAnnouncement());
+    unawaited(_initDeepLinks());
   }
 
   void saveDesign(AppDesign design) {
     designRepository.saveCurrent(design.name);
     CaboTheme.applyDesign(design);
-    emit(state.copyWith(design: design));
+    _safeEmit(state.copyWith(design: design));
   }
 
   Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+    await authService.signOut();
+    // Every user stays signed in, so drop straight back to anonymous.
+    await authService.ensureSignedIn();
   }
 
-  /// Signs in the user anonymously using Firebase.
-  Future<void> signInAnonymously() async {
-    try {
-      await FirebaseAuth.instance.signInAnonymously();
-    } on FirebaseAuthException catch (e) {
-      logger.severe(
-        'Error signing in anonymously: ${e.message}',
-        e,
-        e.stackTrace,
-      );
-    }
+  /// Retried lazily: the sign-in at startup can fail while offline.
+  Future<AuthOutcome> ensureSignedIn() {
+    return authService.ensureSignedIn();
   }
 
-  Future<bool> signInWithGoogle() async {
-    try {
-      const List<String> scopes = <String>[
-        'https://www.googleapis.com/auth/userinfo.email',
-      ];
-
-      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
-          .authenticate(scopeHint: scopes);
-
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-
-      final GoogleSignInAuthorizationClient authClient =
-          signIn.authorizationClient;
-      final GoogleSignInClientAuthorization? authorization = await authClient
-          .authorizationForScopes(scopes);
-
-      if (authorization == null) {
-        logger.warning(
-          'Google sign-in: authorization for scopes returned null.',
-        );
-        return false;
-      }
-
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: authorization.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null && currentUser.isAnonymous) {
-        await currentUser.linkWithCredential(credential);
-      } else {
-        await FirebaseAuth.instance.signInWithCredential(credential);
-      }
-
-      logger.info('Successfully signed in with Google: ${googleUser.email}');
-      return true;
-    } on FirebaseAuthException catch (e) {
-      logger.severe(
-        'Error during Google sign-in: ${e.message}',
-        e,
-        e.stackTrace,
-      );
-      return false;
-    } catch (e, stackTrace) {
-      logger.severe('An unexpected error occurred: $e', e, stackTrace);
-      return false;
-    }
+  Future<AuthOutcome> signInWithGoogle() {
+    return authService.signInWithGoogle();
   }
 
-  GoogleSignInAuthentication getAuthTokens(GoogleSignInAccount account) {
-    return account.authentication;
+  Future<AuthOutcome> registerWithEmail(String email, String password) {
+    return authService.registerWithEmail(email: email, password: password);
+  }
+
+  Future<AuthOutcome> signInWithEmail(String email, String password) {
+    return authService.signInWithEmail(email: email, password: password);
+  }
+
+  Future<AuthOutcome> sendVerificationEmail() {
+    return authService.sendVerificationEmail();
+  }
+
+  Future<AuthOutcome> sendPasswordResetEmail(String email) {
+    return authService.sendPasswordResetEmail(email);
+  }
+
+  /// Re-reads the verification status. The resulting state update comes from
+  /// the userChanges subscription, triggered by the forced token refresh.
+  Future<bool> refreshVerificationStatus() {
+    return authService.refreshVerificationStatus();
   }
 
   void saveIsDeveloperMode(bool isDeveloperMode) {
     repository.saveCurrent(isDeveloperMode);
-    emit(state.copyWith(isDeveloper: isDeveloperMode));
-  }
-
-  @override
-  Future<void> close() {
-    _authSubscription.cancel();
-    return super.close();
+    _safeEmit(state.copyWith(isDeveloper: isDeveloperMode));
   }
 
   void toggleDeveloperMode() {
     final bool newMode = !state.isDeveloper;
     saveIsDeveloperMode(newMode);
+  }
+
+  Future<void> _initDeepLinks() async {
+    // Both paths are needed: getInitialLink covers the cold start, the stream
+    // covers links arriving while the app runs. Handling one twice is safe.
+    // Subscribe first: a link arriving while getInitialLink is in flight would
+    // otherwise be dropped. Handling the same link twice is harmless.
+    _linkSubscription = deepLinkService.linkStream.listen(
+      _handleLink,
+      onError: (Object e) => logger.warning('Deep link stream error: $e'),
+    );
+    try {
+      final Uri? initialLink = await deepLinkService.getInitialLink();
+      if (initialLink != null) {
+        _handleLink(initialLink);
+      }
+    } catch (e, stackTrace) {
+      logger.warning('Could not read the initial deep link', e, stackTrace);
+    }
+  }
+
+  void _handleLink(Uri uri) {
+    if (deepLinkService.isEmailVerifiedLink(uri)) {
+      unawaited(refreshVerificationStatus());
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _authSubscription.cancel();
+    await _linkSubscription?.cancel();
+    return super.close();
   }
 }

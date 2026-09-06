@@ -3,6 +3,8 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/domain/announcement/announcement_check_service.dart';
 import 'package:cabo/domain/announcement/announcement_repository.dart';
 import 'package:cabo/domain/announcement/local_announcement_repository.dart';
+import 'package:cabo/domain/application/auth_service.dart';
+import 'package:cabo/domain/application/deep_link_service.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/application/local_design_repository.dart';
 import 'package:cabo/domain/game/game_service.dart';
@@ -49,12 +51,16 @@ void setup() {
         localAnnouncementRepository: app<LocalAnnouncementRepository>(),
       ),
     )
+    ..registerLazySingleton<AuthService>(AuthService.new)
+    ..registerLazySingleton<DeepLinkService>(DeepLinkService.new)
     ..registerLazySingleton<RatingService>(RatingService.new)
     ..registerLazySingleton<ApplicationCubit>(
       () => ApplicationCubit(
         repository: app<LocalApplicationRepository>(),
         designRepository: app<LocalDesignRepository>(),
         announcementCheckService: app<AnnouncementCheckService>(),
+        authService: app<AuthService>(),
+        deepLinkService: app<DeepLinkService>(),
       )..init(),
     );
 }

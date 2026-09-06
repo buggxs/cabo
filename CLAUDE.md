@@ -48,7 +48,8 @@ Flutter app for the Cabo card game — a digital scoreboard with local persisten
 
 **Firebase backend:** Cloud Functions, `firestore.rules`, `storage.rules` and the feedback
 dashboard live in a separate repository at `~/workspace/web/cabo` and are deployed from there.
-This repository only carries the FlutterFire config.
+This repository only carries the FlutterFire config -- it deliberately holds no rules files and
+no `firestore`/`storage` keys in `firebase.json`, so rules can never be deployed from here.
 
 **Dependency injection:** All services and repositories are registered in `lib/core/app_service_locator.dart` using GetIt. Access them via `getIt<SomeService>()`.
 
@@ -56,7 +57,7 @@ This repository only carries the FlutterFire config.
 
 **Persistence:**
 - Local: SharedPreferences via `LocalStorageRepository`, with feature-specific repositories (`LocalGameRepository`, `LocalPlayerRepository`, etc.).
-- Cloud: Firestore via `public_game_service.dart`; Firebase Auth supports anonymous sign-in and Google Sign-In (`ApplicationCubit` tracks auth state).
+- Cloud: Firestore via `public_game_service.dart`; every user is signed in anonymously on start, and can upgrade to a real account via Google Sign-In or e-mail and password (`AuthService`, tracked by `ApplicationCubit`). Publishing a game requires a confirmed e-mail address, enforced in `firestore.rules`.
 
 **Navigation:** Use `NavigationService` (registered in GetIt) rather than calling `Navigator` directly.
 

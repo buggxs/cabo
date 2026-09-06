@@ -1,6 +1,7 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/design_background.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
+import 'package:cabo/components/application/widgets/auth_refresh_listener.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
 import 'package:cabo/core/app_navigator/app_navigator.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
@@ -8,12 +9,11 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/firebase_options.dart';
 import 'package:cabo/l10n/app_localizations.dart';
+import 'package:cabo/misc/utils/crash_reporting.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:ui';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 
@@ -21,11 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  CrashReporting.register();
 
   setup();
 
@@ -68,8 +64,9 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: const [Locale('de'), Locale('en')],
             onGenerateRoute: _appNavigator.generateRoute,
-            builder: (context, child) =>
-                DesignBackground(child: child ?? const SizedBox.shrink()),
+            builder: (context, child) => AuthRefreshListener(
+              child: DesignBackground(child: child ?? const SizedBox.shrink()),
+            ),
             home: const MainMenuScreen(),
           );
         },
