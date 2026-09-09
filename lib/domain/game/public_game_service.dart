@@ -177,6 +177,13 @@ class PublicGameService with LoggerMixin {
     );
   }
 
+  /// Removes a published game again. The security rules only grant this to
+  /// the owner, so every other caller runs into a permission error.
+  Future<void> deleteGame(String publicId) async {
+    await _firestore.collection('games').doc(publicId).delete();
+    logger.info('Deleted public game with id: $publicId');
+  }
+
   Future<Game> getPublicGame(String publicId) async {
     return _firestore
         .collection('games')

@@ -440,6 +440,24 @@ abstract class AppLocalizations {
   /// **'Publish game'**
   String get publishDialogPublish;
 
+  /// No description provided for @publishDialogNextSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the points after every round — your fellow players see them right away.'**
+  String get publishDialogNextSteps;
+
+  /// No description provided for @publishDialogContinueToGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to the game'**
+  String get publishDialogContinueToGame;
+
+  /// No description provided for @publishDialogCodeStaysAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'You can find the code again anytime via “Public”.'**
+  String get publishDialogCodeStaysAvailable;
+
   /// No description provided for @publishDialogFailedToPublish.
   ///
   /// In en, this message translates to:

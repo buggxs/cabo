@@ -350,11 +350,18 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   Future<void> _saveGame(Game game, {bool forceFinish = false}) async {
     // Non-Owner darf im Public Game das Spiel nicht vorzeitig für alle beenden.
     // In diesem Fall verlässt der Spieler nur lokal — kein Firestore-/History-Write.
-    if (forceFinish && game.isPublic) {
-      final String? uid = _auth.currentUser?.uid;
-      if (uid != game.ownerId) {
-        return;
-      }
+    if (forceFinish && game.isPublic && !_isOwnerOf(game)) {
+      return;
+    }
+
+    // Ein veröffentlichtes Spiel ohne eine einzige Runde wurde nur ausprobiert.
+    // Es wird wieder aus Firestore entfernt, statt als beendetes Spiel dort
+    // liegen zu bleiben.
+    final bool isAbandonedPublicGame =
+        forceFinish && game.isPublic && !game.hasRounds;
+
+    if (isAbandonedPublicGame) {
+      await _discardPublicGame(game);
     }
 
     if (game.isGameFinished || forceFinish) {
@@ -368,7 +375,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       await app<GameService>().saveToGameHistory(game);
     }
 
-    if (game.isPublic) {
+    if (game.isPublic && !isAbandonedPublicGame) {
       try {
         await app<PublicGameService>().saveOrUpdateGame(game: game);
       } catch (e, stackTrace) {
@@ -377,6 +384,19 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
 
     await app<GameService>().saveLastPlayedGame(game);
+  }
+
+  bool _isOwnerOf(Game game) => _auth.currentUser?.uid == game.ownerId;
+
+  Future<void> _discardPublicGame(Game game) async {
+    await _gameSubscription?.cancel();
+    _gameSubscription = null;
+
+    try {
+      await app<PublicGameService>().deleteGame(game.publicId!);
+    } catch (e, stackTrace) {
+      logger.severe('Failed to delete empty public game', e, stackTrace);
+    }
   }
 
   String? _checkIfPlayerHitsKamikaze(

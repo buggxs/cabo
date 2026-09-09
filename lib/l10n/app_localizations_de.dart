@@ -190,6 +190,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get publishDialogPublish => 'Spiel veröffentlichen';
 
   @override
+  String get publishDialogNextSteps =>
+      'Trage nach jeder Runde die Punkte ein — deine Mitspieler sehen sie sofort.';
+
+  @override
+  String get publishDialogContinueToGame => 'Weiter zum Spiel';
+
+  @override
+  String get publishDialogCodeStaysAvailable =>
+      'Den Code findest du jederzeit wieder über „Öffentlich“.';
+
+  @override
   String get publishDialogFailedToPublish =>
       'Spiel konnte nicht veröffentlicht werden.';
 
