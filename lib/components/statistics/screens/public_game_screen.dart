@@ -87,6 +87,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
       currentView = QrCodeSection(
         gameId: _publicGameId!,
         ownerId: _game?.ownerId,
+        onContinue: () => Navigator.of(context).pop(true),
       );
     } else if (_isPreparing) {
       currentView = LoadingSpinnerSection(

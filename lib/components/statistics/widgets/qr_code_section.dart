@@ -1,3 +1,4 @@
+import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/core/app_service_locator.dart';
@@ -7,10 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QrCodeSection extends StatelessWidget {
-  const QrCodeSection({required this.gameId, required this.ownerId, super.key});
+  const QrCodeSection({
+    required this.gameId,
+    required this.ownerId,
+    required this.onContinue,
+    super.key,
+  });
 
   final String gameId;
   final String? ownerId;
+
+  /// Schließt den Dialog und führt zurück ins Spiel.
+  final VoidCallback onContinue;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +30,7 @@ class QrCodeSection extends StatelessWidget {
     );
     final QrImage qrImage = QrImage(qrCode);
     final String? userId = app<AuthService>().currentUser?.uid;
+    final bool isOwner = userId == ownerId;
 
     return SingleChildScrollView(
       key: const ValueKey<String>('qr-code-view'),
@@ -35,9 +45,9 @@ class QrCodeSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            userId != ownerId
-                ? l10n.publishDialogJoinedGame
-                : l10n.publishDialogGamePublished,
+            isOwner
+                ? l10n.publishDialogGamePublished
+                : l10n.publishDialogJoinedGame,
             textAlign: TextAlign.center,
             style: CaboTheme.headlineMediumStyle.copyWith(
               color: CaboTheme.onSurface,
@@ -72,6 +82,33 @@ class QrCodeSection extends StatelessWidget {
                 color: CaboTheme.m3Primary,
                 fontSize: 18,
               ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.publishDialogNextSteps,
+            textAlign: TextAlign.center,
+            style: CaboTheme.bodyLargeStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 24),
+          CaboPrimaryButton(
+            key: const ValueKey<String>('qr-code-continue-button'),
+            label: l10n.publishDialogContinueToGame,
+            onPressed: onContinue,
+            leading: Icon(
+              Icons.arrow_forward_rounded,
+              size: 24,
+              color: CaboTheme.onPrimaryContainer,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.publishDialogCodeStaysAvailable,
+            textAlign: TextAlign.center,
+            style: CaboTheme.labelSmallStyle.copyWith(
+              color: CaboTheme.onSurfaceVariant,
             ),
           ),
         ],

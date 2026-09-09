@@ -67,6 +67,9 @@ class Game extends Equatable {
 
   bool get isPublic => publicId != null && ownerId != null;
 
+  bool get hasRounds =>
+      players.any((Player player) => player.rounds.isNotEmpty);
+
   String get gameDuration {
     BuildContext context =
         app<NavigationService>().navigatorKey.currentContext!;

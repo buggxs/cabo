@@ -501,6 +501,15 @@ class MockPublicGameService extends _i1.Mock implements _i15.PublicGameService {
           as _i9.Future<_i6.Game>);
 
   @override
+  _i9.Future<void> deleteGame(String? publicId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteGame, [publicId]),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
+
+  @override
   _i9.Future<_i6.Game> getPublicGame(String? publicId) =>
       (super.noSuchMethod(
             Invocation.method(#getPublicGame, [publicId]),
