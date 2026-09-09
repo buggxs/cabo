@@ -1154,6 +1154,36 @@ abstract class AppLocalizations {
   /// **'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!'**
   String get aboutScreenFunFact;
 
+  /// No description provided for @aboutScreenDonationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Say thank you'**
+  String get aboutScreenDonationTitle;
+
+  /// No description provided for @aboutScreenDonationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabo Board stays free and without ads. A small contribution shows me that you like the app and rewards the work behind it.'**
+  String get aboutScreenDonationDescription;
+
+  /// No description provided for @aboutScreenDonationPaypalButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Say thanks with PayPal'**
+  String get aboutScreenDonationPaypalButton;
+
+  /// No description provided for @aboutScreenDonationCoffeeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy me a coffee'**
+  String get aboutScreenDonationCoffeeButton;
+
+  /// No description provided for @aboutScreenDonationError.
+  ///
+  /// In en, this message translates to:
+  /// **'The link could not be opened.'**
+  String get aboutScreenDonationError;
+
   /// No description provided for @rateAppTitle.
   ///
   /// In en, this message translates to:

@@ -6,6 +6,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/about/cubit/about_cubit.dart';
 import 'package:cabo/components/about/widgets/debug_test_section.dart';
+import 'package:cabo/components/about/widgets/donation_card.dart';
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rating/rating_service.dart';
@@ -196,13 +197,15 @@ class _AboutScreenContentState extends State<AboutScreenContent> {
                 const SizedBox(height: 32),
                 _buildFeedbackCard(context),
                 const SizedBox(height: 32),
+                const DonationCard(),
+                const SizedBox(height: 32),
                 _buildFunFactCard(context),
                 const SizedBox(height: 24),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: _handleCopyrightTap,
                   child: Text(
-                    '© Andre Salzmann ${DateTime.now().year}',
+                    '© Andre Müller ${DateTime.now().year}',
                     textAlign: TextAlign.center,
                     style: CaboTheme.labelSmallStyle.copyWith(
                       color: CaboTheme.onSurfaceVariant,
