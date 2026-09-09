@@ -388,6 +388,7 @@ void main() {
           points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: true,
+          isKamikazeRound: true,
           isWonRound: true,
         ),
       ],
@@ -429,6 +430,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
       ],
@@ -470,6 +472,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
       ],
@@ -516,6 +519,7 @@ void main() {
           points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: true,
+          isKamikazeRound: true,
           isWonRound: true,
         ),
         Round(
@@ -564,6 +568,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
         Round(
@@ -612,6 +617,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
         Round(
@@ -665,6 +671,7 @@ void main() {
           points: 0,
           hasPenaltyPoints: false,
           hasClosedRound: true,
+          isKamikazeRound: true,
           isWonRound: true,
         ),
         Round(
@@ -720,6 +727,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
         Round(
@@ -775,6 +783,7 @@ void main() {
           points: 50,
           hasPenaltyPoints: false,
           hasClosedRound: false,
+          isKamikazeRound: true,
           isWonRound: false,
         ),
         Round(

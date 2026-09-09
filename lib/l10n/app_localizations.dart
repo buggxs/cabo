@@ -977,26 +977,50 @@ abstract class AppLocalizations {
   /// No description provided for @ruleScreenTotalPointsDescription.
   ///
   /// In en, this message translates to:
-  /// **'The game ends as soon as a player reaches this score.'**
+  /// **'The game ends as soon as a player goes above this score.'**
   String get ruleScreenTotalPointsDescription;
 
   /// No description provided for @ruleScreenKamikazeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Special rule: If a player reaches exactly this score at the end, something special happens.'**
+  /// **'Special rule: Ending a round on exactly this score scores 0 — everyone else takes this score. Set 0 to turn the rule off.'**
   String get ruleScreenKamikazeDescription;
 
   /// No description provided for @ruleScreenZeroPointsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Rewards winning a round.'**
+  /// **'Rewards winning a round: the round winner scores 0 instead of their hand.'**
   String get ruleScreenZeroPointsDescription;
 
   /// No description provided for @ruleScreenPrecisionLandingDescription.
   ///
   /// In en, this message translates to:
-  /// **'A chance for a comeback.'**
+  /// **'A chance for a comeback: hitting the total score exactly halves your points.'**
   String get ruleScreenPrecisionLandingDescription;
+
+  /// No description provided for @roundBadgeKamikaze.
+  ///
+  /// In en, this message translates to:
+  /// **'KAMIKAZE'**
+  String get roundBadgeKamikaze;
+
+  /// No description provided for @roundBadgeKamikazeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Kamikaze round: the kamikaze player scores 0, everyone else takes the kamikaze points.'**
+  String get roundBadgeKamikazeTooltip;
+
+  /// No description provided for @roundBadgePenaltyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed cabo call: 5 penalty points on top of the hand.'**
+  String get roundBadgePenaltyTooltip;
+
+  /// No description provided for @roundBadgePrecisionLandingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact hit: the score was reset to half the total game points.'**
+  String get roundBadgePrecisionLandingTooltip;
 
   /// No description provided for @ruleScreenPointsSuffix.
   ///

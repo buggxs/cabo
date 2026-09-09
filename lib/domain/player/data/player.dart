@@ -28,25 +28,18 @@ class Player extends Equatable {
   String get stringifyJson => jsonEncode(toJson());
 
   int get totalPoints {
-    if (rounds.isEmpty) {
+    int total = 0;
+    for (final Round round in rounds) {
+      total += round.points - _precisionLandingDeduction(round);
+    }
+    return total;
+  }
+
+  int _precisionLandingDeduction(Round round) {
+    if (!round.hasPrecisionLanding) {
       return 0;
     }
-
-    if (rounds.length == 1) {
-      return rounds.first.points;
-    }
-
-    int precisionLandingRounds =
-        rounds
-            .where((Round round) => round.hasPrecisionLanding)
-            .toList()
-            .length *
-        -50;
-
-    return rounds
-            .map((Round round) => round.points)
-            .reduce((pointsA, pointsB) => pointsA + pointsB) +
-        precisionLandingRounds;
+    return round.precisionLandingDeduction ?? 50;
   }
 
   /// Checks if the player has won at least [streakLength] rounds consecutively
@@ -109,8 +102,9 @@ class Player extends Equatable {
     return maxStreak;
   }
 
-  Player copyWith({String? name, int? place, List<Round>? rounds}) {
+  Player copyWith({int? id, String? name, int? place, List<Round>? rounds}) {
     return Player(
+      id: id ?? this.id,
       name: name ?? this.name,
       place: place ?? this.place,
       rounds: rounds ?? this.rounds,

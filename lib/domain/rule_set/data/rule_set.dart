@@ -3,6 +3,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'rule_set.g.dart';
 
+/// Points added when the player who called Cabo does not have the lowest hand.
+const int kFailedCaboPenaltyPoints = 5;
+
 @JsonSerializable()
 class RuleSet extends Equatable {
   const RuleSet({

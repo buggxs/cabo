@@ -477,18 +477,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ruleScreenTotalPointsDescription =>
-      'The game ends as soon as a player reaches this score.';
+      'The game ends as soon as a player goes above this score.';
 
   @override
   String get ruleScreenKamikazeDescription =>
-      'Special rule: If a player reaches exactly this score at the end, something special happens.';
+      'Special rule: Ending a round on exactly this score scores 0 — everyone else takes this score. Set 0 to turn the rule off.';
 
   @override
-  String get ruleScreenZeroPointsDescription => 'Rewards winning a round.';
+  String get ruleScreenZeroPointsDescription =>
+      'Rewards winning a round: the round winner scores 0 instead of their hand.';
 
   @override
   String get ruleScreenPrecisionLandingDescription =>
-      'A chance for a comeback.';
+      'A chance for a comeback: hitting the total score exactly halves your points.';
+
+  @override
+  String get roundBadgeKamikaze => 'KAMIKAZE';
+
+  @override
+  String get roundBadgeKamikazeTooltip =>
+      'Kamikaze round: the kamikaze player scores 0, everyone else takes the kamikaze points.';
+
+  @override
+  String get roundBadgePenaltyTooltip =>
+      'Failed cabo call: 5 penalty points on top of the hand.';
+
+  @override
+  String get roundBadgePrecisionLandingTooltip =>
+      'Exact hit: the score was reset to half the total game points.';
 
   @override
   String get ruleScreenPointsSuffix => 'pts';

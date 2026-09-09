@@ -21,6 +21,7 @@ class PointsEntrySheet extends StatefulWidget {
 }
 
 class _PointsEntrySheetState extends State<PointsEntrySheet> {
+  /// Highest possible hand: four cards, at best two 13s and two 12s.
   static const int _maxPoints = 50;
 
   /// Entered points per player, index-parallel to [widget.players].

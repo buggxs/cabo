@@ -159,13 +159,12 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   Future<void> _closeOfflineRound(int? index) async {
-    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
-
     if (state.players.isEmpty) {
       return;
     }
 
-    List<Player> players = List.from(state.players);
+    final RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
+    final List<Player> players = List<Player>.from(state.players);
 
     final Player? closingPlayer = await app<StatisticsDialogService>()
         .showRoundCloserDialog(players: players);
@@ -174,105 +173,21 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       return;
     }
 
-    final Map<String, int?>? playerPointsmap =
+    final Map<String, int?>? playerPointsMap =
         await app<StatisticsDialogService>().showPointDialog(
           state.players,
           closer: closingPlayer,
         );
 
-    if (playerPointsmap != null) {
+    if (playerPointsMap != null) {
       for (int i = 0; i < players.length; i++) {
-        Player player = players[i];
-        int playerPoints = playerPointsmap[player.name] ?? 0;
-
-        int pointsOfClosingPlayer = _getPointsOfClosingPlayer(
-          playerPointsmap,
-          closingPlayer,
+        players[i] = _applyRound(
+          player: players[i],
+          ruleSet: ruleSet,
+          playerPointsMap: playerPointsMap,
+          closingPlayer: closingPlayer,
+          index: index,
         );
-
-        bool closingPlayerHasLost = _isClosingPlayerLooser(
-          playerPointsmap,
-          closingPlayer,
-          pointsOfClosingPlayer,
-        );
-
-        if (player == closingPlayer && closingPlayerHasLost) {
-          playerPoints = playerPoints + 5;
-        }
-
-        if (ruleSet.roundWinnerGetsZeroPoints) {
-          if (player == closingPlayer && !closingPlayerHasLost) {
-            playerPoints = 0;
-          } else if (closingPlayerHasLost &&
-              playerPoints == _getLowestPoints(playerPointsmap)) {
-            playerPoints = 0;
-          }
-        }
-
-        if (ruleSet.useKamikazeRule &&
-            _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) != null) {
-          if (_checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) ==
-              player.name) {
-            playerPoints = 0;
-            closingPlayerHasLost = false;
-          } else {
-            playerPoints = 50;
-          }
-        }
-
-        if (index != null) {
-          List<Round> round = List.of(players[i].rounds);
-          round.removeAt(index);
-          players[i] = player.copyWith(
-            rounds: [
-              ...round,
-              Round(
-                round: player.rounds.length + 1,
-                points: playerPoints,
-                hasClosedRound: closingPlayer == player,
-                hasPenaltyPoints:
-                    closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding: _hasDonePrecisionLanding(
-                  player,
-                  playerPoints,
-                ),
-                isWonRound: _hasWonRound(
-                  player.name,
-                  playerPointsmap,
-                  ruleSet,
-                  playerPoints,
-                  closingPlayer,
-                  closingPlayerHasLost,
-                ),
-              ),
-            ],
-          );
-        } else {
-          players[i] = player.copyWith(
-            rounds: [
-              ...player.rounds,
-              Round(
-                round: player.rounds.length + 1,
-                points: playerPoints,
-                hasClosedRound: closingPlayer == player,
-                hasPenaltyPoints:
-                    closingPlayer == player && closingPlayerHasLost,
-                hasPrecisionLanding: _hasDonePrecisionLanding(
-                  player,
-                  playerPoints,
-                ),
-                isWonRound: _hasWonRound(
-                  player.name,
-                  playerPointsmap,
-                  ruleSet,
-                  playerPoints,
-                  closingPlayer,
-                  closingPlayerHasLost,
-                ),
-              ),
-            ],
-          );
-        }
       }
     }
 
@@ -298,6 +213,145 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
   }
 
+  /// Replaces the round at [index] or appends a new one when [index] is `null`.
+  Player _applyRound({
+    required Player player,
+    required RuleSet ruleSet,
+    required Map<String, int?> playerPointsMap,
+    required Player closingPlayer,
+    int? index,
+  }) {
+    final List<Round> rounds = List<Round>.of(player.rounds);
+    if (index != null && index < rounds.length) {
+      rounds.removeAt(index);
+    }
+
+    final Round round = _buildRound(
+      player: player,
+      pointsBeforeRound: player.copyWith(rounds: rounds).totalPoints,
+      roundNumber: rounds.length + 1,
+      ruleSet: ruleSet,
+      playerPointsMap: playerPointsMap,
+      closingPlayer: closingPlayer,
+    );
+
+    return player.copyWith(rounds: <Round>[...rounds, round]);
+  }
+
+  Round _buildRound({
+    required Player player,
+    required int pointsBeforeRound,
+    required int roundNumber,
+    required RuleSet ruleSet,
+    required Map<String, int?> playerPointsMap,
+    required Player closingPlayer,
+  }) {
+    final bool hasClosedRound = player.name == closingPlayer.name;
+    final String? kamikazePlayerName = _findKamikazePlayer(
+      playerPointsMap,
+      ruleSet,
+    );
+
+    if (kamikazePlayerName != null) {
+      return _buildKamikazeRound(
+        isKamikazePlayer: kamikazePlayerName == player.name,
+        hasClosedRound: hasClosedRound,
+        roundNumber: roundNumber,
+        ruleSet: ruleSet,
+        pointsBeforeRound: pointsBeforeRound,
+      );
+    }
+
+    final bool hasClosingPlayerLost = _isClosingPlayerLooser(
+      playerPointsMap,
+      closingPlayer,
+      _getPointsOfClosingPlayer(playerPointsMap, closingPlayer),
+    );
+    final bool hasPenaltyPoints = hasClosedRound && hasClosingPlayerLost;
+    final bool isWonRound = _hasWonRound(
+      player.name,
+      playerPointsMap,
+      closingPlayer,
+      hasClosingPlayerLost,
+    );
+
+    int points = playerPointsMap[player.name] ?? 0;
+    if (hasPenaltyPoints) {
+      points += kFailedCaboPenaltyPoints;
+    }
+    if (ruleSet.roundWinnerGetsZeroPoints && isWonRound) {
+      points = 0;
+    }
+
+    return _createRound(
+      roundNumber: roundNumber,
+      points: points,
+      hasClosedRound: hasClosedRound,
+      hasPenaltyPoints: hasPenaltyPoints,
+      isWonRound: isWonRound,
+      ruleSet: ruleSet,
+      pointsBeforeRound: pointsBeforeRound,
+    );
+  }
+
+  /// A kamikaze replaces the whole round result: the kamikaze player wins the
+  /// round with zero points, everyone else takes the configured penalty.
+  Round _buildKamikazeRound({
+    required bool isKamikazePlayer,
+    required bool hasClosedRound,
+    required int roundNumber,
+    required RuleSet ruleSet,
+    required int pointsBeforeRound,
+  }) {
+    return _createRound(
+      roundNumber: roundNumber,
+      points: isKamikazePlayer ? 0 : ruleSet.kamikazePoints,
+      hasClosedRound: hasClosedRound,
+      hasPenaltyPoints: false,
+      isWonRound: isKamikazePlayer,
+      ruleSet: ruleSet,
+      pointsBeforeRound: pointsBeforeRound,
+      isKamikazeRound: true,
+    );
+  }
+
+  Round _createRound({
+    required int roundNumber,
+    required int points,
+    required bool hasClosedRound,
+    required bool hasPenaltyPoints,
+    required bool isWonRound,
+    required RuleSet ruleSet,
+    required int pointsBeforeRound,
+    bool isKamikazeRound = false,
+  }) {
+    final int deduction = _precisionLandingDeduction(
+      ruleSet,
+      pointsBeforeRound + points,
+    );
+
+    return Round(
+      round: roundNumber,
+      points: points,
+      hasClosedRound: hasClosedRound,
+      hasPenaltyPoints: hasPenaltyPoints,
+      hasPrecisionLanding: deduction > 0,
+      precisionLandingDeduction: deduction > 0 ? deduction : null,
+      isKamikazeRound: isKamikazeRound,
+      isWonRound: isWonRound,
+    );
+  }
+
+  /// Landing exactly on the total game points halves the player's score
+  /// instead of ending the game.
+  int _precisionLandingDeduction(RuleSet ruleSet, int totalPointsAfterRound) {
+    if (!ruleSet.precisionLanding ||
+        totalPointsAfterRound != ruleSet.totalGamePoints) {
+      return 0;
+    }
+    return ruleSet.totalGamePoints ~/ 2;
+  }
+
   void _finishGame(List<Player> players) {
     final Player? winner = players
         .where((player) => player.place == 1)
@@ -310,41 +364,23 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     app<NavigationService>().pushToEndGameScreen(game: state.game!);
   }
 
+  /// The lowest hand wins the round; on a tie the player who called Cabo wins.
   bool _hasWonRound(
     String playerName,
-    Map<String, int?> playerPointsmap,
-    RuleSet ruleSet,
-    int points,
+    Map<String, int?> playerPointsMap,
     Player closingPlayer,
-    bool closingPlayerHasLost,
+    bool hasClosingPlayerLost,
   ) {
-    if (!ruleSet.useKamikazeRule ||
-        _checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == null) {
-      // If closing Player and another player have same points
-      if (!closingPlayerHasLost &&
-          points == _getLowestPoints(playerPointsmap) &&
-          playerName != closingPlayer.name) {
-        return false;
-      }
-
-      return playerPointsmap[playerName] == _getLowestPoints(playerPointsmap);
-    }
-
-    if (_checkIfPlayerHitsKamikaze(playerPointsmap, ruleSet) == playerName) {
-      return true;
-    } else {
+    if ((playerPointsMap[playerName] ?? 0) !=
+        _getLowestPoints(playerPointsMap)) {
       return false;
     }
-  }
 
-  bool _hasDonePrecisionLanding(Player player, int points) {
-    RuleSet ruleSet = state.game?.ruleSet ?? const RuleSet();
-    if (ruleSet.precisionLanding) {
-      if ((player.totalPoints + points) == ruleSet.totalGamePoints) {
-        return true;
-      }
+    if (!hasClosingPlayerLost) {
+      return playerName == closingPlayer.name;
     }
-    return false;
+
+    return true;
   }
 
   Future<void> _saveGame(Game game, {bool forceFinish = false}) async {
@@ -399,12 +435,19 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
   }
 
-  String? _checkIfPlayerHitsKamikaze(
-    Map<String, int?> playerPointsmap,
+  String? _findKamikazePlayer(
+    Map<String, int?> playerPointsMap,
     RuleSet ruleSet,
   ) {
-    return playerPointsmap.entries
-        .where((element) => element.value == ruleSet.kamikazePoints)
+    if (!ruleSet.useKamikazeRule) {
+      return null;
+    }
+
+    return playerPointsMap.entries
+        .where(
+          (MapEntry<String, int?> entry) =>
+              entry.value == ruleSet.kamikazePoints,
+        )
         .firstOrNull
         ?.key;
   }

@@ -1,15 +1,13 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
-import 'package:cabo/components/statistics/widgets/cabo_data_cell.dart';
 import 'package:cabo/components/statistics/widgets/data_table.dart';
+import 'package:cabo/components/statistics/widgets/round_row.dart';
 import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'animated_border_container.dart';
 
 class StatisticsScreenContentBody extends StatelessWidget {
   const StatisticsScreenContentBody({super.key});
@@ -84,43 +82,15 @@ class StatisticsScreenContentBody extends StatelessWidget {
   }
 
   List<Widget> _buildRounds(List<Player> players, StatisticsCubit cubit) {
-    List<Widget> rounds = <Widget>[];
-    int lastIndex = players.first.rounds.length - 1;
-    for (int i = 0; i < players.first.rounds.length; i++) {
-      Widget roundRow = Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          ...players.map(
-            (Player player) => CaboDataCell(
-              round: player.rounds[i],
-              isLastColumn: player == players.last,
-            ),
-          ),
-        ],
-      );
+    final int lastIndex = players.first.rounds.length - 1;
 
-      if (i == lastIndex) {
-        rounds.add(
-          AnimatedBorderContainer(
-            onTap: () => cubit.closeRound(index: lastIndex),
-            child: roundRow,
-          ),
-        );
-      } else {
-        rounds.add(
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: CaboTheme.outlineVariant.withValues(alpha: 0.3),
-                ),
-              ),
-            ),
-            child: roundRow,
-          ),
-        );
-      }
-    }
-    return rounds;
+    return <Widget>[
+      for (int i = 0; i <= lastIndex; i++)
+        RoundRow(
+          rounds: players.map((Player player) => player.rounds[i]).toList(),
+          isLastRound: i == lastIndex,
+          onTap: () => cubit.closeRound(index: lastIndex),
+        ),
+    ];
   }
 }
