@@ -929,7 +929,29 @@ void main() {
     const String ownerUid = 'owner-uid';
     const String otherUid = 'other-uid';
 
+    const List<Player> playedPlayerList = <Player>[
+      Player(
+        name: 'Kevin',
+        rounds: <Round>[
+          Round(
+            round: 1,
+            points: 12,
+            hasPenaltyPoints: false,
+            hasClosedRound: true,
+            isWonRound: false,
+          ),
+        ],
+      ),
+      Player(name: 'Maike'),
+    ];
+
     final Game publicGame = expectedGame.copyWith(
+      publicId: 'cabo-test-abc',
+      ownerId: ownerUid,
+      players: playedPlayerList,
+    );
+
+    final Game emptyPublicGame = expectedGame.copyWith(
       publicId: 'cabo-test-abc',
       ownerId: ownerUid,
     );
@@ -975,6 +997,7 @@ void main() {
         ).captured;
         expect(synced, isNotEmpty);
         expect((synced.last as Game).finishedAt, isNotNull);
+        verifyNever(publicGameService.deleteGame(any));
       },
     );
 
@@ -1004,6 +1027,34 @@ void main() {
         verifyNever(localGameService.saveToGameHistory(any));
         verifyNever(publicGameService.saveOrUpdateGame(game: anyNamed('game')));
         expect(cubit.state.game?.finishedAt, isNull);
+      },
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'Owner forceFinish deletes a public game without any round',
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(const RuleSet()));
+        clearInteractions(localGameService);
+        clearInteractions(publicGameService);
+      },
+      build: () => StatisticsCubit(
+        players: playerList,
+        game: emptyPublicGame,
+        auth: MockFirebaseAuth(
+          signedIn: true,
+          mockUser: MockUser(uid: ownerUid),
+        ),
+      ),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        cubit.onPopScreen();
+        await Future.delayed(const Duration(milliseconds: 50));
+      },
+      verify: (_) {
+        verify(publicGameService.deleteGame('cabo-test-abc')).called(1);
+        verifyNever(publicGameService.saveOrUpdateGame(game: anyNamed('game')));
       },
     );
   });
