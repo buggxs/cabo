@@ -599,23 +599,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wusstest du schon? Das Wort \"Cabo\" bedeutet auf Spanisch \"Ende\" – genau das, was man ruft, wenn man gewinnen will!';
 
   @override
-  String get aboutScreenDonationTitle => 'Danke sagen';
-
-  @override
-  String get aboutScreenDonationDescription =>
-      'Cabo Board bleibt kostenlos und werbefrei. Mit einem kleinen Beitrag zeigst du mir, dass dir die App gefällt, und honorierst meine Arbeit.';
-
-  @override
-  String get aboutScreenDonationPaypalButton => 'Mit PayPal danke sagen';
-
-  @override
-  String get aboutScreenDonationCoffeeButton => 'Buy me a coffee';
-
-  @override
-  String get aboutScreenDonationError =>
-      'Der Link konnte nicht geöffnet werden.';
-
-  @override
   String get rateAppTitle => 'Bewerte diese App';
 
   @override
