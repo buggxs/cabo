@@ -485,19 +485,34 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get ruleScreenTotalPointsDescription =>
-      'Spiel endet, sobald ein Spieler diese Punktzahl erreicht.';
+      'Spiel endet, sobald ein Spieler diese Punktzahl überschreitet.';
 
   @override
   String get ruleScreenKamikazeDescription =>
-      'Spezialregel: Wenn ein Spieler exakt diese Punktzahl am Ende erreicht, passiert etwas Besonderes.';
+      'Spezialregel: Wer eine Runde mit exakt dieser Punktzahl beendet, bekommt 0 Punkte — alle anderen bekommen diese Punktzahl. 0 schaltet die Regel ab.';
 
   @override
   String get ruleScreenZeroPointsDescription =>
-      'Belohnt den Sieg in einer Runde.';
+      'Belohnt den Sieg in einer Runde: Der Rundengewinner bekommt 0 statt seiner Handpunkte.';
 
   @override
   String get ruleScreenPrecisionLandingDescription =>
-      'Eine Chance auf ein Comeback.';
+      'Eine Chance auf ein Comeback: Wer die Gesamtpunktzahl exakt trifft, wird auf die Hälfte zurückgesetzt.';
+
+  @override
+  String get roundBadgeKamikaze => 'KAMIKAZE';
+
+  @override
+  String get roundBadgeKamikazeTooltip =>
+      'Kamikaze-Runde: Der Kamikaze-Spieler erhält 0 Punkte, alle anderen die Kamikaze-Punktzahl.';
+
+  @override
+  String get roundBadgePenaltyTooltip =>
+      'Cabo verloren: 5 Strafpunkte auf die Handpunkte.';
+
+  @override
+  String get roundBadgePrecisionLandingTooltip =>
+      'Exakt getroffen: Der Punktestand wurde auf die Hälfte der Gesamtpunktzahl zurückgesetzt.';
 
   @override
   String get ruleScreenPointsSuffix => 'Pkt.';
@@ -582,23 +597,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get aboutScreenFunFact =>
       'Wusstest du schon? Das Wort \"Cabo\" bedeutet auf Spanisch \"Ende\" – genau das, was man ruft, wenn man gewinnen will!';
-
-  @override
-  String get aboutScreenDonationTitle => 'Danke sagen';
-
-  @override
-  String get aboutScreenDonationDescription =>
-      'Cabo Board bleibt kostenlos und werbefrei. Mit einem kleinen Beitrag zeigst du mir, dass dir die App gefällt, und honorierst meine Arbeit.';
-
-  @override
-  String get aboutScreenDonationPaypalButton => 'Mit PayPal danke sagen';
-
-  @override
-  String get aboutScreenDonationCoffeeButton => 'Buy me a coffee';
-
-  @override
-  String get aboutScreenDonationError =>
-      'Der Link konnte nicht geöffnet werden.';
 
   @override
   String get rateAppTitle => 'Bewerte diese App';

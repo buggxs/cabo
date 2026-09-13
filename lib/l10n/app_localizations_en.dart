@@ -477,18 +477,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ruleScreenTotalPointsDescription =>
-      'The game ends as soon as a player reaches this score.';
+      'The game ends as soon as a player goes above this score.';
 
   @override
   String get ruleScreenKamikazeDescription =>
-      'Special rule: If a player reaches exactly this score at the end, something special happens.';
+      'Special rule: Ending a round on exactly this score scores 0 — everyone else takes this score. Set 0 to turn the rule off.';
 
   @override
-  String get ruleScreenZeroPointsDescription => 'Rewards winning a round.';
+  String get ruleScreenZeroPointsDescription =>
+      'Rewards winning a round: the round winner scores 0 instead of their hand.';
 
   @override
   String get ruleScreenPrecisionLandingDescription =>
-      'A chance for a comeback.';
+      'A chance for a comeback: hitting the total score exactly halves your points.';
+
+  @override
+  String get roundBadgeKamikaze => 'KAMIKAZE';
+
+  @override
+  String get roundBadgeKamikazeTooltip =>
+      'Kamikaze round: the kamikaze player scores 0, everyone else takes the kamikaze points.';
+
+  @override
+  String get roundBadgePenaltyTooltip =>
+      'Failed cabo call: 5 penalty points on top of the hand.';
+
+  @override
+  String get roundBadgePrecisionLandingTooltip =>
+      'Exact hit: the score was reset to half the total game points.';
 
   @override
   String get ruleScreenPointsSuffix => 'pts';
@@ -572,22 +588,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aboutScreenFunFact =>
       'Did you know? The word \"Cabo\" means \"end\" in Spanish – exactly what you call out when you want to win!';
-
-  @override
-  String get aboutScreenDonationTitle => 'Say thank you';
-
-  @override
-  String get aboutScreenDonationDescription =>
-      'Cabo Board stays free and without ads. A small contribution shows me that you like the app and rewards the work behind it.';
-
-  @override
-  String get aboutScreenDonationPaypalButton => 'Say thanks with PayPal';
-
-  @override
-  String get aboutScreenDonationCoffeeButton => 'Buy me a coffee';
-
-  @override
-  String get aboutScreenDonationError => 'The link could not be opened.';
 
   @override
   String get rateAppTitle => 'Rate This App';

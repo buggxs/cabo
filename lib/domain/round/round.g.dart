@@ -13,6 +13,9 @@ Round _$RoundFromJson(Map<String, dynamic> json) => Round(
   hasPenaltyPoints: json['hasPenaltyPoints'] as bool? ?? false,
   hasClosedRound: json['hasClosedRound'] as bool? ?? false,
   hasPrecisionLanding: json['hasPrecisionLanding'] as bool? ?? false,
+  precisionLandingDeduction: (json['precisionLandingDeduction'] as num?)
+      ?.toInt(),
+  isKamikazeRound: json['isKamikazeRound'] as bool? ?? false,
   isWonRound: json['isWonRound'] as bool? ?? false,
 );
 
@@ -23,5 +26,7 @@ Map<String, dynamic> _$RoundToJson(Round instance) => <String, dynamic>{
   'hasPenaltyPoints': instance.hasPenaltyPoints,
   'hasClosedRound': instance.hasClosedRound,
   'hasPrecisionLanding': instance.hasPrecisionLanding,
+  'precisionLandingDeduction': instance.precisionLandingDeduction,
+  'isKamikazeRound': instance.isKamikazeRound,
   'isWonRound': instance.isWonRound,
 };

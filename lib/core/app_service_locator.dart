@@ -7,7 +7,6 @@ import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/domain/application/deep_link_service.dart';
 import 'package:cabo/domain/application/local_application_repository.dart';
 import 'package:cabo/domain/application/local_design_repository.dart';
-import 'package:cabo/domain/donation/donation_service.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/local_game_repository.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
@@ -55,7 +54,6 @@ void setup() {
     ..registerLazySingleton<AuthService>(AuthService.new)
     ..registerLazySingleton<DeepLinkService>(DeepLinkService.new)
     ..registerLazySingleton<RatingService>(RatingService.new)
-    ..registerLazySingleton<DonationService>(DonationService.new)
     ..registerLazySingleton<ApplicationCubit>(
       () => ApplicationCubit(
         repository: app<LocalApplicationRepository>(),

@@ -14,6 +14,8 @@ class Round extends Equatable {
     this.hasPenaltyPoints = false,
     this.hasClosedRound = false,
     this.hasPrecisionLanding = false,
+    this.precisionLandingDeduction,
+    this.isKamikazeRound = false,
     this.isWonRound = false,
   });
 
@@ -23,6 +25,16 @@ class Round extends Equatable {
   final bool hasPenaltyPoints;
   final bool hasClosedRound;
   final bool hasPrecisionLanding;
+
+  /// Points subtracted from the total for a precision landing in this round.
+  /// `null` on rounds stored before the deduction became rule set dependent;
+  /// those fall back to the former fixed deduction of 50 points.
+  final int? precisionLandingDeduction;
+
+  /// Marks every player's round of a round that was decided by a kamikaze,
+  /// so the score table can tell it apart from an ordinary high hand.
+  final bool isKamikazeRound;
+
   final bool isWonRound;
 
   factory Round.fromJson(Map<String, dynamic> json) => _$RoundFromJson(json);
@@ -37,6 +49,8 @@ class Round extends Equatable {
     bool? hasPenaltyPoints,
     bool? hasClosedRound,
     bool? hasPrecisionLanding,
+    int? precisionLandingDeduction,
+    bool? isKamikazeRound,
     bool? isWonRound,
   }) {
     return Round(
@@ -45,6 +59,9 @@ class Round extends Equatable {
       hasPenaltyPoints: hasPenaltyPoints ?? this.hasPenaltyPoints,
       hasClosedRound: hasClosedRound ?? this.hasClosedRound,
       hasPrecisionLanding: hasPrecisionLanding ?? this.hasPrecisionLanding,
+      precisionLandingDeduction:
+          precisionLandingDeduction ?? this.precisionLandingDeduction,
+      isKamikazeRound: isKamikazeRound ?? this.isKamikazeRound,
       isWonRound: isWonRound ?? this.isWonRound,
     );
   }
@@ -57,6 +74,8 @@ class Round extends Equatable {
     hasPenaltyPoints,
     hasClosedRound,
     hasPrecisionLanding,
+    precisionLandingDeduction,
+    isKamikazeRound,
     isWonRound,
   ];
 }

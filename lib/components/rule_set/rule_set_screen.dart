@@ -123,6 +123,9 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
                     description: l10n.ruleScreenKamikazeDescription,
                     suffix: l10n.ruleScreenPointsSuffix,
                     controller: _kamikazePointsController,
+                    // A hand can never exceed 50 points, a higher value would
+                    // silently disable the rule.
+                    maxValue: 50,
                   ),
                   const SizedBox(height: 24),
                   _buildSectionHeader(l10n.ruleScreenMechanicsSection),
@@ -243,6 +246,7 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
     required String description,
     required String suffix,
     required TextEditingController controller,
+    int? maxValue,
   }) {
     return _buildCard(
       child: Column(
@@ -271,7 +275,11 @@ class _RuleSetScreenContentState extends State<RuleSetScreenContent> {
               color: CaboTheme.onSurface,
             ),
             validator: (String? value) {
-              if (value == null || int.tryParse(value) == null) {
+              final int? points = value == null ? null : int.tryParse(value);
+              if (points == null || points < 0) {
+                return '';
+              }
+              if (maxValue != null && points > maxValue) {
                 return '';
               }
               return null;

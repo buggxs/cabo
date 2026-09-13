@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/statistics/screens/end_game_screen.dart';
+import 'package:cabo/components/statistics/screens/statistics_screen.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/announcement/announcement_check_service.dart';
 import 'package:cabo/domain/game/game.dart';
@@ -12,6 +13,17 @@ import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+/// Spezifikation einer Debug-Runde: Index des Cabo-Ansagers, Index des Spielers
+/// mit Strafpunkten (-1 = keiner), Indizes der Rundengewinner, die bereits
+/// verrechneten Punkte je Spieler und ob die Runde ein Kamikaze war.
+typedef _DebugRoundSpec = ({
+  int closer,
+  int penalty,
+  List<int> winners,
+  List<int> points,
+  bool kamikaze,
+});
 
 /// Debug-only Testbereich am Ende des About-Screens. Bündelt Buttons, mit denen
 /// sich bestimmte Bereiche/Screens mit synthetischen Daten direkt aufrufen
@@ -57,6 +69,11 @@ class DebugTestSection extends StatelessWidget {
             ),
           ),
           _DebugButton(
+            label: 'Laufendes Spiel (4 Spieler, 15 Runden, alle Regelfälle)',
+            icon: Icons.sports_esports_outlined,
+            onPressed: () => _openRunningGame(context),
+          ),
+          _DebugButton(
             label: 'Game History mit Testdaten füllen (überschreibt)',
             icon: Icons.history,
             onPressed: () => _fillGameHistory(context),
@@ -68,6 +85,17 @@ class DebugTestSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Öffnet den Statistik-Screen mit einem laufenden Testspiel. Das Schließen
+  /// einer weiteren Runde überschreibt das zuletzt gespielte Spiel.
+  void _openRunningGame(BuildContext context) {
+    final Game game = _buildRunningSampleGame();
+
+    Navigator.of(context).pushNamed(
+      StatisticsScreen.route,
+      arguments: <String, dynamic>{'players': game.players, 'game': game},
     );
   }
 
@@ -251,6 +279,194 @@ class DebugTestSection extends StatelessWidget {
       players: players,
       ruleSet: ruleSet,
     );
+  }
+
+  /// Spieler des laufenden Testspiels.
+  static const List<String> _runningGamePlayers = <String>[
+    'Mia',
+    'Tom',
+    'Lena',
+    'Ben',
+  ];
+
+  /// 15 Runden, die jede Regelkonstellation mindestens einmal enthalten:
+  /// Ansager gewinnt (1, 2, 6, 7, ...), Ansager verliert mit +5 (3, 5, 8, 10),
+  /// Gleichstand mit Sieg des Ansagers (4), zwei Rundengewinner (5), Kamikaze
+  /// (13) und dadurch eine Punktlandung auf exakt 100 bei Ben.
+  static const List<_DebugRoundSpec> _runningGameRounds = <_DebugRoundSpec>[
+    (
+      closer: 0,
+      penalty: -1,
+      winners: [0],
+      points: [0, 6, 4, 8],
+      kamikaze: false,
+    ),
+    (
+      closer: 3,
+      penalty: -1,
+      winners: [3],
+      points: [5, 3, 4, 0],
+      kamikaze: false,
+    ),
+    (
+      closer: 1,
+      penalty: 1,
+      winners: [2],
+      points: [6, 9, 0, 5],
+      kamikaze: false,
+    ),
+    (
+      closer: 2,
+      penalty: -1,
+      winners: [2],
+      points: [3, 5, 0, 6],
+      kamikaze: false,
+    ),
+    (
+      closer: 3,
+      penalty: 3,
+      winners: [0, 1],
+      points: [0, 0, 2, 11],
+      kamikaze: false,
+    ),
+    (
+      closer: 1,
+      penalty: -1,
+      winners: [1],
+      points: [4, 0, 3, 5],
+      kamikaze: false,
+    ),
+    (
+      closer: 0,
+      penalty: -1,
+      winners: [0],
+      points: [0, 2, 3, 4],
+      kamikaze: false,
+    ),
+    (
+      closer: 2,
+      penalty: 2,
+      winners: [3],
+      points: [4, 3, 8, 0],
+      kamikaze: false,
+    ),
+    (
+      closer: 3,
+      penalty: -1,
+      winners: [3],
+      points: [5, 2, 2, 0],
+      kamikaze: false,
+    ),
+    (
+      closer: 0,
+      penalty: 0,
+      winners: [2],
+      points: [9, 3, 0, 6],
+      kamikaze: false,
+    ),
+    (
+      closer: 1,
+      penalty: -1,
+      winners: [1],
+      points: [2, 0, 2, 2],
+      kamikaze: false,
+    ),
+    (
+      closer: 2,
+      penalty: -1,
+      winners: [2],
+      points: [2, 3, 0, 3],
+      kamikaze: false,
+    ),
+    (
+      closer: 1,
+      penalty: -1,
+      winners: [0],
+      points: [0, 50, 50, 50],
+      kamikaze: true,
+    ),
+    (
+      closer: 1,
+      penalty: -1,
+      winners: [1],
+      points: [4, 0, 3, 5],
+      kamikaze: false,
+    ),
+    (
+      closer: 3,
+      penalty: -1,
+      winners: [3],
+      points: [3, 2, 4, 0],
+      kamikaze: false,
+    ),
+  ];
+
+  /// Baut ein laufendes (nicht beendetes) Spiel aus [_runningGameRounds].
+  /// Kein Spieler überschreitet die Gesamtpunktzahl, es lassen sich also
+  /// weitere Runden schließen und die letzte Runde korrigieren.
+  Game _buildRunningSampleGame() {
+    const RuleSet ruleSet = RuleSet();
+
+    final List<int> totals = List<int>.filled(_runningGamePlayers.length, 0);
+    final List<List<Round>> rounds = List<List<Round>>.generate(
+      _runningGamePlayers.length,
+      (_) => <Round>[],
+    );
+
+    for (int r = 0; r < _runningGameRounds.length; r++) {
+      final _DebugRoundSpec spec = _runningGameRounds[r];
+      for (int p = 0; p < _runningGamePlayers.length; p++) {
+        final int points = spec.points[p];
+        final int deduction = _precisionLandingDeduction(
+          ruleSet,
+          totals[p] + points,
+        );
+
+        rounds[p].add(
+          Round(
+            round: r + 1,
+            points: points,
+            hasClosedRound: spec.closer == p,
+            hasPenaltyPoints: spec.penalty == p,
+            hasPrecisionLanding: deduction > 0,
+            precisionLandingDeduction: deduction > 0 ? deduction : null,
+            isKamikazeRound: spec.kamikaze,
+            isWonRound: spec.winners.contains(p),
+          ),
+        );
+        totals[p] += points - deduction;
+      }
+    }
+
+    List<Player> players = <Player>[
+      for (int p = 0; p < _runningGamePlayers.length; p++)
+        Player(name: _runningGamePlayers[p], rounds: rounds[p]),
+    ];
+
+    players.sort(
+      (Player a, Player b) => a.totalPoints.compareTo(b.totalPoints),
+    );
+    for (int i = 0; i < players.length; i++) {
+      players[i] = players[i].copyWith(place: i + 1);
+    }
+
+    final DateTime startedAt = DateTime.now().subtract(
+      const Duration(minutes: 42),
+    );
+
+    return Game(
+      startedAt: DateFormat('dd-MM-yyyy HH:mm').format(startedAt),
+      players: players,
+      ruleSet: ruleSet,
+    );
+  }
+
+  int _precisionLandingDeduction(RuleSet ruleSet, int totalPointsAfterRound) {
+    if (!ruleSet.precisionLanding ||
+        totalPointsAfterRound != ruleSet.totalGamePoints) {
+      return 0;
+    }
+    return ruleSet.totalGamePoints ~/ 2;
   }
 
   /// Baut ein deterministisch erzeugtes, abgeschlossenes Spiel mit 3 Spielern

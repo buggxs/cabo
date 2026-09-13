@@ -166,9 +166,13 @@ class Game extends Equatable {
     return duration.compareTo(streakDuration) >= 0;
   }
 
+  /// With precision landing enabled, hitting the total game points exactly
+  /// halves the score instead of ending the game — only exceeding it does.
   bool get isGameFinished =>
       players.any(
-        (Player player) => player.totalPoints > ruleSet.totalGamePoints,
+        (Player player) => ruleSet.precisionLanding
+            ? player.totalPoints > ruleSet.totalGamePoints
+            : player.totalPoints >= ruleSet.totalGamePoints,
       ) ||
       finishedAt != null;
 
