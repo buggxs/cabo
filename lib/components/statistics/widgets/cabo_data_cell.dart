@@ -81,7 +81,7 @@ class CaboDataCell extends StatelessWidget {
         const SizedBox(width: 6),
         RoundBadge(
           label: context.l10n.roundBadgeKamikaze,
-          icon: Icons.bolt,
+          iconAsset: 'assets/images/badge_kamikaze.png',
           tooltip: context.l10n.roundBadgeKamikazeTooltip,
           backgroundColor: CaboTheme.errorContainer,
           foregroundColor: CaboTheme.m3Error,
@@ -91,7 +91,7 @@ class CaboDataCell extends StatelessWidget {
         const SizedBox(width: 6),
         RoundBadge(
           label: '-${round.precisionLandingDeduction ?? 50}',
-          icon: Icons.adjust,
+          iconAsset: 'assets/images/badge_precision_landing.png',
           tooltip: context.l10n.roundBadgePrecisionLandingTooltip,
           backgroundColor: CaboTheme.secondaryContainer,
           foregroundColor: CaboTheme.onSecondaryContainer,

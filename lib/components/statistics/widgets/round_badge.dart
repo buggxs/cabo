@@ -9,15 +9,20 @@ class RoundBadge extends StatelessWidget {
     required this.label,
     required this.backgroundColor,
     required this.foregroundColor,
-    this.icon,
+    this.iconAsset,
     this.tooltip,
   });
 
   final String label;
   final Color backgroundColor;
   final Color foregroundColor;
-  final IconData? icon;
+
+  /// Optional leading glyph, tinted with [foregroundColor].
+  final String? iconAsset;
+
   final String? tooltip;
+
+  static const double _iconSize = 12;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +35,16 @@ class RoundBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (icon != null) ...<Widget>[
-            Icon(icon, size: 11, color: foregroundColor),
-            const SizedBox(width: 2),
+          if (iconAsset != null) ...<Widget>[
+            Image.asset(
+              iconAsset!,
+              width: _iconSize,
+              height: _iconSize,
+              color: foregroundColor,
+              filterQuality: FilterQuality.medium,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 3),
           ],
           Text(
             label,

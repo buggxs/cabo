@@ -3,6 +3,7 @@ import 'package:cabo/components/statistics/widgets/round_badge.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -20,6 +21,16 @@ void main() {
   }
 
   group('CaboDataCell', () {
+    testWidgets('bundles both badge icons', (WidgetTester tester) async {
+      for (final String asset in <String>[
+        'assets/images/badge_kamikaze.png',
+        'assets/images/badge_precision_landing.png',
+      ]) {
+        final ByteData bytes = await rootBundle.load(asset);
+        expect(bytes.lengthInBytes, greaterThan(0), reason: asset);
+      }
+    });
+
     testWidgets('shows the plain score without any badge', (
       WidgetTester tester,
     ) async {
@@ -60,7 +71,10 @@ void main() {
       );
 
       expect(find.text('KAMIKAZE'), findsOneWidget);
-      expect(find.byIcon(Icons.bolt), findsOneWidget);
+      expect(
+        find.image(const AssetImage('assets/images/badge_kamikaze.png')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('leaves the penalised players of a kamikaze unbadged', (
@@ -89,7 +103,12 @@ void main() {
       );
 
       expect(find.text('-100'), findsOneWidget);
-      expect(find.byIcon(Icons.adjust), findsOneWidget);
+      expect(
+        find.image(
+          const AssetImage('assets/images/badge_precision_landing.png'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('falls back to 50 for rounds stored without a deduction', (
