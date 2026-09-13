@@ -63,7 +63,10 @@ class StatisticsScreenContent extends StatelessWidget {
       bottomNavigationBar: StatisticsBottomNav(
         isOnline: cubit.state.game?.isPublic ?? false,
         onEndGame: () => _onPopScreen(cubit, context),
-        onRules: () => Navigator.of(context).pushNamed(RuleSetScreen.route),
+        onRules: () async {
+          await Navigator.of(context).pushNamed(RuleSetScreen.route);
+          await cubit.reloadRuleSet();
+        },
         onOnline: () => cubit.showPublicGameDialog(context),
       ),
       body: PopScope(

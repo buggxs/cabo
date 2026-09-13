@@ -73,6 +73,29 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     return app<RuleService>().loadRuleSet();
   }
 
+  /// Picks up rule changes made while the game is running. Already played
+  /// rounds keep the scoring they were closed with.
+  Future<void> reloadRuleSet() async {
+    final Game? game = state.game;
+    if (game == null) {
+      return;
+    }
+
+    final RuleSet ruleSet = await loadRuleSet();
+    if (ruleSet == game.ruleSet) {
+      return;
+    }
+
+    final Game updatedGame = game.copyWith(ruleSet: ruleSet);
+    emit(state.copyWith(game: updatedGame));
+
+    await _saveGame(updatedGame);
+
+    if (updatedGame.isGameFinished) {
+      _finishGame(updatedGame.players);
+    }
+  }
+
   void closeRound({int? index}) {
     _closeOfflineRound(index);
   }

@@ -605,6 +605,37 @@ void main() {
     );
   });
 
+  group('Test reloading rule set during a running game', () {
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should apply rules changed while the game is running',
+      build: () => StatisticsCubit(players: playerList, game: expectedGame),
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+      },
+      act: (cubit) => cubit.reloadRuleSet(),
+      expect: () => [
+        StatisticsState(
+          players: playerList,
+          game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
+        ),
+      ],
+    );
+
+    blocTest<StatisticsCubit, StatisticsState>(
+      'should not emit when the rule set did not change',
+      build: () => StatisticsCubit(players: playerList, game: expectedGame),
+      setUp: () {
+        when(
+          ruleService.loadRuleSet(),
+        ).thenAnswer((_) => Future.value(ruleSet));
+      },
+      act: (cubit) => cubit.reloadRuleSet(),
+      expect: () => <StatisticsState>[],
+    );
+  });
+
   group('Test closing round method', () {
     blocTest<StatisticsCubit, StatisticsState>(
       'should close round with default rule set and ZERO players',
