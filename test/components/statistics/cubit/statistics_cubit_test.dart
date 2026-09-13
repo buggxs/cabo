@@ -131,12 +131,16 @@ void main() {
     players: playerList,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
+    seatingOrder: playerList.map((Player player) => player.name).toList(),
   );
 
   Game expectedPrecisionLandingGame = Game(
     players: playerListPrecisionLanding,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
+    seatingOrder: playerListPrecisionLanding
+        .map((Player player) => player.name)
+        .toList(),
   );
 
   List<Player> expectedPlayerListWithDefaultRulesAndPenalty = [

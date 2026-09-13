@@ -22,6 +22,11 @@ Game _$GameFromJson(Map<String, dynamic> json) => Game(
           ?.map((e) => e as String)
           .toList() ??
       const <String>[],
+  seatingOrder:
+      (json['seatingOrder'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
 );
 
 Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
@@ -34,4 +39,5 @@ Map<String, dynamic> _$GameToJson(Game instance) => <String, dynamic>{
   'ruleSetId': instance.ruleSetId,
   'ruleSet': instance.ruleSet.toJson(),
   'playerUids': instance.playerUids,
+  'seatingOrder': instance.seatingOrder,
 };

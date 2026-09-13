@@ -27,10 +27,15 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Game? game,
     FirebaseAuth? auth,
   }) : _authOverride = auth,
+       _initialPlayerOrder = players
+           .map((Player player) => player.name)
+           .toList(),
        super(StatisticsState(players: players)) {
     loadGame(game: game);
   }
 
+  /// Seating order of the players, captured before any placement sorting.
+  final List<String> _initialPlayerOrder;
   final FirebaseAuth? _authOverride;
   FirebaseAuth get _auth => _authOverride ?? FirebaseAuth.instance;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
@@ -57,6 +62,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       startedAt: DateFormat('dd-MM-yyyy HH:mm').format(startedAt),
       players: state.players,
       ruleSet: ruleSet,
+      seatingOrder: _initialPlayerOrder,
     );
 
     Game currentGame =
@@ -66,7 +72,18 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   void _startGame(Game game, DateTime startedAt) {
-    emit(state.copyWith(game: game, startedAt: startedAt));
+    emit(state.copyWith(game: _withSeatingOrder(game), startedAt: startedAt));
+  }
+
+  /// Games saved before the seating order existed adopt their current player
+  /// order once, so the dealer rotation stays stable from then on.
+  Game _withSeatingOrder(Game game) {
+    if (game.seatingOrder.isNotEmpty) {
+      return game;
+    }
+    return game.copyWith(
+      seatingOrder: game.players.map((Player player) => player.name).toList(),
+    );
   }
 
   Future<RuleSet> loadRuleSet() async {

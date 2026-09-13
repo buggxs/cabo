@@ -25,6 +25,7 @@ class Game extends Equatable {
     required this.players,
     required this.ruleSet,
     this.playerUids = const <String>[],
+    this.seatingOrder = const <String>[],
   });
 
   final int? id;
@@ -36,6 +37,10 @@ class Game extends Equatable {
   final int? ruleSetId;
   final RuleSet ruleSet;
   final List<String> playerUids;
+
+  /// Player names in their fixed seating order. Unlike [players], this list is
+  /// never re-sorted by placement and therefore drives the dealer rotation.
+  final List<String> seatingOrder;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
@@ -51,6 +56,7 @@ class Game extends Equatable {
     int? ruleSetId,
     RuleSet? ruleSet,
     List<String>? playerUids,
+    List<String>? seatingOrder,
   }) {
     return Game(
       id: id ?? this.id,
@@ -62,10 +68,29 @@ class Game extends Equatable {
       ruleSetId: ruleSetId ?? this.ruleSetId,
       ruleSet: ruleSet ?? this.ruleSet,
       playerUids: playerUids ?? this.playerUids,
+      seatingOrder: seatingOrder ?? this.seatingOrder,
     );
   }
 
   bool get isPublic => publicId != null && ownerId != null;
+
+  /// Falls back to the current player order for games saved before the
+  /// seating order was introduced.
+  List<String> get dealerRotation => seatingOrder.isNotEmpty
+      ? seatingOrder
+      : players.map((Player player) => player.name).toList();
+
+  /// Name of the player who has to shuffle for the upcoming round. Rotates
+  /// through [dealerRotation], independent of the current placement.
+  String? get currentDealerName {
+    final List<String> rotation = dealerRotation;
+    if (rotation.isEmpty || players.isEmpty) {
+      return null;
+    }
+    return rotation[playedRounds % rotation.length];
+  }
+
+  int get playedRounds => players.isEmpty ? 0 : players.first.rounds.length;
 
   bool get hasRounds =>
       players.any((Player player) => player.rounds.isNotEmpty);
@@ -187,5 +212,6 @@ class Game extends Equatable {
     ruleSet,
     ruleSetId,
     playerUids,
+    seatingOrder,
   ];
 }

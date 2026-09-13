@@ -4,14 +4,19 @@ import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
 class TitleCell extends StatelessWidget {
-  const TitleCell({super.key, required this.player, this.isLastColumn = false});
+  const TitleCell({
+    super.key,
+    required this.player,
+    this.isDealer = false,
+    this.isLastColumn = false,
+  });
 
   final Player player;
+  final bool isDealer;
   final bool isLastColumn;
 
   @override
   Widget build(BuildContext context) {
-    // Führender Spieler (Platz 1) wird grün hervorgehoben (siehe Design).
     final bool isLeading = player.place == 1;
     final Color nameColor = isLeading
         ? CaboTheme.m3Secondary
@@ -50,7 +55,7 @@ class TitleCell extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (isLeading) ...[
+                if (isDealer) ...[
                   const SizedBox(width: 4),
                   Icon(Icons.style, size: 16, color: CaboTheme.m3Secondary),
                 ],

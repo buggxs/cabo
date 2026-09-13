@@ -17,10 +17,13 @@ class StatisticsScreenContentBody extends StatelessWidget {
     StatisticsCubit cubit = context.watch<StatisticsCubit>();
     StatisticsState state = cubit.state;
 
+    final String? dealerName = state.game?.currentDealerName;
+
     List<TitleCell> titleCells = state.players
         .map(
           (Player player) => TitleCell(
             player: player,
+            isDealer: player.name == dealerName,
             isLastColumn: player == state.players.last,
           ),
         )
