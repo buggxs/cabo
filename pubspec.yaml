@@ -35,7 +35,7 @@ dependencies:
   confetti: ^0.8.0
   flutter_native_splash: ^2.4.4
   mobile_scanner: ^7.1.2
-  firebase_auth: ^6.1.1
+  firebase_auth: ^6.7.1
   firebase_core: ^4.2.0
   google_sign_in: ^7.2.0
   cloud_firestore: ^6.0.3
