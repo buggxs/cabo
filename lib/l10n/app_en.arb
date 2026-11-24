@@ -156,7 +156,7 @@
   "ruleScreenTitle": "Rules",
   "ruleScreenKamikazePointsLabel": "Kamikaze Points",
   "ruleScreenTotalGamePointsLabel": "Total score",
-  "ruleScreenZeroPointsLabel": "Round Winner get 0 Points",
+  "ruleScreenZeroPointsLabel": "Round winner gets 0 points",
   "ruleScreenPrecisionLandingLabel": "Exactly 100",
   "ruleScreenSaveButton": "Save",
   "ruleScreenResetRulesButton": "Reset Rules",
@@ -205,7 +205,7 @@
   "feedbackLabel": "Your Feedback (Optional)",
   "submitRating": "Submit",
   "maybeLater": "Maybe Later",
-  "winnerDialogTitle": "Game Finshed!",
+  "winnerDialogTitle": "Game Finished!",
   "hasWonText": "has won!",
   "withPointsText": "with",
   "pointsText": "points",
@@ -228,7 +228,14 @@
   "endGameHighlightTotalSuffix": "total",
   "endGameRoundLabel": "Round",
   "endGameHighlightLongestStreak": "Longest win streak",
-  "endGameHighlightStreakSuffix": "rounds in a row",
+  "endGameHighlightStreakRounds": "{count, plural, =1{1 round in a row} other{{count} rounds in a row}}",
+  "@endGameHighlightStreakRounds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "endGameStreakWinTitle": "Win streak",
   "endGameStreakDurationTitle": "Long game",
   "streakTitle": "Streaks",

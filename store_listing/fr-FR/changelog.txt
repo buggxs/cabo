@@ -1,0 +1,4 @@
+• Nouveau : l'app est disponible en espagnol, français et polonais
+• Nouveau : icônes pour les manches Kamikaze et « Pile 100 »
+• Corrigé : le donneur était toujours affiché en première position
+• Corrigé : les règles peuvent être modifiées en cours de partie

@@ -27,13 +27,13 @@ class AnnouncementDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
-    final bool isEnglish = Localizations.localeOf(context).languageCode == 'en';
-    final String title = isEnglish
-        ? announcement.title.en
-        : announcement.title.de;
-    final String message = isEnglish
-        ? announcement.message.en
-        : announcement.message.de;
+    final bool isGerman = Localizations.localeOf(context).languageCode == 'de';
+    final String title = isGerman
+        ? announcement.title.de
+        : announcement.title.en;
+    final String message = isGerman
+        ? announcement.message.de
+        : announcement.message.en;
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -58,7 +58,7 @@ class AnnouncementDialog extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
-          _buildActions(context, l10n, isEnglish),
+          _buildActions(context, l10n, isGerman),
         ],
       ),
     );
@@ -67,7 +67,7 @@ class AnnouncementDialog extends StatelessWidget {
   Widget _buildActions(
     BuildContext context,
     AppLocalizations l10n,
-    bool isEnglish,
+    bool isGerman,
   ) {
     final List<AnnouncementAction> actions =
         announcement.actions?.take(_maxActions).toList() ??
@@ -89,7 +89,7 @@ class AnnouncementDialog extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: CaboPrimaryButton(
-            label: _label(actions.first, isEnglish),
+            label: _label(actions.first, isGerman),
             onPressed: () => _onActionPressed(context, actions.first),
           ),
         ),
@@ -98,7 +98,7 @@ class AnnouncementDialog extends StatelessWidget {
           TextButton(
             onPressed: () => _onActionPressed(context, actions[1]),
             child: Text(
-              _label(actions[1], isEnglish),
+              _label(actions[1], isGerman),
               style: CaboTheme.labelLargeStyle.copyWith(
                 color: CaboTheme.onSurfaceVariant,
                 fontSize: 16,
@@ -110,8 +110,8 @@ class AnnouncementDialog extends StatelessWidget {
     );
   }
 
-  String _label(AnnouncementAction action, bool isEnglish) =>
-      isEnglish ? action.label.en : action.label.de;
+  String _label(AnnouncementAction action, bool isGerman) =>
+      isGerman ? action.label.de : action.label.en;
 
   void _onActionPressed(BuildContext context, AnnouncementAction action) {
     Navigator.of(context).pop();

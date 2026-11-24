@@ -62,7 +62,13 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [Locale('de'), Locale('en')],
+            supportedLocales: const [
+              Locale('de'),
+              Locale('en'),
+              Locale('es'),
+              Locale('fr'),
+              Locale('pl'),
+            ],
             onGenerateRoute: _appNavigator.generateRoute,
             builder: (context, child) => AuthRefreshListener(
               child: DesignBackground(child: child ?? const SizedBox.shrink()),

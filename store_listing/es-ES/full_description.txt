@@ -1,0 +1,31 @@
+Cabo Board es tu marcador digital para el juego de cartas CABO. Olvídate del papel y el lápiz: la app suma los puntos de cada ronda, aplica las reglas automáticamente y te deja concentrarte en lo importante, ¡ganar!
+
+PUNTOS SIN ERRORES
+• Introduce los puntos de cada ronda con un teclado rápido.
+• Cálculo automático de la puntuación total, penalizaciones por un Cabo fallido incluidas.
+• ¿Te has equivocado? Mantén pulsada la última ronda para corregirla.
+• Indicador de quién reparte en cada ronda.
+
+TUS REGLAS
+• Puntuación total para terminar la partida (por defecto 100).
+• Regla Kamikaze con puntos configurables.
+• «Exactamente 100»: quien alcanza la puntuación total exacta ve sus puntos reducidos a la mitad.
+• El ganador de la ronda recibe 0 puntos (se puede desactivar).
+• Las rondas especiales se marcan con iconos para que nadie pierda el hilo.
+
+JUGAD JUNTOS
+• Publica tu partida y comparte un código QR.
+• Tus amigos se unen con su propio móvil y ven los puntos en tiempo real.
+• También puedes unirte con el ID de la partida.
+
+HISTORIAL Y ESTADÍSTICAS
+• Retoma en cualquier momento una partida sin terminar.
+• El historial guarda todas tus partidas, rondas y tiempo de juego.
+• Clasificación final con estadísticas detalladas, mejor ronda y rachas de victorias.
+• Los grupos de jugadores recientes se guardan para empezar la próxima partida en segundos.
+
+A TU GUSTO
+• Elige entre el diseño moderno y claro o el clásico verde oscuro.
+• Disponible en español, inglés, alemán, francés y polaco.
+
+Tanto si es tu primera partida de CABO como si eres un profesional, Cabo Board hace que cada partida sea más fácil y divertida. ¿Sabías que «cabo» significa «final», como en «al fin y al cabo»? ¡Justo lo que dices cuando quieres ganar!

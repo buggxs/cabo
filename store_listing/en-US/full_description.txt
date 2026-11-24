@@ -1,0 +1,31 @@
+Cabo Board is your digital scorepad for the card game CABO. Forget pen and paper: the app adds up the points of every round, applies the rules automatically and lets you focus on what matters – winning!
+
+SCORING WITHOUT MISTAKES
+• Enter each round's points with a fast number pad.
+• Automatic score calculation, including penalty points for a failed Cabo call.
+• Made a typo? Long-press the last round to correct it.
+• See at a glance who deals in the current round.
+
+YOUR RULES
+• Total score that ends the game (default: 100).
+• Kamikaze rule with adjustable points.
+• "Exactly 100": hit the total score exactly and your points are cut in half.
+• The round winner scores 0 points (can be turned off).
+• Special rounds are marked with icons, so nobody loses track.
+
+PLAY TOGETHER
+• Publish your game and share a QR code.
+• Your friends join on their own phones and see the scores live.
+• You can also join with the game ID.
+
+HISTORY AND STATS
+• Resume an unfinished game at any time.
+• The game history keeps all your games, rounds and play time.
+• Final ranking with detailed stats, best round and win streaks.
+• Recent player groups are remembered, so the next game starts in seconds.
+
+MAKE IT YOURS
+• Choose between the light, modern design and the classic dark green one.
+• Available in English, German, Spanish, French and Polish.
+
+Whether you are new to CABO or a seasoned pro, Cabo Board makes every game easier and more fun. Did you know? "Cabo" means "end" in Spanish – exactly what you call out when you want to win!

@@ -1,0 +1,31 @@
+Cabo Board to Twój cyfrowy notes punktów do gry karcianej CABO. Zapomnij o kartce i długopisie: aplikacja sumuje punkty z każdej rundy, automatycznie stosuje zasady i pozwala Ci skupić się na najważniejszym, czyli na wygranej!
+
+PUNKTY BEZ POMYŁEK
+• Wpisuj punkty z każdej rundy za pomocą szybkiej klawiatury.
+• Automatyczne liczenie wyniku, łącznie z karą za nieudane cabo.
+• Pomyłka? Przytrzymaj ostatnią rundę, aby ją poprawić.
+• Wskaźnik, kto rozdaje w danej rundzie.
+
+TWOJE ZASADY
+• Wynik końcowy, po którym gra się kończy (domyślnie 100).
+• Zasada Kamikaze z regulowaną liczbą punktów.
+• „Dokładnie 100”: kto trafi dokładnie w wynik końcowy, ma punkty zmniejszone o połowę.
+• Zwycięzca rundy dostaje 0 punktów (można wyłączyć).
+• Rundy specjalne są oznaczone ikonami, więc nikt się nie pogubi.
+
+GRAJCIE RAZEM
+• Opublikuj grę i udostępnij kod QR.
+• Znajomi dołączają na własnych telefonach i widzą punkty na żywo.
+• Do gry możesz też dołączyć, wpisując jej ID.
+
+HISTORIA I STATYSTYKI
+• Wróć w każdej chwili do niezakończonej gry.
+• Historia zapisuje wszystkie gry, rundy i czas gry.
+• Ranking końcowy ze szczegółowymi statystykami, najlepszą rundą i seriami zwycięstw.
+• Ostatnie grupy graczy są zapamiętywane, więc kolejną grę zaczniesz w kilka sekund.
+
+PO TWOJEMU
+• Wybierz nowoczesny, jasny wygląd albo klasyczny ciemnozielony.
+• Dostępna po polsku, angielsku, niemiecku, hiszpańsku i francusku.
+
+Niezależnie od tego, czy grasz w CABO pierwszy raz, czy jesteś zawodowcem, Cabo Board sprawi, że każda gra będzie prostsza i przyjemniejsza. Czy wiesz, że „cabo” po hiszpańsku oznacza „koniec”? Dokładnie to wołasz, gdy chcesz wygrać!

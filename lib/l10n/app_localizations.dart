@@ -7,6 +7,9 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_pl.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +99,9 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
     Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('pl'),
   ];
 
   /// No description provided for @gameName.
@@ -917,7 +923,7 @@ abstract class AppLocalizations {
   /// No description provided for @ruleScreenZeroPointsLabel.
   ///
   /// In en, this message translates to:
-  /// **'Round Winner get 0 Points'**
+  /// **'Round winner gets 0 points'**
   String get ruleScreenZeroPointsLabel;
 
   /// No description provided for @ruleScreenPrecisionLandingLabel.
@@ -1211,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @winnerDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Game Finshed!'**
+  /// **'Game Finished!'**
   String get winnerDialogTitle;
 
   /// No description provided for @hasWonText.
@@ -1346,11 +1352,11 @@ abstract class AppLocalizations {
   /// **'Longest win streak'**
   String get endGameHighlightLongestStreak;
 
-  /// No description provided for @endGameHighlightStreakSuffix.
+  /// No description provided for @endGameHighlightStreakRounds.
   ///
   /// In en, this message translates to:
-  /// **'rounds in a row'**
-  String get endGameHighlightStreakSuffix;
+  /// **'{count, plural, =1{1 round in a row} other{{count} rounds in a row}}'**
+  String endGameHighlightStreakRounds(int count);
 
   /// No description provided for @endGameStreakWinTitle.
   ///
@@ -1454,7 +1460,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'en'].contains(locale.languageCode);
+      <String>['de', 'en', 'es', 'fr', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1467,6 +1473,12 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'pl':
+      return AppLocalizationsPl();
   }
 
   throw FlutterError(

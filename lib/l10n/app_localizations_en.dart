@@ -442,7 +442,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ruleScreenTotalGamePointsLabel => 'Total score';
 
   @override
-  String get ruleScreenZeroPointsLabel => 'Round Winner get 0 Points';
+  String get ruleScreenZeroPointsLabel => 'Round winner gets 0 points';
 
   @override
   String get ruleScreenPrecisionLandingLabel => 'Exactly 100';
@@ -606,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maybeLater => 'Maybe Later';
 
   @override
-  String get winnerDialogTitle => 'Game Finshed!';
+  String get winnerDialogTitle => 'Game Finished!';
 
   @override
   String get hasWonText => 'has won!';
@@ -675,7 +675,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endGameHighlightLongestStreak => 'Longest win streak';
 
   @override
-  String get endGameHighlightStreakSuffix => 'rounds in a row';
+  String endGameHighlightStreakRounds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rounds in a row',
+      one: '1 round in a row',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get endGameStreakWinTitle => 'Win streak';

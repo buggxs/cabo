@@ -1,0 +1,31 @@
+Cabo Board ist dein digitaler Punkteblock für das Kartenspiel CABO. Vergiss Zettel und Stift: Die App addiert die Punkte jeder Runde, wendet die Regeln automatisch an und lässt dich auf das Wichtigste konzentrieren – das Gewinnen!
+
+PUNKTE OHNE FEHLER
+• Trage die Punkte jeder Runde über ein schnelles Zahlenfeld ein.
+• Automatische Berechnung des Punktestands, inklusive Strafpunkten für ein verlorenes Cabo.
+• Vertippt? Halte die letzte Runde gedrückt, um sie zu korrigieren.
+• Anzeige, wer in der aktuellen Runde mischt.
+
+DEINE REGELN
+• Gesamtpunktzahl, bei der das Spiel endet (Standard: 100).
+• Kamikaze-Regel mit einstellbarer Punktzahl.
+• „Exakt 100“: Wer die Gesamtpunktzahl genau trifft, wird auf die Hälfte zurückgesetzt.
+• Der Rundengewinner bekommt 0 Punkte (abschaltbar).
+• Sonderrunden werden mit Symbolen markiert, damit niemand den Überblick verliert.
+
+GEMEINSAM SPIELEN
+• Veröffentliche dein Spiel und teile einen QR-Code.
+• Deine Mitspieler treten mit dem eigenen Handy bei und sehen die Punkte live.
+• Beitreten klappt auch über die Spiel-ID.
+
+VERLAUF UND STATISTIKEN
+• Setze ein nicht beendetes Spiel jederzeit fort.
+• Die Spielhistorie speichert alle Partien, Runden und deine Spielzeit.
+• Rangliste am Spielende mit detaillierten Werten, bester Runde und Siegesserien.
+• Die letzten Spielergruppen werden gemerkt – so startet die nächste Partie in Sekunden.
+
+GANZ NACH DEINEM GESCHMACK
+• Wähle zwischen dem hellen, modernen Design und dem klassischen dunkelgrünen.
+• Verfügbar auf Deutsch, Englisch, Spanisch, Französisch und Polnisch.
+
+Egal ob CABO-Neuling oder Profi: Cabo Board macht jede Partie einfacher und entspannter. Wusstest du schon? „Cabo“ bedeutet auf Spanisch „Ende“ – genau das, was du rufst, wenn du gewinnen willst!

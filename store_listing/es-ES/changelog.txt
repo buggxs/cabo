@@ -1,0 +1,4 @@
+• Nuevo: la app ya está disponible en español, francés y polaco
+• Nuevo: iconos para las rondas Kamikaze y «Exactamente 100»
+• Corregido: el indicador de quién reparte estaba siempre en la primera posición
+• Corregido: las reglas se pueden cambiar durante la partida

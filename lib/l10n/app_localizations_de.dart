@@ -684,7 +684,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get endGameHighlightLongestStreak => 'Längste Siegesserie';
 
   @override
-  String get endGameHighlightStreakSuffix => 'Runden in Folge';
+  String endGameHighlightStreakRounds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Runden in Folge',
+      one: '1 Runde in Folge',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get endGameStreakWinTitle => 'Siegesserie';

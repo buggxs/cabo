@@ -207,7 +207,7 @@
   "endGameHighlightTotalSuffix": "gesamt",
   "endGameRoundLabel": "Runde",
   "endGameHighlightLongestStreak": "Längste Siegesserie",
-  "endGameHighlightStreakSuffix": "Runden in Folge",
+  "endGameHighlightStreakRounds": "{count, plural, =1{1 Runde in Folge} other{{count} Runden in Folge}}",
   "endGameStreakWinTitle": "Siegesserie",
   "endGameStreakDurationTitle": "Lange Partie",
   "streakTitle": "Streaks",

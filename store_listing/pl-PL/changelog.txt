@@ -1,0 +1,4 @@
+• Nowość: aplikacja dostępna po hiszpańsku, francusku i polsku
+• Nowość: ikony dla rund Kamikaze i „Dokładnie 100”
+• Poprawka: wskaźnik rozdającego był zawsze na pierwszym miejscu
+• Poprawka: zasady można zmieniać w trakcie gry

@@ -620,8 +620,8 @@ class _EndGameScreenState extends State<EndGameScreen> {
       iconFg: CaboTheme.m3Tertiary,
       title: context.l10n.endGameHighlightLongestStreak,
       subtitle:
-          '${best.name} — $bestStreak '
-          '${context.l10n.endGameHighlightStreakSuffix}',
+          '${best.name} — '
+          '${context.l10n.endGameHighlightStreakRounds(bestStreak)}',
     );
   }
 
