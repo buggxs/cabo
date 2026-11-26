@@ -17,8 +17,10 @@ fvm flutter test
 # Run a single test file
 fvm flutter test test/path/to/test_file.dart
 
-# Lint
+# Lint (all three run in CI; rules are configured in analysis_options.yaml)
 fvm flutter analyze
+fvm dart run custom_lint                           # project rules from tools/cabo_lints
+fvm dart pub global run bloc_tools:bloc lint .     # needs: fvm dart pub global activate bloc_tools
 
 # Format check (used in CI)
 dart format . --set-exit-if-changed

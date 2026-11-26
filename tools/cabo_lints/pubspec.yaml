@@ -1,0 +1,11 @@
+name: cabo_lints
+description: Project specific lint rules for the cabo app.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  analyzer: ^7.6.0
+  custom_lint_builder: ^0.8.0
