@@ -10,5 +10,5 @@ class GameHistoryState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [games];
+  List<Object?> get props => <Object?>[games];
 }

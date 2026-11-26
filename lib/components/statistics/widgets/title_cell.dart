@@ -37,12 +37,12 @@ class TitleCell extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        children: <Widget>[
           SizedBox(
             height: 28,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 Flexible(
                   child: AutoSizeText(
                     player.name,
@@ -55,7 +55,7 @@ class TitleCell extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (isDealer) ...[
+                if (isDealer) ...<Widget>[
                   const SizedBox(width: 4),
                   Icon(Icons.style, size: 16, color: CaboTheme.m3Secondary),
                 ],
@@ -63,40 +63,44 @@ class TitleCell extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AutoSizeText(
-                '#${player.place ?? '-'}',
-                style: CaboTheme.labelLargeStyle.copyWith(
-                  fontSize: 20,
-                  color: _getPlacementColor(player.place),
-                ),
-              ),
-              Container(
-                width: 35,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: CaboTheme.m3Primary),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: AutoSizeText(
-                    '${player.totalPoints}',
-                    style: CaboTheme.headlineMediumStyle.copyWith(
-                      fontSize: 18,
-                      color: CaboTheme.m3Primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _buildPlaceAndPointsRow(),
         ],
       ),
+    );
+  }
+
+  Widget _buildPlaceAndPointsRow() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        AutoSizeText(
+          '#${player.place ?? '-'}',
+          style: CaboTheme.labelLargeStyle.copyWith(
+            fontSize: 20,
+            color: _getPlacementColor(player.place),
+          ),
+        ),
+        Container(
+          width: 35,
+          height: 35,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(color: CaboTheme.m3Primary),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: AutoSizeText(
+              '${player.totalPoints}',
+              style: CaboTheme.headlineMediumStyle.copyWith(
+                fontSize: 18,
+                color: CaboTheme.m3Primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

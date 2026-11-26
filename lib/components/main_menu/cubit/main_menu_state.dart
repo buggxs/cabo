@@ -6,7 +6,7 @@ abstract class MainMenuState extends Equatable {
 
 class MainMenu extends MainMenuState {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class ChoosePlayers extends MainMenuState {
@@ -19,5 +19,5 @@ class ChoosePlayers extends MainMenuState {
   final bool? shouldUseSpecialRules;
 
   @override
-  List<Object?> get props => [recentGroups, shouldUseSpecialRules];
+  List<Object?> get props => <Object?>[recentGroups, shouldUseSpecialRules];
 }

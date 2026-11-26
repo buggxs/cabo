@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/main_menu/cubit/main_menu_cubit.dart';
+import 'package:cabo/components/main_menu/widgets/player_name_card.dart';
 import 'package:cabo/domain/player_group/data/player_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,7 +98,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     final List<String> names = _controllers
         .map((TextEditingController c) => c.text)
         .toList();
-    cubit.startGame(names);
+    unawaited(cubit.startGame(names));
   }
 
   @override
@@ -127,14 +129,14 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
             constraints: const BoxConstraints(maxWidth: 576),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-              children: [
+              children: <Widget>[
                 _buildHero(context),
                 const SizedBox(height: 24),
-                if (state.recentGroups.isNotEmpty) ...[
+                if (state.recentGroups.isNotEmpty) ...<Widget>[
                   _buildRecentGroups(context, state.recentGroups),
                   const SizedBox(height: 16),
                 ],
-                ..._buildPlayerCards(context),
+                ..._buildPlayerCards(),
                 const SizedBox(height: 8),
                 _buildAddPlayerButton(context),
               ],
@@ -153,7 +155,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
         aspectRatio: 16 / 9,
         child: Stack(
           fit: StackFit.expand,
-          children: [
+          children: <Widget>[
             Image.asset('assets/images/hero_background.png', fit: BoxFit.cover),
             const Positioned.fill(
               child: DecoratedBox(
@@ -188,7 +190,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   Widget _buildRecentGroups(BuildContext context, List<PlayerGroup> groups) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Text(
           context.l10n.recentPlayerGroups.toUpperCase(),
           style: CaboTheme.labelSmallStyle.copyWith(
@@ -224,148 +226,35 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     );
   }
 
-  List<Widget> _buildPlayerCards(BuildContext context) {
-    final List<Widget> cards = <Widget>[];
-    for (int i = 0; i < _controllers.length; i++) {
-      final bool canRemove =
-          _controllers.length > ChoosePlayersScreen.minPlayers;
-      final Color badgeColor = _badgeColors[i % _badgeColors.length];
-      cards.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: CaboTheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-              border: Border.all(color: CaboTheme.surfaceVariant),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x143D3A35),
-                  blurRadius: 12,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: badgeColor,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${i + 1}',
-                      style: CaboTheme.bodyLargeStyle.copyWith(
-                        color: CaboTheme.onSurface,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${context.l10n.playerLabelPrefix} ${i + 1}',
-                                style: TextStyle(
-                                  fontFamily: 'Rubik',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: CaboTheme.outline,
-                                ),
-                              ),
-                            ),
-                            if (canRemove)
-                              GestureDetector(
-                                onTap: () => _removePlayer(i),
-                                behavior: HitTestBehavior.opaque,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 20,
-                                    color: CaboTheme.outline,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _controllers[i],
-                          onChanged: (_) => setState(() {}),
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          textCapitalization: TextCapitalization.words,
-                          cursorColor: CaboTheme.m3Primary,
-                          style: CaboTheme.bodyMediumStyle.copyWith(
-                            color: CaboTheme.onSurface,
-                          ),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            hintText: context.l10n.playerNameHint,
-                            hintStyle: CaboTheme.bodyMediumStyle.copyWith(
-                              color: CaboTheme.outlineVariant,
-                            ),
-                            filled: true,
-                            fillColor: CaboTheme.surfaceContainer,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                CaboTheme.cardRadius,
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                CaboTheme.cardRadius,
-                              ),
-                              borderSide: BorderSide(
-                                color: CaboTheme.m3Primary,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+  List<Widget> _buildPlayerCards() {
+    final bool canRemove = _controllers.length > ChoosePlayersScreen.minPlayers;
+    return <Widget>[
+      for (int i = 0; i < _controllers.length; i++)
+        PlayerNameCard(
+          index: i,
+          controller: _controllers[i],
+          badgeColor: _badgeColors[i % _badgeColors.length],
+          canRemove: canRemove,
+          onRemove: () => _removePlayer(i),
+          onChanged: (_) => setState(() {}),
         ),
-      );
-    }
-    return cards;
+    ];
   }
 
   Widget _buildAddPlayerButton(BuildContext context) {
-    final bool enabled = _controllers.length < ChoosePlayersScreen.maxPlayers;
+    final bool canAddPlayer =
+        _controllers.length < ChoosePlayersScreen.maxPlayers;
     return Opacity(
-      opacity: enabled ? 1 : 0.5,
+      opacity: canAddPlayer ? 1 : 0.5,
       child: InkWell(
-        onTap: enabled ? _addPlayer : null,
+        onTap: canAddPlayer ? _addPlayer : null,
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        child: DottedBorderBox(
+        child: _DottedBorderBox(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 Icon(Icons.add_circle, color: CaboTheme.outline),
                 const SizedBox(width: 8),
                 Text(
@@ -408,7 +297,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
             onPressed: canStart ? () => _start(cubit) : null,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 Icon(Icons.play_arrow, color: contentColor),
                 const SizedBox(width: 8),
                 Text(
@@ -426,9 +315,8 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
   }
 }
 
-/// Gestrichelter Rahmen für den "Spieler hinzufügen"-Button.
-class DottedBorderBox extends StatelessWidget {
-  const DottedBorderBox({required this.child, super.key});
+class _DottedBorderBox extends StatelessWidget {
+  const _DottedBorderBox({required this.child});
 
   final Widget child;
 

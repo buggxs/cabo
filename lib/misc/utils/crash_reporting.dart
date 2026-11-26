@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +21,7 @@ class CrashReporting {
       _logger.fine('Ignored plugin teardown error: ${details.exception}');
       return;
     }
-    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    unawaited(FirebaseCrashlytics.instance.recordFlutterFatalError(details));
   }
 
   static bool _handlePlatformError(Object error, StackTrace stack) {
@@ -27,7 +29,9 @@ class CrashReporting {
       _logger.fine('Ignored plugin teardown error: $error');
       return true;
     }
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    unawaited(
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+    );
     return true;
   }
 

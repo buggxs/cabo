@@ -26,7 +26,7 @@ void main() async {
   setup();
 
   Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen((record) {
+  Logger.root.onRecord.listen((LogRecord record) {
     if (kDebugMode) {
       print(
         '${record.level.name} - ${record.loggerName} : ${record.time}: ${record.message}',
@@ -47,8 +47,9 @@ class MyApp extends StatelessWidget {
     return BlocProvider<ApplicationCubit>(
       create: (_) => app<ApplicationCubit>(),
       child: BlocBuilder<ApplicationCubit, ApplicationState>(
-        buildWhen: (previous, current) => previous.design != current.design,
-        builder: (context, state) {
+        buildWhen: (ApplicationState previous, ApplicationState current) =>
+            previous.design != current.design,
+        builder: (BuildContext context, ApplicationState state) {
           CaboTheme.applyDesign(state.design);
           return MaterialApp(
             key: ValueKey<AppDesign>(state.design),
@@ -56,13 +57,13 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: CaboTheme.themeData,
             navigatorKey: app<NavigationService>().navigatorKey,
-            localizationsDelegates: const [
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
+            supportedLocales: const <Locale>[
               Locale('de'),
               Locale('en'),
               Locale('es'),
@@ -70,9 +71,12 @@ class MyApp extends StatelessWidget {
               Locale('pl'),
             ],
             onGenerateRoute: _appNavigator.generateRoute,
-            builder: (context, child) => AuthRefreshListener(
-              child: DesignBackground(child: child ?? const SizedBox.shrink()),
-            ),
+            builder: (BuildContext context, Widget? child) =>
+                AuthRefreshListener(
+                  child: DesignBackground(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+                ),
             home: const MainMenuScreen(),
           );
         },

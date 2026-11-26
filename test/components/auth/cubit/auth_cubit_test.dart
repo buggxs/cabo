@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/auth/cubit/auth_cubit.dart';
 import 'package:cabo/domain/application/auth_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,33 +9,37 @@ import 'package:mockito/mockito.dart';
 
 import 'auth_cubit_test.mocks.dart';
 
-@GenerateNiceMocks(<MockSpec<dynamic>>[MockSpec<ApplicationCubit>()])
+@GenerateNiceMocks(<MockSpec<dynamic>>[MockSpec<AuthService>()])
 void main() {
-  late MockApplicationCubit applicationCubit;
+  late MockAuthService authService;
 
   setUp(() {
-    applicationCubit = MockApplicationCubit();
+    authService = MockAuthService();
     when(
-      applicationCubit.registerWithEmail(any, any),
+      authService.registerWithEmail(
+        email: anyNamed('email'),
+        password: anyNamed('password'),
+      ),
     ).thenAnswer((_) async => const AuthOutcome.success());
     when(
-      applicationCubit.signInWithEmail(any, any),
+      authService.signInWithEmail(
+        email: anyNamed('email'),
+        password: anyNamed('password'),
+      ),
     ).thenAnswer((_) async => const AuthOutcome.success());
     when(
-      applicationCubit.sendVerificationEmail(),
+      authService.sendVerificationEmail(),
+    ).thenAnswer((_) async => const AuthOutcome.success());
+    when(authService.refreshVerificationStatus()).thenAnswer((_) async => true);
+    when(
+      authService.signInWithGoogle(),
     ).thenAnswer((_) async => const AuthOutcome.success());
     when(
-      applicationCubit.refreshVerificationStatus(),
-    ).thenAnswer((_) async => true);
-    when(
-      applicationCubit.signInWithGoogle(),
-    ).thenAnswer((_) async => const AuthOutcome.success());
-    when(
-      applicationCubit.sendPasswordResetEmail(any),
+      authService.sendPasswordResetEmail(any),
     ).thenAnswer((_) async => const AuthOutcome.success());
   });
 
-  AuthCubit buildCubit() => AuthCubit(applicationCubit: applicationCubit);
+  AuthCubit buildCubit() => AuthCubit(authService: authService);
 
   group('AuthCubit mode switching', () {
     blocTest<AuthCubit, AuthFormState>(
@@ -71,28 +74,30 @@ void main() {
     test('rejects a malformed e-mail before calling the service', () async {
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.signIn(
-        email: 'not-an-email',
-        password: 'sup3rSecret',
-      );
+      await cubit.signIn(email: 'not-an-email', password: 'sup3rSecret');
 
-      expect(isSuccess, isFalse);
       expect(cubit.state.emailFieldError, AuthError.invalidEmail);
-      verifyNever(applicationCubit.signInWithEmail(any, any));
+      verifyNever(
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
       await cubit.close();
     });
 
     test('rejects an empty password before calling the service', () async {
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.signIn(
-        email: 'player@example.com',
-        password: '',
-      );
+      await cubit.signIn(email: 'player@example.com', password: '');
 
-      expect(isSuccess, isFalse);
       expect(cubit.state.passwordFieldError, AuthError.passwordRequired);
-      verifyNever(applicationCubit.signInWithEmail(any, any));
+      verifyNever(
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
       await cubit.close();
     });
 
@@ -105,7 +110,10 @@ void main() {
 
       expect(cubit.state.passwordFieldError, isNull);
       verify(
-        applicationCubit.signInWithEmail('player@example.com', 'sechs1'),
+        authService.signInWithEmail(
+          email: 'player@example.com',
+          password: 'sechs1',
+        ),
       ).called(1);
       await cubit.close();
     });
@@ -113,30 +121,38 @@ void main() {
     test('rejects a short password when registering', () async {
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.register(
+      await cubit.register(
         email: 'player@example.com',
         password: 'sieben7',
         passwordRepeat: 'sieben7',
       );
 
-      expect(isSuccess, isFalse);
       expect(cubit.state.passwordFieldError, AuthError.weakPassword);
-      verifyNever(applicationCubit.registerWithEmail(any, any));
+      verifyNever(
+        authService.registerWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
       await cubit.close();
     });
 
     test('rejects mismatching passwords without registering', () async {
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.register(
+      await cubit.register(
         email: 'player@example.com',
         password: 'sup3rSecret',
         passwordRepeat: 'somethingElse',
       );
 
-      expect(isSuccess, isFalse);
       expect(cubit.state.passwordFieldError, AuthError.passwordMismatch);
-      verifyNever(applicationCubit.registerWithEmail(any, any));
+      verifyNever(
+        authService.registerWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
       await cubit.close();
     });
 
@@ -149,7 +165,10 @@ void main() {
       );
 
       verify(
-        applicationCubit.signInWithEmail('player@example.com', 'sup3rSecret'),
+        authService.signInWithEmail(
+          email: 'player@example.com',
+          password: 'sup3rSecret',
+        ),
       ).called(1);
       await cubit.close();
     });
@@ -159,13 +178,13 @@ void main() {
     test('starts the resend cooldown after a successful register', () async {
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.register(
+      await cubit.register(
         email: 'player@example.com',
         password: 'sup3rSecret',
         passwordRepeat: 'sup3rSecret',
       );
 
-      expect(isSuccess, isTrue);
+      expect(cubit.state.error, isNull);
       expect(cubit.state.resendCooldown, AuthCubit.resendCooldownSeconds);
       expect(cubit.state.canResendVerification, isFalse);
       expect(cubit.state.hasVerificationMailBeenSent, isTrue);
@@ -173,26 +192,40 @@ void main() {
     });
 
     test('surfaces an e-mail conflict instead of switching accounts', () async {
-      when(applicationCubit.registerWithEmail(any, any)).thenAnswer(
+      when(
+        authService.registerWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      ).thenAnswer(
         (_) async => const AuthOutcome.failure(AuthError.emailAlreadyInUse),
       );
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.register(
+      await cubit.register(
         email: 'taken@example.com',
         password: 'sup3rSecret',
         passwordRepeat: 'sup3rSecret',
       );
 
-      expect(isSuccess, isFalse);
       expect(cubit.state.hasEmailConflict, isTrue);
       expect(cubit.state.error, AuthError.emailAlreadyInUse);
-      verifyNever(applicationCubit.signInWithEmail(any, any));
+      verifyNever(
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
       await cubit.close();
     });
 
     test('maps a credential conflict to the same conflict state', () async {
-      when(applicationCubit.registerWithEmail(any, any)).thenAnswer(
+      when(
+        authService.registerWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      ).thenAnswer(
         (_) async =>
             const AuthOutcome.failure(AuthError.credentialAlreadyInUse),
       );
@@ -214,18 +247,18 @@ void main() {
       // Regression guard: registerWithEmail used to return the mail sending
       // result, so a created account was reported as a failure while the
       // notice already claimed a mail had gone out.
-      when(applicationCubit.sendVerificationEmail()).thenAnswer(
+      when(authService.sendVerificationEmail()).thenAnswer(
         (_) async => const AuthOutcome.failure(AuthError.tooManyRequests),
       );
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.register(
+      await cubit.register(
         email: 'player@example.com',
         password: 'sup3rSecret',
         passwordRepeat: 'sup3rSecret',
       );
 
-      expect(isSuccess, isTrue);
+      verify(authService.sendVerificationEmail()).called(1);
       expect(cubit.state.hasVerificationMailBeenSent, isFalse);
       expect(cubit.state.error, AuthError.tooManyRequests);
       expect(cubit.state.resendCooldown, 0);
@@ -235,19 +268,24 @@ void main() {
     test(
       'does not send a mail when the account could not be created',
       () async {
-        when(applicationCubit.registerWithEmail(any, any)).thenAnswer(
+        when(
+          authService.registerWithEmail(
+            email: anyNamed('email'),
+            password: anyNamed('password'),
+          ),
+        ).thenAnswer(
           (_) async => const AuthOutcome.failure(AuthError.weakPassword),
         );
         final AuthCubit cubit = buildCubit();
 
-        final bool isSuccess = await cubit.register(
+        await cubit.register(
           email: 'player@example.com',
           password: 'sup3rSecret',
           passwordRepeat: 'sup3rSecret',
         );
 
-        expect(isSuccess, isFalse);
-        verifyNever(applicationCubit.sendVerificationEmail());
+        expect(cubit.state.error, AuthError.weakPassword);
+        verifyNever(authService.sendVerificationEmail());
         await cubit.close();
       },
     );
@@ -256,20 +294,20 @@ void main() {
   group('AuthCubit google', () {
     test('a cancelled sheet is not reported as an error', () async {
       when(
-        applicationCubit.signInWithGoogle(),
+        authService.signInWithGoogle(),
       ).thenAnswer((_) async => const AuthOutcome.failure(AuthError.cancelled));
       final AuthCubit cubit = buildCubit();
 
-      final bool isSuccess = await cubit.signInWithGoogle();
+      await cubit.signInWithGoogle();
 
-      expect(isSuccess, isFalse);
+      expect(cubit.state.isSubmitting, isFalse);
       expect(cubit.state.error, isNull);
       await cubit.close();
     });
 
     test('a real failure keeps its reason', () async {
       when(
-        applicationCubit.signInWithGoogle(),
+        authService.signInWithGoogle(),
       ).thenAnswer((_) async => const AuthOutcome.failure(AuthError.network));
       final AuthCubit cubit = buildCubit();
 
@@ -289,11 +327,11 @@ void main() {
         passwordRepeat: 'sup3rSecret',
       );
       // register already sent one mail
-      clearInteractions(applicationCubit);
+      clearInteractions(authService);
 
       await cubit.resendVerificationEmail();
 
-      verifyNever(applicationCubit.sendVerificationEmail());
+      verifyNever(authService.sendVerificationEmail());
       await cubit.close();
     });
 
@@ -302,14 +340,14 @@ void main() {
 
       await cubit.resendVerificationEmail();
 
-      verify(applicationCubit.sendVerificationEmail()).called(1);
+      verify(authService.sendVerificationEmail()).called(1);
       expect(cubit.state.hasVerificationMailBeenSent, isTrue);
       expect(cubit.state.resendCooldown, AuthCubit.resendCooldownSeconds);
       await cubit.close();
     });
 
     test('reports a rate limit as an error', () async {
-      when(applicationCubit.sendVerificationEmail()).thenAnswer(
+      when(authService.sendVerificationEmail()).thenAnswer(
         (_) async => const AuthOutcome.failure(AuthError.tooManyRequests),
       );
       final AuthCubit cubit = buildCubit();
@@ -327,44 +365,50 @@ void main() {
     test('checkVerification does not emit after close', () async {
       final Completer<bool> pending = Completer<bool>();
       when(
-        applicationCubit.refreshVerificationStatus(),
+        authService.refreshVerificationStatus(),
       ).thenAnswer((_) => pending.future);
       final AuthCubit cubit = buildCubit();
 
-      final Future<bool> inFlight = cubit.checkVerification();
+      final Future<void> inFlight = cubit.checkVerification();
       // The verification succeeding tears down the widget that owns this
       // cubit, so it closes while the call is still running.
       await cubit.close();
       pending.complete(true);
 
-      await expectLater(inFlight, completion(isTrue));
+      await expectLater(inFlight, completes);
     });
 
     test('signIn does not emit after close', () async {
       final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
       when(
-        applicationCubit.signInWithEmail(any, any),
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
       ).thenAnswer((_) => pending.future);
       final AuthCubit cubit = buildCubit();
 
-      final Future<bool> inFlight = cubit.signIn(
+      final Future<void> inFlight = cubit.signIn(
         email: 'player@example.com',
         password: 'sup3rSecret',
       );
       await cubit.close();
       pending.complete(const AuthOutcome.success());
 
-      await expectLater(inFlight, completion(isTrue));
+      await expectLater(inFlight, completes);
     });
 
     test('register does not emit after close', () async {
       final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
       when(
-        applicationCubit.registerWithEmail(any, any),
+        authService.registerWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
       ).thenAnswer((_) => pending.future);
       final AuthCubit cubit = buildCubit();
 
-      final Future<bool> inFlight = cubit.register(
+      final Future<void> inFlight = cubit.register(
         email: 'player@example.com',
         password: 'sup3rSecret',
         passwordRepeat: 'sup3rSecret',
@@ -372,13 +416,13 @@ void main() {
       await cubit.close();
       pending.complete(const AuthOutcome.success());
 
-      await expectLater(inFlight, completion(isTrue));
+      await expectLater(inFlight, completes);
     });
 
     test('resendVerificationEmail does not emit after close', () async {
       final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
       when(
-        applicationCubit.sendVerificationEmail(),
+        authService.sendVerificationEmail(),
       ).thenAnswer((_) => pending.future);
       final AuthCubit cubit = buildCubit();
 
@@ -391,37 +435,38 @@ void main() {
 
     test('signInWithGoogle does not emit after close', () async {
       final Completer<AuthOutcome> pending = Completer<AuthOutcome>();
-      when(
-        applicationCubit.signInWithGoogle(),
-      ).thenAnswer((_) => pending.future);
+      when(authService.signInWithGoogle()).thenAnswer((_) => pending.future);
       final AuthCubit cubit = buildCubit();
 
-      final Future<bool> inFlight = cubit.signInWithGoogle();
+      final Future<void> inFlight = cubit.signInWithGoogle();
       await cubit.close();
       pending.complete(const AuthOutcome.success());
 
-      await expectLater(inFlight, completion(isTrue));
+      await expectLater(inFlight, completes);
     });
   });
 
   group('AuthCubit.checkVerification', () {
-    test('delegates to the application cubit', () async {
+    test('delegates to the auth service', () async {
       final AuthCubit cubit = buildCubit();
 
-      expect(await cubit.checkVerification(), isTrue);
+      await cubit.checkVerification();
 
-      verify(applicationCubit.refreshVerificationStatus()).called(1);
+      expect(cubit.state.isVerificationPending, isFalse);
+      verify(authService.refreshVerificationStatus()).called(1);
       expect(cubit.state.isSubmitting, isFalse);
       await cubit.close();
     });
 
     test('reports a still unverified address', () async {
       when(
-        applicationCubit.refreshVerificationStatus(),
+        authService.refreshVerificationStatus(),
       ).thenAnswer((_) async => false);
       final AuthCubit cubit = buildCubit();
 
-      expect(await cubit.checkVerification(), isFalse);
+      await cubit.checkVerification();
+
+      expect(cubit.state.isVerificationPending, isTrue);
       await cubit.close();
     });
   });

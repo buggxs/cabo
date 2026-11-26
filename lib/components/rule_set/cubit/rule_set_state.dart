@@ -10,5 +10,5 @@ class RuleSetState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [ruleSet];
+  List<Object?> get props => <Object?>[ruleSet];
 }

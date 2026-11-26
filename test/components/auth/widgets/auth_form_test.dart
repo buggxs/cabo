@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/components/auth/widgets/auth_form.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/application/app_design.dart';
 import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
@@ -14,24 +15,34 @@ import 'package:mockito/mockito.dart';
 
 import 'auth_form_test.mocks.dart';
 
-@GenerateNiceMocks(<MockSpec<dynamic>>[MockSpec<ApplicationCubit>()])
+@GenerateNiceMocks(<MockSpec<dynamic>>[
+  MockSpec<ApplicationCubit>(),
+  MockSpec<AuthService>(),
+])
 void main() {
   late MockApplicationCubit applicationCubit;
+  late MockAuthService authService;
   late StreamController<ApplicationState> stateController;
 
   setUp(() {
     applicationCubit = MockApplicationCubit();
+    authService = MockAuthService();
     stateController = StreamController<ApplicationState>.broadcast();
     when(applicationCubit.stream).thenAnswer((_) => stateController.stream);
     when(
-      applicationCubit.sendVerificationEmail(),
+      authService.sendVerificationEmail(),
     ).thenAnswer((_) async => const AuthOutcome.success());
     when(
-      applicationCubit.refreshVerificationStatus(),
+      authService.refreshVerificationStatus(),
     ).thenAnswer((_) async => false);
+    app.allowReassignment = true;
+    app.registerSingleton<AuthService>(authService);
   });
 
-  tearDown(() => stateController.close());
+  tearDown(() async {
+    await stateController.close();
+    await app.reset();
+  });
 
   void setState(ApplicationState state) {
     when(applicationCubit.state).thenReturn(state);
@@ -103,7 +114,12 @@ void main() {
       WidgetTester tester,
     ) async {
       setState(const ApplicationUnauthenticated());
-      when(applicationCubit.signInWithEmail(any, any)).thenAnswer(
+      when(
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      ).thenAnswer(
         (_) async => const AuthOutcome.failure(AuthError.invalidCredentials),
       );
 
@@ -139,7 +155,12 @@ void main() {
       await tester.pump();
 
       expect(find.text('Please enter a valid e-mail address.'), findsOneWidget);
-      verifyNever(applicationCubit.signInWithEmail(any, any));
+      verifyNever(
+        authService.signInWithEmail(
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+        ),
+      );
     });
   });
 }

@@ -16,7 +16,6 @@ import 'package:cabo/misc/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 part 'statistics_state.dart';
@@ -34,14 +33,14 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     loadGame(game: game);
   }
 
-  /// Seating order of the players, captured before any placement sorting.
+  // Seating order of the players, captured before any placement sorting.
   final List<String> _initialPlayerOrder;
   final FirebaseAuth? _authOverride;
   FirebaseAuth get _auth => _authOverride ?? FirebaseAuth.instance;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _gameSubscription;
 
   void loadGame({Game? game}) {
-    DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
+    final DateTime startingDateTime = game?.startedAt?.isNotEmpty ?? false
         ? DateFormat('dd-MM-yyyy HH:mm').parse(game!.startedAt!)
         : DateTime.now();
     if (game == null) {
@@ -51,21 +50,21 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
 
     if ((game?.isPublic ?? false) && _auth.currentUser != null) {
-      _subscribePublicGame();
+      unawaited(_subscribePublicGame());
     }
   }
 
   void _createLocalGame(DateTime startedAt) async {
-    RuleSet ruleSet = await loadRuleSet();
+    final RuleSet ruleSet = await _loadRuleSet();
 
-    Game game = Game(
+    final Game game = Game(
       startedAt: DateFormat('dd-MM-yyyy HH:mm').format(startedAt),
       players: state.players,
       ruleSet: ruleSet,
       seatingOrder: _initialPlayerOrder,
     );
 
-    Game currentGame =
+    final Game currentGame =
         await app<GameService>().saveLastPlayedGame(game) ?? game;
 
     _startGame(currentGame, startedAt);
@@ -75,8 +74,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     emit(state.copyWith(game: _withSeatingOrder(game), startedAt: startedAt));
   }
 
-  /// Games saved before the seating order existed adopt their current player
-  /// order once, so the dealer rotation stays stable from then on.
+  // Games saved before the seating order existed adopt their current player
+  // order once, so the dealer rotation stays stable from then on.
   Game _withSeatingOrder(Game game) {
     if (game.seatingOrder.isNotEmpty) {
       return game;
@@ -86,19 +85,18 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     );
   }
 
-  Future<RuleSet> loadRuleSet() async {
+  Future<RuleSet> _loadRuleSet() {
     return app<RuleService>().loadRuleSet();
   }
 
-  /// Picks up rule changes made while the game is running. Already played
-  /// rounds keep the scoring they were closed with.
+  // Already played rounds keep the scoring they were closed with.
   Future<void> reloadRuleSet() async {
     final Game? game = state.game;
     if (game == null) {
       return;
     }
 
-    final RuleSet ruleSet = await loadRuleSet();
+    final RuleSet ruleSet = await _loadRuleSet();
     if (ruleSet == game.ruleSet) {
       return;
     }
@@ -114,45 +112,44 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
   }
 
   void closeRound({int? index}) {
-    _closeOfflineRound(index);
+    unawaited(_closeOfflineRound(index));
   }
 
-  /// Will force a game to finish for the owner (or a local game).
-  /// For public games, non-owners simply leave locally — no Firestore write
-  /// happens; the game stays live for the remaining players.
+  // Forces the game to finish for the owner (or a local game). For public
+  // games, non-owners simply leave locally: no Firestore write happens and the
+  // game stays live for the remaining players.
   Future<void> onPopScreen() async {
     if (state.game?.isGameFinished ?? false) {
       return;
     }
 
-    await _saveGame(state.game!, forceFinish: true);
+    await _saveGame(state.game!, shouldForceFinish: true);
   }
 
-  void showPublicGameDialog(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => PublicGameScreen(
+  void showPublicGameDialog() {
+    unawaited(
+      app<NavigationService>().pushFullscreenDialog<void>(
+        PublicGameScreen(
           publishGame: _publishGame,
           gameId: state.game?.publicId,
           game: state.game,
         ),
-        fullscreenDialog: true,
       ),
     );
   }
 
   Future<Game?> _publishGame() async {
-    Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
+    final Game publicGame = await app<PublicGameService>().saveOrUpdateGame(
       game: state.game!,
     );
 
-    // publicId/ownerId sofort lokal persistieren, sonst geht die Subscription
-    // beim App-Restart verloren, falls bis dahin keine Runde geschlossen wurde.
+    // Persist publicId/ownerId locally right away, otherwise the subscription
+    // is lost on app restart if no round has been closed until then.
     await app<GameService>().saveLastPlayedGame(publicGame);
 
     emit(state.copyWith(game: publicGame));
 
-    _subscribePublicGame();
+    unawaited(_subscribePublicGame());
 
     return publicGame;
   }
@@ -161,13 +158,13 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     await _gameSubscription?.cancel();
     _gameSubscription = app<PublicGameService>()
         .subscribeToGame(state.game!.publicId!)
-        .listen((snapshot) {
+        .listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
           if (!snapshot.exists) {
             return;
           }
 
-          // Eigene lokale Writes nicht als Remote-Update verarbeiten —
-          // sonst doppelter emit / UI-Flackern.
+          // Own local writes must not be handled as remote updates,
+          // otherwise they cause a double emit and UI flicker.
           if (snapshot.metadata.hasPendingWrites) {
             return;
           }
@@ -194,7 +191,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
   @override
   Future<void> close() {
-    _gameSubscription?.cancel();
+    unawaited(_gameSubscription?.cancel());
     return super.close();
   }
 
@@ -231,6 +228,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       }
     }
 
+    _updatePlayers(_rankByPoints(players));
+  }
+
+  List<Player> _rankByPoints(List<Player> players) {
     players.sort(
       (Player a, Player b) => a.totalPoints.compareTo(b.totalPoints),
     );
@@ -238,22 +239,21 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     for (int i = 0; i < players.length; i++) {
       players[i] = players[i].copyWith(place: i + 1);
     }
+    return players;
+  }
 
-    // Create the updated game with the new player data
-    Game updatedGame = state.game!.copyWith(players: players);
-
-    // Update the state with the new players and game data
+  void _updatePlayers(List<Player> players) {
+    final Game updatedGame = state.game!.copyWith(players: players);
     emit(state.copyWith(players: players, game: updatedGame));
 
-    // Save the game state
-    _saveGame(updatedGame);
+    unawaited(_saveGame(updatedGame));
 
     if (updatedGame.isGameFinished) {
       _finishGame(players);
     }
   }
 
-  /// Replaces the round at [index] or appends a new one when [index] is `null`.
+  // Replaces the round at [index] or appends a new one when [index] is null.
   Player _applyRound({
     required Player player,
     required RuleSet ruleSet,
@@ -319,7 +319,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     if (hasPenaltyPoints) {
       points += kFailedCaboPenaltyPoints;
     }
-    if (ruleSet.roundWinnerGetsZeroPoints && isWonRound) {
+    if (ruleSet.shouldRoundWinnerGetZeroPoints && isWonRound) {
       points = 0;
     }
 
@@ -334,8 +334,8 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     );
   }
 
-  /// A kamikaze replaces the whole round result: the kamikaze player wins the
-  /// round with zero points, everyone else takes the configured penalty.
+  // A kamikaze replaces the whole round result: the kamikaze player wins the
+  // round with zero points, everyone else takes the configured penalty.
   Round _buildKamikazeRound({
     required bool isKamikazePlayer,
     required bool hasClosedRound,
@@ -382,10 +382,10 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     );
   }
 
-  /// Landing exactly on the total game points halves the player's score
-  /// instead of ending the game.
+  // Landing exactly on the total game points halves the player's score
+  // instead of ending the game.
   int _precisionLandingDeduction(RuleSet ruleSet, int totalPointsAfterRound) {
-    if (!ruleSet.precisionLanding ||
+    if (!ruleSet.hasPrecisionLanding ||
         totalPointsAfterRound != ruleSet.totalGamePoints) {
       return 0;
     }
@@ -394,7 +394,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
   void _finishGame(List<Player> players) {
     final Player? winner = players
-        .where((player) => player.place == 1)
+        .where((Player player) => player.place == 1)
         .firstOrNull;
     if (winner == null) {
       logger.warning('_finishGame called without a winner candidate');
@@ -404,7 +404,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     app<NavigationService>().pushToEndGameScreen(game: state.game!);
   }
 
-  /// The lowest hand wins the round; on a tie the player who called Cabo wins.
+  // The lowest hand wins the round; on a tie the player who called Cabo wins.
   bool _hasWonRound(
     String playerName,
     Map<String, int?> playerPointsMap,
@@ -423,30 +423,29 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     return true;
   }
 
-  Future<void> _saveGame(Game game, {bool forceFinish = false}) async {
-    // Non-Owner darf im Public Game das Spiel nicht vorzeitig für alle beenden.
-    // In diesem Fall verlässt der Spieler nur lokal — kein Firestore-/History-Write.
-    if (forceFinish && game.isPublic && !_isOwnerOf(game)) {
+  Future<void> _saveGame(Game game, {bool shouldForceFinish = false}) async {
+    // A non-owner must not end a public game early for everyone. The player
+    // only leaves locally: no Firestore or history write.
+    if (shouldForceFinish && game.isPublic && !_isOwnerOf(game)) {
       return;
     }
 
-    // Ein veröffentlichtes Spiel ohne eine einzige Runde wurde nur ausprobiert.
-    // Es wird wieder aus Firestore entfernt, statt als beendetes Spiel dort
-    // liegen zu bleiben.
+    // A published game without a single round was only tried out. It is
+    // removed from Firestore instead of staying there as a finished game.
     final bool isAbandonedPublicGame =
-        forceFinish && game.isPublic && !game.hasRounds;
+        shouldForceFinish && game.isPublic && !game.hasRounds;
 
     if (isAbandonedPublicGame) {
       await _discardPublicGame(game);
     }
 
-    if (game.isGameFinished || forceFinish) {
+    if (game.isGameFinished || shouldForceFinish) {
       final String finishedGame = DateFormat(
         'dd-MM-yyyy HH:mm',
       ).format(DateTime.now());
       game = game.copyWith(finishedAt: finishedGame);
-      // State sofort aktualisieren, damit isGameFinished true ist und der
-      // EndGameScreen anschließend angezeigt werden kann.
+      // Update the state right away so isGameFinished is true and the
+      // EndGameScreen can be shown afterwards.
       emit(state.copyWith(game: game));
       await app<GameService>().saveToGameHistory(game);
     }
@@ -454,7 +453,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     if (game.isPublic && !isAbandonedPublicGame) {
       try {
         await app<PublicGameService>().saveOrUpdateGame(game: game);
-      } catch (e, stackTrace) {
+      } on Exception catch (e, stackTrace) {
         logger.severe('Failed to sync public game to Firestore', e, stackTrace);
       }
     }
@@ -470,7 +469,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
     try {
       await app<PublicGameService>().deleteGame(game.publicId!);
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       logger.severe('Failed to delete empty public game', e, stackTrace);
     }
   }
@@ -479,7 +478,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     Map<String, int?> playerPointsMap,
     RuleSet ruleSet,
   ) {
-    if (!ruleSet.useKamikazeRule) {
+    if (!ruleSet.hasKamikazeRule) {
       return null;
     }
 
@@ -494,7 +493,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
 
   int _getLowestPoints(Map<String, int?> playerPointsmap) {
     MapEntry<String, int?>? lowest;
-    for (var element in playerPointsmap.entries) {
+    for (final MapEntry<String, int?> element in playerPointsmap.entries) {
       lowest ??= element;
       if ((lowest.value ?? 0) >= (element.value ?? 0)) {
         lowest = element;

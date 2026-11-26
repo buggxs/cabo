@@ -23,48 +23,64 @@ class AppNavigator {
 
     switch (settings.name) {
       case MainMenuScreen.route:
-        return MaterialPageRoute(builder: (_) => const MainMenuScreen());
-      case StatisticsScreen.route:
-        List<Player> players = [];
-        Game? game;
-        if (args is Map && args.containsKey('players')) {
-          players = args['players'];
-        }
-        if (args is Map && args.containsKey('game')) {
-          game = args['game'];
-        }
-        return MaterialPageRoute(
-          builder: (_) => StatisticsScreen(players: players, game: game),
+        return MaterialPageRoute<dynamic>(
+          builder: (BuildContext _) => const MainMenuScreen(),
         );
+      case StatisticsScreen.route:
+        return _statisticsRoute(args);
 
       case EndGameScreen.route:
         if (args is Map && args['game'] is Game) {
-          return MaterialPageRoute(
-            builder: (_) => EndGameScreen(game: args['game'] as Game),
+          return MaterialPageRoute<dynamic>(
+            builder: (BuildContext _) =>
+                EndGameScreen(game: args['game'] as Game),
           );
         }
         return _errorRoute();
 
       case GameHistoryScreen.route:
-        return MaterialPageRoute(builder: (_) => const GameHistoryScreen());
+        return MaterialPageRoute<dynamic>(
+          builder: (BuildContext _) => const GameHistoryScreen(),
+        );
 
       case AboutScreen.route:
-        return MaterialPageRoute(builder: (_) => const AboutScreen());
+        return MaterialPageRoute<dynamic>(
+          builder: (BuildContext _) => const AboutScreen(),
+        );
 
       case RuleSetScreen.route:
-        return MaterialPageRoute(builder: (_) => const RuleSetScreen());
+        return MaterialPageRoute<dynamic>(
+          builder: (BuildContext _) => const RuleSetScreen(),
+        );
 
       case SettingsScreen.route:
-        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+        return MaterialPageRoute<dynamic>(
+          builder: (BuildContext _) => const SettingsScreen(),
+        );
 
       default:
         return _errorRoute();
     }
   }
 
+  Route<dynamic> _statisticsRoute(Object? args) {
+    List<Player> players = <Player>[];
+    Game? game;
+    if (args is Map && args.containsKey('players')) {
+      players = args['players'] as List<Player>;
+    }
+    if (args is Map && args.containsKey('game')) {
+      game = args['game'] as Game?;
+    }
+    return MaterialPageRoute<dynamic>(
+      builder: (BuildContext _) =>
+          StatisticsScreen(players: players, game: game),
+    );
+  }
+
   Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(
-      builder: (_) {
+    return MaterialPageRoute<dynamic>(
+      builder: (BuildContext _) {
         return Scaffold(
           appBar: AppBar(title: const Text('Error')),
           body: const Center(child: Text('ERROR')),

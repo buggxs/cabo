@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_streak.dart';
@@ -13,9 +16,8 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-/// Abschluss-Screen im neuen Material-3-Design, der nach Spielende den Gewinner
-/// feiert (Hero + Konfetti) und die komplette Rangliste anzeigt. Ersetzt den
-/// alten `WinnerDialog`.
+/// Final screen shown after a game ends. Celebrates the winner (hero card and
+/// confetti) and shows the complete ranking. Replaces the old `WinnerDialog`.
 class EndGameScreen extends StatefulWidget {
   const EndGameScreen({super.key, required this.game});
 
@@ -30,7 +32,7 @@ class EndGameScreen extends StatefulWidget {
 class _EndGameScreenState extends State<EndGameScreen> {
   late final ConfettiController _confettiController;
 
-  /// Standard-Schatten der neuen Karten (rgba(61,58,53,0.08)).
+  // rgba(61, 58, 53, 0.08)
   static const List<BoxShadow> _cardShadow = <BoxShadow>[
     BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
   ];
@@ -52,7 +54,6 @@ class _EndGameScreenState extends State<EndGameScreen> {
     super.dispose();
   }
 
-  /// Spieler aufsteigend nach Platzierung (Platz 1 zuerst).
   List<Player> get _rankedPlayers {
     final List<Player> players = List<Player>.from(widget.game.players)
       ..sort((Player a, Player b) {
@@ -64,11 +65,8 @@ class _EndGameScreenState extends State<EndGameScreen> {
   }
 
   void _returnToMenu() {
-    app<RatingService>().trackGameCompletion();
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      MainMenuScreen.route,
-      (Route<dynamic> route) => false,
-    );
+    unawaited(app<RatingService>().trackGameCompletion());
+    app<NavigationService>().pushNamedAndRemoveAll(MainMenuScreen.route);
   }
 
   @override
@@ -94,70 +92,74 @@ class _EndGameScreenState extends State<EndGameScreen> {
                   constraints: const BoxConstraints(maxWidth: 576),
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-                    children: <Widget>[
-                      Text(
-                        context.l10n.winnerDialogTitle,
-                        textAlign: TextAlign.center,
-                        style: CaboTheme.displayLargeStyle.copyWith(
-                          color: CaboTheme.m3Primary,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      if (winner != null) _buildWinnerHero(context, winner),
-                      const SizedBox(height: 24),
-                      _buildSummaryRow(context, ranked),
-                      const SizedBox(height: 32),
-                      _buildSectionLabel(context.l10n.endGameRankingTitle),
-                      const SizedBox(height: 8),
-                      _buildRankingCard(context, ranked),
-                      const SizedBox(height: 32),
-                      _buildSectionLabel(context.l10n.endGameDetailedTitle),
-                      const SizedBox(height: 8),
-                      for (int i = 0; i < ranked.length; i++) ...<Widget>[
-                        _buildDetailedStatsCard(
-                          context,
-                          ranked[i],
-                          isWinner: i == 0,
-                        ),
-                        if (i != ranked.length - 1) const SizedBox(height: 12),
-                      ],
-                      if (ranked.firstOrNull?.rounds.isNotEmpty ??
-                          false) ...<Widget>[
-                        const SizedBox(height: 32),
-                        _buildHighlightsSection(context, ranked),
-                      ],
-                      const SizedBox(height: 24),
-                      CaboPrimaryButton(
-                        label: context.l10n.endGameBackToMenu,
-                        onPressed: _returnToMenu,
-                      ),
-                    ],
+                    children: _buildContent(context, ranked, winner),
                   ),
                 ),
               ),
             ),
-            // Konfetti-Emitter mittig am oberen Rand.
-            Align(
-              alignment: Alignment.topCenter,
-              child: ConfettiWidget(
-                confettiController: _confettiController,
-                blastDirectionality: BlastDirectionality.explosive,
-                particleDrag: 0.05,
-                emissionFrequency: 0.05,
-                numberOfParticles: 20,
-                gravity: 0.05,
-                shouldLoop: false,
-                colors: <Color>[
-                  CaboTheme.primaryContainer,
-                  CaboTheme.m3Primary,
-                  CaboTheme.m3Secondary,
-                  CaboTheme.firstPlaceColor,
-                  CaboTheme.primaryFixedDim,
-                ],
-              ),
-            ),
+            _buildConfetti(),
           ],
         ),
+      ),
+    );
+  }
+
+  List<Widget> _buildContent(
+    BuildContext context,
+    List<Player> ranked,
+    Player? winner,
+  ) {
+    return <Widget>[
+      Text(
+        context.l10n.winnerDialogTitle,
+        textAlign: TextAlign.center,
+        style: CaboTheme.displayLargeStyle.copyWith(color: CaboTheme.m3Primary),
+      ),
+      const SizedBox(height: 24),
+      if (winner != null) _buildWinnerHero(context, winner),
+      const SizedBox(height: 24),
+      _buildSummaryRow(context, ranked),
+      const SizedBox(height: 32),
+      _buildSectionLabel(context.l10n.endGameRankingTitle),
+      const SizedBox(height: 8),
+      _buildRankingCard(context, ranked),
+      const SizedBox(height: 32),
+      _buildSectionLabel(context.l10n.endGameDetailedTitle),
+      const SizedBox(height: 8),
+      for (int i = 0; i < ranked.length; i++) ...<Widget>[
+        _buildDetailedStatsCard(context, ranked[i], isWinner: i == 0),
+        if (i != ranked.length - 1) const SizedBox(height: 12),
+      ],
+      if (ranked.firstOrNull?.rounds.isNotEmpty ?? false) ...<Widget>[
+        const SizedBox(height: 32),
+        _buildHighlightsSection(context, ranked),
+      ],
+      const SizedBox(height: 24),
+      CaboPrimaryButton(
+        label: context.l10n.endGameBackToMenu,
+        onPressed: _returnToMenu,
+      ),
+    ];
+  }
+
+  Widget _buildConfetti() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConfettiWidget(
+        confettiController: _confettiController,
+        blastDirectionality: BlastDirectionality.explosive,
+        particleDrag: 0.05,
+        emissionFrequency: 0.05,
+        numberOfParticles: 20,
+        gravity: 0.05,
+        shouldLoop: false,
+        colors: <Color>[
+          CaboTheme.primaryContainer,
+          CaboTheme.m3Primary,
+          CaboTheme.m3Secondary,
+          CaboTheme.firstPlaceColor,
+          CaboTheme.primaryFixedDim,
+        ],
       ),
     );
   }
@@ -223,7 +225,6 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// Zwei nebeneinanderliegende Karten: Spieldauer und Rundenanzahl.
   Widget _buildSummaryRow(BuildContext context, List<Player> ranked) {
     final int rounds = ranked.firstOrNull?.rounds.length ?? 0;
     final (String, String) duration = _formatDuration(context);
@@ -300,8 +301,8 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// Liefert (Wert, Einheit) der Spieldauer aus `startedAt`/`finishedAt`.
-  /// Bei fehlenden/ungültigen Zeitstempeln „–".
+  // Returns (value, unit) of the game duration, or '–' for missing or
+  // invalid timestamps.
   (String, String) _formatDuration(BuildContext context) {
     final String? startedAt = widget.game.startedAt;
     final String? finishedAt = widget.game.finishedAt;
@@ -327,35 +328,18 @@ class _EndGameScreenState extends State<EndGameScreen> {
         );
       }
       return ('$totalMinutes', context.l10n.endGameDurationUnitMinutes);
-    } catch (_) {
+    } on FormatException {
       return ('–', context.l10n.endGameDurationUnitMinutes);
     }
   }
 
-  /// Detailkarte pro Spieler mit Gesamtpunkten und 3 Kennzahlen
-  /// (Cabo-0, Straf-Pkt, Ø/Rd). Der Sieger erhält einen farbigen Header.
+  // Per player: total points and three key figures (Cabo zero, penalty
+  // points, average per round). The winner gets a coloured header.
   Widget _buildDetailedStatsCard(
     BuildContext context,
     Player player, {
     required bool isWinner,
   }) {
-    final int caboZero = player.rounds
-        .where((Round round) => round.points == 0)
-        .length;
-    final int penaltyPoints =
-        player.rounds.where((Round round) => round.hasPenaltyPoints).length * 5;
-    final int roundCount = player.rounds.length;
-    final String average = roundCount == 0
-        ? '0'
-        : (player.totalPoints / roundCount).toStringAsFixed(1);
-
-    final Color headerBg = isWinner
-        ? CaboTheme.primaryContainer
-        : CaboTheme.surfaceVariant;
-    final Color headerFg = isWinner
-        ? CaboTheme.onPrimaryContainer
-        : CaboTheme.onSurfaceVariant;
-
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -366,73 +350,100 @@ class _EndGameScreenState extends State<EndGameScreen> {
       ),
       child: Column(
         children: <Widget>[
-          Container(
-            color: headerBg,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    player.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: CaboTheme.headlineMediumStyle.copyWith(
-                      color: headerFg,
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      context.l10n.endGameStatTotal.toUpperCase(),
-                      style: CaboTheme.labelSmallStyle.copyWith(
-                        color: headerFg.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    Text(
-                      '${player.totalPoints} ${context.l10n.endGamePointsShort}',
-                      style: CaboTheme.headlineMediumStyle.copyWith(
-                        color: headerFg,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          _buildDetailedStatsHeader(context, player, isWinner: isWinner),
+          _buildDetailedStatsRow(context, player),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailedStatsHeader(
+    BuildContext context,
+    Player player, {
+    required bool isWinner,
+  }) {
+    final Color headerBg = isWinner
+        ? CaboTheme.primaryContainer
+        : CaboTheme.surfaceVariant;
+    final Color headerFg = isWinner
+        ? CaboTheme.onPrimaryContainer
+        : CaboTheme.onSurfaceVariant;
+
+    return Container(
+      color: headerBg,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              player.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: CaboTheme.headlineMediumStyle.copyWith(color: headerFg),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: _buildStatCell(
-                    value: '$caboZero',
-                    label: context.l10n.endGameStatCaboZero,
-                    valueColor: caboZero > 0
-                        ? CaboTheme.m3Secondary
-                        : CaboTheme.onSurface,
-                  ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                context.l10n.endGameStatTotal.toUpperCase(),
+                style: CaboTheme.labelSmallStyle.copyWith(
+                  color: headerFg.withValues(alpha: 0.8),
                 ),
-                Expanded(
-                  child: _buildStatCell(
-                    value: penaltyPoints > 0 ? '+$penaltyPoints' : '0',
-                    label: context.l10n.endGameStatPenalty,
-                    valueColor: penaltyPoints > 0
-                        ? CaboTheme.m3Error
-                        : CaboTheme.onSurface,
-                  ),
+              ),
+              Text(
+                '${player.totalPoints} ${context.l10n.endGamePointsShort}',
+                style: CaboTheme.headlineMediumStyle.copyWith(
+                  color: headerFg,
+                  fontWeight: FontWeight.bold,
                 ),
-                Expanded(
-                  child: _buildStatCell(
-                    value: average,
-                    label: context.l10n.endGameStatAverage,
-                    valueColor: CaboTheme.onSurface,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailedStatsRow(BuildContext context, Player player) {
+    final int caboZero = player.rounds
+        .where((Round round) => round.points == 0)
+        .length;
+    final int penaltyPoints =
+        player.rounds.where((Round round) => round.hasPenaltyPoints).length * 5;
+    final int roundCount = player.rounds.length;
+    final String average = roundCount == 0
+        ? '0'
+        : (player.totalPoints / roundCount).toStringAsFixed(1);
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: _buildStatCell(
+              value: '$caboZero',
+              label: context.l10n.endGameStatCaboZero,
+              valueColor: caboZero > 0
+                  ? CaboTheme.m3Secondary
+                  : CaboTheme.onSurface,
+            ),
+          ),
+          Expanded(
+            child: _buildStatCell(
+              value: penaltyPoints > 0 ? '+$penaltyPoints' : '0',
+              label: context.l10n.endGameStatPenalty,
+              valueColor: penaltyPoints > 0
+                  ? CaboTheme.m3Error
+                  : CaboTheme.onSurface,
+            ),
+          ),
+          Expanded(
+            child: _buildStatCell(
+              value: average,
+              label: context.l10n.endGameStatAverage,
+              valueColor: CaboTheme.onSurface,
             ),
           ),
         ],
@@ -465,9 +476,8 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// „Spiel-Highlights"-Karte im Papier-/Score-Pad-Stil (vgl. Design). Zeigt
-  /// die beste Runde (niedrigster Gesamtwert) und – falls vorhanden – die
-  /// längste Siegesserie.
+  // Score-pad styled card with the best round (lowest total) and, if any, the
+  // longest win streak.
   Widget _buildHighlightsSection(BuildContext context, List<Player> ranked) {
     final List<Widget> rows = <Widget>[];
 
@@ -559,7 +569,7 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// Runde mit der niedrigsten Gesamtpunktzahl aller Spieler.
+  // The round with the lowest total points across all players.
   Widget? _buildBestRoundHighlight(BuildContext context, List<Player> ranked) {
     final int roundCount = ranked
         .map((Player p) => p.rounds.length)
@@ -595,7 +605,7 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// Spieler mit der längsten Siegesserie (nur ab 2 Runden in Folge).
+  // Only shown for a streak of at least two rounds in a row.
   Widget? _buildLongestStreakHighlight(
     BuildContext context,
     List<Player> ranked,
@@ -625,62 +635,48 @@ class _EndGameScreenState extends State<EndGameScreen> {
     );
   }
 
-  /// Game-Streaks aus dem Spielmodell (Siegesserien-Meilensteine 5/7/10 und
-  /// Spieldauer-Meilensteine 1/1,5/2 h) – jeweils mit Titel und kurzer
-  /// Beschreibung.
+  // Win streak milestones (5/7/10) and game duration milestones (1/1.5/2 h).
   List<Widget> _buildGameStreakHighlights(BuildContext context) {
-    return widget.game.getGameStreakTypes().map((GameStreakType type) {
-      switch (type) {
-        case GameStreakType.fiveRoundsWon:
-          return _buildHighlightRow(
-            icon: Icons.local_fire_department_rounded,
-            iconBg: CaboTheme.primaryFixedDim.withValues(alpha: 0.3),
-            iconFg: CaboTheme.m3Primary,
-            title: context.l10n.endGameStreakWinTitle,
-            subtitle: context.l10n.streakFiveRoundsWon,
-          );
-        case GameStreakType.sevenRoundsWon:
-          return _buildHighlightRow(
-            icon: Icons.local_fire_department_rounded,
-            iconBg: CaboTheme.primaryFixedDim.withValues(alpha: 0.3),
-            iconFg: CaboTheme.m3Primary,
-            title: context.l10n.endGameStreakWinTitle,
-            subtitle: context.l10n.streakSevenRoundsWon,
-          );
-        case GameStreakType.tenRoundsWon:
-          return _buildHighlightRow(
-            icon: Icons.local_fire_department_rounded,
-            iconBg: CaboTheme.primaryFixedDim.withValues(alpha: 0.3),
-            iconFg: CaboTheme.m3Primary,
-            title: context.l10n.endGameStreakWinTitle,
-            subtitle: context.l10n.streakTenRoundsWon,
-          );
-        case GameStreakType.oneHourGame:
-          return _buildHighlightRow(
-            icon: Icons.timer_outlined,
-            iconBg: CaboTheme.surfaceContainerHighest,
-            iconFg: CaboTheme.onSurfaceVariant,
-            title: context.l10n.endGameStreakDurationTitle,
-            subtitle: context.l10n.streakOneHourGame,
-          );
-        case GameStreakType.oneAndHalfHoursGame:
-          return _buildHighlightRow(
-            icon: Icons.timer_outlined,
-            iconBg: CaboTheme.surfaceContainerHighest,
-            iconFg: CaboTheme.onSurfaceVariant,
-            title: context.l10n.endGameStreakDurationTitle,
-            subtitle: context.l10n.streakOneAndHalfHourGame,
-          );
-        case GameStreakType.twoHoursGame:
-          return _buildHighlightRow(
-            icon: Icons.timer_outlined,
-            iconBg: CaboTheme.surfaceContainerHighest,
-            iconFg: CaboTheme.onSurfaceVariant,
-            title: context.l10n.endGameStreakDurationTitle,
-            subtitle: context.l10n.streakTwoHourGame,
-          );
-      }
-    }).toList();
+    return widget.game
+        .getGameStreakTypes()
+        .map((GameStreakType type) => _buildGameStreakHighlight(context, type))
+        .toList();
+  }
+
+  Widget _buildGameStreakHighlight(BuildContext context, GameStreakType type) {
+    final String subtitle = switch (type) {
+      GameStreakType.fiveRoundsWon => context.l10n.streakFiveRoundsWon,
+      GameStreakType.sevenRoundsWon => context.l10n.streakSevenRoundsWon,
+      GameStreakType.tenRoundsWon => context.l10n.streakTenRoundsWon,
+      GameStreakType.oneHourGame => context.l10n.streakOneHourGame,
+      GameStreakType.oneAndHalfHoursGame =>
+        context.l10n.streakOneAndHalfHourGame,
+      GameStreakType.twoHoursGame => context.l10n.streakTwoHourGame,
+    };
+
+    if (_isWinStreak(type)) {
+      return _buildHighlightRow(
+        icon: Icons.local_fire_department_rounded,
+        iconBg: CaboTheme.primaryFixedDim.withValues(alpha: 0.3),
+        iconFg: CaboTheme.m3Primary,
+        title: context.l10n.endGameStreakWinTitle,
+        subtitle: subtitle,
+      );
+    }
+
+    return _buildHighlightRow(
+      icon: Icons.timer_outlined,
+      iconBg: CaboTheme.surfaceContainerHighest,
+      iconFg: CaboTheme.onSurfaceVariant,
+      title: context.l10n.endGameStreakDurationTitle,
+      subtitle: subtitle,
+    );
+  }
+
+  bool _isWinStreak(GameStreakType type) {
+    return type == GameStreakType.fiveRoundsWon ||
+        type == GameStreakType.sevenRoundsWon ||
+        type == GameStreakType.tenRoundsWon;
   }
 
   Widget _buildRankingCard(BuildContext context, List<Player> ranked) {

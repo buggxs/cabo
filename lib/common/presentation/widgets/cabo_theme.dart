@@ -39,7 +39,7 @@ class CaboTheme {
   static const double cellWidth = 130;
 
   // ---------------------------------------------------------------------------
-  // Farb-Token – lösen je nach aktivem Design auf.
+  // Color tokens, resolved for the active design.
   // ---------------------------------------------------------------------------
   static Color get background => _palette.background;
   static Color get surface => _palette.surface;
@@ -81,12 +81,12 @@ class CaboTheme {
   static Color get inverseSurface => _palette.inverseSurface;
   static Color get inverseOnSurface => _palette.inverseOnSurface;
 
-  /// Radius der Karten/Buttons (entspricht `xl` = 0.75rem im Design).
+  // Matches `xl` = 0.75rem in the design.
   static const double cardRadius = 12.0;
 
   // ---------------------------------------------------------------------------
-  // Typografie (Rubik für Display/Headline/Body, Quicksand für Labels).
-  // In beiden Designs identisch – nur die Farben wechseln.
+  // Typography (Rubik for display/headline/body, Quicksand for labels).
+  // Identical in both designs, only the colors change.
   // ---------------------------------------------------------------------------
   static const TextStyle displayLargeStyle = TextStyle(
     fontFamily: 'Rubik',
@@ -140,7 +140,30 @@ class CaboTheme {
   );
 
   static ThemeData get themeData {
-    final ColorScheme colorScheme = ColorScheme(
+    return ThemeData(
+      useMaterial3: true,
+      primaryColor: m3Primary,
+      scaffoldBackgroundColor: surface,
+      fontFamily: 'Rubik',
+      colorScheme: _colorScheme,
+      textTheme: _textTheme,
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        foregroundColor: onSurface,
+        iconTheme: IconThemeData(color: onSurface),
+      ),
+      elevatedButtonTheme: _elevatedButtonTheme,
+      outlinedButtonTheme: _outlinedButtonTheme,
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: m3Primary),
+      ),
+    );
+  }
+
+  static ColorScheme get _colorScheme {
+    return ColorScheme(
       brightness: isClassic ? Brightness.dark : Brightness.light,
       primary: m3Primary,
       onPrimary: onPrimary,
@@ -169,50 +192,41 @@ class CaboTheme {
       inverseSurface: inverseSurface,
       onInverseSurface: inverseOnSurface,
     );
+  }
 
-    return ThemeData(
-      useMaterial3: true,
-      primaryColor: m3Primary,
-      scaffoldBackgroundColor: surface,
-      fontFamily: 'Rubik',
-      colorScheme: colorScheme,
-      textTheme: const TextTheme(
-        displayLarge: displayLargeStyle,
-        headlineLarge: headlineLargeStyle,
-        headlineMedium: headlineMediumStyle,
-        bodyLarge: bodyLargeStyle,
-        bodyMedium: bodyMediumStyle,
-        labelLarge: labelLargeStyle,
-        labelSmall: labelSmallStyle,
-      ).apply(bodyColor: onSurface, displayColor: onSurface),
-      appBarTheme: AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        foregroundColor: onSurface,
-        iconTheme: IconThemeData(color: onSurface),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: onPrimary,
-          backgroundColor: m3Primary,
-          textStyle: labelLargeStyle,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(cardRadius),
-          ),
+  static TextTheme get _textTheme {
+    return const TextTheme(
+      displayLarge: displayLargeStyle,
+      headlineLarge: headlineLargeStyle,
+      headlineMedium: headlineMediumStyle,
+      bodyLarge: bodyLargeStyle,
+      bodyMedium: bodyMediumStyle,
+      labelLarge: labelLargeStyle,
+      labelSmall: labelSmallStyle,
+    ).apply(bodyColor: onSurface, displayColor: onSurface);
+  }
+
+  static ElevatedButtonThemeData get _elevatedButtonTheme {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: onPrimary,
+        backgroundColor: m3Primary,
+        textStyle: labelLargeStyle,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(cardRadius),
         ),
       ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: m3Primary,
-          side: BorderSide(color: outlineVariant),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(cardRadius),
-          ),
+    );
+  }
+
+  static OutlinedButtonThemeData get _outlinedButtonTheme {
+    return OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: m3Primary,
+        side: BorderSide(color: outlineVariant),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(cardRadius),
         ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(foregroundColor: m3Primary),
       ),
     );
   }

@@ -14,21 +14,21 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<MainMenuCubit>(
       create: (_) => MainMenuCubit(),
-      child: const MainMenuScreenContent(),
+      child: const _MainMenuScreenContent(),
     );
   }
 }
 
-class MainMenuScreenContent extends StatelessWidget {
-  const MainMenuScreenContent({super.key});
+class _MainMenuScreenContent extends StatelessWidget {
+  const _MainMenuScreenContent();
 
   @override
   Widget build(BuildContext context) {
-    MainMenuCubit cubit = context.watch<MainMenuCubit>();
-    MainMenuState state = cubit.state;
+    final MainMenuCubit cubit = context.watch<MainMenuCubit>();
+    final MainMenuState state = cubit.state;
 
     return PopScope(
-      onPopInvokedWithResult: (didPop, _) {
+      onPopInvokedWithResult: (bool didPop, _) {
         if (didPop) {
           return;
         }
@@ -44,7 +44,6 @@ class MainMenuScreenContent extends StatelessWidget {
       return const ChoosePlayersScreen();
     }
 
-    // Landing-Page; im klassischen Design mit Hintergrundbild hinterlegt.
     return Scaffold(
       backgroundColor: CaboTheme.scaffoldBackground,
       body: const MainMenuScreenList(),

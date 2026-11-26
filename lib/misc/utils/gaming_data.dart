@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 int calculatePlayedRounds(List<Game> games) {
   int totalRounds = 0;
 
-  for (Game game in games) {
+  for (final Game game in games) {
     if (game.players.isEmpty) continue;
     totalRounds += game.players.first.rounds.length;
   }
@@ -18,9 +18,9 @@ int calculatePlayedRounds(List<Game> games) {
 int calculateTotalPoints(List<Game> games) {
   int totalPoints = 0;
 
-  for (Game game in games) {
-    for (Player player in game.players) {
-      for (Round round in player.rounds) {
+  for (final Game game in games) {
+    for (final Player player in game.players) {
+      for (final Round round in player.rounds) {
         totalPoints += round.points;
       }
     }
@@ -35,10 +35,10 @@ int calculateTotalPoints(List<Game> games) {
 (int days, int hours) calculateTotalPlayTimeParts(List<Game> games) {
   Duration totalDuration = Duration.zero;
 
-  for (Game game in games) {
+  for (final Game game in games) {
     if (game.startedAt != null && game.finishedAt != null) {
-      DateTime? start = DateFormat().parseCaboDateString(game.startedAt!);
-      DateTime? end = DateFormat().parseCaboDateString(game.finishedAt!);
+      final DateTime? start = DateFormat().parseCaboDateString(game.startedAt!);
+      final DateTime? end = DateFormat().parseCaboDateString(game.finishedAt!);
 
       if (start != null && end != null && end.isAfter(start)) {
         totalDuration += end.difference(start);

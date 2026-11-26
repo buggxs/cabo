@@ -3,20 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i9;
+import 'dart:async' as _i5;
 
-import 'package:bloc/bloc.dart' as _i11;
+import 'package:bloc/bloc.dart' as _i7;
 import 'package:cabo/components/application/cubit/application_cubit.dart'
-    as _i7;
-import 'package:cabo/domain/announcement/announcement_check_service.dart'
-    as _i4;
-import 'package:cabo/domain/application/app_design.dart' as _i10;
-import 'package:cabo/domain/application/auth_service.dart' as _i5;
-import 'package:cabo/domain/application/deep_link_service.dart' as _i6;
-import 'package:cabo/domain/application/local_application_repository.dart'
     as _i2;
-import 'package:cabo/domain/application/local_design_repository.dart' as _i3;
-import 'package:logging/logging.dart' as _i8;
+import 'package:cabo/domain/application/app_design.dart' as _i6;
+import 'package:cabo/domain/application/auth_service.dart' as _i4;
+import 'package:firebase_auth/firebase_auth.dart' as _i8;
+import 'package:logging/logging.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -33,153 +28,49 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeLocalApplicationRepository_0 extends _i1.SmartFake
-    implements _i2.LocalApplicationRepository {
-  _FakeLocalApplicationRepository_0(Object parent, Invocation parentInvocation)
+class _FakeApplicationState_0 extends _i1.SmartFake
+    implements _i2.ApplicationState {
+  _FakeApplicationState_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeLocalDesignRepository_1 extends _i1.SmartFake
-    implements _i3.LocalDesignRepository {
-  _FakeLocalDesignRepository_1(Object parent, Invocation parentInvocation)
+class _FakeLogger_1 extends _i1.SmartFake implements _i3.Logger {
+  _FakeLogger_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAnnouncementCheckService_2 extends _i1.SmartFake
-    implements _i4.AnnouncementCheckService {
-  _FakeAnnouncementCheckService_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeAuthService_3 extends _i1.SmartFake implements _i5.AuthService {
-  _FakeAuthService_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeDeepLinkService_4 extends _i1.SmartFake
-    implements _i6.DeepLinkService {
-  _FakeDeepLinkService_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeApplicationState_5 extends _i1.SmartFake
-    implements _i7.ApplicationState {
-  _FakeApplicationState_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeLogger_6 extends _i1.SmartFake implements _i8.Logger {
-  _FakeLogger_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeAuthOutcome_7 extends _i1.SmartFake implements _i5.AuthOutcome {
-  _FakeAuthOutcome_7(Object parent, Invocation parentInvocation)
+class _FakeAuthOutcome_2 extends _i1.SmartFake implements _i4.AuthOutcome {
+  _FakeAuthOutcome_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ApplicationCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockApplicationCubit extends _i1.Mock implements _i7.ApplicationCubit {
+class MockApplicationCubit extends _i1.Mock implements _i2.ApplicationCubit {
   @override
-  _i2.LocalApplicationRepository get repository =>
-      (super.noSuchMethod(
-            Invocation.getter(#repository),
-            returnValue: _FakeLocalApplicationRepository_0(
-              this,
-              Invocation.getter(#repository),
-            ),
-            returnValueForMissingStub: _FakeLocalApplicationRepository_0(
-              this,
-              Invocation.getter(#repository),
-            ),
-          )
-          as _i2.LocalApplicationRepository);
-
-  @override
-  _i3.LocalDesignRepository get designRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#designRepository),
-            returnValue: _FakeLocalDesignRepository_1(
-              this,
-              Invocation.getter(#designRepository),
-            ),
-            returnValueForMissingStub: _FakeLocalDesignRepository_1(
-              this,
-              Invocation.getter(#designRepository),
-            ),
-          )
-          as _i3.LocalDesignRepository);
-
-  @override
-  _i4.AnnouncementCheckService get announcementCheckService =>
-      (super.noSuchMethod(
-            Invocation.getter(#announcementCheckService),
-            returnValue: _FakeAnnouncementCheckService_2(
-              this,
-              Invocation.getter(#announcementCheckService),
-            ),
-            returnValueForMissingStub: _FakeAnnouncementCheckService_2(
-              this,
-              Invocation.getter(#announcementCheckService),
-            ),
-          )
-          as _i4.AnnouncementCheckService);
-
-  @override
-  _i5.AuthService get authService =>
-      (super.noSuchMethod(
-            Invocation.getter(#authService),
-            returnValue: _FakeAuthService_3(
-              this,
-              Invocation.getter(#authService),
-            ),
-            returnValueForMissingStub: _FakeAuthService_3(
-              this,
-              Invocation.getter(#authService),
-            ),
-          )
-          as _i5.AuthService);
-
-  @override
-  _i6.DeepLinkService get deepLinkService =>
-      (super.noSuchMethod(
-            Invocation.getter(#deepLinkService),
-            returnValue: _FakeDeepLinkService_4(
-              this,
-              Invocation.getter(#deepLinkService),
-            ),
-            returnValueForMissingStub: _FakeDeepLinkService_4(
-              this,
-              Invocation.getter(#deepLinkService),
-            ),
-          )
-          as _i6.DeepLinkService);
-
-  @override
-  _i7.ApplicationState get state =>
+  _i2.ApplicationState get state =>
       (super.noSuchMethod(
             Invocation.getter(#state),
-            returnValue: _FakeApplicationState_5(
+            returnValue: _FakeApplicationState_0(
               this,
               Invocation.getter(#state),
             ),
-            returnValueForMissingStub: _FakeApplicationState_5(
+            returnValueForMissingStub: _FakeApplicationState_0(
               this,
               Invocation.getter(#state),
             ),
           )
-          as _i7.ApplicationState);
+          as _i2.ApplicationState);
 
   @override
-  _i9.Stream<_i7.ApplicationState> get stream =>
+  _i5.Stream<_i2.ApplicationState> get stream =>
       (super.noSuchMethod(
             Invocation.getter(#stream),
-            returnValue: _i9.Stream<_i7.ApplicationState>.empty(),
-            returnValueForMissingStub: _i9.Stream<_i7.ApplicationState>.empty(),
+            returnValue: _i5.Stream<_i2.ApplicationState>.empty(),
+            returnValueForMissingStub: _i5.Stream<_i2.ApplicationState>.empty(),
           )
-          as _i9.Stream<_i7.ApplicationState>);
+          as _i5.Stream<_i2.ApplicationState>);
 
   @override
   bool get isClosed =>
@@ -191,16 +82,16 @@ class MockApplicationCubit extends _i1.Mock implements _i7.ApplicationCubit {
           as bool);
 
   @override
-  _i8.Logger get logger =>
+  _i3.Logger get logger =>
       (super.noSuchMethod(
             Invocation.getter(#logger),
-            returnValue: _FakeLogger_6(this, Invocation.getter(#logger)),
-            returnValueForMissingStub: _FakeLogger_6(
+            returnValue: _FakeLogger_1(this, Invocation.getter(#logger)),
+            returnValueForMissingStub: _FakeLogger_1(
               this,
               Invocation.getter(#logger),
             ),
           )
-          as _i8.Logger);
+          as _i3.Logger);
 
   @override
   void init() => super.noSuchMethod(
@@ -209,142 +100,28 @@ class MockApplicationCubit extends _i1.Mock implements _i7.ApplicationCubit {
   );
 
   @override
-  void saveDesign(_i10.AppDesign? design) => super.noSuchMethod(
+  void saveDesign(_i6.AppDesign? design) => super.noSuchMethod(
     Invocation.method(#saveDesign, [design]),
     returnValueForMissingStub: null,
   );
 
   @override
-  _i9.Future<void> signOut() =>
+  _i5.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i9.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i9.Future<_i5.AuthOutcome> ensureSignedIn() =>
-      (super.noSuchMethod(
-            Invocation.method(#ensureSignedIn, []),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(this, Invocation.method(#ensureSignedIn, [])),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(this, Invocation.method(#ensureSignedIn, [])),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<_i5.AuthOutcome> signInWithGoogle() =>
-      (super.noSuchMethod(
-            Invocation.method(#signInWithGoogle, []),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#signInWithGoogle, []),
-              ),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#signInWithGoogle, []),
-              ),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<_i5.AuthOutcome> registerWithEmail(
-    String? email,
-    String? password,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#registerWithEmail, [email, password]),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#registerWithEmail, [email, password]),
-              ),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#registerWithEmail, [email, password]),
-              ),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<_i5.AuthOutcome> signInWithEmail(
-    String? email,
-    String? password,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#signInWithEmail, [email, password]),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#signInWithEmail, [email, password]),
-              ),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#signInWithEmail, [email, password]),
-              ),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<_i5.AuthOutcome> sendVerificationEmail() =>
-      (super.noSuchMethod(
-            Invocation.method(#sendVerificationEmail, []),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#sendVerificationEmail, []),
-              ),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#sendVerificationEmail, []),
-              ),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<_i5.AuthOutcome> sendPasswordResetEmail(String? email) =>
-      (super.noSuchMethod(
-            Invocation.method(#sendPasswordResetEmail, [email]),
-            returnValue: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#sendPasswordResetEmail, [email]),
-              ),
-            ),
-            returnValueForMissingStub: _i9.Future<_i5.AuthOutcome>.value(
-              _FakeAuthOutcome_7(
-                this,
-                Invocation.method(#sendPasswordResetEmail, [email]),
-              ),
-            ),
-          )
-          as _i9.Future<_i5.AuthOutcome>);
-
-  @override
-  _i9.Future<bool> refreshVerificationStatus() =>
+  _i5.Future<void> refreshVerificationStatus() =>
       (super.noSuchMethod(
             Invocation.method(#refreshVerificationStatus, []),
-            returnValue: _i9.Future<bool>.value(false),
-            returnValueForMissingStub: _i9.Future<bool>.value(false),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i9.Future<bool>);
+          as _i5.Future<void>);
 
   @override
   void saveIsDeveloperMode(bool? isDeveloperMode) => super.noSuchMethod(
@@ -359,26 +136,25 @@ class MockApplicationCubit extends _i1.Mock implements _i7.ApplicationCubit {
   );
 
   @override
-  _i9.Future<void> close() =>
+  _i5.Future<void> close() =>
       (super.noSuchMethod(
             Invocation.method(#close, []),
-            returnValue: _i9.Future<void>.value(),
-            returnValueForMissingStub: _i9.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i9.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  void emit(_i7.ApplicationState? state) => super.noSuchMethod(
+  void emit(_i2.ApplicationState? state) => super.noSuchMethod(
     Invocation.method(#emit, [state]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void onChange(_i11.Change<_i7.ApplicationState>? change) =>
-      super.noSuchMethod(
-        Invocation.method(#onChange, [change]),
-        returnValueForMissingStub: null,
-      );
+  void onChange(_i7.Change<_i2.ApplicationState>? change) => super.noSuchMethod(
+    Invocation.method(#onChange, [change]),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void addError(Object? error, [StackTrace? stackTrace]) => super.noSuchMethod(
@@ -391,4 +167,210 @@ class MockApplicationCubit extends _i1.Mock implements _i7.ApplicationCubit {
     Invocation.method(#onError, [error, stackTrace]),
     returnValueForMissingStub: null,
   );
+}
+
+/// A class which mocks [AuthService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAuthService extends _i1.Mock implements _i4.AuthService {
+  @override
+  _i3.Logger get logger =>
+      (super.noSuchMethod(
+            Invocation.getter(#logger),
+            returnValue: _FakeLogger_1(this, Invocation.getter(#logger)),
+            returnValueForMissingStub: _FakeLogger_1(
+              this,
+              Invocation.getter(#logger),
+            ),
+          )
+          as _i3.Logger);
+
+  @override
+  _i5.Stream<_i8.User?> userChanges() =>
+      (super.noSuchMethod(
+            Invocation.method(#userChanges, []),
+            returnValue: _i5.Stream<_i8.User?>.empty(),
+            returnValueForMissingStub: _i5.Stream<_i8.User?>.empty(),
+          )
+          as _i5.Stream<_i8.User?>);
+
+  @override
+  _i5.Future<void> initializeProviders() =>
+      (super.noSuchMethod(
+            Invocation.method(#initializeProviders, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> ensureSignedIn() =>
+      (super.noSuchMethod(
+            Invocation.method(#ensureSignedIn, []),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(this, Invocation.method(#ensureSignedIn, [])),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(this, Invocation.method(#ensureSignedIn, [])),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> signInWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithGoogle, []),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#signInWithGoogle, []),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#signInWithGoogle, []),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> registerWithEmail({
+    required String? email,
+    required String? password,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#registerWithEmail, [], {
+              #email: email,
+              #password: password,
+            }),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#registerWithEmail, [], {
+                  #email: email,
+                  #password: password,
+                }),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#registerWithEmail, [], {
+                  #email: email,
+                  #password: password,
+                }),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> signInWithEmail({
+    required String? email,
+    required String? password,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithEmail, [], {
+              #email: email,
+              #password: password,
+            }),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#signInWithEmail, [], {
+                  #email: email,
+                  #password: password,
+                }),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#signInWithEmail, [], {
+                  #email: email,
+                  #password: password,
+                }),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> sendVerificationEmail() =>
+      (super.noSuchMethod(
+            Invocation.method(#sendVerificationEmail, []),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#sendVerificationEmail, []),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#sendVerificationEmail, []),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<bool> refreshVerificationStatus() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshVerificationStatus, []),
+            returnValue: _i5.Future<bool>.value(false),
+            returnValueForMissingStub: _i5.Future<bool>.value(false),
+          )
+          as _i5.Future<bool>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> sendPasswordResetEmail(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendPasswordResetEmail, [email]),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#sendPasswordResetEmail, [email]),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#sendPasswordResetEmail, [email]),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
+
+  @override
+  _i5.Future<void> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i4.AuthOutcome> linkOrSignInForTest(
+    _i8.AuthCredential? credential,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#linkOrSignInForTest, [credential]),
+            returnValue: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#linkOrSignInForTest, [credential]),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i4.AuthOutcome>.value(
+              _FakeAuthOutcome_2(
+                this,
+                Invocation.method(#linkOrSignInForTest, [credential]),
+              ),
+            ),
+          )
+          as _i5.Future<_i4.AuthOutcome>);
 }

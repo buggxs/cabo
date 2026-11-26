@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/game_history/cubit/game_history_cubit.dart';
 import 'package:cabo/components/game_history/widget/animated_total_points_banner.dart';
 import 'package:cabo/components/game_history/widget/game_card.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:cabo/misc/utils/gaming_data.dart';
@@ -17,15 +21,19 @@ class GameHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GameHistoryCubit()..loadGames(),
-      child: const GameHistoryScreenContent(),
+    return BlocProvider<GameHistoryCubit>(
+      create: (BuildContext _) {
+        final GameHistoryCubit cubit = GameHistoryCubit();
+        unawaited(cubit.loadGames());
+        return cubit;
+      },
+      child: const _GameHistoryScreenContent(),
     );
   }
 }
 
-class GameHistoryScreenContent extends StatelessWidget {
-  const GameHistoryScreenContent({super.key});
+class _GameHistoryScreenContent extends StatelessWidget {
+  const _GameHistoryScreenContent();
 
   static const List<BoxShadow> _cardShadow = <BoxShadow>[
     BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
@@ -50,7 +58,7 @@ class GameHistoryScreenContent extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => app<NavigationService>().pop(),
         ),
         title: Column(
           mainAxisSize: MainAxisSize.min,

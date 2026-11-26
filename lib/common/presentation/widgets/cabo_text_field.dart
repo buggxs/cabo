@@ -19,7 +19,7 @@ class CaboTextField extends StatefulWidget {
   final String label;
   final String? errorText;
 
-  /// Obscured fields get a reveal toggle on the right.
+  // Obscured fields get a reveal toggle on the right.
   final bool isObscured;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;

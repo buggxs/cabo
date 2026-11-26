@@ -5,8 +5,11 @@ void main() {
   Map<String, dynamic> announcementJson(List<Map<String, dynamic>>? actions) {
     return <String, dynamic>{
       'id': 'summer-sale',
-      'title': {'de': 'Sommer-Angebot', 'en': 'Summer sale'},
-      'message': {'de': 'Jetzt zuschlagen!', 'en': 'Grab it now!'},
+      'title': <String, String>{'de': 'Sommer-Angebot', 'en': 'Summer sale'},
+      'message': <String, String>{
+        'de': 'Jetzt zuschlagen!',
+        'en': 'Grab it now!',
+      },
       'imageUrl': null,
       'actions': actions,
     };
@@ -16,14 +19,17 @@ void main() {
     test('parses navigate and dismiss actions', () {
       final Announcement announcement = Announcement.fromJson(
         announcementJson(<Map<String, dynamic>>[
-          {
+          <String, dynamic>{
             'type': 'navigate',
-            'label': {'de': 'Zu den Regeln', 'en': 'To the rules'},
+            'label': <String, String>{
+              'de': 'Zu den Regeln',
+              'en': 'To the rules',
+            },
             'route': 'rule_set_screen',
           },
-          {
+          <String, dynamic>{
             'type': 'dismiss',
-            'label': {'de': 'Später', 'en': 'Later'},
+            'label': <String, String>{'de': 'Später', 'en': 'Later'},
           },
         ]),
       );
@@ -44,12 +50,12 @@ void main() {
     test('falls back to dismiss for unknown and missing action types', () {
       final Announcement announcement = Announcement.fromJson(
         announcementJson(<Map<String, dynamic>>[
-          {
+          <String, dynamic>{
             'type': 'open_url',
-            'label': {'de': 'Öffnen', 'en': 'Open'},
+            'label': <String, String>{'de': 'Öffnen', 'en': 'Open'},
           },
-          {
-            'label': {'de': 'Okay', 'en': 'Okay'},
+          <String, dynamic>{
+            'label': <String, String>{'de': 'Okay', 'en': 'Okay'},
           },
         ]),
       );

@@ -50,8 +50,9 @@ void main() {
     when(deepLinkService.linkStream).thenAnswer((_) => linkController.stream);
     when(deepLinkService.getInitialLink()).thenAnswer((_) async => null);
     when(deepLinkService.isEmailVerifiedLink(any)).thenAnswer(
-      (Invocation i) =>
-          DeepLinkService().isEmailVerifiedLink(i.positionalArguments.first),
+      (Invocation i) => DeepLinkService().isEmailVerifiedLink(
+        i.positionalArguments.first as Uri,
+      ),
     );
     when(repository.getCurrent()).thenAnswer((_) async => false);
     when(designRepository.getCurrent()).thenAnswer((_) async => 'modern');
@@ -60,9 +61,9 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  tearDown(() {
-    userController.close();
-    linkController.close();
+  tearDown(() async {
+    await userController.close();
+    await linkController.close();
   });
 
   ApplicationCubit buildCubit() => ApplicationCubit(

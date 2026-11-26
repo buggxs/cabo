@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
@@ -35,13 +37,13 @@ class _CaboDataTableState extends State<CaboDataTable>
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         SingleChildScrollView(
           controller: _horizontal,
           scrollDirection: Axis.horizontal,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: <Widget>[
               // Sticky header
               Material(
                 elevation: _vertical.hasClients && _vertical.offset > 0 ? 2 : 0,
@@ -71,7 +73,9 @@ class _CaboDataTableState extends State<CaboDataTable>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
-      app<GameService>().saveLastPlayedGame(widget.cubit.state.game!);
+      unawaited(
+        app<GameService>().saveLastPlayedGame(widget.cubit.state.game!),
+      );
     }
   }
 

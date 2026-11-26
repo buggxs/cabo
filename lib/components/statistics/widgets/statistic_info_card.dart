@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/cubit/statistics_cubit.dart';
+import 'package:cabo/domain/game/game.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,9 +61,30 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
 
   void _updateElapsedTime() {
     _elapsedTime = _stopwatch.elapsed;
-    _elapsedTimeString =
-        context.read<StatisticsCubit>().state.game?.gameDuration ??
-        _formatElapsedTime(_elapsedTime);
+    final Game? game = context.read<StatisticsCubit>().state.game;
+    _elapsedTimeString = game == null
+        ? _formatElapsedTime(_elapsedTime)
+        : _formatGameDuration(game);
+  }
+
+  String _formatGameDuration(Game game) {
+    final Duration? duration = game.duration;
+    if (duration == null) {
+      return '';
+    }
+    if (game.finishedAt == null) {
+      return _formatElapsedTime(duration);
+    }
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final String hours = duration.inHours
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    final String minutes = duration.inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, '0');
+    return '$hours ${l10n.historyScreenHours}, $minutes ${l10n.historyScreenMinutes}';
   }
 
   String _formatElapsedTime(Duration time) {
@@ -91,7 +114,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
           color: CaboTheme.surfaceContainer,
           borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
           border: Border.all(color: CaboTheme.surfaceVariant),
-          boxShadow: const [
+          boxShadow: const <BoxShadow>[
             BoxShadow(
               color: Color(0x143D3A35), // rgba(61,58,53,0.08)
               blurRadius: 12,
@@ -100,7 +123,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
           ],
         ),
         child: Column(
-          children: [
+          children: <Widget>[
             if (widget.title != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),

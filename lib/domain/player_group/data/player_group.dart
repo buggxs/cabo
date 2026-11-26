@@ -15,5 +15,5 @@ class PlayerGroup extends Equatable {
   Map<String, dynamic> toJson() => _$PlayerGroupToJson(this);
 
   @override
-  List<Object?> get props => [playerNames];
+  List<Object?> get props => <Object?>[playerNames];
 }

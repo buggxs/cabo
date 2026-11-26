@@ -16,16 +16,21 @@ part 'application_state.dart';
 
 class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
   ApplicationCubit({
-    required this.repository,
-    required this.designRepository,
-    required this.announcementCheckService,
-    required this.authService,
-    required this.deepLinkService,
-  }) : super(const ApplicationInitial()) {
+    required LocalApplicationRepository repository,
+    required LocalDesignRepository designRepository,
+    required AnnouncementCheckService announcementCheckService,
+    required AuthService authService,
+    required DeepLinkService deepLinkService,
+  }) : _repository = repository,
+       _designRepository = designRepository,
+       _announcementCheckService = announcementCheckService,
+       _authService = authService,
+       _deepLinkService = deepLinkService,
+       super(const ApplicationInitial()) {
     // userChanges instead of authStateChanges: only the former fires when
     // credentials are linked onto an anonymous user, which is the normal
     // case now that everybody is signed in from the start.
-    _authSubscription = authService.userChanges().listen((User? user) {
+    _authSubscription = _authService.userChanges().listen((User? user) {
       if (user == null) {
         _safeEmit(
           ApplicationUnauthenticated(
@@ -44,90 +49,64 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
       }
     });
 
-    unawaited(authService.initializeProviders());
+    unawaited(_authService.initializeProviders());
   }
 
   late final StreamSubscription<User?> _authSubscription;
   StreamSubscription<Uri>? _linkSubscription;
-  final LocalApplicationRepository repository;
-  final LocalDesignRepository designRepository;
-  final AnnouncementCheckService announcementCheckService;
-  final AuthService authService;
-  final DeepLinkService deepLinkService;
+  final LocalApplicationRepository _repository;
+  final LocalDesignRepository _designRepository;
+  final AnnouncementCheckService _announcementCheckService;
+  final AuthService _authService;
+  final DeepLinkService _deepLinkService;
 
-  /// Emits only while the cubit is alive: init() and the user stream can both
-  /// resolve after close().
+  // init() and the user stream can both resolve after close().
   void _safeEmit(ApplicationState next) {
     if (isClosed) return;
     emit(next);
   }
 
   void init() async {
-    final isDeveloperMode = await repository.getCurrent() ?? false;
+    final bool isDeveloperMode = await _repository.getCurrent() ?? false;
     final AppDesign design = AppDesign.fromName(
-      await designRepository.getCurrent(),
+      await _designRepository.getCurrent(),
     );
     CaboTheme.applyDesign(design);
     _safeEmit(state.copyWith(isDeveloper: isDeveloperMode, design: design));
 
     // Never awaited: a hanging sign-in must not delay the announcement, and
     // announcements are readable without auth anyway.
-    unawaited(authService.ensureSignedIn());
-    unawaited(announcementCheckService.checkAndShowAnnouncement());
+    unawaited(_authService.ensureSignedIn());
+    unawaited(_announcementCheckService.checkAndShowAnnouncement());
     unawaited(_initDeepLinks());
   }
 
   void saveDesign(AppDesign design) {
-    designRepository.saveCurrent(design.name);
+    unawaited(_designRepository.saveCurrent(design.name));
     CaboTheme.applyDesign(design);
     _safeEmit(state.copyWith(design: design));
   }
 
   Future<void> signOut() async {
-    await authService.signOut();
+    await _authService.signOut();
     // Every user stays signed in, so drop straight back to anonymous.
-    await authService.ensureSignedIn();
+    await _authService.ensureSignedIn();
   }
 
-  /// Retried lazily: the sign-in at startup can fail while offline.
-  Future<AuthOutcome> ensureSignedIn() {
-    return authService.ensureSignedIn();
-  }
-
-  Future<AuthOutcome> signInWithGoogle() {
-    return authService.signInWithGoogle();
-  }
-
-  Future<AuthOutcome> registerWithEmail(String email, String password) {
-    return authService.registerWithEmail(email: email, password: password);
-  }
-
-  Future<AuthOutcome> signInWithEmail(String email, String password) {
-    return authService.signInWithEmail(email: email, password: password);
-  }
-
-  Future<AuthOutcome> sendVerificationEmail() {
-    return authService.sendVerificationEmail();
-  }
-
-  Future<AuthOutcome> sendPasswordResetEmail(String email) {
-    return authService.sendPasswordResetEmail(email);
-  }
-
-  /// Re-reads the verification status. The resulting state update comes from
-  /// the userChanges subscription, triggered by the forced token refresh.
-  Future<bool> refreshVerificationStatus() {
-    return authService.refreshVerificationStatus();
+  // The resulting state update comes from the userChanges subscription,
+  // triggered by the forced token refresh.
+  Future<void> refreshVerificationStatus() async {
+    await _authService.refreshVerificationStatus();
   }
 
   void saveIsDeveloperMode(bool isDeveloperMode) {
-    repository.saveCurrent(isDeveloperMode);
+    unawaited(_repository.saveCurrent(isDeveloperMode));
     _safeEmit(state.copyWith(isDeveloper: isDeveloperMode));
   }
 
   void toggleDeveloperMode() {
-    final bool newMode = !state.isDeveloper;
-    saveIsDeveloperMode(newMode);
+    final bool isDeveloperMode = !state.isDeveloper;
+    saveIsDeveloperMode(isDeveloperMode);
   }
 
   Future<void> _initDeepLinks() async {
@@ -135,22 +114,22 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     // covers links arriving while the app runs. Handling one twice is safe.
     // Subscribe first: a link arriving while getInitialLink is in flight would
     // otherwise be dropped. Handling the same link twice is harmless.
-    _linkSubscription = deepLinkService.linkStream.listen(
+    _linkSubscription = _deepLinkService.linkStream.listen(
       _handleLink,
       onError: (Object e) => logger.warning('Deep link stream error: $e'),
     );
     try {
-      final Uri? initialLink = await deepLinkService.getInitialLink();
+      final Uri? initialLink = await _deepLinkService.getInitialLink();
       if (initialLink != null) {
         _handleLink(initialLink);
       }
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       logger.warning('Could not read the initial deep link', e, stackTrace);
     }
   }
 
   void _handleLink(Uri uri) {
-    if (deepLinkService.isEmailVerifiedLink(uri)) {
+    if (_deepLinkService.isEmailVerifiedLink(uri)) {
       unawaited(refreshVerificationStatus());
     }
   }

@@ -1,13 +1,8 @@
-import 'package:cabo/core/app_navigator/navigation_service.dart';
-import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game_streak.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
-import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -38,8 +33,8 @@ class Game extends Equatable {
   final RuleSet ruleSet;
   final List<String> playerUids;
 
-  /// Player names in their fixed seating order. Unlike [players], this list is
-  /// never re-sorted by placement and therefore drives the dealer rotation.
+  // Unlike [players], this list is never re-sorted by placement and therefore
+  // drives the dealer rotation.
   final List<String> seatingOrder;
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
@@ -74,14 +69,13 @@ class Game extends Equatable {
 
   bool get isPublic => publicId != null && ownerId != null;
 
-  /// Falls back to the current player order for games saved before the
-  /// seating order was introduced.
+  // Falls back to the current player order for games saved before the
+  // seating order was introduced.
   List<String> get dealerRotation => seatingOrder.isNotEmpty
       ? seatingOrder
       : players.map((Player player) => player.name).toList();
 
-  /// Name of the player who has to shuffle for the upcoming round. Rotates
-  /// through [dealerRotation], independent of the current placement.
+  // Rotates through [dealerRotation], independent of the current placement.
   String? get currentDealerName {
     final List<String> rotation = dealerRotation;
     if (rotation.isEmpty || players.isEmpty) {
@@ -95,28 +89,19 @@ class Game extends Equatable {
   bool get hasRounds =>
       players.any((Player player) => player.rounds.isNotEmpty);
 
-  String get gameDuration {
-    BuildContext context =
-        app<NavigationService>().navigatorKey.currentContext!;
-    if (startedAt != null && finishedAt != null) {
-      DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
-      DateTime? dateFinishedAt = DateFormat().parseCaboDateString(finishedAt!);
-      if (dateStartedAt == null || dateFinishedAt == null) {
-        return '';
-      }
-      Duration duration = dateFinishedAt.difference(dateStartedAt);
-      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenHours}, '
-          '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')} ${AppLocalizations.of(context)!.historyScreenMinutes}';
-    } else if (startedAt != null && finishedAt == null) {
-      DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
-      DateTime dateFinishedAt = DateTime.now();
-      if (dateStartedAt == null) {
-        return '';
-      }
-      Duration duration = dateFinishedAt.difference(dateStartedAt);
-      return '${duration.inHours.remainder(60).toString().padLeft(2, '0')}:${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}';
+  Duration? get duration {
+    final DateTime? startedDate = _parseDate(startedAt);
+    final DateTime? finishedDate = finishedAt == null
+        ? DateTime.now()
+        : _parseDate(finishedAt);
+    if (startedDate == null || finishedDate == null) {
+      return null;
     }
-    return '';
+    return finishedDate.difference(startedDate);
+  }
+
+  DateTime? _parseDate(String? date) {
+    return date == null ? null : DateFormat().parseCaboDateString(date);
   }
 
   String dateToString() {
@@ -124,7 +109,7 @@ class Game extends Equatable {
       return '';
     }
 
-    DateTime? startedDate = DateFormat().parseCaboDateString(startedAt!);
+    final DateTime? startedDate = DateFormat().parseCaboDateString(startedAt!);
 
     if (startedDate == null) {
       return '';
@@ -133,11 +118,9 @@ class Game extends Equatable {
     return DateFormat('dd-MM-yyyy').format(startedDate);
   }
 
-  /// Ermittelt die erreichten Streak-Typen (jeweils nur die höchste Stufe pro
-  /// Kategorie). Wird von [getGameStreaks] für die Anzeige gemappt und vom
-  /// EndGameScreen direkt für die Highlight-Karte genutzt.
+  // Only the highest tier per category is returned.
   List<GameStreakType> getGameStreakTypes() {
-    List<GameStreakType> streaks = <GameStreakType>[];
+    final List<GameStreakType> streaks = <GameStreakType>[];
 
     if (_hasWonFiveRoundsInARow) {
       GameStreakType winStreak = GameStreakType.fiveRoundsWon;
@@ -164,12 +147,6 @@ class Game extends Equatable {
     return streaks;
   }
 
-  List<GameStreak> getGameStreaks() {
-    return getGameStreakTypes()
-        .map((GameStreakType streak) => streak.streak!)
-        .toList();
-  }
-
   bool get _hasWonFiveRoundsInARow =>
       players.any((Player player) => player.hasRoundWinStreak(5));
 
@@ -177,8 +154,12 @@ class Game extends Equatable {
     if (startedAt == null || finishedAt == null) {
       return false;
     }
-    DateTime? dateStartedAt = DateFormat().parseCaboDateString(startedAt!);
-    DateTime? dateFinishedAt = DateFormat().parseCaboDateString(finishedAt!);
+    final DateTime? dateStartedAt = DateFormat().parseCaboDateString(
+      startedAt!,
+    );
+    final DateTime? dateFinishedAt = DateFormat().parseCaboDateString(
+      finishedAt!,
+    );
     if (dateStartedAt == null || dateFinishedAt == null) {
       return false;
     }
@@ -187,15 +168,15 @@ class Game extends Equatable {
       return false;
     }
 
-    Duration duration = dateFinishedAt.difference(dateStartedAt);
+    final Duration duration = dateFinishedAt.difference(dateStartedAt);
     return duration.compareTo(streakDuration) >= 0;
   }
 
-  /// With precision landing enabled, hitting the total game points exactly
-  /// halves the score instead of ending the game — only exceeding it does.
+  // With precision landing enabled, hitting the total game points exactly
+  // halves the score instead of ending the game; only exceeding it does.
   bool get isGameFinished =>
       players.any(
-        (Player player) => ruleSet.precisionLanding
+        (Player player) => ruleSet.hasPrecisionLanding
             ? player.totalPoints > ruleSet.totalGamePoints
             : player.totalPoints >= ruleSet.totalGamePoints,
       ) ||

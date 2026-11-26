@@ -26,13 +26,11 @@ class Round extends Equatable {
   final bool hasClosedRound;
   final bool hasPrecisionLanding;
 
-  /// Points subtracted from the total for a precision landing in this round.
-  /// `null` on rounds stored before the deduction became rule set dependent;
-  /// those fall back to the former fixed deduction of 50 points.
+  // `null` on rounds stored before the deduction became rule set dependent;
+  // those fall back to the former fixed deduction of 50 points.
   final int? precisionLandingDeduction;
 
-  /// Marks every player's round of a round that was decided by a kamikaze,
-  /// so the score table can tell it apart from an ordinary high hand.
+  // Lets the score table tell a kamikaze round apart from an ordinary high hand.
   final bool isKamikazeRound;
 
   final bool isWonRound;
@@ -67,7 +65,7 @@ class Round extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
     id,
     round,
     points,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cabo/components/game_history/game_history_screen.dart';
 import 'package:cabo/components/main_menu/screens/join_game_screen.dart';
@@ -12,8 +14,6 @@ import 'package:cabo/domain/player_group/local_player_group_repository.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 part 'main_menu_state.dart';
 
@@ -32,26 +32,27 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     );
   }
 
-  void pushToScreen(BuildContext context, String? route) {
+  void pushToScreen(String? route) {
     logger.info('History screen');
-    Navigator.of(context).pushNamed(route ?? GameHistoryScreen.route);
-  }
-
-  void showJoinGameDialog(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => const JoinGameScreen(),
-        fullscreenDialog: true,
+    unawaited(
+      app<NavigationService>().pushNamed<void>(
+        route ?? GameHistoryScreen.route,
       ),
     );
   }
 
-  Future<void> checkForPossibleGame({bool? useOwnRuleSet}) async {
-    Game? game = await app<GameService>().getLastPlayedGame();
-    BuildContext currentContext =
-        app<NavigationService>().navigatorKey.currentContext!;
+  void showJoinGameDialog() {
+    unawaited(
+      app<NavigationService>().pushFullscreenDialog<void>(
+        const JoinGameScreen(),
+      ),
+    );
+  }
+
+  Future<void> checkForPossibleGame() async {
+    final Game? game = await app<GameService>().getLastPlayedGame();
     if (!(game?.isGameFinished ?? true)) {
-      bool? shouldLoadGame = await app<StatisticsDialogService>()
+      final bool? shouldLoadGame = await app<StatisticsDialogService>()
           .loadNotFinishedGame();
 
       if (shouldLoadGame == null) {
@@ -59,10 +60,8 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
       }
 
       if (shouldLoadGame) {
-        if (currentContext.mounted) {
-          _pushToStatsScreen(game!.players, game: game);
-          return;
-        }
+        _pushToStatsScreen(game!.players, game: game);
+        return;
       }
     }
     final List<PlayerGroup> recentGroups =
@@ -71,7 +70,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   }
 
   void showChoosePlayerScreen() {
-    checkForPossibleGame();
+    unawaited(checkForPossibleGame());
   }
 
   Future<void> startGame(List<String> names) async {
@@ -109,19 +108,16 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     final List<PlayerGroup> groups =
         await repository.getAll() ?? <PlayerGroup>[];
 
-    groups.removeWhere(
-      (PlayerGroup group) => listEquals(group.playerNames, names),
-    );
-    groups.insert(0, PlayerGroup(playerNames: names));
+    final PlayerGroup newGroup = PlayerGroup(playerNames: names);
+    groups.removeWhere((PlayerGroup group) => group == newGroup);
+    groups.insert(0, newGroup);
 
     await repository.saveAll(groups.take(5).toList());
   }
 
-  Future<bool> onWillPop() async {
+  void onWillPop() {
     if (state is ChoosePlayers) {
       emit(MainMenu());
-      return false;
     }
-    return false;
   }
 }

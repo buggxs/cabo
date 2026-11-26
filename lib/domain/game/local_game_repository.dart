@@ -4,7 +4,7 @@ import 'package:cabo/domain/game/game.dart';
 class LocalGameRepository extends LocalStorageRepository<Game> {
   @override
   Game castMapToObject(dynamic object) {
-    return Game.fromJson(object);
+    return Game.fromJson(object as Map<String, dynamic>);
   }
 
   @override

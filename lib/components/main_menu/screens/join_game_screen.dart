@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/main_menu/widgets/cabo_scanner_window.dart';
@@ -6,6 +8,7 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
+import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +47,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => app<NavigationService>().pop(),
         ),
         title: Text(
           l10n.menuEntryJoinGame,
@@ -126,34 +129,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             ),
           ),
         ),
-        TextField(
-          controller: _idController,
-          autocorrect: false,
-          enableSuggestions: false,
-          cursorColor: CaboTheme.m3Primary,
-          style: CaboTheme.bodyLargeStyle.copyWith(color: CaboTheme.onSurface),
-          decoration: InputDecoration(
-            hintText: l10n.joinGameScreenGameIdLabel,
-            hintStyle: CaboTheme.bodyMediumStyle.copyWith(
-              color: CaboTheme.outlineVariant,
-            ),
-            filled: true,
-            fillColor: CaboTheme.surfaceContainer,
-            suffixIcon: Icon(Icons.edit, color: CaboTheme.outline),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-              borderSide: BorderSide(color: CaboTheme.m3Primary, width: 2),
-            ),
-          ),
-        ),
+        _buildIdTextField(l10n),
         Padding(
           padding: const EdgeInsets.only(left: 16, top: 4),
           child: Text(
@@ -167,6 +143,37 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     );
   }
 
+  Widget _buildIdTextField(AppLocalizations l10n) {
+    return TextField(
+      controller: _idController,
+      autocorrect: false,
+      enableSuggestions: false,
+      cursorColor: CaboTheme.m3Primary,
+      style: CaboTheme.bodyLargeStyle.copyWith(color: CaboTheme.onSurface),
+      decoration: InputDecoration(
+        hintText: l10n.joinGameScreenGameIdLabel,
+        hintStyle: CaboTheme.bodyMediumStyle.copyWith(
+          color: CaboTheme.outlineVariant,
+        ),
+        filled: true,
+        fillColor: CaboTheme.surfaceContainer,
+        suffixIcon: Icon(Icons.edit, color: CaboTheme.outline),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
+          borderSide: BorderSide(color: CaboTheme.m3Primary, width: 2),
+        ),
+      ),
+    );
+  }
+
   Widget _buildGameInfo(AppLocalizations l10n) {
     if (_isLoading) {
       return Center(
@@ -176,7 +183,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
             const SizedBox(height: 20),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) =>
+              transitionBuilder: (Widget child, Animation<double> animation) =>
                   FadeTransition(opacity: animation, child: child),
               child: Text(
                 _loadingStatusText ?? '',
@@ -235,25 +242,29 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
           ),
           Divider(color: CaboTheme.outlineVariant, thickness: 1, height: 30),
           ...game.players.map(
-            (player) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                player.name,
-                style: CaboTheme.bodyLargeStyle.copyWith(
-                  color: CaboTheme.onSurface,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: Text(
-                '${player.totalPoints} ${l10n.joinGameScreenGamePoints}',
-                style: CaboTheme.bodyLargeStyle.copyWith(
-                  color: CaboTheme.m3Secondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            (Player player) => _buildPlayerTile(l10n, player),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlayerTile(AppLocalizations l10n, Player player) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        player.name,
+        style: CaboTheme.bodyLargeStyle.copyWith(
+          color: CaboTheme.onSurface,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      trailing: Text(
+        '${player.totalPoints} ${l10n.joinGameScreenGamePoints}',
+        style: CaboTheme.bodyLargeStyle.copyWith(
+          color: CaboTheme.m3Secondary,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -270,7 +281,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     } else {
       onPressed = () {
         FocusScope.of(context).unfocus();
-        _retrieveQrCodeData(_idController.text);
+        unawaited(_retrieveQrCodeData(_idController.text));
       };
     }
 
@@ -291,7 +302,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
   }
 
   Future<void> _retrieveQrCodeData(String? qrCode) async {
-    // Verhindert mehrfaches Ausführen für denselben QR-Code
+    // Prevents handling the same QR code more than once.
     if (qrCode == null || qrCode.isEmpty || qrCode == _scannedQrCode) {
       return;
     }
@@ -305,8 +316,8 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       )!.joinGameScreenLoadingStatus;
     });
 
-    // Kurze Pause, damit der Benutzer den ersten Schritt sieht
-    await Future.delayed(const Duration(milliseconds: 1200));
+    // Short pause so the user can see the first loading step.
+    await Future<void>.delayed(const Duration(milliseconds: 1200));
 
     if (!mounted) {
       return;
@@ -319,58 +330,55 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     });
 
     try {
-      // Retry the sign-in: the one at startup may have failed while offline,
-      // and getPublicGame needs auth because the rules require it.
-      await app<AuthService>().ensureSignedIn();
-      Game publicGame = await app<PublicGameService>().getPublicGame(qrCode);
-
-      if (publicGame.isGameFinished) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _scannedQrCode = null;
-            _loadingStatusText = null;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.joinGameScreenGameAlreadyFinished,
-              ),
-              backgroundColor: CaboTheme.m3Error,
-            ),
-          );
-        }
-        return;
-      }
-
-      // joinGame registriert die UID des Mitspielers (ggf. via Anonymous-Auth)
-      // im Firestore-Dokument — Voraussetzung für die Security Rules und
-      // dafür, dass Punkte-Updates akzeptiert werden.
-      publicGame = await app<PublicGameService>().joinGame(qrCode);
-
-      if (mounted) {
-        setState(() {
-          _publicGame = publicGame;
-          _isLoading = false;
-          _loadingStatusText = null;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _scannedQrCode = null; // Erlaube erneutes Scannen nach einem Fehler
-          _loadingStatusText = null;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context)!.joinGameScreenGameNotFound,
-            ),
-            backgroundColor: CaboTheme.m3Error,
-          ),
-        );
-      }
+      await _joinPublicGame(qrCode);
+    } on Object {
+      // Also catches the TypeError getPublicGame throws for an unknown id.
+      _resetWithError(
+        (AppLocalizations l10n) => l10n.joinGameScreenGameNotFound,
+      );
     }
+  }
+
+  Future<void> _joinPublicGame(String qrCode) async {
+    // Retry the sign-in: the one at startup may have failed while offline,
+    // and getPublicGame needs auth because the rules require it.
+    await app<AuthService>().ensureSignedIn();
+    final Game foundGame = await app<PublicGameService>().getPublicGame(qrCode);
+
+    if (foundGame.isGameFinished) {
+      _resetWithError(
+        (AppLocalizations l10n) => l10n.joinGameScreenGameAlreadyFinished,
+      );
+      return;
+    }
+
+    // joinGame registers the joining player's UID in the Firestore document,
+    // which the security rules require before point updates are accepted.
+    final Game joinedGame = await app<PublicGameService>().joinGame(qrCode);
+
+    if (mounted) {
+      setState(() {
+        _publicGame = joinedGame;
+        _isLoading = false;
+        _loadingStatusText = null;
+      });
+    }
+  }
+
+  void _resetWithError(String Function(AppLocalizations l10n) selectMessage) {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _isLoading = false;
+      _scannedQrCode = null;
+      _loadingStatusText = null;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(selectMessage(AppLocalizations.of(context)!)),
+        backgroundColor: CaboTheme.m3Error,
+      ),
+    );
   }
 }

@@ -5,6 +5,8 @@ import 'package:cabo/components/auth/widgets/auth_form.dart';
 import 'package:cabo/components/statistics/widgets/loading_spinner_section.dart';
 import 'package:cabo/components/statistics/widgets/publish_game_section.dart';
 import 'package:cabo/components/statistics/widgets/qr_code_section.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/logger.dart';
@@ -58,7 +60,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
         backgroundColor: CaboTheme.scaffoldBackground,
         leading: IconButton(
           icon: Icon(Icons.close, color: CaboTheme.m3Primary),
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => app<NavigationService>().pop(false),
         ),
         title: Text(
           AppLocalizations.of(context)!.publishDialogTitle,
@@ -87,7 +89,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
       currentView = QrCodeSection(
         gameId: _publicGameId!,
         ownerId: _game?.ownerId,
-        onContinue: () => Navigator.of(context).pop(true),
+        onContinue: () => app<NavigationService>().pop(true),
       );
     } else if (_isPreparing) {
       currentView = LoadingSpinnerSection(
@@ -117,50 +119,50 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
     final Game? publicGame;
     try {
       publicGame = await widget.publishGame();
-    } catch (e) {
+    } on Exception catch (e) {
       setState(() {
         _isPublishing = false;
       });
       logger.severe('Failed to publish game', e);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.publishDialogFailedToPublish),
-            backgroundColor: CaboTheme.m3Error,
-          ),
-        );
-      }
+      _showPublishFailedSnackBar();
       return;
     }
 
     if (publicGame?.publicId != null && mounted) {
-      setState(() {
-        _isPreparing = true;
-        _isPublishing = false;
-      });
-
-      await Future<void>.delayed(const Duration(milliseconds: 1500));
-
-      if (mounted) {
-        setState(() {
-          _publicGameId = publicGame!.publicId;
-          _game = publicGame;
-        });
-      }
+      await _showPublishedGame(publicGame!);
     } else {
       setState(() {
         _isPublishing = false;
       });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context)!.publishDialogFailedToPublish,
-            ),
-            backgroundColor: CaboTheme.m3Error,
-          ),
-        );
-      }
+      _showPublishFailedSnackBar();
     }
+  }
+
+  Future<void> _showPublishedGame(Game publicGame) async {
+    setState(() {
+      _isPreparing = true;
+      _isPublishing = false;
+    });
+
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
+
+    if (mounted) {
+      setState(() {
+        _publicGameId = publicGame.publicId;
+        _game = publicGame;
+      });
+    }
+  }
+
+  void _showPublishFailedSnackBar() {
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.publishDialogFailedToPublish),
+        backgroundColor: CaboTheme.m3Error,
+      ),
+    );
   }
 }

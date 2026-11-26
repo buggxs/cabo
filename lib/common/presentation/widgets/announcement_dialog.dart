@@ -58,17 +58,13 @@ class AnnouncementDialog extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
-          _buildActions(context, l10n, isGerman),
+          _buildActions(l10n, isGerman),
         ],
       ),
     );
   }
 
-  Widget _buildActions(
-    BuildContext context,
-    AppLocalizations l10n,
-    bool isGerman,
-  ) {
+  Widget _buildActions(AppLocalizations l10n, bool isGerman) {
     final List<AnnouncementAction> actions =
         announcement.actions?.take(_maxActions).toList() ??
         <AnnouncementAction>[];
@@ -78,7 +74,7 @@ class AnnouncementDialog extends StatelessWidget {
         width: double.infinity,
         child: CaboPrimaryButton(
           label: l10n.announcementDialogOkayButton,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => app<NavigationService>().pop<void>(),
         ),
       );
     }
@@ -90,13 +86,13 @@ class AnnouncementDialog extends StatelessWidget {
           width: double.infinity,
           child: CaboPrimaryButton(
             label: _label(actions.first, isGerman),
-            onPressed: () => _onActionPressed(context, actions.first),
+            onPressed: () => _onActionPressed(actions.first),
           ),
         ),
         if (actions.length > 1) ...<Widget>[
           const SizedBox(height: 8),
           TextButton(
-            onPressed: () => _onActionPressed(context, actions[1]),
+            onPressed: () => _onActionPressed(actions[1]),
             child: Text(
               _label(actions[1], isGerman),
               style: CaboTheme.labelLargeStyle.copyWith(
@@ -113,8 +109,8 @@ class AnnouncementDialog extends StatelessWidget {
   String _label(AnnouncementAction action, bool isGerman) =>
       isGerman ? action.label.de : action.label.en;
 
-  void _onActionPressed(BuildContext context, AnnouncementAction action) {
-    Navigator.of(context).pop();
+  void _onActionPressed(AnnouncementAction action) {
+    app<NavigationService>().pop<void>();
 
     if (action.type != AnnouncementActionType.navigate) {
       return;

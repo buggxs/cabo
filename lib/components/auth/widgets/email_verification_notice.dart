@@ -41,8 +41,8 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
     final AuthCubit cubit = context.read<AuthCubit>();
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final bool isVerified = await cubit.checkVerification();
-    if (!mounted || isVerified) return;
+    await cubit.checkVerification();
+    if (!mounted || !cubit.state.isVerificationPending) return;
     messenger.showSnackBar(
       SnackBar(content: Text(l10n.verifyEmailStillPending)),
     );

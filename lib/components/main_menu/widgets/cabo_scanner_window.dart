@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -26,13 +28,14 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
     _scanLineController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2500),
-    )..repeat(reverse: true);
+    );
+    unawaited(_scanLineController.repeat(reverse: true));
   }
 
   @override
   void dispose() {
     _scanLineController.dispose();
-    controller.dispose();
+    unawaited(controller.dispose());
     super.dispose();
   }
 
@@ -60,9 +63,9 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
           children: <Widget>[
             MobileScanner(
               controller: controller,
-              onDetect: (capture) {
+              onDetect: (BarcodeCapture capture) {
                 final List<Barcode> barcodes = capture.barcodes;
-                for (final barcode in barcodes) {
+                for (final Barcode barcode in barcodes) {
                   debugPrint('Barcode found! ${barcode.rawValue}');
                   widget.onDetectPublicId(barcode.rawValue);
                 }
@@ -82,12 +85,10 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
         height: 200,
         child: Stack(
           children: <Widget>[
-            // Eck-Akzente
-            _corner(top: true, left: true),
-            _corner(top: true, left: false),
-            _corner(top: false, left: true),
-            _corner(top: false, left: false),
-            // Animierte Scan-Linie
+            _corner(isTop: true, isLeft: true),
+            _corner(isTop: true, isLeft: false),
+            _corner(isTop: false, isLeft: true),
+            _corner(isTop: false, isLeft: false),
             AnimatedBuilder(
               animation: _scanLineController,
               builder: (BuildContext context, Widget? child) {
@@ -121,28 +122,32 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
     );
   }
 
-  Widget _corner({required bool top, required bool left}) {
+  Widget _corner({required bool isTop, required bool isLeft}) {
     final BorderSide side = BorderSide(
       color: CaboTheme.primaryContainer,
       width: 4,
     );
     return Align(
-      alignment: Alignment(left ? -1 : 1, top ? -1 : 1),
+      alignment: Alignment(isLeft ? -1 : 1, isTop ? -1 : 1),
       child: Container(
         width: 28,
         height: 28,
         decoration: BoxDecoration(
           border: Border(
-            top: top ? side : BorderSide.none,
-            bottom: top ? BorderSide.none : side,
-            left: left ? side : BorderSide.none,
-            right: left ? BorderSide.none : side,
+            top: isTop ? side : BorderSide.none,
+            bottom: isTop ? BorderSide.none : side,
+            left: isLeft ? side : BorderSide.none,
+            right: isLeft ? BorderSide.none : side,
           ),
           borderRadius: BorderRadius.only(
-            topLeft: top && left ? const Radius.circular(12) : Radius.zero,
-            topRight: top && !left ? const Radius.circular(12) : Radius.zero,
-            bottomLeft: !top && left ? const Radius.circular(12) : Radius.zero,
-            bottomRight: !top && !left
+            topLeft: isTop && isLeft ? const Radius.circular(12) : Radius.zero,
+            topRight: isTop && !isLeft
+                ? const Radius.circular(12)
+                : Radius.zero,
+            bottomLeft: !isTop && isLeft
+                ? const Radius.circular(12)
+                : Radius.zero,
+            bottomRight: !isTop && !isLeft
                 ? const Radius.circular(12)
                 : Radius.zero,
           ),

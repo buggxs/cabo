@@ -42,13 +42,6 @@ class Player extends Equatable {
     return round.precisionLandingDeduction ?? 50;
   }
 
-  /// Checks if the player has won at least [streakLength] rounds consecutively
-  /// within this game, based on the `isWonRound` flag of their rounds.
-  ///
-  /// Assumes the `rounds` list is ordered chronologically by round number.
-  /// If order is not guaranteed, sorting would be needed first.
-  ///
-  /// Example: `player.hasRoundWinStreak(5)` checks for a 5-round win streak.
   bool hasRoundWinStreak(int streakLength) {
     if (streakLength <= 0) {
       return false;
@@ -59,10 +52,10 @@ class Player extends Equatable {
 
     int currentStreak = 0;
     // Sort rounds by round number to ensure correct order for streak check
-    final sortedRounds = List<Round>.from(rounds)
-      ..sort((a, b) => a.round.compareTo(b.round));
+    final List<Round> sortedRounds = List<Round>.from(rounds)
+      ..sort((Round a, Round b) => a.round.compareTo(b.round));
 
-    for (final round in sortedRounds) {
+    for (final Round round in sortedRounds) {
       if (round.isWonRound) {
         currentStreak++;
         if (currentStreak >= streakLength) {
@@ -76,8 +69,6 @@ class Player extends Equatable {
     return false;
   }
 
-  /// Finds the longest consecutive round win streak for the player in this game.
-  /// Returns 0 if no rounds were won.
   int get longestRoundWinStreak {
     if (rounds.isEmpty) {
       return 0;
@@ -86,10 +77,10 @@ class Player extends Equatable {
     int maxStreak = 0;
     int currentStreak = 0;
     // Sort rounds by round number to ensure correct order for streak check
-    final sortedRounds = List<Round>.from(rounds)
-      ..sort((a, b) => a.round.compareTo(b.round));
+    final List<Round> sortedRounds = List<Round>.from(rounds)
+      ..sort((Round a, Round b) => a.round.compareTo(b.round));
 
-    for (final round in sortedRounds) {
+    for (final Round round in sortedRounds) {
       if (round.isWonRound) {
         currentStreak++;
       } else {
@@ -112,5 +103,5 @@ class Player extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, place, rounds, totalPoints];
+  List<Object?> get props => <Object?>[id, name, place, rounds, totalPoints];
 }

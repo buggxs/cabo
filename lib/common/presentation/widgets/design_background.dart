@@ -12,7 +12,7 @@ class DesignBackground extends StatelessWidget {
   static const String _backgroundAsset =
       'assets/images/cabo-main-menu-background.png';
 
-  /// Opacity of the dark scrim placed over the image so text stays readable.
+  // Opacity of the dark scrim placed over the image so text stays readable.
   final double darken;
 
   final Widget child;

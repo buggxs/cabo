@@ -34,18 +34,18 @@ class LocalGameService implements GameService {
 
   @override
   Future<void> saveToGameHistory(Game game) async {
-    List<Game> games = await getGames() ?? <Game>[];
-    int index = games.indexWhere((Game tmpGame) => tmpGame.id == game.id);
+    final List<Game> games = await getGames() ?? <Game>[];
+    final int index = games.indexWhere((Game tmpGame) => tmpGame.id == game.id);
     if (index == -1) {
-      Game updatedGame = game.copyWith(id: games.length + 1);
+      final Game updatedGame = game.copyWith(id: games.length + 1);
       games.add(updatedGame);
       if (!updatedGame.isGameFinished) {
-        saveLastPlayedGame(updatedGame);
+        await saveLastPlayedGame(updatedGame);
       }
     } else {
       games[index] = game;
     }
-    saveGames(games);
+    await saveGames(games);
   }
 
   @override

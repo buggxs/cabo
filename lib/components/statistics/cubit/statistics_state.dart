@@ -20,7 +20,7 @@ class StatisticsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
     players,
     game,
     // startedAt,

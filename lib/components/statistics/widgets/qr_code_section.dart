@@ -18,7 +18,6 @@ class QrCodeSection extends StatelessWidget {
   final String gameId;
   final String? ownerId;
 
-  /// Schließt den Dialog und führt zurück ins Spiel.
   final VoidCallback onContinue;
 
   @override
@@ -70,49 +69,59 @@ class QrCodeSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: CaboTheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              gameId,
-              style: CaboTheme.labelLargeStyle.copyWith(
-                color: CaboTheme.m3Primary,
-                fontSize: 18,
-              ),
-            ),
-          ),
+          _buildGameIdChip(),
           const SizedBox(height: 24),
-          Text(
-            l10n.publishDialogNextSteps,
-            textAlign: TextAlign.center,
-            style: CaboTheme.bodyLargeStyle.copyWith(
-              color: CaboTheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 24),
-          CaboPrimaryButton(
-            key: const ValueKey<String>('qr-code-continue-button'),
-            label: l10n.publishDialogContinueToGame,
-            onPressed: onContinue,
-            leading: Icon(
-              Icons.arrow_forward_rounded,
-              size: 24,
-              color: CaboTheme.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            l10n.publishDialogCodeStaysAvailable,
-            textAlign: TextAlign.center,
-            style: CaboTheme.labelSmallStyle.copyWith(
-              color: CaboTheme.onSurfaceVariant,
-            ),
-          ),
+          ..._buildNextSteps(l10n),
         ],
       ),
     );
+  }
+
+  Widget _buildGameIdChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: CaboTheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        gameId,
+        style: CaboTheme.labelLargeStyle.copyWith(
+          color: CaboTheme.m3Primary,
+          fontSize: 18,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildNextSteps(AppLocalizations l10n) {
+    return <Widget>[
+      Text(
+        l10n.publishDialogNextSteps,
+        textAlign: TextAlign.center,
+        style: CaboTheme.bodyLargeStyle.copyWith(
+          color: CaboTheme.onSurfaceVariant,
+        ),
+      ),
+      const SizedBox(height: 24),
+      CaboPrimaryButton(
+        key: const ValueKey<String>('qr-code-continue-button'),
+        label: l10n.publishDialogContinueToGame,
+        onPressed: onContinue,
+        leading: Icon(
+          Icons.arrow_forward_rounded,
+          size: 24,
+          color: CaboTheme.onPrimaryContainer,
+        ),
+      ),
+      const SizedBox(height: 12),
+      Text(
+        l10n.publishDialogCodeStaysAvailable,
+        textAlign: TextAlign.center,
+        style: CaboTheme.labelSmallStyle.copyWith(
+          color: CaboTheme.onSurfaceVariant,
+        ),
+      ),
+    ];
   }
 }
