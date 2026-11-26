@@ -1,0 +1,4 @@
+• New: the app is now available in Spanish, French and Polish
+• New: icons for Kamikaze and "Exactly 100" rounds
+• Fix: the dealer indicator was always on 1st place
+• Fix: rules can be changed during a game

@@ -1,0 +1,4 @@
+• Neu: Die App gibt es jetzt auch auf Spanisch, Französisch und Polnisch
+• Neu: Symbole für Kamikaze- und „Exakt 100“-Runden
+• Fix: Die Mischanzeige stand immer auf Platz 1
+• Fix: Regeln können während des Spiels geändert werden

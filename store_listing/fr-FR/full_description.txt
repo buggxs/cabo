@@ -1,0 +1,31 @@
+Cabo Board est ta feuille de score numérique pour le jeu de cartes CABO. Oublie le papier et le crayon : l'app additionne les points de chaque manche, applique les règles automatiquement et te laisse te concentrer sur l'essentiel : gagner !
+
+DES POINTS SANS ERREUR
+• Saisis les points de chaque manche avec un pavé numérique rapide.
+• Calcul automatique du score total, pénalités pour un Cabo raté comprises.
+• Une erreur ? Appuie longuement sur la dernière manche pour la corriger.
+• Indicateur du donneur à chaque manche.
+
+TES RÈGLES
+• Score total qui met fin à la partie (100 par défaut).
+• Règle Kamikaze avec points réglables.
+• « Pile 100 » : qui atteint exactement le score total voit ses points divisés par deux.
+• Le gagnant de la manche marque 0 point (désactivable).
+• Les manches spéciales sont signalées par des icônes pour que personne ne perde le fil.
+
+JOUEZ ENSEMBLE
+• Publie ta partie et partage un code QR.
+• Tes amis la rejoignent avec leur propre téléphone et voient les points en temps réel.
+• Rejoindre une partie fonctionne aussi avec son ID.
+
+HISTORIQUE ET STATISTIQUES
+• Reprends à tout moment une partie non terminée.
+• L'historique enregistre toutes tes parties, manches et ton temps de jeu.
+• Classement final avec statistiques détaillées, meilleure manche et séries de victoires.
+• Les groupes de joueurs récents sont mémorisés pour lancer la prochaine partie en quelques secondes.
+
+À TON GOÛT
+• Choisis entre le design moderne et clair ou le classique vert foncé.
+• Disponible en français, anglais, allemand, espagnol et polonais.
+
+Que tu découvres CABO ou que tu sois un pro, Cabo Board rend chaque partie plus simple et plus fun. Le savais-tu ? « Cabo » signifie « fin » en espagnol, exactement ce que tu annonces quand tu veux gagner !
