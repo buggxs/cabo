@@ -1,6 +1,5 @@
 part of 'about_cubit.dart';
 
-@immutable
 class AboutState extends Equatable {
   const AboutState({this.message = ''});
 
@@ -11,5 +10,5 @@ class AboutState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => <Object?>[message];
 }

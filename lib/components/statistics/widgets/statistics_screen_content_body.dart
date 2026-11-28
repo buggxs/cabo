@@ -5,21 +5,21 @@ import 'package:cabo/components/statistics/widgets/round_row.dart';
 import 'package:cabo/components/statistics/widgets/statistic_info_card.dart';
 import 'package:cabo/components/statistics/widgets/title_cell.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class StatisticsScreenContentBody extends StatelessWidget {
   const StatisticsScreenContentBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    StatisticsCubit cubit = context.watch<StatisticsCubit>();
-    StatisticsState state = cubit.state;
+    final StatisticsCubit cubit = context.watch<StatisticsCubit>();
+    final StatisticsState state = cubit.state;
 
     final String? dealerName = state.game?.currentDealerName;
 
-    List<TitleCell> titleCells = state.players
+    final List<TitleCell> titleCells = state.players
         .map(
           (Player player) => TitleCell(
             player: player,
@@ -35,19 +35,19 @@ class StatisticsScreenContentBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   StatisticInfoCard(
-                    title: AppLocalizations.of(context)!.statsCardRound,
+                    title: context.l10n.statsCardRound,
                     content: (state.players.firstOrNull?.rounds.length ?? 0)
                         .toString(),
                   ),
                   StatisticInfoCard(
-                    title: AppLocalizations.of(context)!.statsCardTime,
+                    title: context.l10n.statsCardTime,
                     shouldBeTimer: true,
                   ),
                 ],
@@ -61,16 +61,16 @@ class StatisticsScreenContentBody extends StatelessWidget {
                   color: CaboTheme.surfaceContainerLow,
                   borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
                   border: Border.all(color: CaboTheme.outlineVariant),
-                  boxShadow: const [
+                  boxShadow: const <BoxShadow>[
                     BoxShadow(
-                      color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+                      color: CaboTheme.cardShadow,
                       blurRadius: 12,
                       offset: Offset(0, 4),
                     ),
                   ],
                 ),
                 child: (state.players.isEmpty)
-                    ? const Center(child: Text('No Players found!'))
+                    ? Center(child: Text(context.l10n.statsScreenNoPlayers))
                     : CaboDataTable(
                         titleCells: titleCells,
                         rounds: _buildRounds(state.players, cubit),

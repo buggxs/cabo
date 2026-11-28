@@ -1447,6 +1447,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The original dark-green look with background image.'**
   String get designClassicDescription;
+
+  /// No description provided for @errorScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorScreenTitle;
+
+  /// No description provided for @errorScreenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get errorScreenMessage;
+
+  /// No description provided for @statsScreenNoPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'No players found!'**
+  String get statsScreenNoPlayers;
 }
 
 class _AppLocalizationsDelegate

@@ -16,7 +16,7 @@ class LocalizedText extends Equatable {
   Map<String, dynamic> toJson() => _$LocalizedTextToJson(this);
 
   @override
-  List<Object?> get props => [de, en];
+  List<Object?> get props => <Object?>[de, en];
 }
 
 enum AnnouncementActionType { navigate, dismiss }
@@ -43,7 +43,7 @@ class AnnouncementAction extends Equatable {
   Map<String, dynamic> toJson() => _$AnnouncementActionToJson(this);
 
   @override
-  List<Object?> get props => [type, label, route];
+  List<Object?> get props => <Object?>[type, label, route];
 }
 
 @JsonSerializable()
@@ -68,5 +68,5 @@ class Announcement extends Equatable {
   Map<String, dynamic> toJson() => _$AnnouncementToJson(this);
 
   @override
-  List<Object?> get props => [id, title, message, imageUrl, actions];
+  List<Object?> get props => <Object?>[id, title, message, imageUrl, actions];
 }

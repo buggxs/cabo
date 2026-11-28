@@ -19,7 +19,7 @@ import 'package:mockito/mockito.dart';
 
 import 'default_game_rules_test.mocks.dart';
 
-@GenerateNiceMocks([
+@GenerateNiceMocks(<MockSpec<Object>>[
   MockSpec<LocalRuleService>(),
   MockSpec<StatisticsDialogService>(),
   MockSpec<NavigationService>(),
@@ -32,30 +32,30 @@ void main() {
   const String leo = 'Leo';
   const String mia = 'Mia';
 
-  List<Player> playerList = [
+  final List<Player> playerList = <Player>[
     const Player(name: bob),
     const Player(name: leo),
     const Player(name: mia),
   ];
 
-  RuleSet ruleSet = const RuleSet();
+  final RuleSet ruleSet = const RuleSet();
 
-  String gameStartedDate = DateFormat(
+  final String gameStartedDate = DateFormat(
     'dd-MM-yyyy HH:mm',
   ).format(DateTime.now());
 
-  Game game = Game(
+  final Game game = Game(
     players: playerList,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
     seatingOrder: playerList.map((Player player) => player.name).toList(),
   );
 
-  List<Player> expectedPlayerListFirstRound = [
+  final List<Player> expectedPlayerListFirstRound = <Player>[
     const Player(
       name: bob,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -68,7 +68,7 @@ void main() {
     const Player(
       name: leo,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -80,7 +80,7 @@ void main() {
     const Player(
       name: mia,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -91,13 +91,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFirstRound = {bob: 3, leo: 4, mia: 6};
+  final Map<String, int> pointsMapFirstRound = <String, int>{
+    bob: 3,
+    leo: 4,
+    mia: 6,
+  };
 
-  List<Player> expectedPlayerListSecondRound = [
+  final List<Player> expectedPlayerListSecondRound = <Player>[
     const Player(
       name: leo,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -117,7 +121,7 @@ void main() {
     const Player(
       name: bob,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -137,7 +141,7 @@ void main() {
     const Player(
       name: mia,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -156,13 +160,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSecondRound = {bob: 7, leo: 2, mia: 11};
+  final Map<String, int> pointsMapSecondRound = <String, int>{
+    bob: 7,
+    leo: 2,
+    mia: 11,
+  };
 
-  List<Player> expectedPlayerListThirdRound = [
+  final List<Player> expectedPlayerListThirdRound = <Player>[
     const Player(
       name: leo,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -189,7 +197,7 @@ void main() {
     const Player(
       name: bob,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -216,7 +224,7 @@ void main() {
     const Player(
       name: mia,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -242,13 +250,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapThirdRound = {bob: 3, leo: 2, mia: 3};
+  final Map<String, int> pointsMapThirdRound = <String, int>{
+    bob: 3,
+    leo: 2,
+    mia: 3,
+  };
 
-  List<Player> expectedPlayerListFourthRound = [
+  final List<Player> expectedPlayerListFourthRound = <Player>[
     const Player(
       name: leo,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -282,7 +294,7 @@ void main() {
     const Player(
       name: bob,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -316,7 +328,7 @@ void main() {
     const Player(
       name: mia,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -349,13 +361,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFourthRound = {leo: 4, bob: 7, mia: 4};
+  final Map<String, int> pointsMapFourthRound = <String, int>{
+    leo: 4,
+    bob: 7,
+    mia: 4,
+  };
 
-  List<Player> expectedPlayerListFivthRound = [
+  final List<Player> expectedPlayerListFivthRound = <Player>[
     const Player(
       name: mia,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -397,7 +413,7 @@ void main() {
     const Player(
       name: leo,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -439,7 +455,7 @@ void main() {
     const Player(
       name: bob,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -480,13 +496,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapFivthRound = {leo: 2, bob: 6, mia: 50};
+  final Map<String, int> pointsMapFivthRound = <String, int>{
+    leo: 2,
+    bob: 6,
+    mia: 50,
+  };
 
-  List<Player> expectedPlayerListSixthRound = [
+  final List<Player> expectedPlayerListSixthRound = <Player>[
     const Player(
       name: mia,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -535,7 +555,7 @@ void main() {
     const Player(
       name: leo,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -584,7 +604,7 @@ void main() {
     const Player(
       name: bob,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -632,13 +652,17 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSixthRound = {leo: 2, bob: 2, mia: 3};
+  final Map<String, int> pointsMapSixthRound = <String, int>{
+    leo: 2,
+    bob: 2,
+    mia: 3,
+  };
 
-  List<Player> expectedPlayerListSeventhRound = [
+  final List<Player> expectedPlayerListSeventhRound = <Player>[
     const Player(
       name: mia,
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -694,7 +718,7 @@ void main() {
     const Player(
       name: leo,
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -750,7 +774,7 @@ void main() {
     const Player(
       name: bob,
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -805,7 +829,11 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapSeventhRound = {leo: 4, bob: 4, mia: 8};
+  final Map<String, int> pointsMapSeventhRound = <String, int>{
+    leo: 4,
+    bob: 4,
+    mia: 8,
+  };
 
   late RuleService ruleService;
   late StatisticsDialogService dialogService;
@@ -813,7 +841,7 @@ void main() {
   late LocalGameRepository localGameRepository;
   late LocalGameService localGameService;
   late LocalRuleSetRepository localRuleSetRepository;
-  late GetIt app = GetIt.instance;
+  late final GetIt app = GetIt.instance;
 
   setUpAll(() {
     setup();
@@ -841,19 +869,21 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
 
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapFirstRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapFirstRound),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(players: playerList, game: game),
         StatisticsState(
           players: expectedPlayerListFirstRound,
@@ -867,23 +897,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListFirstRound[1]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListFirstRound[1]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapSecondRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapSecondRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFirstRound,
         game: game.copyWith(players: expectedPlayerListFirstRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListSecondRound,
           game: game.copyWith(players: expectedPlayerListSecondRound),
@@ -896,23 +930,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListSecondRound[2]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListSecondRound[2]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapThirdRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapThirdRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListSecondRound,
         game: game.copyWith(players: expectedPlayerListSecondRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListThirdRound,
           game: game.copyWith(players: expectedPlayerListThirdRound),
@@ -926,23 +964,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListThirdRound[1]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListThirdRound[1]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapFourthRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapFourthRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListThirdRound,
         game: game.copyWith(players: expectedPlayerListThirdRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListFourthRound,
           game: game.copyWith(players: expectedPlayerListFourthRound),
@@ -955,23 +997,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListFourthRound[2]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListFourthRound[2]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapFivthRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapFivthRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFourthRound,
         game: game.copyWith(players: expectedPlayerListFourthRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListFivthRound,
           game: game.copyWith(players: expectedPlayerListFivthRound),
@@ -985,23 +1031,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListFivthRound[0]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListFivthRound[0]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapSixthRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapSixthRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListFivthRound,
         game: game.copyWith(players: expectedPlayerListFivthRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListSixthRound,
           game: game.copyWith(players: expectedPlayerListSixthRound),
@@ -1015,23 +1065,27 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
 
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(expectedPlayerListSixthRound[2]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(expectedPlayerListSixthRound[2]),
+        );
 
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapSeventhRound));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapSeventhRound),
+        );
       },
       seed: () => StatisticsState(
         players: expectedPlayerListSixthRound,
         game: game.copyWith(players: expectedPlayerListSixthRound),
       ),
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: expectedPlayerListSeventhRound,
           game: game.copyWith(players: expectedPlayerListSeventhRound),

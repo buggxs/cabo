@@ -1,11 +1,13 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:flutter/material.dart';
 
 /// Bottom sheet to pick the player who closed the round
 /// (see design/round-finished.html). Tapping a player immediately returns
-/// the selected [Player] via `Navigator.pop`; cancel/dismiss returns `null`.
+/// the selected [Player] via a pop; cancel/dismiss returns `null`.
 class RoundCloserSheet extends StatelessWidget {
   const RoundCloserSheet({super.key, required this.players});
 
@@ -17,9 +19,9 @@ class RoundCloserSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: CaboTheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: const [
+        boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x263D3A35), // rgba(61,58,53,0.15)
+            color: CaboTheme.sheetShadow,
             blurRadius: 24,
             offset: Offset(0, -12),
           ),
@@ -31,7 +33,7 @@ class RoundCloserSheet extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: <Widget>[
               Container(
                 width: 48,
                 height: 6,
@@ -61,13 +63,13 @@ class RoundCloserSheet extends StatelessWidget {
               Flexible(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       for (final Player player in players)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: _PlayerOption(
                             player: player,
-                            onTap: () => Navigator.of(context).pop(player),
+                            onTap: () => app<NavigationService>().pop(player),
                           ),
                         ),
                     ],
@@ -79,7 +81,7 @@ class RoundCloserSheet extends StatelessWidget {
                 label: context.l10n.dialogCancel,
                 backgroundColor: CaboTheme.surfaceContainerLow,
                 foregroundColor: CaboTheme.onSurfaceVariant,
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () => app<NavigationService>().pop(),
               ),
             ],
           ),
@@ -112,7 +114,7 @@ class _PlayerOption extends StatelessWidget {
             border: Border.all(color: CaboTheme.outlineVariant),
           ),
           child: Row(
-            children: [
+            children: <Widget>[
               Container(
                 width: 48,
                 height: 48,

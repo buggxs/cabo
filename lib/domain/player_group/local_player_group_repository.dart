@@ -4,7 +4,7 @@ import 'package:cabo/domain/player_group/data/player_group.dart';
 class LocalPlayerGroupRepository extends LocalStorageRepository<PlayerGroup> {
   @override
   PlayerGroup castMapToObject(dynamic object) {
-    return PlayerGroup.fromJson(object);
+    return PlayerGroup.fromJson(object as Map<String, dynamic>);
   }
 
   @override

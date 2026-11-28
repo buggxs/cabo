@@ -222,5 +222,8 @@
   "designModern": "Moderno",
   "designClassic": "Clásico",
   "designModernDescription": "El aspecto claro y moderno.",
-  "designClassicDescription": "El aspecto original verde oscuro con imagen de fondo."
+  "designClassicDescription": "El aspecto original verde oscuro con imagen de fondo.",
+  "errorScreenTitle": "Error",
+  "errorScreenMessage": "Algo salió mal.",
+  "statsScreenNoPlayers": "¡No se encontraron jugadores!"
 }

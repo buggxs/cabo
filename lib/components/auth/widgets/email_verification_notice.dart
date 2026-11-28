@@ -10,6 +10,7 @@ import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 /// Shown while the account exists but the address is not confirmed yet.
 ///
@@ -39,10 +40,10 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
 
   Future<void> _checkNow() async {
     final AuthCubit cubit = context.read<AuthCubit>();
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final bool isVerified = await cubit.checkVerification();
-    if (!mounted || isVerified) return;
+    await cubit.checkVerification();
+    if (!mounted || !cubit.state.isVerificationPending) return;
     messenger.showSnackBar(
       SnackBar(content: Text(l10n.verifyEmailStillPending)),
     );
@@ -50,7 +51,7 @@ class _EmailVerificationNoticeState extends State<EmailVerificationNotice> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final AuthCubit cubit = context.read<AuthCubit>();
     final AuthFormState state = context.watch<AuthCubit>().state;
     final String email =

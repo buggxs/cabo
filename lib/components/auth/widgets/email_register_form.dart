@@ -8,6 +8,7 @@ import 'package:cabo/components/auth/widgets/auth_error_message.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class EmailRegisterForm extends StatefulWidget {
   const EmailRegisterForm({super.key});
@@ -46,7 +47,7 @@ class _EmailRegisterFormState extends State<EmailRegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final AuthCubit cubit = context.read<AuthCubit>();
     final AuthFormState state = context.watch<AuthCubit>().state;
     final bool isMismatch =
@@ -121,7 +122,7 @@ class _EmailConflictNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.all(12),

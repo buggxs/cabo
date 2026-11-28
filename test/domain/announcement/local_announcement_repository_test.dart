@@ -7,7 +7,7 @@ void main() {
     late LocalAnnouncementRepository repository;
 
     setUp(() {
-      SharedPreferences.setMockInitialValues({});
+      SharedPreferences.setMockInitialValues(<String, Object>{});
       repository = LocalAnnouncementRepository();
     });
 

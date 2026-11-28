@@ -736,4 +736,13 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get designClassicDescription =>
       'Le look vert foncé d\'origine avec image de fond.';
+
+  @override
+  String get errorScreenTitle => 'Erreur';
+
+  @override
+  String get errorScreenMessage => 'Une erreur s\'est produite.';
+
+  @override
+  String get statsScreenNoPlayers => 'Aucun joueur trouvé !';
 }

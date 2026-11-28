@@ -7,10 +7,13 @@ import 'package:cabo/components/auth/widgets/email_register_form.dart';
 import 'package:cabo/components/auth/widgets/email_sign_in_form.dart';
 import 'package:cabo/components/auth/widgets/email_verification_notice.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
+import 'package:cabo/core/app_service_locator.dart';
+import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 /// Entry point for signing in. Provides the AuthCubit and switches between
 /// the provider choice, the e-mail forms and the verification notice.
@@ -21,7 +24,7 @@ class AuthForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
       create: (BuildContext context) =>
-          AuthCubit(applicationCubit: context.read<ApplicationCubit>()),
+          AuthCubit(authService: app<AuthService>()),
       child: const _AuthFormContent(),
     );
   }
@@ -32,7 +35,7 @@ class _AuthFormContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final AuthCubit cubit = context.read<AuthCubit>();
     final AuthFormState state = context.watch<AuthCubit>().state;
     final ApplicationState appState = context.watch<ApplicationCubit>().state;
@@ -110,7 +113,7 @@ class _ModeContent extends StatelessWidget {
   const _ModeContent({required this.mode, required this.onGoogle});
 
   final AuthMode mode;
-  final Future<bool> Function() onGoogle;
+  final Future<void> Function() onGoogle;
 
   @override
   Widget build(BuildContext context) {

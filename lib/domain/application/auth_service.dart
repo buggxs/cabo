@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum AuthError {
-  /// Client side validation only, never returned by Firebase.
+  // Client side validation only, never returned by Firebase.
   passwordMismatch,
   emailRequired,
   passwordRequired,
@@ -65,12 +65,12 @@ class AuthService with LoggerMixin {
 
   User? get currentUser => _auth.currentUser;
 
-  /// Superset of authStateChanges: also fires when credentials are linked
-  /// and when the ID token is refreshed.
+  // Superset of authStateChanges: also fires when credentials are linked
+  // and when the ID token is refreshed.
   Stream<User?> userChanges() => _auth.userChanges();
 
-  /// Memoized so a sign-in tapped before initialization finished waits for it
-  /// instead of failing.
+  // Memoized so a sign-in tapped before initialization finished waits for it
+  // instead of failing.
   Future<void> initializeProviders() {
     return _providerInitialization ??= _googleSignIn.initialize().catchError((
       Object e,
@@ -80,8 +80,8 @@ class AuthService with LoggerMixin {
     });
   }
 
-  /// Idempotent anonymous bootstrap. Never throws, so local play stays
-  /// available when the device is offline.
+  // Idempotent anonymous bootstrap. Never throws, so local play stays
+  // available when the device is offline.
   Future<AuthOutcome> ensureSignedIn() async {
     if (_auth.currentUser != null) {
       return const AuthOutcome.success();
@@ -92,7 +92,7 @@ class AuthService with LoggerMixin {
     } on FirebaseAuthException catch (e) {
       logger.warning('Anonymous sign-in failed: ${e.code} ${e.message}');
       return AuthOutcome.failure(_mapError(e));
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Unexpected error during anonymous sign-in', e, stackTrace);
       return const AuthOutcome.failure(AuthError.unknown);
     }
@@ -126,14 +126,14 @@ class AuthService with LoggerMixin {
     } on GoogleSignInException catch (e) {
       logger.warning('Google sign-in aborted: ${e.code}');
       return const AuthOutcome.failure(AuthError.cancelled);
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Unexpected error during Google sign-in', e, stackTrace);
       return const AuthOutcome.failure(AuthError.unknown);
     }
   }
 
-  /// Links the e-mail credential onto the current anonymous user so the UID
-  /// and therefore all existing games are kept.
+  // Links the e-mail credential onto the current anonymous user so the UID
+  // and therefore all existing games are kept.
   Future<AuthOutcome> registerWithEmail({
     required String email,
     required String password,
@@ -156,14 +156,14 @@ class AuthService with LoggerMixin {
     } on FirebaseAuthException catch (e) {
       logger.warning('Registration failed: ${e.code}');
       return AuthOutcome.failure(_mapError(e));
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Unexpected error during registration', e, stackTrace);
       return const AuthOutcome.failure(AuthError.unknown);
     }
   }
 
-  /// Signs in with an existing account. This replaces the current anonymous
-  /// user, so games owned by the anonymous UID become inaccessible.
+  // Signs in with an existing account. This replaces the current anonymous
+  // user, so games owned by the anonymous UID become inaccessible.
   Future<AuthOutcome> signInWithEmail({
     required String email,
     required String password,
@@ -174,18 +174,18 @@ class AuthService with LoggerMixin {
     } on FirebaseAuthException catch (e) {
       logger.warning('E-mail sign-in failed: ${e.code}');
       return AuthOutcome.failure(_mapError(e));
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Unexpected error during e-mail sign-in', e, stackTrace);
       return const AuthOutcome.failure(AuthError.unknown);
     }
   }
 
-  /// Sent by our own Cloud Function rather than by Firebase.
-  ///
-  /// Firebase refuses to let this project edit its auth email templates, and
-  /// the default one renders the raw action URL as the link text -- which
-  /// reads as phishing. The function builds the link against our own handler
-  /// and sends a branded mail instead.
+  // Sent by our own Cloud Function rather than by Firebase.
+  //
+  // Firebase refuses to let this project edit its auth email templates, and
+  // the default one renders the raw action URL as the link text -- which
+  // reads as phishing. The function builds the link against our own handler
+  // and sends a branded mail instead.
   Future<AuthOutcome> sendVerificationEmail() async {
     final User? user = _auth.currentUser;
     if (user == null) {
@@ -204,7 +204,7 @@ class AuthService with LoggerMixin {
     } on FirebaseFunctionsException catch (e) {
       logger.warning('Mail function $name failed: ${e.code} ${e.message}');
       return AuthOutcome.failure(_mapFunctionError(e));
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Unexpected error calling $name', e, stackTrace);
       return const AuthOutcome.failure(AuthError.unknown);
     }
@@ -253,11 +253,11 @@ class AuthService with LoggerMixin {
     await _auth.signOut();
   }
 
-  /// Links onto the anonymous user so the UID survives. Since everybody is
-  /// signed in anonymously, this is the normal path -- and it fails for anyone
-  /// who already owns this provider account, so fall back to a plain sign-in.
-  /// That drops the anonymous UID, which only holds games created on this
-  /// device before signing in.
+  // Links onto the anonymous user so the UID survives. Since everybody is
+  // signed in anonymously, this is the normal path -- and it fails for anyone
+  // who already owns this provider account, so fall back to a plain sign-in.
+  // That drops the anonymous UID, which only holds games created on this
+  // device before signing in.
   Future<AuthOutcome> _linkOrSignIn(AuthCredential credential) async {
     final User? current = _auth.currentUser;
     if (current == null || !current.isAnonymous) {

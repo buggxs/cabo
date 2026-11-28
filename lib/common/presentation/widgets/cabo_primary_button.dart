@@ -1,10 +1,9 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Primärer Button im neuen Design mit „pressed-shadow"-Effekt:
-/// Ein fester Schatten nach unten (`onPrimaryContainer`) verschwindet beim
-/// Drücken, während sich der Button leicht nach unten verschiebt – das
-/// vermittelt das taktile Gefühl aus `design/publish-game-screen.html`.
+/// Primary button with a "pressed shadow" effect: a solid shadow below
+/// (`onPrimaryContainer`) disappears while pressed and the button shifts down
+/// slightly, giving the tactile feel of `design/publish-game-screen.html`.
 class CaboPrimaryButton extends StatefulWidget {
   const CaboPrimaryButton({
     required this.label,
@@ -16,7 +15,6 @@ class CaboPrimaryButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
 
-  /// Optionales Widget links neben dem Label (z. B. das Google-Logo).
   final Widget? leading;
 
   @override
@@ -26,19 +24,19 @@ class CaboPrimaryButton extends StatefulWidget {
 class _CaboPrimaryButtonState extends State<CaboPrimaryButton> {
   bool _isPressed = false;
 
-  bool get _enabled => widget.onPressed != null;
+  bool get _isEnabled => widget.onPressed != null;
 
-  void _setPressed(bool value) {
-    if (!_enabled) return;
-    setState(() => _isPressed = value);
+  void _setPressed(bool isPressed) {
+    if (!_isEnabled) return;
+    setState(() => _isPressed = isPressed);
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool pressed = _isPressed && _enabled;
+    final bool isShownPressed = _isPressed && _isEnabled;
 
     return Opacity(
-      opacity: _enabled ? 1 : 0.5,
+      opacity: _isEnabled ? 1 : 0.5,
       child: GestureDetector(
         onTapDown: (_) => _setPressed(true),
         onTapUp: (_) => _setPressed(false),
@@ -47,11 +45,11 @@ class _CaboPrimaryButtonState extends State<CaboPrimaryButton> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 80),
           curve: Curves.easeOut,
-          transform: Matrix4.translationValues(0, pressed ? 4 : 0, 0),
+          transform: Matrix4.translationValues(0, isShownPressed ? 4 : 0, 0),
           decoration: BoxDecoration(
             color: CaboTheme.primaryContainer,
             borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-            boxShadow: pressed
+            boxShadow: isShownPressed
                 ? const <BoxShadow>[]
                 : <BoxShadow>[
                     BoxShadow(

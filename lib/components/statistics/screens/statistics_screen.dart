@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/main_menu/screens/main_menu_screen.dart';
@@ -25,17 +27,17 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<StatisticsCubit>(
       create: (_) => StatisticsCubit(players: players, game: game),
-      child: const StatisticsScreenContent(),
+      child: const _StatisticsScreenContent(),
     );
   }
 }
 
-class StatisticsScreenContent extends StatelessWidget {
-  const StatisticsScreenContent({super.key});
+class _StatisticsScreenContent extends StatelessWidget {
+  const _StatisticsScreenContent();
 
   @override
   Widget build(BuildContext context) {
-    StatisticsCubit cubit = context.watch<StatisticsCubit>();
+    final StatisticsCubit cubit = context.watch<StatisticsCubit>();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -64,14 +66,14 @@ class StatisticsScreenContent extends StatelessWidget {
         isOnline: cubit.state.game?.isPublic ?? false,
         onEndGame: () => _onPopScreen(cubit, context),
         onRules: () async {
-          await Navigator.of(context).pushNamed(RuleSetScreen.route);
+          await app<NavigationService>().pushNamed<void>(RuleSetScreen.route);
           await cubit.reloadRuleSet();
         },
-        onOnline: () => cubit.showPublicGameDialog(context),
+        onOnline: cubit.showPublicGameDialog,
       ),
       body: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (didPop, _) async {
+        onPopInvokedWithResult: (bool didPop, _) async {
           if (didPop) {
             return;
           }
@@ -84,7 +86,7 @@ class StatisticsScreenContent extends StatelessWidget {
 
   Future<bool> _onPopScreen(StatisticsCubit cubit, BuildContext context) async {
     bool shouldPop = false;
-    await Future.delayed(Duration.zero, () async {
+    await Future<void>.delayed(Duration.zero, () async {
       shouldPop =
           await app<StatisticsDialogService>().showEndGame(cubit.state.game) ??
           false;
@@ -94,28 +96,28 @@ class StatisticsScreenContent extends StatelessWidget {
       return false;
     }
 
-    // Owner setzt hier finishedAt + synct zu Firestore → Mitspieler bekommen
-    // den Dialog via Listener. Non-Owner verlässt nur lokal.
+    // The owner sets finishedAt and syncs to Firestore here, so the other
+    // players get the dialog via their listener. A non-owner only leaves locally.
     await cubit.onPopScreen();
 
     final Player? winner = cubit.state.game?.players
-        .where((player) => player.place == 1)
+        .where((Player player) => player.place == 1)
         .firstOrNull;
-    final bool gameFinished = cubit.state.game?.isGameFinished ?? false;
+    final bool isGameFinished = cubit.state.game?.isGameFinished ?? false;
 
-    // Spiel beendet → EndGameScreen übernimmt Rangliste, Menü-Routing und
-    // trackGameCompletion. Sonst (z. B. Non-Owner verlässt Public Game nur
-    // lokal) direkt zurück ins Hauptmenü.
-    if (winner != null && gameFinished) {
+    // A finished game hands ranking, menu routing and trackGameCompletion over
+    // to the EndGameScreen. Otherwise (e.g. a non-owner only leaving a public
+    // game locally) go straight back to the main menu.
+    if (winner != null && isGameFinished) {
       app<NavigationService>().pushToEndGameScreen(game: cubit.state.game!);
       return false;
     }
 
     if (context.mounted) {
-      Navigator.of(context).popAndPushNamed(MainMenuScreen.route);
+      app<NavigationService>().popAndPushNamed(MainMenuScreen.route);
     }
 
-    app<RatingService>().trackGameCompletion();
+    unawaited(app<RatingService>().trackGameCompletion());
 
     return false;
   }

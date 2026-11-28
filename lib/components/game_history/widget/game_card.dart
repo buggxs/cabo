@@ -7,16 +7,19 @@ import 'package:cabo/misc/utils/date_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-/// Spielkarte im neuen Material-3-Design: heller Container mit Streak-Badge,
-/// Spieldauer und je Spieler einer Sub-Karte (Verlierer rot hervorgehoben).
+/// Game card in the Material 3 design: light container with a streak badge,
+/// the game duration and one sub card per player (loser highlighted in red).
 class GameCard extends StatelessWidget {
   const GameCard({super.key, required this.game});
 
   final Game game;
 
-  /// Standard-Schatten der neuen Karten (rgba(61,58,53,0.08)).
   static const List<BoxShadow> _cardShadow = <BoxShadow>[
-    BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
+    BoxShadow(
+      color: CaboTheme.cardShadow,
+      blurRadius: 12,
+      offset: Offset(0, 4),
+    ),
   ];
 
   @override
@@ -228,7 +231,7 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  /// Kompakte Spieldauer im Format `HH:MMh` aus `startedAt`/`finishedAt`.
+  // Compact game duration in the format `HH:MMh`.
   String _compactDuration() {
     final String? startedAt = game.startedAt;
     final String? finishedAt = game.finishedAt;

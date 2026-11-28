@@ -13,6 +13,7 @@ class AuthFormState extends Equatable {
     this.resendCooldown = 0,
     this.hasVerificationMailBeenSent = false,
     this.hasPasswordResetBeenSent = false,
+    this.isVerificationPending = false,
   });
 
   final AuthMode mode;
@@ -21,12 +22,14 @@ class AuthFormState extends Equatable {
   final AuthError? emailFieldError;
   final AuthError? passwordFieldError;
 
-  /// Set when the e-mail already belongs to an account, so the UI can offer
-  /// signing in instead of registering.
+  // Set when the e-mail already belongs to an account, so the UI can offer
+  // signing in instead of registering.
   final bool hasEmailConflict;
   final int resendCooldown;
   final bool hasVerificationMailBeenSent;
   final bool hasPasswordResetBeenSent;
+
+  final bool isVerificationPending;
 
   bool get canResendVerification => resendCooldown == 0 && !isSubmitting;
 
@@ -40,6 +43,7 @@ class AuthFormState extends Equatable {
     int? resendCooldown,
     bool? hasVerificationMailBeenSent,
     bool? hasPasswordResetBeenSent,
+    bool? isVerificationPending,
   }) {
     return AuthFormState(
       mode: mode ?? this.mode,
@@ -53,11 +57,13 @@ class AuthFormState extends Equatable {
           hasVerificationMailBeenSent ?? this.hasVerificationMailBeenSent,
       hasPasswordResetBeenSent:
           hasPasswordResetBeenSent ?? this.hasPasswordResetBeenSent,
+      isVerificationPending:
+          isVerificationPending ?? this.isVerificationPending,
     );
   }
 
-  /// Only touches the cooldown. copyWith deliberately clears the error fields,
-  /// which would make the one-second ticker wipe a validation message.
+  // Only touches the cooldown. copyWith deliberately clears the error fields,
+  // which would make the one-second ticker wipe a validation message.
   AuthFormState withCooldown(int seconds) {
     return AuthFormState(
       mode: mode,
@@ -69,11 +75,12 @@ class AuthFormState extends Equatable {
       resendCooldown: seconds,
       hasVerificationMailBeenSent: hasVerificationMailBeenSent,
       hasPasswordResetBeenSent: hasPasswordResetBeenSent,
+      isVerificationPending: isVerificationPending,
     );
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
     mode,
     isSubmitting,
     error,
@@ -83,5 +90,6 @@ class AuthFormState extends Equatable {
     resendCooldown,
     hasVerificationMailBeenSent,
     hasPasswordResetBeenSent,
+    isVerificationPending,
   ];
 }

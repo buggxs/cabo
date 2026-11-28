@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class PublicGameService with LoggerMixin {
+  static const int _idPartLength = 3;
+
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
@@ -15,33 +17,29 @@ class PublicGameService with LoggerMixin {
       _auth = auth ?? FirebaseAuth.instance;
 
   String _generateReadableId() {
-    final random = math.Random();
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
-    const digits = '0123456789';
+    const String chars = 'abcdefghijklmnopqrstuvwxyz';
+    const String digits = '0123456789';
+    final math.Random random = math.Random();
 
-    String randomPart1 = String.fromCharCodes(
-      Iterable.generate(
-        3,
-        (_) => digits.codeUnitAt(random.nextInt(digits.length)),
-      ),
-    );
-    String randomPart2 = String.fromCharCodes(
-      Iterable.generate(
-        3,
-        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
-      ),
-    );
+    final String randomPart1 = _randomString(digits, random);
+    final String randomPart2 = _randomString(chars, random);
 
     return 'cabo-$randomPart1-$randomPart2';
   }
 
-  /// Saves a game to Firestore and returns the new document ID.
-  ///
-  /// Throws an [Exception] if nobody is signed in. Publishing additionally
-  /// requires a confirmed e-mail address, which is enforced by the security
-  /// rules; the UI gates on ApplicationState.canPublishGame beforehand.
-  ///
-  /// Messages here are log-only: every caller shows its own localized text.
+  String _randomString(String alphabet, math.Random random) {
+    return String.fromCharCodes(
+      Iterable<int>.generate(
+        _idPartLength,
+        (int _) => alphabet.codeUnitAt(random.nextInt(alphabet.length)),
+      ),
+    );
+  }
+
+  // Throws an [Exception] if nobody is signed in. Publishing additionally
+  // requires a confirmed e-mail address, which is enforced by the security
+  // rules; the UI gates on ApplicationState.canPublishGame beforehand.
+  // Messages here are log-only: every caller shows its own localized text.
   Future<Game> saveOrUpdateGame({required Game game}) async {
     final User? user = _auth.currentUser;
 
@@ -50,46 +48,11 @@ class PublicGameService with LoggerMixin {
       throw Exception('Cannot save a game without a signed in user.');
     }
 
-    // A public game must have an owner.
     try {
       if (game.publicId != null) {
-        logger.info('Updating game with publicId: ${game.publicId}');
-        final DocumentReference<Map<String, dynamic>> docRef = _firestore
-            .collection('games')
-            .doc(game.publicId);
-        // Merge inside a transaction so concurrent writes of other players do
-        // not overwrite each other.
-        final Game merged = await _firestore.runTransaction<Game>((
-          Transaction tx,
-        ) async {
-          final DocumentSnapshot<Map<String, dynamic>> snapshot = await tx.get(
-            docRef,
-          );
-          final Game effective = snapshot.exists
-              ? _mergePlayers(Game.fromJson(snapshot.data()!), game)
-              : game;
-          tx.set(docRef, effective.toJson());
-          return effective;
-        });
-        return merged;
-      } else {
-        String publicId;
-
-        publicId = _generateReadableId();
-
-        final gameWithPublicId = game.copyWith(
-          publicId: publicId,
-          ownerId: user.uid,
-          playerUids: <String>[user.uid],
-        );
-
-        await _firestore
-            .collection('games')
-            .doc(publicId)
-            .set(gameWithPublicId.toJson());
-        logger.info('Game saved successfully with id: $publicId');
-        return gameWithPublicId;
+        return await _updatePublicGame(game);
       }
+      return await _createPublicGame(game, user);
     } on FirebaseException catch (e) {
       if (e.code == 'unauthenticated') {
         logger.warning(
@@ -104,7 +67,42 @@ class PublicGameService with LoggerMixin {
     }
   }
 
-  /// Adds the UID of the signed in (possibly anonymous) user to `playerUids`.
+  Future<Game> _updatePublicGame(Game game) async {
+    logger.info('Updating game with publicId: ${game.publicId}');
+    final DocumentReference<Map<String, dynamic>> docRef = _firestore
+        .collection('games')
+        .doc(game.publicId);
+    // Merge inside a transaction so concurrent writes of other players do
+    // not overwrite each other.
+    return _firestore.runTransaction<Game>((Transaction tx) async {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot = await tx.get(
+        docRef,
+      );
+      final Game effective = snapshot.exists
+          ? _mergePlayers(Game.fromJson(snapshot.data()!), game)
+          : game;
+      tx.set(docRef, effective.toJson());
+      return effective;
+    });
+  }
+
+  Future<Game> _createPublicGame(Game game, User user) async {
+    final String publicId = _generateReadableId();
+    final Game gameWithPublicId = game.copyWith(
+      publicId: publicId,
+      ownerId: user.uid,
+      playerUids: <String>[user.uid],
+    );
+
+    await _firestore
+        .collection('games')
+        .doc(publicId)
+        .set(gameWithPublicId.toJson());
+    logger.info('Game saved successfully with id: $publicId');
+    return gameWithPublicId;
+  }
+
+  // Adds the UID of the signed in (possibly anonymous) user to `playerUids`.
   Future<Game> joinGame(String publicId) async {
     User? user = _auth.currentUser;
     user ??= (await _auth.signInAnonymously()).user;
@@ -136,8 +134,8 @@ class PublicGameService with LoggerMixin {
     return current.copyWith(playerUids: <String>[...current.playerUids, uid]);
   }
 
-  /// Merges the rounds per player (the player with the longer round list
-  /// wins) so that concurrent writes do not overwrite each other.
+  // The player with the longer round list wins, so that concurrent writes do
+  // not overwrite each other.
   Game _mergePlayers(Game remote, Game local) {
     final Map<String, Player> localByName = <String, Player>{
       for (final Player p in local.players) p.name: p,
@@ -177,8 +175,8 @@ class PublicGameService with LoggerMixin {
     );
   }
 
-  /// Removes a published game again. The security rules only grant this to
-  /// the owner, so every other caller runs into a permission error.
+  // The security rules only grant this to the owner, so every other caller
+  // runs into a permission error.
   Future<void> deleteGame(String publicId) async {
     await _firestore.collection('games').doc(publicId).delete();
     logger.info('Deleted public game with id: $publicId');
@@ -189,7 +187,10 @@ class PublicGameService with LoggerMixin {
         .collection('games')
         .doc(publicId)
         .get()
-        .then((snapshot) => Game.fromJson(snapshot.data()!));
+        .then(
+          (DocumentSnapshot<Map<String, dynamic>> snapshot) =>
+              Game.fromJson(snapshot.data()!),
+        );
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> subscribeToGame(

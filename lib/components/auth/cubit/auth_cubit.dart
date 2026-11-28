@@ -1,25 +1,25 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cabo/components/application/cubit/application_cubit.dart';
 import 'package:cabo/domain/application/auth_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthFormState> {
-  AuthCubit({required this.applicationCubit}) : super(const AuthFormState());
+  AuthCubit({required AuthService authService})
+    : _authService = authService,
+      super(const AuthFormState());
 
-  final ApplicationCubit applicationCubit;
+  final AuthService _authService;
 
   static const int resendCooldownSeconds = 60;
   static const int minPasswordLength = 8;
 
   Timer? _cooldownTimer;
 
-  /// Emits only while the cubit is alive. The widget owning it is torn down
-  /// as soon as the account becomes publishable, which can happen while an
-  /// await is still in flight.
+  // The widget owning this cubit is torn down as soon as the account becomes
+  // publishable, which can happen while an await is still in flight.
   void _safeEmit(AuthFormState next) {
     if (isClosed) return;
     emit(next);
@@ -31,9 +31,9 @@ class AuthCubit extends Cubit<AuthFormState> {
 
   void showRegister() => _safeEmit(state.copyWith(mode: AuthMode.register));
 
-  Future<bool> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     _safeEmit(state.copyWith(isSubmitting: true));
-    final AuthOutcome outcome = await applicationCubit.signInWithGoogle();
+    final AuthOutcome outcome = await _authService.signInWithGoogle();
     // Cancelling the Google sheet is not a failure worth showing.
     final bool isCancelled = outcome.error == AuthError.cancelled;
     _safeEmit(
@@ -42,40 +42,38 @@ class AuthCubit extends Cubit<AuthFormState> {
         error: outcome.isSuccess || isCancelled ? null : outcome.error,
       ),
     );
-    return outcome.isSuccess;
   }
 
-  Future<bool> signIn({required String email, required String password}) async {
+  Future<void> signIn({required String email, required String password}) async {
     // No length rule here: accounts created before the minimum was raised
     // would otherwise be locked out of their own sign-in form.
     if (!_validate(email: email, password: password, isNewPassword: false)) {
-      return false;
+      return;
     }
     _safeEmit(state.copyWith(isSubmitting: true));
-    final AuthOutcome outcome = await applicationCubit.signInWithEmail(
-      email.trim(),
-      password,
+    final AuthOutcome outcome = await _authService.signInWithEmail(
+      email: email.trim(),
+      password: password,
     );
     _emitOutcome(outcome);
-    return outcome.isSuccess;
   }
 
-  Future<bool> register({
+  Future<void> register({
     required String email,
     required String password,
     required String passwordRepeat,
   }) async {
     if (!_validate(email: email, password: password, isNewPassword: true)) {
-      return false;
+      return;
     }
     if (password != passwordRepeat) {
       _safeEmit(state.copyWith(passwordFieldError: AuthError.passwordMismatch));
-      return false;
+      return;
     }
     _safeEmit(state.copyWith(isSubmitting: true));
-    final AuthOutcome outcome = await applicationCubit.registerWithEmail(
-      email.trim(),
-      password,
+    final AuthOutcome outcome = await _authService.registerWithEmail(
+      email: email.trim(),
+      password: password,
     );
     final bool hasConflict =
         outcome.error == AuthError.emailAlreadyInUse ||
@@ -89,16 +87,15 @@ class AuthCubit extends Cubit<AuthFormState> {
           hasEmailConflict: true,
         ),
       );
-      return false;
+      return;
     }
     if (!outcome.isSuccess) {
       _emitOutcome(outcome);
-      return false;
+      return;
     }
     // The account exists now. A failing mail is reported on its own, so the
     // notice never claims a mail went out when it did not.
-    final AuthOutcome mailOutcome = await applicationCubit
-        .sendVerificationEmail();
+    final AuthOutcome mailOutcome = await _authService.sendVerificationEmail();
     _safeEmit(
       state.copyWith(
         isSubmitting: false,
@@ -109,17 +106,16 @@ class AuthCubit extends Cubit<AuthFormState> {
     if (mailOutcome.isSuccess) {
       _startCooldown();
     }
-    return true;
   }
 
-  Future<bool> sendPasswordReset(String email) async {
+  Future<void> sendPasswordReset(String email) async {
     final String trimmedEmail = email.trim();
     if (!_isValidEmail(trimmedEmail)) {
       _safeEmit(state.copyWith(emailFieldError: AuthError.invalidEmail));
-      return false;
+      return;
     }
     _safeEmit(state.copyWith(isSubmitting: true));
-    final AuthOutcome outcome = await applicationCubit.sendPasswordResetEmail(
+    final AuthOutcome outcome = await _authService.sendPasswordResetEmail(
       trimmedEmail,
     );
     _safeEmit(
@@ -129,7 +125,6 @@ class AuthCubit extends Cubit<AuthFormState> {
         hasPasswordResetBeenSent: outcome.isSuccess,
       ),
     );
-    return outcome.isSuccess;
   }
 
   Future<void> resendVerificationEmail() async {
@@ -139,7 +134,7 @@ class AuthCubit extends Cubit<AuthFormState> {
     _safeEmit(
       state.copyWith(isSubmitting: true, hasVerificationMailBeenSent: false),
     );
-    final AuthOutcome outcome = await applicationCubit.sendVerificationEmail();
+    final AuthOutcome outcome = await _authService.sendVerificationEmail();
     _safeEmit(
       state.copyWith(
         isSubmitting: false,
@@ -152,15 +147,16 @@ class AuthCubit extends Cubit<AuthFormState> {
     }
   }
 
-  /// Returns true once the address is confirmed. The state update itself comes
-  /// from the ApplicationCubit's user stream.
-  Future<bool> checkVerification() async {
+  // The switch away from the notice once confirmed comes from the
+  // ApplicationCubit's user stream, not from this state.
+  Future<void> checkVerification() async {
     _safeEmit(
       state.copyWith(isSubmitting: true, hasVerificationMailBeenSent: false),
     );
-    final bool isVerified = await applicationCubit.refreshVerificationStatus();
-    _safeEmit(state.copyWith(isSubmitting: false));
-    return isVerified;
+    final bool isVerified = await _authService.refreshVerificationStatus();
+    _safeEmit(
+      state.copyWith(isSubmitting: false, isVerificationPending: !isVerified),
+    );
   }
 
   bool _validate({

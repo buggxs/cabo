@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 
 import 'announcement_repository_test.mocks.dart';
 
-@GenerateNiceMocks([
+@GenerateNiceMocks(<MockSpec<dynamic>>[
   MockSpec<FirebaseFirestore>(),
   MockSpec<CollectionReference<Map<String, dynamic>>>(),
   MockSpec<DocumentReference<Map<String, dynamic>>>(),
@@ -31,12 +31,15 @@ void main() {
 
     test('returns the announcement when the document exists', () async {
       final MockDocumentSnapshot snapshot = MockDocumentSnapshot();
-      when(snapshot.data()).thenReturn({
+      when(snapshot.data()).thenReturn(<String, dynamic>{
         'id': 'summer-sale',
-        'title': {'de': 'Sommer-Angebot', 'en': 'Summer sale'},
-        'message': {'de': 'Jetzt zuschlagen!', 'en': 'Grab it now!'},
+        'title': <String, String>{'de': 'Sommer-Angebot', 'en': 'Summer sale'},
+        'message': <String, String>{
+          'de': 'Jetzt zuschlagen!',
+          'en': 'Grab it now!',
+        },
         'imageUrl': null,
-        'actions': [],
+        'actions': <dynamic>[],
       });
       when(document.get()).thenAnswer((_) async => snapshot);
 
@@ -48,7 +51,7 @@ void main() {
           id: 'summer-sale',
           title: LocalizedText(de: 'Sommer-Angebot', en: 'Summer sale'),
           message: LocalizedText(de: 'Jetzt zuschlagen!', en: 'Grab it now!'),
-          actions: [],
+          actions: <AnnouncementAction>[],
         ),
       );
     });

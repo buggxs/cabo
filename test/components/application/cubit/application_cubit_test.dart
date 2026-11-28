@@ -50,8 +50,9 @@ void main() {
     when(deepLinkService.linkStream).thenAnswer((_) => linkController.stream);
     when(deepLinkService.getInitialLink()).thenAnswer((_) async => null);
     when(deepLinkService.isEmailVerifiedLink(any)).thenAnswer(
-      (Invocation i) =>
-          DeepLinkService().isEmailVerifiedLink(i.positionalArguments.first),
+      (Invocation i) => DeepLinkService().isEmailVerifiedLink(
+        i.positionalArguments.first as Uri,
+      ),
     );
     when(repository.getCurrent()).thenAnswer((_) async => false);
     when(designRepository.getCurrent()).thenAnswer((_) async => 'modern');
@@ -60,9 +61,9 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  tearDown(() {
-    userController.close();
-    linkController.close();
+  tearDown(() async {
+    await userController.close();
+    await linkController.close();
   });
 
   ApplicationCubit buildCubit() => ApplicationCubit(
@@ -91,7 +92,7 @@ void main() {
     test('signs the user in anonymously without any interaction', () async {
       final ApplicationCubit cubit = buildCubit();
 
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       verify(authService.ensureSignedIn()).called(1);
@@ -104,7 +105,7 @@ void main() {
       ).thenAnswer((_) async => const AuthOutcome.failure(AuthError.network));
       final ApplicationCubit cubit = buildCubit();
 
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       verify(announcementCheckService.checkAndShowAnnouncement()).called(1);
@@ -203,7 +204,7 @@ void main() {
   group('ApplicationCubit deep links', () {
     test('refreshes the status for the verification link', () async {
       final ApplicationCubit cubit = buildCubit();
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       linkController.add(
@@ -219,7 +220,7 @@ void main() {
 
     test('ignores unrelated links', () async {
       final ApplicationCubit cubit = buildCubit();
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       linkController.add(Uri.parse('https://www.buggxs.com/projects/cabo-v2'));
@@ -237,7 +238,7 @@ void main() {
       );
       final ApplicationCubit cubit = buildCubit();
 
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       verify(authService.refreshVerificationStatus()).called(1);
@@ -267,7 +268,7 @@ void main() {
         when(designRepository.getCurrent()).thenAnswer((_) async => 'classic');
         final ApplicationCubit cubit = buildCubit();
 
-        cubit.init();
+        unawaited(cubit.init());
         await Future<void>.delayed(Duration.zero);
         userController.add(buildUser(isAnonymous: true, email: null));
         await Future<void>.delayed(Duration.zero);
@@ -287,7 +288,7 @@ void main() {
         final ApplicationCubit cubit = buildCubit();
 
         userController.add(buildUser(isAnonymous: true, email: null));
-        cubit.init();
+        unawaited(cubit.init());
         await Future<void>.delayed(Duration.zero);
 
         expect(cubit.state.isDeveloper, isTrue);
@@ -318,7 +319,7 @@ void main() {
       when(designRepository.getCurrent()).thenAnswer((_) async => 'classic');
       final ApplicationCubit cubit = buildCubit();
 
-      cubit.init();
+      unawaited(cubit.init());
       await Future<void>.delayed(Duration.zero);
 
       expect(cubit.state.isDeveloper, isTrue);

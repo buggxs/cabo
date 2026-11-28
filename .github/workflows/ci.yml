@@ -25,6 +25,14 @@ jobs:
       - run: flutter analyze
         name: "Lint"
 
+      - run: dart run custom_lint
+        name: "Project lint rules"
+
+      - run: |
+          dart pub global activate bloc_tools 0.1.0-dev.24
+          dart pub global run bloc_tools:bloc lint .
+        name: "Bloc lint"
+
       - run: dart format . --set-exit-if-changed
         name: "Format"
 

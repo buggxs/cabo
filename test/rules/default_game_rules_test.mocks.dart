@@ -212,6 +212,50 @@ class MockNavigationService extends _i1.Mock implements _i12.NavigationService {
           as _i9.Future<T?>);
 
   @override
+  void pop<T extends Object?>([T? result]) => super.noSuchMethod(
+    Invocation.method(#pop, [result]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i9.Future<T?> pushNamed<T extends Object?>(
+    String? routeName, {
+    Object? arguments,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#pushNamed, [routeName], {#arguments: arguments}),
+            returnValue: _i9.Future<T?>.value(),
+            returnValueForMissingStub: _i9.Future<T?>.value(),
+          )
+          as _i9.Future<T?>);
+
+  @override
+  _i9.Future<T?> pushFullscreenDialog<T extends Object?>(_i4.Widget? screen) =>
+      (super.noSuchMethod(
+            Invocation.method(#pushFullscreenDialog, [screen]),
+            returnValue: _i9.Future<T?>.value(),
+            returnValueForMissingStub: _i9.Future<T?>.value(),
+          )
+          as _i9.Future<T?>);
+
+  @override
+  void popAndPushNamed(String? routeName, {Object? arguments}) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #popAndPushNamed,
+          [routeName],
+          {#arguments: arguments},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void pushNamedAndRemoveAll(String? routeName) => super.noSuchMethod(
+    Invocation.method(#pushNamedAndRemoveAll, [routeName]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   bool pushAnnouncementRoute(String? routeName) =>
       (super.noSuchMethod(
             Invocation.method(#pushAnnouncementRoute, [routeName]),

@@ -17,7 +17,7 @@ class RoundBadge extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
 
-  /// Optional leading glyph, tinted with [foregroundColor].
+  // Tinted with foregroundColor.
   final String? iconAsset;
 
   final String? tooltip;

@@ -3,6 +3,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class AuthProviderChoice extends StatelessWidget {
   const AuthProviderChoice({
@@ -16,7 +17,7 @@ class AuthProviderChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
 
     return Column(
       children: <Widget>[

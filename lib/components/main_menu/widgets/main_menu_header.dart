@@ -10,7 +10,7 @@ class MainMenuHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         SvgPicture.asset(
           'assets/images/cabo_card_icon.svg',
           height: 48,

@@ -8,23 +8,23 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('calculatePlayedRounds', () {
     test('should return 0 when the games list is empty', () {
-      final games = <Game>[];
+      final List<Game> games = <Game>[];
       expect(calculatePlayedRounds(games), 0);
     });
 
     test('should return the correct number of total rounds', () {
-      const games = <Game>[
+      const List<Game> games = <Game>[
         Game(
           id: 1,
           startedAt: '2023-01-01',
           finishedAt: '2023-01-02',
-          players: [
+          players: <Player>[
             Player(
               id: 1,
               name: 'Alice',
-              rounds: [Round(round: 1), Round(round: 1)],
+              rounds: <Round>[Round(round: 1), Round(round: 1)],
             ),
-            Player(id: 2, name: 'Bob', rounds: [Round(round: 1)]),
+            Player(id: 2, name: 'Bob', rounds: <Round>[Round(round: 1)]),
           ],
           ruleSetId: 1,
           ruleSet: RuleSet(),
@@ -33,11 +33,15 @@ void main() {
           id: 2,
           startedAt: '2023-01-03',
           finishedAt: '2023-01-04',
-          players: [
+          players: <Player>[
             Player(
               id: 3,
               name: 'Charlie',
-              rounds: [Round(round: 1), Round(round: 1), Round(round: 1)],
+              rounds: <Round>[
+                Round(round: 1),
+                Round(round: 1),
+                Round(round: 1),
+              ],
             ),
           ],
           ruleSetId: 2,
@@ -49,14 +53,14 @@ void main() {
     });
 
     test('should handle players with no rounds', () {
-      const games = <Game>[
+      const List<Game> games = <Game>[
         Game(
           id: 1,
           startedAt: '2023-01-01',
           finishedAt: '2023-01-02',
-          players: [
-            Player(id: 1, name: 'Alice', rounds: []),
-            Player(id: 2, name: 'Bob', rounds: []),
+          players: <Player>[
+            Player(id: 1, name: 'Alice', rounds: <Round>[]),
+            Player(id: 2, name: 'Bob', rounds: <Round>[]),
           ],
           ruleSetId: 1,
           ruleSet: RuleSet(),
@@ -67,12 +71,12 @@ void main() {
     });
 
     test('should skip games with no players instead of throwing', () {
-      const games = <Game>[
+      const List<Game> games = <Game>[
         Game(
           id: 1,
           startedAt: '2023-01-01',
           finishedAt: '2023-01-02',
-          players: [],
+          players: <Player>[],
           ruleSetId: 1,
           ruleSet: RuleSet(),
         ),
@@ -80,8 +84,8 @@ void main() {
           id: 2,
           startedAt: '2023-01-03',
           finishedAt: '2023-01-04',
-          players: [
-            Player(id: 1, name: 'Alice', rounds: [Round(round: 1)]),
+          players: <Player>[
+            Player(id: 1, name: 'Alice', rounds: <Round>[Round(round: 1)]),
           ],
           ruleSetId: 1,
           ruleSet: RuleSet(),
@@ -92,16 +96,16 @@ void main() {
     });
 
     test('should handle multiple games and mixed player data', () {
-      const games = <Game>[
+      const List<Game> games = <Game>[
         Game(
           id: 1,
           startedAt: '2023-01-01',
           finishedAt: '2023-01-02',
-          players: [
+          players: <Player>[
             Player(
               id: 1,
               name: 'Alice',
-              rounds: [Round(round: 1), Round(round: 1)],
+              rounds: <Round>[Round(round: 1), Round(round: 1)],
             ),
           ],
           ruleSetId: 1,
@@ -111,9 +115,9 @@ void main() {
           id: 2,
           startedAt: '2023-01-03',
           finishedAt: '2023-01-04',
-          players: [
-            Player(id: 2, name: 'Bob', rounds: []),
-            Player(id: 3, name: 'Charlie', rounds: [Round(round: 1)]),
+          players: <Player>[
+            Player(id: 2, name: 'Bob', rounds: <Round>[]),
+            Player(id: 3, name: 'Charlie', rounds: <Round>[Round(round: 1)]),
           ],
           ruleSetId: 2,
           ruleSet: RuleSet(),

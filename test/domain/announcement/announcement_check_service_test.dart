@@ -8,7 +8,7 @@ import 'package:mockito/mockito.dart';
 
 import 'announcement_check_service_test.mocks.dart';
 
-@GenerateNiceMocks([
+@GenerateNiceMocks(<MockSpec<dynamic>>[
   MockSpec<AnnouncementRepository>(),
   MockSpec<LocalAnnouncementRepository>(),
 ])
@@ -28,7 +28,7 @@ void main() {
     setUp(() {
       announcementRepository = MockAnnouncementRepository();
       localAnnouncementRepository = MockLocalAnnouncementRepository();
-      shownAnnouncements = [];
+      shownAnnouncements = <Announcement>[];
 
       service = AnnouncementCheckService(
         announcementRepository: announcementRepository,
@@ -54,7 +54,7 @@ void main() {
 
         await service.checkAndShowAnnouncement();
 
-        expect(shownAnnouncements, [announcement]);
+        expect(shownAnnouncements, <Announcement>[announcement]);
         verify(
           localAnnouncementRepository.saveLastSeenAnnouncementId('summer-sale'),
         ).called(1);
@@ -130,7 +130,7 @@ void main() {
         final bool wasShown = await service.forceShowAnnouncement();
 
         expect(wasShown, isTrue);
-        expect(shownAnnouncements, [announcement]);
+        expect(shownAnnouncements, <Announcement>[announcement]);
         verifyNever(localAnnouncementRepository.incrementAppStartCount());
         verifyNever(
           localAnnouncementRepository.saveLastSeenAnnouncementId(any),

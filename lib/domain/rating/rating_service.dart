@@ -19,7 +19,7 @@ class RatingService with LoggerMixin {
       return;
     }
 
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     int gameCount = prefs.getInt(_gameCountKey) ?? 0;
     gameCount++;
 
@@ -38,8 +38,8 @@ class RatingService with LoggerMixin {
         // Try the native review flow first
         try {
           await _inAppReview.requestReview();
-          await setHasRated(true);
-        } catch (e) {
+          await setHasRated(hasRated: true);
+        } on Exception catch (e) {
           logger.warning(
             'Native review flow failed: $e - Falling back to custom dialog',
           );
@@ -56,8 +56,8 @@ class RatingService with LoggerMixin {
     }
   }
 
-  Future<void> setHasRated(bool hasRated) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> setHasRated({required bool hasRated}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_hasRatedKey, hasRated);
 
     if (hasRated) {
@@ -67,31 +67,31 @@ class RatingService with LoggerMixin {
   }
 
   Future<bool> hasUserRated() async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_hasRatedKey) ?? false;
   }
 
   Future<bool> _shouldShowPrompt() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastPromptDateStr = prefs.getString(_lastPromptDateKey);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? lastPromptDateStr = prefs.getString(_lastPromptDateKey);
 
     if (lastPromptDateStr == null) {
       return true; // First time showing prompt
     }
 
     try {
-      final lastPromptDate = DateTime.parse(lastPromptDateStr);
-      final daysElapsed = DateTime.now().difference(lastPromptDate).inDays;
+      final DateTime lastPromptDate = DateTime.parse(lastPromptDateStr);
+      final int daysElapsed = DateTime.now().difference(lastPromptDate).inDays;
 
       return daysElapsed >= _minDaysBetweenPrompts;
-    } catch (e) {
+    } on Exception catch (e) {
       logger.warning('Error parsing last prompt date: $e');
       return true;
     }
   }
 
   Future<void> _updateLastPromptDate() async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_lastPromptDateKey, DateTime.now().toIso8601String());
   }
 
@@ -99,7 +99,7 @@ class RatingService with LoggerMixin {
   Future<void> openStoreListing() async {
     try {
       await _inAppReview.openStoreListing();
-    } catch (e) {
+    } on Exception catch (e) {
       logger.warning('Error opening store listing: $e');
     }
   }
@@ -110,21 +110,21 @@ class RatingService with LoggerMixin {
 
     try {
       await _requestStoreReview();
-    } catch (e) {
+    } on Exception catch (e) {
       logger.warning('Error handling rating submission: $e');
     }
 
     // Mark that the user has rated the app
-    await setHasRated(true);
+    await setHasRated(hasRated: true);
   }
 
   // Request a review from the app store
   Future<void> _requestStoreReview() async {
     try {
       // Check if the app store review flow is available
-      final available = await _inAppReview.isAvailable();
+      final bool isAvailable = await _inAppReview.isAvailable();
 
-      if (available) {
+      if (isAvailable) {
         logger.info('Requesting app store review');
         await _inAppReview.requestReview();
       } else {
@@ -134,7 +134,7 @@ class RatingService with LoggerMixin {
         // If in-app review is not available, open the store listing
         await _inAppReview.openStoreListing();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       logger.warning('Error requesting app store review: $e');
     }
   }

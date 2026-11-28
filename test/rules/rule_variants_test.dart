@@ -29,7 +29,7 @@ void main() {
   ).format(DateTime.now());
 
   late MockStatisticsDialogService dialogService;
-  late GetIt app = GetIt.instance;
+  late final GetIt app = GetIt.instance;
 
   Player playerWith(String name, List<int> roundPoints) => Player(
     name: name,
@@ -154,7 +154,7 @@ void main() {
         players: freshPlayers(),
         closer: bob,
         points: <String, int>{bob: 3, leo: 4, mia: 6},
-        ruleSet: defaultRuleSet.copyWith(roundWinnerGetsZeroPoints: false),
+        ruleSet: defaultRuleSet.copyWith(shouldRoundWinnerGetZeroPoints: false),
       );
 
       expect(lastRoundOf(state.players, bob).points, 3);
@@ -167,7 +167,7 @@ void main() {
         players: freshPlayers(),
         closer: bob,
         points: <String, int>{bob: 8, leo: 3, mia: 6},
-        ruleSet: defaultRuleSet.copyWith(roundWinnerGetsZeroPoints: false),
+        ruleSet: defaultRuleSet.copyWith(shouldRoundWinnerGetZeroPoints: false),
       );
 
       expect(lastRoundOf(state.players, bob).points, 13);
@@ -324,7 +324,7 @@ void main() {
         ],
         closer: bob,
         points: <String, int>{bob: 3, leo: 4, mia: 20},
-        ruleSet: defaultRuleSet.copyWith(precisionLanding: false),
+        ruleSet: defaultRuleSet.copyWith(hasPrecisionLanding: false),
       );
 
       expect(lastRoundOf(state.players, mia).hasPrecisionLanding, isFalse);

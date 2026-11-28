@@ -21,7 +21,7 @@ class AnnouncementRepository with LoggerMixin {
       }
 
       return Announcement.fromJson(data);
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logger.severe('Failed to load current announcement', e, stackTrace);
       return null;
     }

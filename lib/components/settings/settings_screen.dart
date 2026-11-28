@@ -2,12 +2,14 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:cabo/components/settings/widgets/account_card.dart';
 import 'package:cabo/components/settings/widgets/design_selection_card.dart';
+import 'package:cabo/core/app_navigator/navigation_service.dart';
+import 'package:cabo/core/app_service_locator.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  static const route = 'settings_screen';
+  static const String route = 'settings_screen';
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: CaboTheme.m3Primary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => app<NavigationService>().pop(),
         ),
         title: Text(
           context.l10n.settingsScreenTitle,

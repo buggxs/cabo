@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,8 @@ class _AnimatedBorderContainerState extends State<AnimatedBorderContainer>
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(reverse: true);
+    );
+    unawaited(_controller.repeat(reverse: true));
 
     _animation = Tween<double>(
       begin: 0.2,
@@ -43,7 +46,7 @@ class _AnimatedBorderContainerState extends State<AnimatedBorderContainer>
       onTap: widget.onTap,
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (context, child) {
+        builder: (BuildContext context, Widget? child) {
           return Container(
             decoration: BoxDecoration(
               color: CaboTheme.primaryContainer.withValues(

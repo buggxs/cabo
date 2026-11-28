@@ -18,7 +18,7 @@ class StatisticsBottomNav extends StatelessWidget {
   final VoidCallback onRules;
   final VoidCallback onOnline;
 
-  /// Steuert die Hervorhebung des Online-Eintrags (Spiel ist veröffentlicht).
+  // Highlights the online entry while the game is published.
   final bool isOnline;
 
   @override
@@ -30,9 +30,9 @@ class StatisticsBottomNav extends StatelessWidget {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(CaboTheme.cardRadius),
         ),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, -4),
           ),
@@ -44,7 +44,7 @@ class StatisticsBottomNav extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
+            children: <Widget>[
               _NavItem(
                 icon: Icons.logout,
                 label: context.l10n.statsNavEndGame,
@@ -98,7 +98,7 @@ class _NavItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             Icon(icon, size: 24, color: color),
             const SizedBox(height: 2),
             Text(

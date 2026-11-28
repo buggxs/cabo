@@ -12,6 +12,7 @@ import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/local_rule_set_repository.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -21,7 +22,7 @@ import 'package:mockito/mockito.dart';
 
 import 'statistics_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([
+@GenerateNiceMocks(<MockSpec<Object>>[
   MockSpec<LocalRuleService>(),
   MockSpec<StatisticsDialogService>(),
   MockSpec<NavigationService>(),
@@ -31,17 +32,17 @@ import 'statistics_cubit_test.mocks.dart';
   MockSpec<PublicGameService>(),
 ])
 void main() {
-  List<Player> playerList = [
+  final List<Player> playerList = <Player>[
     const Player(name: 'Kevin'),
     const Player(name: 'Maike'),
     const Player(name: 'Mia'),
   ];
 
-  List<Player> playerListPrecisionLanding = [
+  final List<Player> playerListPrecisionLanding = <Player>[
     const Player(
       name: 'Mia',
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 22,
@@ -68,7 +69,7 @@ void main() {
     const Player(
       name: 'Kevin',
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -95,7 +96,7 @@ void main() {
     const Player(
       name: 'Maike',
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 20,
@@ -121,20 +122,20 @@ void main() {
     ),
   ];
 
-  RuleSet ruleSet = const RuleSet();
+  final RuleSet ruleSet = const RuleSet();
 
-  String gameStartedDate = DateFormat(
+  final String gameStartedDate = DateFormat(
     'dd-MM-yyyy HH:mm',
   ).format(DateTime.now());
 
-  Game expectedGame = Game(
+  final Game expectedGame = Game(
     players: playerList,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
     seatingOrder: playerList.map((Player player) => player.name).toList(),
   );
 
-  Game expectedPrecisionLandingGame = Game(
+  final Game expectedPrecisionLandingGame = Game(
     players: playerListPrecisionLanding,
     ruleSet: ruleSet,
     startedAt: gameStartedDate,
@@ -143,11 +144,11 @@ void main() {
         .toList(),
   );
 
-  List<Player> expectedPlayerListWithDefaultRulesAndPenalty = [
+  final List<Player> expectedPlayerListWithDefaultRulesAndPenalty = <Player>[
     const Player(
       name: 'Maike',
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -160,7 +161,7 @@ void main() {
     const Player(
       name: 'Mia',
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -172,7 +173,7 @@ void main() {
     const Player(
       name: 'Kevin',
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 8,
@@ -183,11 +184,11 @@ void main() {
     ),
   ];
 
-  List<Player> expectedPlayerListWithDefaultRules = [
+  final List<Player> expectedPlayerListWithDefaultRules = <Player>[
     const Player(
       name: 'Kevin',
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 0,
@@ -200,7 +201,7 @@ void main() {
     const Player(
       name: 'Maike',
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -212,7 +213,7 @@ void main() {
     const Player(
       name: 'Mia',
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -223,163 +224,165 @@ void main() {
     ),
   ];
 
-  List<Player> expectedPlayerListWithDefaultRulesHittingKamikaze = [
-    const Player(
-      name: 'Kevin',
-      place: 1,
-      rounds: [
-        Round(
-          round: 1,
-          points: 0,
-          hasPenaltyPoints: false,
-          hasClosedRound: true,
-          isKamikazeRound: true,
-          isWonRound: true,
+  final List<Player> expectedPlayerListWithDefaultRulesHittingKamikaze =
+      <Player>[
+        const Player(
+          name: 'Kevin',
+          place: 1,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 0,
+              hasPenaltyPoints: false,
+              hasClosedRound: true,
+              isKamikazeRound: true,
+              isWonRound: true,
+            ),
+          ],
         ),
-      ],
-    ),
-    const Player(
-      name: 'Maike',
-      place: 2,
-      rounds: [
-        Round(
-          round: 1,
-          points: 50,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isKamikazeRound: true,
-          isWonRound: false,
+        const Player(
+          name: 'Maike',
+          place: 2,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 50,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isKamikazeRound: true,
+              isWonRound: false,
+            ),
+          ],
         ),
-      ],
-    ),
-    const Player(
-      name: 'Mia',
-      place: 3,
-      rounds: [
-        Round(
-          round: 1,
-          points: 50,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isKamikazeRound: true,
-          isWonRound: false,
+        const Player(
+          name: 'Mia',
+          place: 3,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 50,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isKamikazeRound: true,
+              isWonRound: false,
+            ),
+          ],
         ),
-      ],
-    ),
-  ];
+      ];
 
-  List<Player> expectedPlayerListWithDefaultRulesPrecisionLanding = [
-    const Player(
-      name: 'Mia',
-      place: 1,
-      rounds: [
-        Round(
-          round: 1,
-          points: 22,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
+  final List<Player> expectedPlayerListWithDefaultRulesPrecisionLanding =
+      <Player>[
+        const Player(
+          name: 'Mia',
+          place: 1,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 22,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 2,
+              points: 0,
+              hasPenaltyPoints: false,
+              hasClosedRound: true,
+              isWonRound: true,
+            ),
+            Round(
+              round: 3,
+              points: 0,
+              hasPenaltyPoints: false,
+              hasClosedRound: true,
+              isWonRound: true,
+            ),
+            Round(
+              round: 4,
+              points: 0,
+              hasPenaltyPoints: false,
+              hasClosedRound: true,
+              isWonRound: true,
+            ),
+          ],
         ),
-        Round(
-          round: 2,
-          points: 0,
-          hasPenaltyPoints: false,
-          hasClosedRound: true,
-          isWonRound: true,
+        const Player(
+          name: 'Maike',
+          place: 2,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 20,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 2,
+              points: 40,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 3,
+              points: 20,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 4,
+              points: 20,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              hasPrecisionLanding: true,
+              precisionLandingDeduction: 50,
+              isWonRound: false,
+            ),
+          ],
         ),
-        Round(
-          round: 3,
-          points: 0,
-          hasPenaltyPoints: false,
-          hasClosedRound: true,
-          isWonRound: true,
+        const Player(
+          name: 'Kevin',
+          place: 3,
+          rounds: <Round>[
+            Round(
+              round: 1,
+              points: 0,
+              hasPenaltyPoints: false,
+              hasClosedRound: true,
+              isWonRound: true,
+            ),
+            Round(
+              round: 2,
+              points: 35,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 3,
+              points: 25,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+            Round(
+              round: 4,
+              points: 11,
+              hasPenaltyPoints: false,
+              hasClosedRound: false,
+              isWonRound: false,
+            ),
+          ],
         ),
-        Round(
-          round: 4,
-          points: 0,
-          hasPenaltyPoints: false,
-          hasClosedRound: true,
-          isWonRound: true,
-        ),
-      ],
-    ),
-    const Player(
-      name: 'Maike',
-      place: 2,
-      rounds: [
-        Round(
-          round: 1,
-          points: 20,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-        Round(
-          round: 2,
-          points: 40,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-        Round(
-          round: 3,
-          points: 20,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-        Round(
-          round: 4,
-          points: 20,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          hasPrecisionLanding: true,
-          precisionLandingDeduction: 50,
-          isWonRound: false,
-        ),
-      ],
-    ),
-    const Player(
-      name: 'Kevin',
-      place: 3,
-      rounds: [
-        Round(
-          round: 1,
-          points: 0,
-          hasPenaltyPoints: false,
-          hasClosedRound: true,
-          isWonRound: true,
-        ),
-        Round(
-          round: 2,
-          points: 35,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-        Round(
-          round: 3,
-          points: 25,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-        Round(
-          round: 4,
-          points: 11,
-          hasPenaltyPoints: false,
-          hasClosedRound: false,
-          isWonRound: false,
-        ),
-      ],
-    ),
-  ];
+      ];
 
-  List<Player> expectedPlayerListWithOwnRules = [
+  final List<Player> expectedPlayerListWithOwnRules = <Player>[
     const Player(
       name: 'Kevin',
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 3,
@@ -392,7 +395,7 @@ void main() {
     const Player(
       name: 'Maike',
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 4,
@@ -404,7 +407,7 @@ void main() {
     const Player(
       name: 'Mia',
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -415,11 +418,11 @@ void main() {
     ),
   ];
 
-  List<Player> expectedPlayerListWithOwnRulesAndPenalty = [
+  final List<Player> expectedPlayerListWithOwnRulesAndPenalty = <Player>[
     const Player(
       name: 'Maike',
       place: 1,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 1,
@@ -432,7 +435,7 @@ void main() {
     const Player(
       name: 'Mia',
       place: 2,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 6,
@@ -444,7 +447,7 @@ void main() {
     const Player(
       name: 'Kevin',
       place: 3,
-      rounds: [
+      rounds: <Round>[
         Round(
           round: 1,
           points: 8,
@@ -455,37 +458,37 @@ void main() {
     ),
   ];
 
-  Map<String, int> pointsMapOwnRulesPenalty = {
+  final Map<String, int> pointsMapOwnRulesPenalty = <String, int>{
     playerList[0].name: 3,
     playerList[1].name: 1,
     playerList[2].name: 6,
   };
 
-  Map<String, int> pointsMapOwnRules = {
+  final Map<String, int> pointsMapOwnRules = <String, int>{
     playerList[0].name: 3,
     playerList[1].name: 4,
     playerList[2].name: 6,
   };
 
-  Map<String, int> pointsMapDefaultRulesPenalty = {
+  final Map<String, int> pointsMapDefaultRulesPenalty = <String, int>{
     playerList[0].name: 3,
     playerList[1].name: 1,
     playerList[2].name: 6,
   };
 
-  Map<String, int> pointsMapDefaultRules = {
+  final Map<String, int> pointsMapDefaultRules = <String, int>{
     playerList[0].name: 3,
     playerList[1].name: 4,
     playerList[2].name: 6,
   };
 
-  Map<String, int> pointsMapDefaultRulesKamikaze = {
+  final Map<String, int> pointsMapDefaultRulesKamikaze = <String, int>{
     playerList[0].name: 50,
     playerList[1].name: 4,
     playerList[2].name: 6,
   };
 
-  Map<String, int> pointsMapDefaultRulesPrecisionLanding = {
+  final Map<String, int> pointsMapDefaultRulesPrecisionLanding = <String, int>{
     playerListPrecisionLanding[0].name: 6,
     playerListPrecisionLanding[1].name: 11,
     playerListPrecisionLanding[2].name: 20,
@@ -498,7 +501,7 @@ void main() {
   late MockLocalGameService localGameService;
   late LocalRuleSetRepository localRuleSetRepository;
   late MockPublicGameService publicGameService;
-  late GetIt app = GetIt.instance;
+  late final GetIt app = GetIt.instance;
 
   setUpAll(() {
     setup();
@@ -530,11 +533,12 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.loadRuleSet(),
-      expect: () => [StatisticsState(players: playerList, game: expectedGame)],
+      expect: () => <StatisticsState>[
+        StatisticsState(players: playerList, game: expectedGame),
+      ],
     );
 
     blocTest<StatisticsCubit, StatisticsState>(
@@ -542,11 +546,12 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.loadRuleSet(),
-      expect: () => [StatisticsState(players: playerList, game: expectedGame)],
+      expect: () => <StatisticsState>[
+        StatisticsState(players: playerList, game: expectedGame),
+      ],
       tearDown: () {
         app.registerSingleton<RuleService>(ruleService);
       },
@@ -557,11 +562,10 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(kOwnRuleSet));
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.loadRuleSet(),
-      expect: () => [
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerList,
           game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
@@ -573,11 +577,8 @@ void main() {
     );
   });
 
-  /**
-   * Da die Zustandsänderung, die durch emit ausgelöst wird,
-   * im Konstruktor stattfindet, wird sie von blocTest nicht als
-   * Zustandsänderung erkannt, die nach der Initialisierung passiert.
-   */
+  // The emit triggered in the constructor is not recognised by blocTest as a
+  // state change that happens after initialisation.
   group('Test to load correct game', () {
     blocTest<StatisticsCubit, StatisticsState>(
       'Should load game',
@@ -585,10 +586,12 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
       },
-      act: (cubit) => cubit.loadGame(game: expectedGame),
-      expect: () => [StatisticsState(players: playerList, game: expectedGame)],
+      act: (StatisticsCubit cubit) => cubit.loadGame(game: expectedGame),
+      expect: () => <StatisticsState>[
+        StatisticsState(players: playerList, game: expectedGame),
+      ],
     );
 
     blocTest<StatisticsCubit, StatisticsState>(
@@ -597,10 +600,10 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(kOwnRuleSet));
       },
-      act: (cubit) => cubit.loadGame(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.loadGame(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerList,
           game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
@@ -616,10 +619,10 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(kOwnRuleSet));
       },
-      act: (cubit) => cubit.reloadRuleSet(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.reloadRuleSet(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerList,
           game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
@@ -633,9 +636,9 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(ruleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(ruleSet));
       },
-      act: (cubit) => cubit.reloadRuleSet(),
+      act: (StatisticsCubit cubit) => cubit.reloadRuleSet(),
       expect: () => <StatisticsState>[],
     );
   });
@@ -646,11 +649,11 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
       },
       build: () => StatisticsCubit(players: <Player>[]),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: const <Player>[],
           game: Game(
@@ -667,17 +670,19 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRulesPenalty));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapDefaultRulesPenalty),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(players: playerList, game: expectedGame),
         StatisticsState(
           players: expectedPlayerListWithDefaultRulesAndPenalty,
@@ -693,17 +698,19 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapDefaultRules),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(players: playerList, game: expectedGame),
         StatisticsState(
           players: expectedPlayerListWithDefaultRules,
@@ -719,17 +726,20 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRulesKamikaze));
+        ).thenAnswer(
+          (_) =>
+              Future<Map<String, int?>?>.value(pointsMapDefaultRulesKamikaze),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(players: playerList, game: expectedGame),
         StatisticsState(
           game: expectedGame.copyWith(
@@ -745,21 +755,23 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(kOwnRuleSet));
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapOwnRulesPenalty));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapOwnRulesPenalty),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) async {
-        // Stellt sicher, dass der Cubit initialisiert wird
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        // Ensures the cubit is initialised
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         cubit.closeRound();
       },
-      expect: () => [
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerList,
           game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
@@ -779,21 +791,23 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(kOwnRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(kOwnRuleSet));
         when(
           dialogService.showRoundCloserDialog(players: playerList),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(playerList, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapOwnRules));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapOwnRules),
+        );
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) async {
-        // Stellt sicher, dass der Cubit initialisiert wird
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        // Ensures the cubit is initialised
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         cubit.closeRound();
       },
-      expect: () => [
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerList,
           game: expectedGame.copyWith(ruleSet: kOwnRuleSet),
@@ -815,24 +829,28 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           dialogService.showRoundCloserDialog(
             players: playerListPrecisionLanding,
           ),
-        ).thenAnswer((_) => Future.value(playerListPrecisionLanding[0]));
+        ).thenAnswer(
+          (_) => Future<Player?>.value(playerListPrecisionLanding[0]),
+        );
         when(
           dialogService.showPointDialog(
             playerListPrecisionLanding,
             closer: anyNamed('closer'),
           ),
         ).thenAnswer(
-          (_) => Future.value(pointsMapDefaultRulesPrecisionLanding),
+          (_) => Future<Map<String, int?>?>.value(
+            pointsMapDefaultRulesPrecisionLanding,
+          ),
         );
       },
       build: () => StatisticsCubit(players: playerListPrecisionLanding),
-      act: (cubit) => cubit.closeRound(),
-      expect: () => [
+      act: (StatisticsCubit cubit) => cubit.closeRound(),
+      expect: () => <StatisticsState>[
         StatisticsState(
           players: playerListPrecisionLanding,
           game: expectedPrecisionLandingGame,
@@ -844,7 +862,7 @@ void main() {
           ),
         ),
       ],
-      verify: (cubit) {
+      verify: (StatisticsCubit cubit) {
         expect(cubit.state.game?.players[1].name, 'Maike');
         expect(cubit.state.game?.players[1].totalPoints, 50);
       },
@@ -852,9 +870,9 @@ void main() {
   });
 
   group('Test finishedAt behavior', () {
-    // Public-Game / Non-Owner-Pfade rufen FirebaseAuth.instance direkt auf
-    // und sind ohne firebase_auth_mocks nicht isoliert testbar. Die folgenden
-    // Szenarien decken die lokalen Pfade und das reguläre Spielende ab.
+    // Public game / non-owner paths call FirebaseAuth.instance directly and
+    // cannot be tested in isolation without firebase_auth_mocks. The following
+    // scenarios cover the local paths and the regular end of a game.
 
     const RuleSet smallRuleSet = RuleSet(totalGamePoints: 5);
 
@@ -863,13 +881,13 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         clearInteractions(localGameService);
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        cubit.onPopScreen();
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await cubit.onPopScreen();
       },
       verify: (_) {
         final List<dynamic> captured = verify(
@@ -887,16 +905,16 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         clearInteractions(localGameService);
       },
       build: () => StatisticsCubit(
         players: playerList,
         game: expectedGame.copyWith(finishedAt: '01-01-2026 12:00'),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        cubit.onPopScreen();
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await cubit.onPopScreen();
       },
       verify: (_) {
         verifyNever(localGameService.saveToGameHistory(any));
@@ -908,18 +926,20 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(smallRuleSet));
+        ).thenAnswer((_) => Future<RuleSet>.value(smallRuleSet));
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapDefaultRules),
+        );
         clearInteractions(localGameService);
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         cubit.closeRound();
       },
       verify: (_) {
@@ -932,7 +952,7 @@ void main() {
         expect(saved.isGameFinished, isTrue);
         expect(
           saved.players.any(
-            (p) => p.totalPoints > smallRuleSet.totalGamePoints,
+            (Player p) => p.totalPoints > smallRuleSet.totalGamePoints,
           ),
           isTrue,
         );
@@ -944,18 +964,20 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapDefaultRules),
+        );
         clearInteractions(localGameService);
       },
       build: () => StatisticsCubit(players: playerList),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         cubit.closeRound();
       },
       verify: (_) {
@@ -1000,11 +1022,11 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         when(
           publicGameService.saveOrUpdateGame(game: anyNamed('game')),
         ).thenAnswer(
-          (invocation) async =>
+          (Invocation invocation) async =>
               invocation.namedArguments[const Symbol('game')] as Game,
         );
         clearInteractions(localGameService);
@@ -1018,10 +1040,10 @@ void main() {
           mockUser: MockUser(uid: ownerUid),
         ),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        cubit.onPopScreen();
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await cubit.onPopScreen();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
       verify: (_) {
         final List<dynamic> captured = verify(
@@ -1045,7 +1067,7 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         clearInteractions(localGameService);
         clearInteractions(publicGameService);
       },
@@ -1057,12 +1079,12 @@ void main() {
           mockUser: MockUser(uid: otherUid),
         ),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        cubit.onPopScreen();
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await cubit.onPopScreen();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
-      verify: (cubit) {
+      verify: (StatisticsCubit cubit) {
         verifyNever(localGameService.saveToGameHistory(any));
         verifyNever(publicGameService.saveOrUpdateGame(game: anyNamed('game')));
         expect(cubit.state.game?.finishedAt, isNull);
@@ -1074,7 +1096,7 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
         clearInteractions(localGameService);
         clearInteractions(publicGameService);
       },
@@ -1086,10 +1108,10 @@ void main() {
           mockUser: MockUser(uid: ownerUid),
         ),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
-        cubit.onPopScreen();
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await cubit.onPopScreen();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
       verify: (_) {
         verify(publicGameService.deleteGame('cabo-test-abc')).called(1);
@@ -1113,10 +1135,10 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
-        when(
-          publicGameService.subscribeToGame(any),
-        ).thenAnswer((_) => const Stream.empty());
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
+        when(publicGameService.subscribeToGame(any)).thenAnswer(
+          (_) => const Stream<DocumentSnapshot<Map<String, dynamic>>>.empty(),
+        );
         clearInteractions(publicGameService);
       },
       build: () => StatisticsCubit(
@@ -1127,8 +1149,8 @@ void main() {
           mockUser: MockUser(uid: ownerUid),
         ),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
       verify: (_) {
         verify(publicGameService.subscribeToGame('cabo-test-abc')).called(1);
@@ -1140,22 +1162,24 @@ void main() {
       setUp: () {
         when(
           ruleService.loadRuleSet(),
-        ).thenAnswer((_) => Future.value(const RuleSet()));
-        when(
-          publicGameService.subscribeToGame(any),
-        ).thenAnswer((_) => const Stream.empty());
+        ).thenAnswer((_) => Future<RuleSet>.value(const RuleSet()));
+        when(publicGameService.subscribeToGame(any)).thenAnswer(
+          (_) => const Stream<DocumentSnapshot<Map<String, dynamic>>>.empty(),
+        );
         when(
           publicGameService.saveOrUpdateGame(game: anyNamed('game')),
         ).thenAnswer(
-          (invocation) async =>
+          (Invocation invocation) async =>
               invocation.namedArguments[const Symbol('game')] as Game,
         );
         when(
           dialogService.showRoundCloserDialog(players: anyNamed('players')),
-        ).thenAnswer((_) => Future.value(playerList[0]));
+        ).thenAnswer((_) => Future<Player?>.value(playerList[0]));
         when(
           dialogService.showPointDialog(any, closer: anyNamed('closer')),
-        ).thenAnswer((_) => Future.value(pointsMapDefaultRules));
+        ).thenAnswer(
+          (_) => Future<Map<String, int?>?>.value(pointsMapDefaultRules),
+        );
         clearInteractions(publicGameService);
         clearInteractions(localGameService);
       },
@@ -1167,10 +1191,10 @@ void main() {
           mockUser: MockUser(uid: otherUid),
         ),
       ),
-      act: (cubit) async {
-        await Future.delayed(const Duration(milliseconds: 50));
+      act: (StatisticsCubit cubit) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
         cubit.closeRound();
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
       verify: (_) {
         final List<dynamic> synced = verify(

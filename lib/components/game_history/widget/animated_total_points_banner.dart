@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 import 'package:flutter/material.dart';
 
-/// Grünes Hero-Banner im neuen Material-3-Design, das die über alle Spiele
-/// gesammelten Punkte animiert hochzählt (vgl. Design).
+/// Green hero banner in the Material 3 design that counts up the points
+/// collected over all games with an animation.
 class AnimatedTotalPointsBanner extends StatefulWidget {
   const AnimatedTotalPointsBanner({
     super.key,
@@ -35,7 +37,7 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
       end: widget.totalCollectedPoints,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   @override
@@ -46,9 +48,8 @@ class _AnimatedTotalPointsBannerState extends State<AnimatedTotalPointsBanner>
         begin: 0,
         end: widget.totalCollectedPoints,
       ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-      _controller
-        ..reset()
-        ..forward();
+      _controller.reset();
+      unawaited(_controller.forward());
     }
   }
 

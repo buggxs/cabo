@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'rule_set.g.dart';
 
-/// Points added when the player who called Cabo does not have the lowest hand.
+// Added when the player who called Cabo does not have the lowest hand.
 const int kFailedCaboPenaltyPoints = 5;
 
 @JsonSerializable()
@@ -12,8 +12,8 @@ class RuleSet extends Equatable {
     this.id,
     this.totalGamePoints = 100,
     this.kamikazePoints = 50,
-    this.roundWinnerGetsZeroPoints = true,
-    this.precisionLanding = true,
+    this.shouldRoundWinnerGetZeroPoints = true,
+    this.hasPrecisionLanding = true,
   });
 
   final int? id;
@@ -21,44 +21,46 @@ class RuleSet extends Equatable {
   final int totalGamePoints;
   final int kamikazePoints;
 
-  final bool roundWinnerGetsZeroPoints;
-  final bool precisionLanding;
+  @JsonKey(name: 'roundWinnerGetsZeroPoints')
+  final bool shouldRoundWinnerGetZeroPoints;
+  @JsonKey(name: 'precisionLanding')
+  final bool hasPrecisionLanding;
 
   factory RuleSet.fromJson(Map<String, dynamic> json) =>
       _$RuleSetFromJson(json);
 
   Map<String, dynamic> toJson() => _$RuleSetToJson(this);
 
-  bool get useKamikazeRule => kamikazePoints > 0;
+  bool get hasKamikazeRule => kamikazePoints > 0;
 
   RuleSet copyWith({
     int? totalGamePoints,
     int? kamikazePoints,
-    bool? roundWinnerGetsZeroPoints,
-    bool? precisionLanding,
+    bool? shouldRoundWinnerGetZeroPoints,
+    bool? hasPrecisionLanding,
   }) {
     return RuleSet(
       totalGamePoints: totalGamePoints ?? this.totalGamePoints,
       kamikazePoints: kamikazePoints ?? this.kamikazePoints,
-      roundWinnerGetsZeroPoints:
-          roundWinnerGetsZeroPoints ?? this.roundWinnerGetsZeroPoints,
-      precisionLanding: precisionLanding ?? this.precisionLanding,
+      shouldRoundWinnerGetZeroPoints:
+          shouldRoundWinnerGetZeroPoints ?? this.shouldRoundWinnerGetZeroPoints,
+      hasPrecisionLanding: hasPrecisionLanding ?? this.hasPrecisionLanding,
     );
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
     id,
     totalGamePoints,
     kamikazePoints,
-    roundWinnerGetsZeroPoints,
-    precisionLanding,
+    shouldRoundWinnerGetZeroPoints,
+    hasPrecisionLanding,
   ];
 }
 
 const RuleSet kOwnRuleSet = RuleSet(
   totalGamePoints: 100,
   kamikazePoints: 0,
-  roundWinnerGetsZeroPoints: false,
-  precisionLanding: false,
+  shouldRoundWinnerGetZeroPoints: false,
+  hasPrecisionLanding: false,
 );

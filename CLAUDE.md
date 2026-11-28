@@ -17,8 +17,10 @@ fvm flutter test
 # Run a single test file
 fvm flutter test test/path/to/test_file.dart
 
-# Lint
+# Lint (all three run in CI; rules are configured in analysis_options.yaml)
 fvm flutter analyze
+fvm dart run custom_lint                           # project rules from tools/cabo_lints
+fvm dart pub global run bloc_tools:bloc lint .     # needs: fvm dart pub global activate bloc_tools
 
 # Format check (used in CI)
 dart format . --set-exit-if-changed
@@ -32,6 +34,12 @@ Flutter version is managed via FVM; the pinned version is in `.fvmrc`.
 ## Code style
 
 **Comments:** Write comments in English only, and only where they are truly necessary to explain very complex sections. Prefer self-explanatory code (clear naming, small methods) over comments.
+
+## Lint rules
+
+Code style and architecture conventions are enforced by lint rules instead of being listed here: built-in rules in `analysis_options.yaml`, project specific rules in `tools/cabo_lints` (run via `custom_lint`) and `bloc_lint`. All three linters must report no findings before work is considered done.
+
+**Propose new rules:** When you run into a bug, a regression or a recurring review finding during development that a lint rule could have prevented, propose adding such a rule (a built-in one, or a new custom rule in `tools/cabo_lints`) and say how many findings it would produce in the existing code. Implement it only after it was confirmed.
 
 ## Architecture
 

@@ -31,7 +31,7 @@ class MainMenuUtilityTile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: <Widget>[
               Icon(icon, size: 32, color: CaboTheme.m3Secondary),
               const SizedBox(height: 8),
               Text(

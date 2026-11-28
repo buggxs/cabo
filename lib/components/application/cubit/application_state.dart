@@ -17,7 +17,7 @@ abstract class ApplicationState extends Equatable {
 
   bool get hasAccount => isSignedIn && !isAnonymous;
 
-  /// The server side equivalent of this lives in firestore.rules (games/create).
+  // The server side equivalent of this lives in firestore.rules (games/create).
   bool get canPublishGame => hasAccount && isEmailVerified;
 
   bool get isAwaitingEmailVerification => hasAccount && !isEmailVerified;
@@ -25,7 +25,7 @@ abstract class ApplicationState extends Equatable {
   ApplicationState copyWith({bool? isDeveloper, AppDesign? design});
 
   @override
-  List<Object?> get props => [isDeveloper, design];
+  List<Object?> get props => <Object?>[isDeveloper, design];
 }
 
 class ApplicationInitial extends ApplicationState {
@@ -66,7 +66,10 @@ class ApplicationAuthenticated extends ApplicationState {
          design: design ?? AppDesign.modern,
        );
 
+  // Deliberately not part of props: a Firebase User has no value equality,
+  // so the values derived from it are compared instead.
   @override
+  // ignore: equatable_props_complete
   final User user;
   final String uid;
   @override
@@ -95,7 +98,7 @@ class ApplicationAuthenticated extends ApplicationState {
   // uid instead of user: User is mutable and has no value equality, so an
   // emailVerified change after reload() would be swallowed by Equatable.
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
     uid,
     isAnonymous,
     isEmailVerified,

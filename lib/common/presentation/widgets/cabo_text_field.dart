@@ -1,6 +1,7 @@
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class CaboTextField extends StatefulWidget {
   const CaboTextField({
@@ -19,7 +20,7 @@ class CaboTextField extends StatefulWidget {
   final String label;
   final String? errorText;
 
-  /// Obscured fields get a reveal toggle on the right.
+  // Obscured fields get a reveal toggle on the right.
   final bool isObscured;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -37,7 +38,7 @@ class _CaboTextFieldState extends State<CaboTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final OutlineInputBorder border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
       borderSide: BorderSide(color: CaboTheme.outlineVariant),

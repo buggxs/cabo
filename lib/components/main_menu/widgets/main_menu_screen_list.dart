@@ -27,7 +27,7 @@ class MainMenuScreenList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+                children: <Widget>[
                   const MainMenuHeader(),
                   const SizedBox(height: 32),
                   MainMenuActionCard(
@@ -49,31 +49,28 @@ class MainMenuScreenList extends StatelessWidget {
                     foregroundColor: CaboTheme.onSecondary,
                     titleColor: CaboTheme.secondaryContainer,
                     accentColor: CaboTheme.onSecondaryFixedVariant,
-                    onTap: () => cubit.showJoinGameDialog(context),
+                    onTap: () => cubit.showJoinGameDialog(),
                   ),
                   const SizedBox(height: 24),
                   MainMenuUtilityTile(
                     icon: Icons.menu_book,
                     label: context.l10n.menuEntryGameRules,
-                    onTap: () =>
-                        cubit.pushToScreen(context, RuleSetScreen.route),
+                    onTap: () => cubit.pushToScreen(RuleSetScreen.route),
                   ),
                   const SizedBox(height: 16),
                   MainMenuUtilityTile(
                     icon: Icons.history,
                     label: context.l10n.menuEntryGameHistory,
-                    onTap: () =>
-                        cubit.pushToScreen(context, GameHistoryScreen.route),
+                    onTap: () => cubit.pushToScreen(GameHistoryScreen.route),
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    children: [
+                    children: <Widget>[
                       Expanded(
                         child: MainMenuUtilityTile(
                           icon: Icons.info_outline,
                           label: context.l10n.menuEntryGameAboutScreen,
-                          onTap: () =>
-                              cubit.pushToScreen(context, AboutScreen.route),
+                          onTap: () => cubit.pushToScreen(AboutScreen.route),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -81,8 +78,7 @@ class MainMenuScreenList extends StatelessWidget {
                         child: MainMenuUtilityTile(
                           icon: Icons.settings,
                           label: context.l10n.menuEntrySettings,
-                          onTap: () =>
-                              cubit.pushToScreen(context, SettingsScreen.route),
+                          onTap: () => cubit.pushToScreen(SettingsScreen.route),
                         ),
                       ),
                     ],
