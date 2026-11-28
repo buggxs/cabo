@@ -742,4 +742,13 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get designClassicDescription =>
       'Das ursprüngliche dunkelgrüne Design mit Hintergrundbild.';
+
+  @override
+  String get errorScreenTitle => 'Fehler';
+
+  @override
+  String get errorScreenMessage => 'Etwas ist schiefgelaufen.';
+
+  @override
+  String get statsScreenNoPlayers => 'Keine Spieler gefunden!';
 }

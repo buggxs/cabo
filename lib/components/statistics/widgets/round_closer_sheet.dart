@@ -21,7 +21,7 @@ class RoundCloserSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x263D3A35), // rgba(61,58,53,0.15)
+            color: CaboTheme.sheetShadow,
             blurRadius: 24,
             offset: Offset(0, -12),
           ),

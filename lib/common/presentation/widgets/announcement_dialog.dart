@@ -5,6 +5,7 @@ import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/announcement/announcement.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class AnnouncementDialog extends StatelessWidget {
   const AnnouncementDialog({super.key, required this.announcement});
@@ -26,7 +27,7 @@ class AnnouncementDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final bool isGerman = Localizations.localeOf(context).languageCode == 'de';
     final String title = isGerman
         ? announcement.title.de

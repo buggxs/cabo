@@ -1,21 +1,11 @@
 import 'dart:math';
 
+import 'package:cabo/components/about/widgets/debug_running_game_rounds.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/domain/round/round.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:intl/intl.dart';
-
-// Debug round: index of the Cabo caller, index of the player with penalty
-// points (-1 = none), indices of the round winners, the already settled points
-// per player and whether the round was a kamikaze.
-typedef _DebugRoundSpec = ({
-  int closer,
-  int penalty,
-  List<int> winners,
-  List<int> points,
-  bool kamikaze,
-});
 
 // (day, start hour, duration in minutes, player names, round count,
 //  streak player index (-1 = none), streak length)
@@ -30,118 +20,6 @@ class DebugSampleGames {
     'Tom',
     'Lena',
     'Ben',
-  ];
-
-  // 15 rounds that contain every rule constellation at least once: caller
-  // wins (1, 2, 6, 7, ...), caller loses with +5 (3, 5, 8, 10), tie won by the
-  // caller (4), two round winners (5), kamikaze (13) and thereby a precision
-  // landing on exactly 100 for Ben.
-  static const List<_DebugRoundSpec> _runningGameRounds = <_DebugRoundSpec>[
-    (
-      closer: 0,
-      penalty: -1,
-      winners: <int>[0],
-      points: <int>[0, 6, 4, 8],
-      kamikaze: false,
-    ),
-    (
-      closer: 3,
-      penalty: -1,
-      winners: <int>[3],
-      points: <int>[5, 3, 4, 0],
-      kamikaze: false,
-    ),
-    (
-      closer: 1,
-      penalty: 1,
-      winners: <int>[2],
-      points: <int>[6, 9, 0, 5],
-      kamikaze: false,
-    ),
-    (
-      closer: 2,
-      penalty: -1,
-      winners: <int>[2],
-      points: <int>[3, 5, 0, 6],
-      kamikaze: false,
-    ),
-    (
-      closer: 3,
-      penalty: 3,
-      winners: <int>[0, 1],
-      points: <int>[0, 0, 2, 11],
-      kamikaze: false,
-    ),
-    (
-      closer: 1,
-      penalty: -1,
-      winners: <int>[1],
-      points: <int>[4, 0, 3, 5],
-      kamikaze: false,
-    ),
-    (
-      closer: 0,
-      penalty: -1,
-      winners: <int>[0],
-      points: <int>[0, 2, 3, 4],
-      kamikaze: false,
-    ),
-    (
-      closer: 2,
-      penalty: 2,
-      winners: <int>[3],
-      points: <int>[4, 3, 8, 0],
-      kamikaze: false,
-    ),
-    (
-      closer: 3,
-      penalty: -1,
-      winners: <int>[3],
-      points: <int>[5, 2, 2, 0],
-      kamikaze: false,
-    ),
-    (
-      closer: 0,
-      penalty: 0,
-      winners: <int>[2],
-      points: <int>[9, 3, 0, 6],
-      kamikaze: false,
-    ),
-    (
-      closer: 1,
-      penalty: -1,
-      winners: <int>[1],
-      points: <int>[2, 0, 2, 2],
-      kamikaze: false,
-    ),
-    (
-      closer: 2,
-      penalty: -1,
-      winners: <int>[2],
-      points: <int>[2, 3, 0, 3],
-      kamikaze: false,
-    ),
-    (
-      closer: 1,
-      penalty: -1,
-      winners: <int>[0],
-      points: <int>[0, 50, 50, 50],
-      kamikaze: true,
-    ),
-    (
-      closer: 1,
-      penalty: -1,
-      winners: <int>[1],
-      points: <int>[4, 0, 3, 5],
-      kamikaze: false,
-    ),
-    (
-      closer: 3,
-      penalty: -1,
-      winners: <int>[3],
-      points: <int>[3, 2, 4, 0],
-      kamikaze: false,
-    ),
   ];
 
   static const List<_HistoryGameSpec> _historyGameSpecs = <_HistoryGameSpec>[
@@ -320,8 +198,8 @@ class DebugSampleGames {
       (int _) => <Round>[],
     );
 
-    for (int r = 0; r < _runningGameRounds.length; r++) {
-      final _DebugRoundSpec spec = _runningGameRounds[r];
+    for (int r = 0; r < debugRunningGameRounds.length; r++) {
+      final DebugRoundSpec spec = debugRunningGameRounds[r];
       for (int p = 0; p < _runningGamePlayers.length; p++) {
         final int points = spec.points[p];
         final int deduction = _precisionLandingDeduction(
@@ -337,7 +215,7 @@ class DebugSampleGames {
             hasPenaltyPoints: spec.penalty == p,
             hasPrecisionLanding: deduction > 0,
             precisionLandingDeduction: deduction > 0 ? deduction : null,
-            isKamikazeRound: spec.kamikaze,
+            isKamikazeRound: spec.isKamikaze,
             isWonRound: spec.winners.contains(p),
           ),
         );

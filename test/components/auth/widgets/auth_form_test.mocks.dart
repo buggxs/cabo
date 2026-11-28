@@ -94,10 +94,13 @@ class MockApplicationCubit extends _i1.Mock implements _i2.ApplicationCubit {
           as _i3.Logger);
 
   @override
-  void init() => super.noSuchMethod(
-    Invocation.method(#init, []),
-    returnValueForMissingStub: null,
-  );
+  _i5.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   void saveDesign(_i6.AppDesign? design) => super.noSuchMethod(
@@ -124,10 +127,13 @@ class MockApplicationCubit extends _i1.Mock implements _i2.ApplicationCubit {
           as _i5.Future<void>);
 
   @override
-  void saveIsDeveloperMode(bool? isDeveloperMode) => super.noSuchMethod(
-    Invocation.method(#saveIsDeveloperMode, [isDeveloperMode]),
-    returnValueForMissingStub: null,
-  );
+  void saveIsDeveloperMode({required bool? isDeveloperMode}) =>
+      super.noSuchMethod(
+        Invocation.method(#saveIsDeveloperMode, [], {
+          #isDeveloperMode: isDeveloperMode,
+        }),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void toggleDeveloperMode() => super.noSuchMethod(

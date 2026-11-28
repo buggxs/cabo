@@ -36,6 +36,27 @@ class CaboTheme {
   static const Color secondPlaceColor = Color.fromRGBO(164, 164, 164, 1.0);
   static const Color thirdPlaceColor = Color.fromRGBO(128, 97, 29, 1.0);
 
+  // ---------------------------------------------------------------------------
+  // Fixed colors that are identical in every design.
+  // ---------------------------------------------------------------------------
+  static const Color cardShadow = Color(0x143D3A35);
+  static const Color sheetShadow = Color(0x263D3A35);
+  static const Color scrim = Color(0xFF000000);
+  static const Color imageScrim = Color(0x66000000);
+  static const Color onImage = Color(0xFFFFFFFF);
+  static const Color iconBadgeOverlay = Color(0x33FFFFFF);
+  static const Color scanLineFade = Color(0x00F28C38);
+
+  // ---------------------------------------------------------------------------
+  // Surfaces whose tone has no matching palette role in the modern design.
+  // ---------------------------------------------------------------------------
+  static Color get ratingHeroSurface =>
+      isClassic ? surfaceContainerHigh : const Color(0xFFFFFCEB);
+  static Color get activeEntrySurface =>
+      isClassic ? background : const Color(0xFFFDF5EE);
+  static Color get entryFieldSurface =>
+      isClassic ? surfaceContainer : const Color(0xFFF0EBE3);
+
   static const double cellWidth = 130;
 
   // ---------------------------------------------------------------------------

@@ -19,7 +19,7 @@ class AccountCard extends StatelessWidget {
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35),
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),

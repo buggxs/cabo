@@ -85,7 +85,7 @@ class _PointsEntrySheetState extends State<PointsEntrySheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x263D3A35), // rgba(61,58,53,0.15)
+            color: CaboTheme.sheetShadow,
             blurRadius: 32,
             offset: Offset(0, -8),
           ),
@@ -96,9 +96,9 @@ class _PointsEntrySheetState extends State<PointsEntrySheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            ..._buildHeader(context),
+            ..._buildHeader(),
             const SizedBox(height: 16),
-            _buildPlayerGrid(context),
+            _buildPlayerGrid(),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -116,7 +116,7 @@ class _PointsEntrySheetState extends State<PointsEntrySheet> {
     );
   }
 
-  List<Widget> _buildHeader(BuildContext context) {
+  List<Widget> _buildHeader() {
     return <Widget>[
       Padding(
         padding: const EdgeInsets.all(8),
@@ -146,7 +146,7 @@ class _PointsEntrySheetState extends State<PointsEntrySheet> {
   }
 
   // Only the player cards scroll; header and keypad stay fixed.
-  Widget _buildPlayerGrid(BuildContext context) {
+  Widget _buildPlayerGrid() {
     final double maxCardsHeight = MediaQuery.of(context).size.height * 0.32;
 
     return ConstrainedBox(
@@ -197,9 +197,7 @@ class _PlayerEntry extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isActive
-              ? (CaboTheme.isClassic
-                    ? CaboTheme.background
-                    : const Color(0xFFFDF5EE))
+              ? CaboTheme.activeEntrySurface
               : CaboTheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
           border: Border.all(
@@ -241,9 +239,7 @@ class _PlayerEntry extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: CaboTheme.isClassic
-                    ? CaboTheme.surfaceContainer
-                    : const Color(0xFFF0EBE3),
+                color: CaboTheme.entryFieldSurface,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

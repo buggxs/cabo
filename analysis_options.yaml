@@ -36,22 +36,48 @@ linter:
     cancel_subscriptions: true
     close_sinks: true
     avoid_dynamic_calls: true
+    avoid_void_async: true
+
+    # Readable signatures
+    avoid_positional_boolean_parameters: true
+    parameter_assignments: true
 
     # Conventions the code base already follows
     always_use_package_imports: true
     prefer_single_quotes: true
 
 custom_lint:
+  # Options of a rule are siblings of its name, not nested below it.
   rules:
     - bool_prefix
     - max_widgets_per_file
     - max_method_length:
-        max_lines: 50
-        max_build_lines: 80
+      max_lines: 50
+      max_build_lines: 80
     - restricted_doc_comments
     - use_navigation_service
     - layer_boundaries
     - no_flutter_ui_in_domain
+    - max_parameters:
+      max_positional: 3
+      max_total: 6
+    - max_file_length:
+      max_lines: 400
+      exclude:
+        - lib/common/presentation/widgets/cabo_theme.dart
+    - no_hardcoded_strings:
+      exclude:
+        - lib/components/about/widgets/debug_
+    - no_hardcoded_colors:
+      exclude:
+        - lib/common/presentation/widgets/cabo_theme.dart
+    - no_global_context
+    - no_stored_build_context
+    - no_context_parameter_in_state
+    - equatable_props_complete
+    - mounted_before_set_state
+    - no_magic_numbers
+    - prefer_l10n_extension
 
 bloc:
   rules:

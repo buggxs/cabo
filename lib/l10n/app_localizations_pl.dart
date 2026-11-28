@@ -733,4 +733,13 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get designClassicDescription =>
       'Oryginalny ciemnozielony wygląd z obrazem w tle.';
+
+  @override
+  String get errorScreenTitle => 'Błąd';
+
+  @override
+  String get errorScreenMessage => 'Coś poszło nie tak.';
+
+  @override
+  String get statsScreenNoPlayers => 'Nie znaleziono graczy!';
 }

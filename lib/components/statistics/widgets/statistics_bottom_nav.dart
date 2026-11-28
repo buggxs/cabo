@@ -32,7 +32,7 @@ class StatisticsBottomNav extends StatelessWidget {
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, -4),
           ),

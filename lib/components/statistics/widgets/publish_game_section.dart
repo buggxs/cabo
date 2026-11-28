@@ -3,6 +3,7 @@ import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/statistics/widgets/publish_stage.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class PublishGameSection extends StatelessWidget {
   const PublishGameSection({
@@ -16,7 +17,7 @@ class PublishGameSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
 
     return SingleChildScrollView(
       key: const ValueKey<String>('publish-button-view'),

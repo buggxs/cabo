@@ -44,7 +44,7 @@ class MainMenuActionCard extends StatelessWidget {
             border: Border(bottom: BorderSide(color: accentColor, width: 4)),
             boxShadow: const <BoxShadow>[
               BoxShadow(
-                color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+                color: CaboTheme.cardShadow, // rgba(61,58,53,0.08)
                 blurRadius: 12,
                 offset: Offset(0, 4),
               ),
@@ -94,7 +94,7 @@ class MainMenuActionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
+        color: CaboTheme.iconBadgeOverlay,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(icon, size: 32, color: foregroundColor),

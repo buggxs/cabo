@@ -6,6 +6,7 @@ import 'package:cabo/domain/application/auth_service.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class QrCodeSection extends StatelessWidget {
   const QrCodeSection({
@@ -22,7 +23,7 @@ class QrCodeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final QrCode qrCode = QrCode.fromData(
       data: gameId,
       errorCorrectLevel: QrErrorCorrectLevel.H,

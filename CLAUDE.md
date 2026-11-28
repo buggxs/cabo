@@ -35,6 +35,12 @@ Flutter version is managed via FVM; the pinned version is in `.fvmrc`.
 
 **Comments:** Write comments in English only, and only where they are truly necessary to explain very complex sections. Prefer self-explanatory code (clear naming, small methods) over comments.
 
+## Lint rules
+
+Code style and architecture conventions are enforced by lint rules instead of being listed here: built-in rules in `analysis_options.yaml`, project specific rules in `tools/cabo_lints` (run via `custom_lint`) and `bloc_lint`. All three linters must report no findings before work is considered done.
+
+**Propose new rules:** When you run into a bug, a regression or a recurring review finding during development that a lint rule could have prevented, propose adding such a rule (a built-in one, or a new custom rule in `tools/cabo_lints`) and say how many findings it would produce in the existing code. Implement it only after it was confirmed.
+
 ## Architecture
 
 Flutter app for the Cabo card game — a digital scoreboard with local persistence and optional Firebase cloud sync.

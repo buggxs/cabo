@@ -36,7 +36,11 @@ class _GameHistoryScreenContent extends StatelessWidget {
   const _GameHistoryScreenContent();
 
   static const List<BoxShadow> _cardShadow = <BoxShadow>[
-    BoxShadow(color: Color(0x143D3A35), blurRadius: 12, offset: Offset(0, 4)),
+    BoxShadow(
+      color: CaboTheme.cardShadow,
+      blurRadius: 12,
+      offset: Offset(0, 4),
+    ),
   ];
 
   @override

@@ -20,6 +20,8 @@ part 'main_menu_state.dart';
 class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
   MainMenuCubit() : super(MainMenu());
 
+  static const int _maxRecentGroups = 5;
+
   void _pushToStatsScreen(
     List<Player> players, {
     bool? shouldUseSpecialRules,
@@ -112,7 +114,7 @@ class MainMenuCubit extends Cubit<MainMenuState> with LoggerMixin {
     groups.removeWhere((PlayerGroup group) => group == newGroup);
     groups.insert(0, newGroup);
 
-    await repository.saveAll(groups.take(5).toList());
+    await repository.saveAll(groups.take(_maxRecentGroups).toList());
   }
 
   void onWillPop() {

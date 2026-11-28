@@ -10,6 +10,10 @@ part 'game.g.dart';
 
 @JsonSerializable()
 class Game extends Equatable {
+  static const int _shortWinStreak = 5;
+  static const int _mediumWinStreak = 7;
+  static const int _longWinStreak = 10;
+
   const Game({
     this.id,
     this.ownerId,
@@ -124,10 +128,14 @@ class Game extends Equatable {
 
     if (_hasWonFiveRoundsInARow) {
       GameStreakType winStreak = GameStreakType.fiveRoundsWon;
-      if (players.any((Player player) => player.hasRoundWinStreak(7))) {
+      if (players.any(
+        (Player player) => player.hasRoundWinStreak(_mediumWinStreak),
+      )) {
         winStreak = GameStreakType.sevenRoundsWon;
       }
-      if (players.any((Player player) => player.hasRoundWinStreak(10))) {
+      if (players.any(
+        (Player player) => player.hasRoundWinStreak(_longWinStreak),
+      )) {
         winStreak = GameStreakType.tenRoundsWon;
       }
       streaks.add(winStreak);
@@ -148,7 +156,7 @@ class Game extends Equatable {
   }
 
   bool get _hasWonFiveRoundsInARow =>
-      players.any((Player player) => player.hasRoundWinStreak(5));
+      players.any((Player player) => player.hasRoundWinStreak(_shortWinStreak));
 
   bool _isLongerThan(Duration streakDuration) {
     if (startedAt == null || finishedAt == null) {

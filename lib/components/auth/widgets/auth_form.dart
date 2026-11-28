@@ -13,6 +13,7 @@ import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 /// Entry point for signing in. Provides the AuthCubit and switches between
 /// the provider choice, the e-mail forms and the verification notice.
@@ -34,7 +35,7 @@ class _AuthFormContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final AuthCubit cubit = context.read<AuthCubit>();
     final AuthFormState state = context.watch<AuthCubit>().state;
     final ApplicationState appState = context.watch<ApplicationCubit>().state;

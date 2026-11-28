@@ -130,25 +130,25 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
               children: <Widget>[
-                _buildHero(context),
+                _buildHero(),
                 const SizedBox(height: 24),
                 if (state.recentGroups.isNotEmpty) ...<Widget>[
-                  _buildRecentGroups(context, state.recentGroups),
+                  _buildRecentGroups(state.recentGroups),
                   const SizedBox(height: 16),
                 ],
                 ..._buildPlayerCards(),
                 const SizedBox(height: 8),
-                _buildAddPlayerButton(context),
+                _buildAddPlayerButton(),
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: _buildStartButton(context, cubit),
+      bottomNavigationBar: _buildStartButton(cubit),
     );
   }
 
-  Widget _buildHero(BuildContext context) {
+  Widget _buildHero() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
       child: AspectRatio(
@@ -163,7 +163,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: <Color>[Color(0x66000000), Color(0x00000000)],
+                    colors: <Color>[CaboTheme.imageScrim, Colors.transparent],
                   ),
                 ),
               ),
@@ -175,7 +175,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
                 child: Text(
                   context.l10n.choosePlayersHeroTitle,
                   style: CaboTheme.headlineMediumStyle.copyWith(
-                    color: Colors.white,
+                    color: CaboTheme.onImage,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -187,7 +187,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     );
   }
 
-  Widget _buildRecentGroups(BuildContext context, List<PlayerGroup> groups) {
+  Widget _buildRecentGroups(List<PlayerGroup> groups) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -241,7 +241,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     ];
   }
 
-  Widget _buildAddPlayerButton(BuildContext context) {
+  Widget _buildAddPlayerButton() {
     final bool canAddPlayer =
         _controllers.length < ChoosePlayersScreen.maxPlayers;
     return Opacity(
@@ -271,7 +271,7 @@ class _ChoosePlayersScreenState extends State<ChoosePlayersScreen> {
     );
   }
 
-  Widget _buildStartButton(BuildContext context, MainMenuCubit cubit) {
+  Widget _buildStartButton(MainMenuCubit cubit) {
     final bool canStart = _hasEnoughPlayers;
     final Color contentColor = canStart
         ? CaboTheme.onPrimaryContainer

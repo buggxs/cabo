@@ -50,7 +50,7 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35),
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -102,9 +102,9 @@ class _CaboScannerWindowState extends State<CaboScannerWindow>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: <Color>[
-                      const Color(0x00F28C38),
+                      CaboTheme.scanLineFade,
                       CaboTheme.primaryContainer,
-                      const Color(0x00F28C38),
+                      CaboTheme.scanLineFade,
                     ],
                   ),
                   boxShadow: <BoxShadow>[

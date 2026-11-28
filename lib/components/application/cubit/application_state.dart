@@ -66,7 +66,10 @@ class ApplicationAuthenticated extends ApplicationState {
          design: design ?? AppDesign.modern,
        );
 
+  // Deliberately not part of props: a Firebase User has no value equality,
+  // so the values derived from it are compared instead.
   @override
+  // ignore: equatable_props_complete
   final User user;
   final String uid;
   @override

@@ -8,6 +8,7 @@ import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class StatisticInfoCard extends StatefulWidget {
   const StatisticInfoCard({
@@ -75,7 +76,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
     if (game.finishedAt == null) {
       return _formatElapsedTime(duration);
     }
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final String hours = duration.inHours
         .remainder(60)
         .toString()
@@ -116,7 +117,7 @@ class _StatisticInfoCardState extends State<StatisticInfoCard>
           border: Border.all(color: CaboTheme.surfaceVariant),
           boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: Color(0x143D3A35), // rgba(61,58,53,0.08)
+              color: CaboTheme.cardShadow,
               blurRadius: 12,
               offset: Offset(0, 4),
             ),

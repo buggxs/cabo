@@ -187,4 +187,7 @@ class _FakeAccountState extends ApplicationState {
 
   @override
   ApplicationState copyWith({bool? isDeveloper, AppDesign? design}) => this;
+
+  @override
+  List<Object?> get props => <Object?>[...super.props, isEmailVerified];
 }

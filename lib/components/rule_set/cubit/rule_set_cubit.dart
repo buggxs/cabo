@@ -11,17 +11,17 @@ class RuleSetCubit extends Cubit<RuleSetState> {
 
   final RuleService _ruleService = app<RuleService>();
 
-  void loadRuleSet() async {
+  Future<void> loadRuleSet() async {
     final RuleSet ruleSet = await _ruleService.loadRuleSet();
     emit(state.copyWith(ruleSet: ruleSet));
   }
 
-  void resetRuleSet() async {
+  Future<void> resetRuleSet() async {
     final RuleSet? ruleSet = await _ruleService.saveRuleSet(const RuleSet());
     emit(state.copyWith(ruleSet: ruleSet));
   }
 
-  void saveRuleSet(RuleSet updatedRuleSet) async {
+  Future<void> saveRuleSet(RuleSet updatedRuleSet) async {
     final RuleSet? ruleSet = await _ruleService.saveRuleSet(updatedRuleSet);
     emit(state.copyWith(ruleSet: ruleSet));
   }

@@ -11,6 +11,7 @@ import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class JoinGameScreen extends StatefulWidget {
   const JoinGameScreen({super.key});
@@ -37,7 +38,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: CaboTheme.scaffoldBackground,
@@ -215,7 +216,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35),
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -311,9 +312,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
       _isLoading = true;
       _scannedQrCode = qrCode;
       _publicGame = null;
-      _loadingStatusText = AppLocalizations.of(
-        context,
-      )!.joinGameScreenLoadingStatus;
+      _loadingStatusText = context.l10n.joinGameScreenLoadingStatus;
     });
 
     // Short pause so the user can see the first loading step.
@@ -324,9 +323,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     }
 
     setState(() {
-      _loadingStatusText = AppLocalizations.of(
-        context,
-      )!.joinGameScreenSearchingGame;
+      _loadingStatusText = context.l10n.joinGameScreenSearchingGame;
     });
 
     try {
@@ -376,7 +373,7 @@ class _JoinGameScreenState extends State<JoinGameScreen> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(selectMessage(AppLocalizations.of(context)!)),
+        content: Text(selectMessage(context.l10n)),
         backgroundColor: CaboTheme.m3Error,
       ),
     );

@@ -14,6 +14,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+const String _copyrightOwner = 'Andre Müller';
+
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
@@ -84,17 +86,17 @@ class _AboutScreenContentState extends State<_AboutScreenContent> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: <Widget>[
-                _buildRatingHero(context),
+                _buildRatingHero(),
                 const SizedBox(height: 32),
                 const FeedbackCard(),
                 const SizedBox(height: 32),
-                _buildFunFactCard(context),
+                _buildFunFactCard(),
                 const SizedBox(height: 24),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: _handleCopyrightTap,
                   child: Text(
-                    '© Andre Müller ${DateTime.now().year}',
+                    '© $_copyrightOwner ${DateTime.now().year}',
                     textAlign: TextAlign.center,
                     style: CaboTheme.labelSmallStyle.copyWith(
                       color: CaboTheme.onSurfaceVariant,
@@ -113,7 +115,7 @@ class _AboutScreenContentState extends State<_AboutScreenContent> {
     );
   }
 
-  Widget _buildRatingHero(BuildContext context) {
+  Widget _buildRatingHero() {
     return Column(
       children: <Widget>[
         _buildRatingBadge(),
@@ -171,7 +173,7 @@ class _AboutScreenContentState extends State<_AboutScreenContent> {
               border: Border.all(color: CaboTheme.outlineVariant),
               boxShadow: const <BoxShadow>[
                 BoxShadow(
-                  color: Color(0x143D3A35),
+                  color: CaboTheme.cardShadow,
                   blurRadius: 12,
                   offset: Offset(0, 4),
                 ),
@@ -186,18 +188,16 @@ class _AboutScreenContentState extends State<_AboutScreenContent> {
     );
   }
 
-  Widget _buildFunFactCard(BuildContext context) {
+  Widget _buildFunFactCard() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: CaboTheme.isClassic
-            ? CaboTheme.surfaceContainerHigh
-            : const Color(0xFFFFFCEB),
+        color: CaboTheme.ratingHeroSurface,
         borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35),
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),

@@ -3,6 +3,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/line_info.dart';
+import 'package:cabo_lints/src/rule_options.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 /// Limits the number of lines of method and function bodies.
@@ -17,13 +18,18 @@ class MaxMethodLength extends DartLintRule {
   }) : super(code: _code);
 
   factory MaxMethodLength.fromConfigs(CustomLintConfigs configs) {
-    final Map<String, Object?> options =
-        configs.rules[_code.name]?.json ?? <String, Object?>{};
     return MaxMethodLength(
-      maxLines: _readLimit(options['max_lines'], defaultMaxLines),
-      maxBuildLines: _readLimit(
-        options['max_build_lines'],
-        defaultMaxBuildLines,
+      maxLines: readIntOption(
+        configs,
+        rule: _code.name,
+        option: 'max_lines',
+        fallback: defaultMaxLines,
+      ),
+      maxBuildLines: readIntOption(
+        configs,
+        rule: _code.name,
+        option: 'max_build_lines',
+        fallback: defaultMaxBuildLines,
       ),
     );
   }
@@ -41,10 +47,6 @@ class MaxMethodLength extends DartLintRule {
   final int maxLines;
   final int maxBuildLines;
 
-  static int _readLimit(Object? value, int fallback) {
-    return value is int ? value : fallback;
-  }
-
   @override
   void run(
     CustomLintResolver resolver,
@@ -54,22 +56,27 @@ class MaxMethodLength extends DartLintRule {
     final LineInfo lineInfo = resolver.lineInfo;
     final bool isTestFile = resolver.path.endsWith('_test.dart');
     context.registry.addMethodDeclaration((MethodDeclaration node) {
-      _check(node.name, node.body, lineInfo, reporter);
+      _check(node.name, node.body, lineInfo: lineInfo, reporter: reporter);
     });
     context.registry.addFunctionDeclaration((FunctionDeclaration node) {
       final bool isTestEntryPoint = isTestFile && node.name.lexeme == 'main';
       if (!isTestEntryPoint) {
-        _check(node.name, node.functionExpression.body, lineInfo, reporter);
+        _check(
+          node.name,
+          node.functionExpression.body,
+          lineInfo: lineInfo,
+          reporter: reporter,
+        );
       }
     });
   }
 
   void _check(
     Token name,
-    FunctionBody body,
-    LineInfo lineInfo,
-    ErrorReporter reporter,
-  ) {
+    FunctionBody body, {
+    required LineInfo lineInfo,
+    required ErrorReporter reporter,
+  }) {
     final int firstLine = lineInfo.getLocation(body.offset).lineNumber;
     final int lastLine = lineInfo.getLocation(body.end).lineNumber;
     final int lineCount = lastLine - firstLine + 1;

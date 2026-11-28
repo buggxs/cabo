@@ -8,7 +8,6 @@ import 'package:cabo/components/statistics/widgets/qr_code_section.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/game/game.dart';
-import 'package:cabo/l10n/app_localizations.dart';
 import 'package:cabo/misc/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +50,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
     Widget child = const AuthForm();
 
     if (applicationCubit.state.canPublishGame || _publicGameId != null) {
-      child = buildAuthenticatedView(context);
+      child = buildAuthenticatedView();
     }
 
     return Scaffold(
@@ -63,7 +62,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
           onPressed: () => app<NavigationService>().pop(false),
         ),
         title: Text(
-          AppLocalizations.of(context)!.publishDialogTitle,
+          context.l10n.publishDialogTitle,
           style: CaboTheme.headlineMediumStyle.copyWith(
             color: CaboTheme.m3Primary,
             fontWeight: FontWeight.bold,
@@ -82,7 +81,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
     );
   }
 
-  Widget buildAuthenticatedView(BuildContext context) {
+  Widget buildAuthenticatedView() {
     Widget currentView;
 
     if (_publicGameId != null) {
@@ -93,7 +92,7 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
       );
     } else if (_isPreparing) {
       currentView = LoadingSpinnerSection(
-        loadingText: AppLocalizations.of(context)!.publishDialogLoading,
+        loadingText: context.l10n.publishDialogLoading,
       );
     } else {
       currentView = PublishGameSection(
@@ -120,15 +119,21 @@ class _PublicGameScreenState extends State<PublicGameScreen> with LoggerMixin {
     try {
       publicGame = await widget.publishGame();
     } on Exception catch (e) {
+      logger.severe('Failed to publish game', e);
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isPublishing = false;
       });
-      logger.severe('Failed to publish game', e);
       _showPublishFailedSnackBar();
       return;
     }
 
-    if (publicGame?.publicId != null && mounted) {
+    if (!mounted) {
+      return;
+    }
+    if (publicGame?.publicId != null) {
       await _showPublishedGame(publicGame!);
     } else {
       setState(() {

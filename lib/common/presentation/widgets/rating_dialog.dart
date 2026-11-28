@@ -5,6 +5,7 @@ import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class RatingDialog extends StatefulWidget {
   const RatingDialog({super.key, this.onSubmit});
@@ -40,7 +41,7 @@ class _RatingDialogState extends State<RatingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations? l10n = AppLocalizations.of(context);
+    final AppLocalizations l10n = context.l10n;
 
     return SingleChildScrollView(
       child: Padding(
@@ -51,7 +52,7 @@ class _RatingDialogState extends State<RatingDialog> {
             _buildHeaderIcon(),
             const SizedBox(height: 20),
             Text(
-              l10n?.rateAppTitle ?? 'Rate This App',
+              l10n.rateAppTitle,
               style: CaboTheme.headlineMediumStyle.copyWith(
                 color: CaboTheme.onSurface,
               ),
@@ -59,8 +60,7 @@ class _RatingDialogState extends State<RatingDialog> {
             ),
             const SizedBox(height: 8),
             AutoSizeText(
-              l10n?.rateAppDescription ??
-                  'How would you rate your experience with Cabo Board?',
+              l10n.rateAppDescription,
               style: CaboTheme.bodyLargeStyle.copyWith(
                 color: CaboTheme.onSurfaceVariant,
               ),
@@ -75,7 +75,7 @@ class _RatingDialogState extends State<RatingDialog> {
             SizedBox(
               width: double.infinity,
               child: CaboPrimaryButton(
-                label: l10n?.submitRating ?? 'Submit',
+                label: l10n.submitRating,
                 onPressed: _selectedRating > 0 ? _submit : null,
               ),
             ),
@@ -112,7 +112,7 @@ class _RatingDialogState extends State<RatingDialog> {
     );
   }
 
-  Widget _buildFeedbackField(AppLocalizations? l10n) {
+  Widget _buildFeedbackField(AppLocalizations l10n) {
     return TextField(
       controller: _feedbackController,
       minLines: 2,
@@ -120,7 +120,7 @@ class _RatingDialogState extends State<RatingDialog> {
       keyboardType: TextInputType.multiline,
       style: CaboTheme.bodyMediumStyle.copyWith(color: CaboTheme.onSurface),
       decoration: InputDecoration(
-        labelText: l10n?.feedbackLabel ?? 'Your Feedback (Optional)',
+        labelText: l10n.feedbackLabel,
         labelStyle: CaboTheme.bodyMediumStyle.copyWith(
           color: CaboTheme.onSurfaceVariant,
         ),
@@ -141,7 +141,7 @@ class _RatingDialogState extends State<RatingDialog> {
     );
   }
 
-  Widget _buildMaybeLaterButton(AppLocalizations? l10n) {
+  Widget _buildMaybeLaterButton(AppLocalizations l10n) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
@@ -154,7 +154,7 @@ class _RatingDialogState extends State<RatingDialog> {
           ),
         ),
         child: Text(
-          l10n?.maybeLater ?? 'Maybe Later',
+          l10n.maybeLater,
           style: CaboTheme.labelLargeStyle.copyWith(
             color: CaboTheme.onSurfaceVariant,
             fontSize: 16,

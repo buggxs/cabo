@@ -9,6 +9,9 @@ part 'player.g.dart';
 
 @JsonSerializable()
 class Player extends Equatable {
+  // Rounds saved before the deduction was stored per round used this value.
+  static const int _legacyPrecisionLandingDeduction = 50;
+
   const Player({
     this.id,
     required this.name,
@@ -39,7 +42,7 @@ class Player extends Equatable {
     if (!round.hasPrecisionLanding) {
       return 0;
     }
-    return round.precisionLandingDeduction ?? 50;
+    return round.precisionLandingDeduction ?? _legacyPrecisionLandingDeduction;
   }
 
   bool hasRoundWinStreak(int streakLength) {

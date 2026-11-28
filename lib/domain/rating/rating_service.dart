@@ -38,7 +38,7 @@ class RatingService with LoggerMixin {
         // Try the native review flow first
         try {
           await _inAppReview.requestReview();
-          await setHasRated(true);
+          await setHasRated(hasRated: true);
         } on Exception catch (e) {
           logger.warning(
             'Native review flow failed: $e - Falling back to custom dialog',
@@ -56,7 +56,7 @@ class RatingService with LoggerMixin {
     }
   }
 
-  Future<void> setHasRated(bool hasRated) async {
+  Future<void> setHasRated({required bool hasRated}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_hasRatedKey, hasRated);
 
@@ -115,7 +115,7 @@ class RatingService with LoggerMixin {
     }
 
     // Mark that the user has rated the app
-    await setHasRated(true);
+    await setHasRated(hasRated: true);
   }
 
   // Request a review from the app store

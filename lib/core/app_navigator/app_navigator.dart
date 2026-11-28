@@ -7,7 +7,9 @@ import 'package:cabo/components/statistics/screens/end_game_screen.dart';
 import 'package:cabo/components/statistics/screens/statistics_screen.dart';
 import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
+import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class AppNavigator {
   static const Set<String> announcementRoutes = <String>{
@@ -80,10 +82,11 @@ class AppNavigator {
 
   Route<dynamic> _errorRoute() {
     return MaterialPageRoute<dynamic>(
-      builder: (BuildContext _) {
+      builder: (BuildContext context) {
+        final AppLocalizations l10n = context.l10n;
         return Scaffold(
-          appBar: AppBar(title: const Text('Error')),
-          body: const Center(child: Text('ERROR')),
+          appBar: AppBar(title: Text(l10n.errorScreenTitle)),
+          body: Center(child: Text(l10n.errorScreenMessage)),
         );
       },
     );

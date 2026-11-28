@@ -10,6 +10,7 @@ import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/player/data/player.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class StatisticsDialogService {
   Future<Map<String, int?>?> showPointDialog(
@@ -27,7 +28,7 @@ class StatisticsDialogService {
   Future<bool?> showEndGame(Game? game) {
     return app<NavigationService>().showAppDialog(
       dialog: (BuildContext context) {
-        final AppLocalizations l10n = AppLocalizations.of(context)!;
+        final AppLocalizations l10n = context.l10n;
         final (String title, String confirmLabel, IconData icon) =
             _endGameTexts(l10n, game);
 
@@ -88,7 +89,7 @@ class StatisticsDialogService {
   Future<bool?> loadNotFinishedGame() async {
     return app<NavigationService>().showAppDialog<bool?>(
       dialog: (BuildContext context) {
-        final AppLocalizations l10n = AppLocalizations.of(context)!;
+        final AppLocalizations l10n = context.l10n;
 
         return _buildChoiceDialog(
           icon: Icons.history_rounded,

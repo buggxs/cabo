@@ -66,7 +66,7 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     emit(next);
   }
 
-  void init() async {
+  Future<void> init() async {
     final bool isDeveloperMode = await _repository.getCurrent() ?? false;
     final AppDesign design = AppDesign.fromName(
       await _designRepository.getCurrent(),
@@ -99,14 +99,14 @@ class ApplicationCubit extends Cubit<ApplicationState> with LoggerMixin {
     await _authService.refreshVerificationStatus();
   }
 
-  void saveIsDeveloperMode(bool isDeveloperMode) {
+  void saveIsDeveloperMode({required bool isDeveloperMode}) {
     unawaited(_repository.saveCurrent(isDeveloperMode));
     _safeEmit(state.copyWith(isDeveloper: isDeveloperMode));
   }
 
   void toggleDeveloperMode() {
     final bool isDeveloperMode = !state.isDeveloper;
-    saveIsDeveloperMode(isDeveloperMode);
+    saveIsDeveloperMode(isDeveloperMode: isDeveloperMode);
   }
 
   Future<void> _initDeepLinks() async {

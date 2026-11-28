@@ -44,7 +44,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
       imageQuality: 80, // Compresses the image a bit for faster uploads.
     );
 
-    if (selectedImage != null) {
+    if (selectedImage != null && mounted) {
       setState(() {
         _imageFile = selectedImage;
       });
@@ -133,7 +133,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
         border: Border.all(color: CaboTheme.outlineVariant),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x143D3A35),
+            color: CaboTheme.cardShadow,
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -142,24 +142,24 @@ class _FeedbackCardState extends State<FeedbackCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          ..._buildHeader(context),
+          ..._buildHeader(),
           const SizedBox(height: 20),
-          _buildForm(context),
+          _buildForm(),
           _buildCharacterCounter(),
           if (_imageFile != null) ...<Widget>[
             const SizedBox(height: 12),
             _buildImagePreview(),
           ],
           const SizedBox(height: 16),
-          _buildImageButton(context),
+          _buildImageButton(),
           const SizedBox(height: 20),
-          _buildSubmitButton(context),
+          _buildSubmitButton(),
         ],
       ),
     );
   }
 
-  List<Widget> _buildHeader(BuildContext context) {
+  List<Widget> _buildHeader() {
     return <Widget>[
       Text(
         context.l10n.aboutScreenFeedbackTitle,
@@ -180,7 +180,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
     ];
   }
 
-  Widget _buildForm(BuildContext context) {
+  Widget _buildForm() {
     return Form(
       key: _formKey,
       child: Column(
@@ -188,17 +188,17 @@ class _FeedbackCardState extends State<FeedbackCard> {
         children: <Widget>[
           _buildFieldLabel(context.l10n.aboutScreenEmailLabel),
           const SizedBox(height: 4),
-          _buildEmailField(context),
+          _buildEmailField(),
           const SizedBox(height: 16),
           _buildFieldLabel(context.l10n.aboutScreenFeedbackLabel),
           const SizedBox(height: 4),
-          _buildFeedbackField(context),
+          _buildFeedbackField(),
         ],
       ),
     );
   }
 
-  Widget _buildEmailField(BuildContext context) {
+  Widget _buildEmailField() {
     return TextFormField(
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
@@ -217,7 +217,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
     );
   }
 
-  Widget _buildFeedbackField(BuildContext context) {
+  Widget _buildFeedbackField() {
     return TextFormField(
       controller: _feedbackController,
       maxLines: 5,
@@ -276,7 +276,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
     );
   }
 
-  Widget _buildImageButton(BuildContext context) {
+  Widget _buildImageButton() {
     return OutlinedButton.icon(
       onPressed: _pickImage,
       style: OutlinedButton.styleFrom(
@@ -303,7 +303,7 @@ class _FeedbackCardState extends State<FeedbackCard> {
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context) {
+  Widget _buildSubmitButton() {
     return CaboPrimaryButton(
       label: context.l10n.aboutScreenFeedbackButton,
       leading: _isLoading

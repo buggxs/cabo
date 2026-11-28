@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:cabo/common/presentation/widgets/cabo_primary_button.dart';
 import 'package:cabo/common/presentation/widgets/cabo_theme.dart';
 import 'package:cabo/components/rule_set/cubit/rule_set_cubit.dart';
+import 'package:cabo/components/rule_set/widgets/rule_number_card.dart';
+import 'package:cabo/components/rule_set/widgets/rule_toggle_card.dart';
 import 'package:cabo/core/app_navigator/navigation_service.dart';
 import 'package:cabo/core/app_service_locator.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cabo/common/presentation/widgets/context_extensions.dart';
 
 class RuleSetScreen extends StatelessWidget {
   const RuleSetScreen({super.key});
@@ -16,7 +21,11 @@ class RuleSetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RuleSetCubit>(
-      create: (BuildContext _) => RuleSetCubit()..loadRuleSet(),
+      create: (BuildContext _) {
+        final RuleSetCubit cubit = RuleSetCubit();
+        unawaited(cubit.loadRuleSet());
+        return cubit;
+      },
       child: const _RuleSetScreenContent(),
     );
   }
@@ -60,7 +69,7 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final AppLocalizations l10n = context.l10n;
     final RuleSetCubit cubit = context.watch<RuleSetCubit>();
     final RuleSet ruleSet = cubit.state.ruleSet;
 
@@ -130,14 +139,14 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
       children: <Widget>[
         _buildSectionHeader(l10n.ruleScreenScoreSection),
         const SizedBox(height: 16),
-        _buildNumberCard(
+        RuleNumberCard(
           title: l10n.ruleScreenTotalGamePointsLabel,
           description: l10n.ruleScreenTotalPointsDescription,
           suffix: l10n.ruleScreenPointsSuffix,
           controller: _totalGamePointsController,
         ),
         const SizedBox(height: 16),
-        _buildNumberCard(
+        RuleNumberCard(
           title: l10n.ruleScreenKamikazePointsLabel,
           description: l10n.ruleScreenKamikazeDescription,
           suffix: l10n.ruleScreenPointsSuffix,
@@ -149,7 +158,7 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
         const SizedBox(height: 24),
         _buildSectionHeader(l10n.ruleScreenMechanicsSection),
         const SizedBox(height: 16),
-        _buildToggleCard(
+        RuleToggleCard(
           title: l10n.ruleScreenZeroPointsLabel,
           description: l10n.ruleScreenZeroPointsDescription,
           isEnabled: ruleSet.shouldRoundWinnerGetZeroPoints,
@@ -158,7 +167,7 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
           ),
         ),
         const SizedBox(height: 16),
-        _buildToggleCard(
+        RuleToggleCard(
           title: l10n.ruleScreenPrecisionLandingLabel,
           description: l10n.ruleScreenPrecisionLandingDescription,
           isEnabled: ruleSet.hasPrecisionLanding,
@@ -223,10 +232,12 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    cubit.saveRuleSet(
-      ruleSet.copyWith(
-        totalGamePoints: int.tryParse(_totalGamePointsController.text),
-        kamikazePoints: int.tryParse(_kamikazePointsController.text),
+    unawaited(
+      cubit.saveRuleSet(
+        ruleSet.copyWith(
+          totalGamePoints: int.tryParse(_totalGamePointsController.text),
+          kamikazePoints: int.tryParse(_kamikazePointsController.text),
+        ),
       ),
     );
     app<NavigationService>().pop();
@@ -238,150 +249,6 @@ class _RuleSetScreenContentState extends State<_RuleSetScreenContent> {
       style: CaboTheme.labelLargeStyle.copyWith(
         color: CaboTheme.onSurfaceVariant,
         letterSpacing: 0.5,
-      ),
-    );
-  }
-
-  Widget _buildCard({required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: CaboTheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-        border: Border.all(color: CaboTheme.outlineVariant),
-        boxShadow: const <BoxShadow>[
-          BoxShadow(
-            color: Color(0x143D3A35),
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-
-  Widget _buildNumberCard({
-    required String title,
-    required String description,
-    required String suffix,
-    required TextEditingController controller,
-    int? maxValue,
-  }) {
-    return _buildCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: CaboTheme.bodyLargeStyle.copyWith(
-              color: CaboTheme.m3Primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            description,
-            style: CaboTheme.labelSmallStyle.copyWith(
-              color: CaboTheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildPointsField(controller, suffix, maxValue),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPointsField(
-    TextEditingController controller,
-    String suffix,
-    int? maxValue,
-  ) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      cursorColor: CaboTheme.m3Primary,
-      style: CaboTheme.headlineMediumStyle.copyWith(color: CaboTheme.onSurface),
-      validator: (String? value) {
-        final int? points = value == null ? null : int.tryParse(value);
-        if (points == null || points < 0) {
-          return '';
-        }
-        if (maxValue != null && points > maxValue) {
-          return '';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: CaboTheme.surfaceContainer,
-        suffixText: suffix,
-        suffixStyle: CaboTheme.labelLargeStyle.copyWith(
-          color: CaboTheme.onSurfaceVariant,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-          borderSide: BorderSide(color: CaboTheme.primaryContainer, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(CaboTheme.cardRadius),
-          borderSide: BorderSide(color: CaboTheme.m3Error),
-        ),
-        errorStyle: const TextStyle(height: 0),
-      ),
-    );
-  }
-
-  Widget _buildToggleCard({
-    required String title,
-    required String description,
-    required bool isEnabled,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return _buildCard(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: CaboTheme.bodyLargeStyle.copyWith(
-                    color: CaboTheme.m3Primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: CaboTheme.labelSmallStyle.copyWith(
-                    color: CaboTheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Switch(
-            value: isEnabled,
-            onChanged: onChanged,
-            activeThumbColor: CaboTheme.onSecondary,
-            activeTrackColor: CaboTheme.m3Secondary,
-            inactiveThumbColor: CaboTheme.surfaceContainerLowest,
-            inactiveTrackColor: CaboTheme.surfaceVariant,
-            trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
-          ),
-        ],
       ),
     );
   }

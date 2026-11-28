@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class PublicGameService with LoggerMixin {
+  static const int _idPartLength = 3;
+
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
@@ -28,7 +30,7 @@ class PublicGameService with LoggerMixin {
   String _randomString(String alphabet, math.Random random) {
     return String.fromCharCodes(
       Iterable<int>.generate(
-        3,
+        _idPartLength,
         (int _) => alphabet.codeUnitAt(random.nextInt(alphabet.length)),
       ),
     );

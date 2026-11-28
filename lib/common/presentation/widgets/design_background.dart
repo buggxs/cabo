@@ -31,7 +31,10 @@ class DesignBackground extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      child: ColoredBox(color: Color.fromRGBO(0, 0, 0, darken), child: child),
+      child: ColoredBox(
+        color: CaboTheme.scrim.withValues(alpha: darken),
+        child: child,
+      ),
     );
   }
 }

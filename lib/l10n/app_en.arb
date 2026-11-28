@@ -250,5 +250,8 @@
   "designModern": "Modern",
   "designClassic": "Classic",
   "designModernDescription": "The light, modern look.",
-  "designClassicDescription": "The original dark-green look with background image."
+  "designClassicDescription": "The original dark-green look with background image.",
+  "errorScreenTitle": "Error",
+  "errorScreenMessage": "Something went wrong.",
+  "statsScreenNoPlayers": "No players found!"
 }

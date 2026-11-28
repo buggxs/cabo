@@ -4,8 +4,8 @@ import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-/// Requires boolean variables, fields, parameters and getters to start with a
-/// descriptive prefix such as `is`, `has` or `can`.
+/// Requires boolean variables, fields, parameters, getters and record fields
+/// to start with a descriptive prefix such as `is`, `has` or `can`.
 ///
 /// Members annotated with `@override` are skipped, because their names are
 /// dictated by the overridden declaration.
@@ -40,6 +40,22 @@ class BoolPrefix extends DartLintRule {
     context.registry.addMethodDeclaration(
       (MethodDeclaration node) => _checkGetter(node, reporter),
     );
+    context.registry.addRecordTypeAnnotation(
+      (RecordTypeAnnotation node) => _checkRecordFields(node, reporter),
+    );
+  }
+
+  void _checkRecordFields(RecordTypeAnnotation node, ErrorReporter reporter) {
+    final List<RecordTypeAnnotationField> fields = <RecordTypeAnnotationField>[
+      ...node.positionalFields,
+      ...?node.namedFields?.fields,
+    ];
+    for (final RecordTypeAnnotationField field in fields) {
+      final Token? name = field.name;
+      if (name != null && _isBool(field.type)) {
+        _checkName(name, reporter);
+      }
+    }
   }
 
   void _checkVariables(VariableDeclarationList node, ErrorReporter reporter) {

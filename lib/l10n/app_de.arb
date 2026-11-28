@@ -222,5 +222,8 @@
   "designModern": "Modern",
   "designClassic": "Klassisch",
   "designModernDescription": "Das helle, moderne Design.",
-  "designClassicDescription": "Das ursprüngliche dunkelgrüne Design mit Hintergrundbild."
+  "designClassicDescription": "Das ursprüngliche dunkelgrüne Design mit Hintergrundbild.",
+  "errorScreenTitle": "Fehler",
+  "errorScreenMessage": "Etwas ist schiefgelaufen.",
+  "statsScreenNoPlayers": "Keine Spieler gefunden!"
 }

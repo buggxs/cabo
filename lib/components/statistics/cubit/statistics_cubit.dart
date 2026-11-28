@@ -8,7 +8,7 @@ import 'package:cabo/domain/game/game.dart';
 import 'package:cabo/domain/game/game_service.dart';
 import 'package:cabo/domain/game/public_game_service.dart';
 import 'package:cabo/domain/player/data/player.dart';
-import 'package:cabo/domain/round/round.dart';
+import 'package:cabo/domain/round/round_scorer.dart';
 import 'package:cabo/domain/rule_set/data/rule_set.dart';
 import 'package:cabo/domain/rule_set/rules_service.dart';
 import 'package:cabo/misc/utils/dialogs.dart';
@@ -44,9 +44,9 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         ? DateFormat('dd-MM-yyyy HH:mm').parse(game!.startedAt!)
         : DateTime.now();
     if (game == null) {
-      _createLocalGame(startingDateTime);
+      unawaited(_createLocalGame(startingDateTime));
     } else {
-      _startGame(game, startingDateTime);
+      _startGame(game);
     }
 
     if ((game?.isPublic ?? false) && _auth.currentUser != null) {
@@ -54,7 +54,7 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
   }
 
-  void _createLocalGame(DateTime startedAt) async {
+  Future<void> _createLocalGame(DateTime startedAt) async {
     final RuleSet ruleSet = await _loadRuleSet();
 
     final Game game = Game(
@@ -67,11 +67,11 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     final Game currentGame =
         await app<GameService>().saveLastPlayedGame(game) ?? game;
 
-    _startGame(currentGame, startedAt);
+    _startGame(currentGame);
   }
 
-  void _startGame(Game game, DateTime startedAt) {
-    emit(state.copyWith(game: _withSeatingOrder(game), startedAt: startedAt));
+  void _startGame(Game game) {
+    emit(state.copyWith(game: _withSeatingOrder(game)));
   }
 
   // Games saved before the seating order existed adopt their current player
@@ -217,14 +217,13 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
         );
 
     if (playerPointsMap != null) {
+      final RoundScorer scorer = RoundScorer(
+        ruleSet: ruleSet,
+        playerPoints: playerPointsMap,
+        closingPlayerName: closingPlayer.name,
+      );
       for (int i = 0; i < players.length; i++) {
-        players[i] = _applyRound(
-          player: players[i],
-          ruleSet: ruleSet,
-          playerPointsMap: playerPointsMap,
-          closingPlayer: closingPlayer,
-          index: index,
-        );
+        players[i] = scorer.applyRound(players[i], index: index);
       }
     }
 
@@ -253,145 +252,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
   }
 
-  // Replaces the round at [index] or appends a new one when [index] is null.
-  Player _applyRound({
-    required Player player,
-    required RuleSet ruleSet,
-    required Map<String, int?> playerPointsMap,
-    required Player closingPlayer,
-    int? index,
-  }) {
-    final List<Round> rounds = List<Round>.of(player.rounds);
-    if (index != null && index < rounds.length) {
-      rounds.removeAt(index);
-    }
-
-    final Round round = _buildRound(
-      player: player,
-      pointsBeforeRound: player.copyWith(rounds: rounds).totalPoints,
-      roundNumber: rounds.length + 1,
-      ruleSet: ruleSet,
-      playerPointsMap: playerPointsMap,
-      closingPlayer: closingPlayer,
-    );
-
-    return player.copyWith(rounds: <Round>[...rounds, round]);
-  }
-
-  Round _buildRound({
-    required Player player,
-    required int pointsBeforeRound,
-    required int roundNumber,
-    required RuleSet ruleSet,
-    required Map<String, int?> playerPointsMap,
-    required Player closingPlayer,
-  }) {
-    final bool hasClosedRound = player.name == closingPlayer.name;
-    final String? kamikazePlayerName = _findKamikazePlayer(
-      playerPointsMap,
-      ruleSet,
-    );
-
-    if (kamikazePlayerName != null) {
-      return _buildKamikazeRound(
-        isKamikazePlayer: kamikazePlayerName == player.name,
-        hasClosedRound: hasClosedRound,
-        roundNumber: roundNumber,
-        ruleSet: ruleSet,
-        pointsBeforeRound: pointsBeforeRound,
-      );
-    }
-
-    final bool hasClosingPlayerLost = _isClosingPlayerLooser(
-      playerPointsMap,
-      closingPlayer,
-      _getPointsOfClosingPlayer(playerPointsMap, closingPlayer),
-    );
-    final bool hasPenaltyPoints = hasClosedRound && hasClosingPlayerLost;
-    final bool isWonRound = _hasWonRound(
-      player.name,
-      playerPointsMap,
-      closingPlayer,
-      hasClosingPlayerLost,
-    );
-
-    int points = playerPointsMap[player.name] ?? 0;
-    if (hasPenaltyPoints) {
-      points += kFailedCaboPenaltyPoints;
-    }
-    if (ruleSet.shouldRoundWinnerGetZeroPoints && isWonRound) {
-      points = 0;
-    }
-
-    return _createRound(
-      roundNumber: roundNumber,
-      points: points,
-      hasClosedRound: hasClosedRound,
-      hasPenaltyPoints: hasPenaltyPoints,
-      isWonRound: isWonRound,
-      ruleSet: ruleSet,
-      pointsBeforeRound: pointsBeforeRound,
-    );
-  }
-
-  // A kamikaze replaces the whole round result: the kamikaze player wins the
-  // round with zero points, everyone else takes the configured penalty.
-  Round _buildKamikazeRound({
-    required bool isKamikazePlayer,
-    required bool hasClosedRound,
-    required int roundNumber,
-    required RuleSet ruleSet,
-    required int pointsBeforeRound,
-  }) {
-    return _createRound(
-      roundNumber: roundNumber,
-      points: isKamikazePlayer ? 0 : ruleSet.kamikazePoints,
-      hasClosedRound: hasClosedRound,
-      hasPenaltyPoints: false,
-      isWonRound: isKamikazePlayer,
-      ruleSet: ruleSet,
-      pointsBeforeRound: pointsBeforeRound,
-      isKamikazeRound: true,
-    );
-  }
-
-  Round _createRound({
-    required int roundNumber,
-    required int points,
-    required bool hasClosedRound,
-    required bool hasPenaltyPoints,
-    required bool isWonRound,
-    required RuleSet ruleSet,
-    required int pointsBeforeRound,
-    bool isKamikazeRound = false,
-  }) {
-    final int deduction = _precisionLandingDeduction(
-      ruleSet,
-      pointsBeforeRound + points,
-    );
-
-    return Round(
-      round: roundNumber,
-      points: points,
-      hasClosedRound: hasClosedRound,
-      hasPenaltyPoints: hasPenaltyPoints,
-      hasPrecisionLanding: deduction > 0,
-      precisionLandingDeduction: deduction > 0 ? deduction : null,
-      isKamikazeRound: isKamikazeRound,
-      isWonRound: isWonRound,
-    );
-  }
-
-  // Landing exactly on the total game points halves the player's score
-  // instead of ending the game.
-  int _precisionLandingDeduction(RuleSet ruleSet, int totalPointsAfterRound) {
-    if (!ruleSet.hasPrecisionLanding ||
-        totalPointsAfterRound != ruleSet.totalGamePoints) {
-      return 0;
-    }
-    return ruleSet.totalGamePoints ~/ 2;
-  }
-
   void _finishGame(List<Player> players) {
     final Player? winner = players
         .where((Player player) => player.place == 1)
@@ -402,25 +262,6 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     }
 
     app<NavigationService>().pushToEndGameScreen(game: state.game!);
-  }
-
-  // The lowest hand wins the round; on a tie the player who called Cabo wins.
-  bool _hasWonRound(
-    String playerName,
-    Map<String, int?> playerPointsMap,
-    Player closingPlayer,
-    bool hasClosingPlayerLost,
-  ) {
-    if ((playerPointsMap[playerName] ?? 0) !=
-        _getLowestPoints(playerPointsMap)) {
-      return false;
-    }
-
-    if (!hasClosingPlayerLost) {
-      return playerName == closingPlayer.name;
-    }
-
-    return true;
   }
 
   Future<void> _saveGame(Game game, {bool shouldForceFinish = false}) async {
@@ -439,26 +280,32 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
       await _discardPublicGame(game);
     }
 
+    Game gameToSave = game;
     if (game.isGameFinished || shouldForceFinish) {
-      final String finishedGame = DateFormat(
-        'dd-MM-yyyy HH:mm',
-      ).format(DateTime.now());
-      game = game.copyWith(finishedAt: finishedGame);
-      // Update the state right away so isGameFinished is true and the
-      // EndGameScreen can be shown afterwards.
-      emit(state.copyWith(game: game));
-      await app<GameService>().saveToGameHistory(game);
+      gameToSave = await _archiveFinishedGame(game);
     }
 
-    if (game.isPublic && !isAbandonedPublicGame) {
+    if (gameToSave.isPublic && !isAbandonedPublicGame) {
       try {
-        await app<PublicGameService>().saveOrUpdateGame(game: game);
+        await app<PublicGameService>().saveOrUpdateGame(game: gameToSave);
       } on Exception catch (e, stackTrace) {
         logger.severe('Failed to sync public game to Firestore', e, stackTrace);
       }
     }
 
-    await app<GameService>().saveLastPlayedGame(game);
+    await app<GameService>().saveLastPlayedGame(gameToSave);
+  }
+
+  Future<Game> _archiveFinishedGame(Game game) async {
+    final String finishedAt = DateFormat(
+      'dd-MM-yyyy HH:mm',
+    ).format(DateTime.now());
+    final Game finishedGame = game.copyWith(finishedAt: finishedAt);
+    // Update the state right away so isGameFinished is true and the
+    // EndGameScreen can be shown afterwards.
+    emit(state.copyWith(game: finishedGame));
+    await app<GameService>().saveToGameHistory(finishedGame);
+    return finishedGame;
   }
 
   bool _isOwnerOf(Game game) => _auth.currentUser?.uid == game.ownerId;
@@ -472,58 +319,5 @@ class StatisticsCubit extends Cubit<StatisticsState> with LoggerMixin {
     } on Exception catch (e, stackTrace) {
       logger.severe('Failed to delete empty public game', e, stackTrace);
     }
-  }
-
-  String? _findKamikazePlayer(
-    Map<String, int?> playerPointsMap,
-    RuleSet ruleSet,
-  ) {
-    if (!ruleSet.hasKamikazeRule) {
-      return null;
-    }
-
-    return playerPointsMap.entries
-        .where(
-          (MapEntry<String, int?> entry) =>
-              entry.value == ruleSet.kamikazePoints,
-        )
-        .firstOrNull
-        ?.key;
-  }
-
-  int _getLowestPoints(Map<String, int?> playerPointsmap) {
-    MapEntry<String, int?>? lowest;
-    for (final MapEntry<String, int?> element in playerPointsmap.entries) {
-      lowest ??= element;
-      if ((lowest.value ?? 0) >= (element.value ?? 0)) {
-        lowest = element;
-      }
-    }
-    return lowest?.value ?? 0;
-  }
-
-  int _getPointsOfClosingPlayer(
-    Map<String, int?> playerPointsmap,
-    Player closingPlayer,
-  ) {
-    return playerPointsmap.entries
-            .where(
-              (MapEntry<String, int?> entry) => entry.key == closingPlayer.name,
-            )
-            .firstOrNull
-            ?.value ??
-        0;
-  }
-
-  bool _isClosingPlayerLooser(
-    Map<String, int?> playerPointsmap,
-    Player closingPlayer,
-    int pointsOfClosingPlayer,
-  ) {
-    return playerPointsmap.entries.any(
-      (MapEntry<String, int?> element) =>
-          element.key != closingPlayer.name &&
-          (element.value ?? 0) < pointsOfClosingPlayer,
-    );
   }
 }
